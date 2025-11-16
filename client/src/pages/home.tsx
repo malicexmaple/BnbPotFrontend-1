@@ -48,43 +48,121 @@ export default function Home() {
       <GameNavigation onConnect={handleConnect} isConnected={isConnected} walletAddress={walletAddress} />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT SIDEBAR - LIVE AIRDROP + CHAT */}
-        <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/30">
-          <div className="m-6 p-1">
-            <div className="glass-panel p-4 space-y-3 neon-border" style={{borderRadius: '18px'}}>
-            <div className="flex items-center justify-between">
-              <Badge className="gradient-purple-pink text-black text-xs font-bold uppercase tracking-wider">LIVE</Badge>
-              <Badge variant="secondary" className="text-xs uppercase tracking-wider">AIRDROP</Badge>
+        {/* LEFT SIDEBAR - CHAT */}
+        <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/10" style={{background: 'rgba(26, 24, 46, 0.5)'}}>
+          {/* Degen Chat Header */}
+          <div className="p-3 border-b border-border/10">
+            <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
+                  <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
+                </div>
+                <span className="text-sm font-semibold text-foreground">Degen Chat</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge className="gradient-purple-pink text-white text-xs font-bold px-2">322</Badge>
+                <button className="w-6 h-6 rounded bg-muted/50 flex items-center justify-center hover-elevate">
+                  <svg className="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <img src={solanaLogo} alt="SOL" className="h-6 w-6 pulse-glow" />
-              <div className="text-3xl font-bold font-mono text-foreground">0.261</div>
-            </div>
-            <div className="text-sm font-mono text-foreground">05:03</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider">Joined</div>
           </div>
 
-          <ScrollArea className="flex-1 px-6">
-            <div className="space-y-2">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="flex items-center gap-2 p-2 rounded hover:bg-white/5">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="text-xs">U{i}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="text-sm">User{i}</div>
-                    <div className="text-xs text-muted-foreground font-mono">0.00</div>
+          {/* LIVE AIRDROP Section */}
+          <div className="p-3">
+            <div className="glass-panel neon-border rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30">LIVE</Badge>
+                  <span className="text-lg font-bold gradient-text uppercase tracking-wide">AIRDROP</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                  <span className="text-xl font-bold font-mono text-foreground">0.255</span>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Chat Messages */}
+          <ScrollArea className="flex-1 px-3">
+            <div className="space-y-3 pb-3">
+              {[
+                {user: "I couldent give a shit about tb", time: "09:38", reactions: null},
+                {user: "999BW", badge: 99, msg: "Don't use the same toolbrush !!!", img: avatar1, time: "09:38", emoji: "🖼️"},
+                {user: "BOZO", badge: 50, msg: "Oh my 😳😊", img: avatar2, time: "09:39"},
+                {user: "CutBizyABreakSP", badge: 25, msg: "you can smell him", time: "09:39"},
+                {user: "Marvinmaster", badge: 36, msg: "oh yeah", time: "09:39"},
+                {user: "SHADOW-", badge: 23, msg: "It's just a extra perk for me being skiful", time: "09:39"},
+                {user: "420_Deadly_TACO", badge: 41, msg: "Dfm the leaderboard", time: "09:39"},
+                {user: "oh yeah", time: "09:39", reactions: "👍 3 in a row would be too obvious"},
+                {user: "QweezyLovezBitzy", badge: 8, msg: "😂", time: "09:39"},
+                {user: "SHADOW-", badge: 23, msg: "That's all I see it as tbh", time: "09:39"},
+                {user: "blueontops", badge: 10, msg: "Chat Paused", isPaused: true, time: "09:39"}
+              ].map((chat, i) => (
+                <div key={i} className="space-y-1">
+                  {chat.reactions && (
+                    <div className="text-xs text-muted-foreground pl-1">{chat.reactions}</div>
+                  )}
+                  <div className="flex items-start gap-2">
+                    <Avatar className="h-8 w-8 flex-shrink-0 mt-0.5">
+                      {chat.img ? <AvatarImage src={chat.img} /> : null}
+                      <AvatarFallback className="text-xs bg-muted">{chat.user?.slice(0,2) || 'U'}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-sm font-semibold text-foreground truncate">{chat.user}</span>
+                        {chat.badge && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-full">{chat.badge}</Badge>
+                        )}
+                        <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">{chat.time}</span>
+                      </div>
+                      {chat.msg && (
+                        <div className="text-sm text-muted-foreground break-words">
+                          {chat.msg}
+                        </div>
+                      )}
+                      {chat.emoji && (
+                        <div className="text-base mt-1">{chat.emoji}</div>
+                      )}
+                      {chat.isPaused && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V4z"/></svg>
+                          Chat Paused
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <Badge variant="outline" className="text-[10px]">{10 + i}</Badge>
                 </div>
               ))}
             </div>
           </ScrollArea>
 
-          <div className="p-6 space-y-2 border-t border-border/30">
-            <Input placeholder="Type Message Here..." className="h-9 text-sm glass-panel" data-testid="input-chat" />
-            <Button variant="outline" className="w-full h-9 text-sm" data-testid="button-clear">Clear Bets</Button>
-          </div>
+          {/* Chat Input */}
+          <div className="p-3 border-t border-border/10">
+            <div className="relative">
+              <Input 
+                placeholder="Type Message Here..." 
+                className="h-10 text-sm bg-muted/30 border-border/20 pr-10" 
+                data-testid="input-chat" 
+              />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center hover-elevate">
+                <svg className="w-3.5 h-3.5 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/></svg>
+              </button>
+            </div>
+            <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
+                <span>Chat Rules</span>
+              </div>
+              <span>solpot.com</span>
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">180</Badge>
+            </div>
           </div>
         </div>
 
