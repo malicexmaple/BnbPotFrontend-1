@@ -173,6 +173,35 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+      filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.5));
+    }
+    50% {
+      opacity: 0.8;
+      filter: drop-shadow(0 0 20px hsl(var(--primary) / 0.8));
+    }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .gradient-animate {
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
 }
 
 /**
