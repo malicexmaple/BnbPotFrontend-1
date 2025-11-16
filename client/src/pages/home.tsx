@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import GameNavigation from "@/components/GameNavigation";
-import LiveAirdropSidebar from "@/components/LiveAirdropSidebar";
-import JackpotGameArea from "@/components/JackpotGameArea";
-import BettingRightSidebar from "@/components/BettingRightSidebar";
+import DegenChatSidebar from "@/components/DegenChatSidebar";
+import JackpotMainArea from "@/components/JackpotMainArea";
+import BettingControlsSidebar from "@/components/BettingControlsSidebar";
 import GameFooter from "@/components/GameFooter";
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
@@ -49,7 +49,7 @@ export default function Home() {
   ];
 
   //todo: remove mock functionality
-  const mockAirdropPlayers = [
+  const mockChatPlayers = [
     {
       id: '1',
       username: 'Rosstopus',
@@ -136,15 +136,14 @@ export default function Home() {
 
       <div className="flex-1 flex overflow-hidden">
         <div className="w-64 flex-shrink-0">
-          <LiveAirdropSidebar 
-            players={mockAirdropPlayers}
-            airdropValue={0.261}
-            timeRemaining="05:03"
+          <DegenChatSidebar 
+            players={mockChatPlayers}
+            onlineCount={302}
           />
         </div>
 
         <div className="flex-1 overflow-hidden">
-          <JackpotGameArea 
+          <JackpotMainArea 
             players={mockPlayers}
             jackpotValue={0.401}
             yourWager={0.000}
@@ -156,7 +155,7 @@ export default function Home() {
         </div>
 
         <div className="w-72 flex-shrink-0">
-          <BettingRightSidebar 
+          <BettingControlsSidebar 
             onPlaceBet={handlePlaceBet}
           />
         </div>
