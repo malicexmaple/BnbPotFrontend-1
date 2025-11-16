@@ -93,12 +93,12 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
-  --background: 250 72% 4%;
-  --foreground: 250 10% 98%;
-  --border: 270 50% 30%;
-  --card: 260 40% 8%;
-  --card-foreground: 250 10% 98%;
-  --card-border: 270 50% 25%;
+  --background: 256 52% 3%;
+  --foreground: 0 0% 98%;
+  --border: 270 60% 25%;
+  --card: 258 45% 6%;
+  --card-foreground: 0 0% 98%;
+  --card-border: 270 60% 20%;
   --sidebar: 280 6% 10%;
   --sidebar-foreground: 280 3% 95%;
   --sidebar-border: 280 6% 13%;
@@ -110,12 +110,12 @@
   --popover: 280 6% 12%;
   --popover-foreground: 280 3% 95%;
   --popover-border: 280 6% 15%;
-  --primary: 270 100% 65%;
-  --primary-foreground: 280 10% 98%;
+  --primary: 262 83% 58%;
+  --primary-foreground: 0 0% 100%;
   --secondary: 280 7% 16%;
   --secondary-foreground: 280 5% 92%;
-  --muted: 280 6% 14%;
-  --muted-foreground: 280 5% 70%;
+  --muted: 260 30% 12%;
+  --muted-foreground: 240 5% 64%;
   --accent: 285 8% 13%;
   --accent-foreground: 285 5% 92%;
   --destructive: 0 72% 30%;
@@ -204,18 +204,22 @@
   }
 
   .glass-panel {
-    background: rgba(16, 10, 31, 0.4);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(130, 69, 255, 0.3);
+    background: rgba(14, 9, 25, 0.5);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(139, 92, 246, 0.2);
   }
 
   .neon-border {
-    border: 1px solid rgba(130, 69, 255, 0.5);
-    box-shadow: 0 0 10px rgba(130, 69, 255, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.25), inset 0 0 8px rgba(139, 92, 246, 0.1);
   }
 
   .space-bg {
-    background: linear-gradient(135deg, #050312 0%, #0a0520 50%, #150a2e 100%);
+    background: radial-gradient(ellipse at top, #0f0b1f 0%, #090614 50%, #050310 100%);
+  }
+  
+  .gradient-purple-pink {
+    background: linear-gradient(135deg, #8b5cf6 0%, #c026d3 100%);
   }
 }
 
