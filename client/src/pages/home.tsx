@@ -53,7 +53,7 @@ export default function Home() {
           <div className="m-6 p-1">
             <div className="glass-panel p-4 space-y-3 neon-border" style={{borderRadius: '18px'}}>
             <div className="flex items-center justify-between">
-              <Badge className="gradient-purple-pink text-white text-xs font-bold uppercase tracking-wider">LIVE</Badge>
+              <Badge className="gradient-purple-pink text-black text-xs font-bold uppercase tracking-wider">LIVE</Badge>
               <Badge variant="secondary" className="text-xs uppercase tracking-wider">AIRDROP</Badge>
             </div>
             <div className="flex items-center gap-2">
@@ -110,7 +110,7 @@ export default function Home() {
                 </div>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
-                <Button className="gradient-purple-pink text-white font-bold shadow-[0_0_20px_rgba(107,75,255,0.6)] hover:shadow-[0_0_30px_rgba(107,75,255,0.8)]" data-testid="button-place-bet">Place Bet</Button>
+                <Button className="gradient-purple-pink text-black font-bold shadow-[0_0_20px_rgba(240,185,11,0.6)] hover:shadow-[0_0_30px_rgba(240,185,11,0.8)]" data-testid="button-place-bet">Place Bet</Button>
               </div>
             </div>
 
@@ -149,7 +149,7 @@ export default function Home() {
               {mockPlayers.slice(0, 5).map((p, i) => (
                 <div key={p.id || i} className={i === 2 ? 'p-1' : ''}>
                   <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${i === 2 ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
-                    <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(107,75,255,0.4)]">
+                    <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(240,185,11,0.5)]">
                       <AvatarImage src={p.avatarUrl} />
                       <AvatarFallback>{p.username?.slice(0, 2) || 'W'}</AvatarFallback>
                     </Avatar>
@@ -178,13 +178,13 @@ export default function Home() {
               <div className="space-y-3">
                 {mockPlayers.map(p => (
                   <div key={p.id} className="flex items-center gap-3 hover-elevate" style={{
-                    background: 'linear-gradient(180deg, rgba(32,26,66,0.75), rgba(16,12,38,0.85))',
-                    border: '1px solid rgba(113,94,173,0.35)',
+                    background: 'linear-gradient(180deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95))',
+                    border: '1px solid rgba(240,185,11,0.25)',
                     padding: '12px 20px',
                     borderRadius: '14px',
                     backdropFilter: 'blur(20px)'
                   }}>
-                    <Avatar className="h-10 w-10 border border-primary/40"><AvatarImage src={p.avatarUrl} /><AvatarFallback>{p.username.slice(0, 2)}</AvatarFallback></Avatar>
+                    <Avatar className="h-10 w-10 border border-primary/50"><AvatarImage src={p.avatarUrl} /><AvatarFallback>{p.username.slice(0, 2)}</AvatarFallback></Avatar>
                     <div className="flex-1 flex items-center justify-between">
                       <div><div className="font-medium text-sm text-foreground">{p.username}</div><div className="text-xs text-muted-foreground uppercase tracking-wider">LVL {p.level}</div></div>
                       <div className="flex items-center gap-1 font-mono"><img src={solanaLogo} className="h-4 w-4" /><span className="text-foreground font-bold text-sm">{p.betAmount.toFixed(3)}</span></div>
@@ -210,7 +210,7 @@ export default function Home() {
             <div className="space-y-2">
               {[1, 2, 3].map(i => (
                 <div key={i} className="flex items-center gap-2 p-2 bg-background/50 rounded hover-elevate">
-                  <Badge className="gradient-purple-pink text-white font-bold">{i}</Badge>
+                  <Badge className="gradient-purple-pink text-black font-bold">{i}</Badge>
                   <div className="flex-1 text-sm font-medium">Player{i}</div>
                   <div className="text-sm font-mono text-foreground font-bold">0.188</div>
                 </div>
@@ -220,7 +220,7 @@ export default function Home() {
           </div>
           
           <div className="glass-panel p-4" style={{borderRadius: '18px'}}>
-            <Badge className="gradient-purple-pink text-white text-xs mb-3 uppercase tracking-wider font-bold">LOOT OF THE DAY!</Badge>
+            <Badge className="gradient-purple-pink text-black text-xs mb-3 uppercase tracking-wider font-bold">LOOT OF THE DAY!</Badge>
             <div className="h-24 bg-background/30 rounded flex items-center justify-center border border-border/50">
               <div className="text-4xl">🎁</div>
             </div>

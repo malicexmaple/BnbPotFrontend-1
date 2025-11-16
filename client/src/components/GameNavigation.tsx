@@ -71,7 +71,7 @@ export default function GameNavigation({
               data-testid="button-connect-wallet"
               onClick={onConnect}
               size="sm"
-              className="gradient-purple-pink text-white font-bold shadow-[0_0_20px_rgba(107,75,255,0.6)] hover:shadow-[0_0_30px_rgba(107,75,255,0.8)] border-0"
+              className="gradient-purple-pink text-black font-bold shadow-[0_0_20px_rgba(240,185,11,0.6)] hover:shadow-[0_0_30px_rgba(240,185,11,0.8)] border-0"
             >
               <Wallet className="h-4 w-4 mr-2" />
               Connect
