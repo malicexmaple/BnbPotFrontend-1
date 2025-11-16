@@ -93,12 +93,12 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
-  --background: 280 5% 6%;
-  --foreground: 280 3% 95%;
-  --border: 280 4% 16%;
-  --card: 280 5% 8%;
-  --card-foreground: 280 3% 95%;
-  --card-border: 280 5% 11%;
+  --background: 250 72% 4%;
+  --foreground: 250 10% 98%;
+  --border: 270 50% 30%;
+  --card: 260 40% 8%;
+  --card-foreground: 250 10% 98%;
+  --card-border: 270 50% 25%;
   --sidebar: 280 6% 10%;
   --sidebar-foreground: 280 3% 95%;
   --sidebar-border: 280 6% 13%;
@@ -110,7 +110,7 @@
   --popover: 280 6% 12%;
   --popover-foreground: 280 3% 95%;
   --popover-border: 280 6% 15%;
-  --primary: 280 85% 32%;
+  --primary: 270 100% 65%;
   --primary-foreground: 280 10% 98%;
   --secondary: 280 7% 16%;
   --secondary-foreground: 280 5% 92%;
@@ -201,6 +201,21 @@
   .gradient-animate {
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
+  }
+
+  .glass-panel {
+    background: rgba(16, 10, 31, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(130, 69, 255, 0.3);
+  }
+
+  .neon-border {
+    border: 1px solid rgba(130, 69, 255, 0.5);
+    box-shadow: 0 0 10px rgba(130, 69, 255, 0.3);
+  }
+
+  .space-bg {
+    background: linear-gradient(135deg, #050312 0%, #0a0520 50%, #150a2e 100%);
   }
 }
 
