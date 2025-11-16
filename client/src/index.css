@@ -168,10 +168,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
@@ -243,9 +239,9 @@
   .neon-border::before {
     content: '';
     position: absolute;
-    inset: -2px;
+    inset: -1px;
     border-radius: inherit;
-    padding: 2px;
+    padding: 1px;
     background: linear-gradient(140deg, #693bff 0%, #c83bff 50%, #ff5bce 100%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;

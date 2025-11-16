@@ -113,27 +113,27 @@ export default function Home() {
             </div>
 
             {/* STATS BAR */}
-            <div className="glass-panel rounded-lg px-4 py-3 neon-border">
-              <div className="grid grid-cols-4">
-                <div className="text-center px-4 py-2">
+            <div className="glass-panel rounded-lg neon-border overflow-visible">
+              <div className="grid grid-cols-4 divide-x divide-border/30">
+                <div className="text-center px-6 py-4">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
                     <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                 </div>
-                <div className="text-center px-4 py-2 border-l border-border/30">
+                <div className="text-center px-6 py-4">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
                     <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                 </div>
-                <div className="text-center px-4 py-2 border-l border-border/30">
+                <div className="text-center px-6 py-4">
                   <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
                 </div>
-                <div className="text-center px-4 py-2 border-l border-border/30">
+                <div className="text-center px-6 py-4">
                   <div className="text-3xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
                 </div>
@@ -168,18 +168,20 @@ export default function Home() {
 
           {/* PLAYER LIST */}
           <div className="flex-1 border-t border-border/30 overflow-hidden">
-            <ScrollArea className="h-full p-3">
-              {mockPlayers.map(p => (
-                <div key={p.id} className="glass-panel rounded-lg p-3 mb-2 flex items-center gap-3 hover-elevate">
-                  <Avatar className="h-10 w-10 border border-primary/40"><AvatarImage src={p.avatarUrl} /><AvatarFallback>{p.username.slice(0, 2)}</AvatarFallback></Avatar>
-                  <div className="flex-1 flex items-center justify-between">
-                    <div><div className="font-medium text-sm text-foreground">{p.username}</div><div className="text-xs text-muted-foreground uppercase tracking-wider">LVL {p.level}</div></div>
-                    <div className="flex items-center gap-1 font-mono"><img src={solanaLogo} className="h-4 w-4" /><span className="text-foreground font-bold text-sm">{p.betAmount.toFixed(3)}</span></div>
-                    <div className="text-xs text-muted-foreground">~${(p.betAmount * 135).toFixed(2)}</div>
-                    <div className="text-right"><div className="text-xs text-muted-foreground uppercase tracking-wider">Chance</div><div className="font-semibold text-foreground text-sm">{p.winChance.toFixed(2)}%</div></div>
+            <ScrollArea className="h-full p-4">
+              <div className="space-y-2">
+                {mockPlayers.map(p => (
+                  <div key={p.id} className="glass-panel rounded-lg p-3 flex items-center gap-3 hover-elevate border-0">
+                    <Avatar className="h-10 w-10 border border-primary/40"><AvatarImage src={p.avatarUrl} /><AvatarFallback>{p.username.slice(0, 2)}</AvatarFallback></Avatar>
+                    <div className="flex-1 flex items-center justify-between">
+                      <div><div className="font-medium text-sm text-foreground">{p.username}</div><div className="text-xs text-muted-foreground uppercase tracking-wider">LVL {p.level}</div></div>
+                      <div className="flex items-center gap-1 font-mono"><img src={solanaLogo} className="h-4 w-4" /><span className="text-foreground font-bold text-sm">{p.betAmount.toFixed(3)}</span></div>
+                      <div className="text-xs text-muted-foreground">~${(p.betAmount * 135).toFixed(2)}</div>
+                      <div className="text-right"><div className="text-xs text-muted-foreground uppercase tracking-wider">Chance</div><div className="font-semibold text-foreground text-sm">{p.winChance.toFixed(2)}%</div></div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </ScrollArea>
           </div>
         </div>
