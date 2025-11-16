@@ -141,35 +141,26 @@ export default function Home() {
         walletAddress={walletAddress}
       />
 
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        <div className="flex-1 flex flex-col lg:flex-row gap-6 p-6 overflow-auto">
-          <div className="flex-1 flex flex-col gap-6">
-            <GameCanvas 
-              players={mockPlayers}
-              jackpotValue={0.312}
-              timeRemaining={timeRemaining}
-              roundNumber={186401}
-              blockStatus="Mining Block"
-            />
-          </div>
-
-          <div className="w-full lg:w-auto flex justify-center lg:justify-start">
-            <BettingPanel 
-              onPlaceBet={handlePlaceBet}
-              yourWager={0.25}
-              yourChance={32.5}
-              totalBets={11283195}
-            />
-          </div>
+      <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 p-6 overflow-auto">
+          <GameCanvas 
+            players={mockPlayers}
+            jackpotValue={0.312}
+            timeRemaining={timeRemaining}
+            roundNumber={186401}
+            blockStatus="Mining Block"
+            onPlaceBet={handlePlaceBet}
+            yourWager={0.25}
+            yourChance={32.5}
+            totalBets={11283195}
+          />
         </div>
 
-        <div className="w-full lg:w-96 border-t lg:border-t-0 lg:border-l border-border flex-shrink-0">
-          <div className="h-full">
-            <ChatSidebar 
-              messages={mockMessages}
-              onlineCount={313}
-            />
-          </div>
+        <div className="w-full md:w-96 border-l border-border flex-shrink-0 flex flex-col">
+          <ChatSidebar 
+            messages={mockMessages}
+            onlineCount={313}
+          />
         </div>
       </div>
 

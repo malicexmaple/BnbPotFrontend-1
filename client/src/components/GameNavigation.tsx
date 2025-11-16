@@ -18,41 +18,39 @@ export default function GameNavigation({
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="flex h-16 items-center justify-between px-4 gap-4">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="text-2xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent">
-              BNBPOT
-            </div>
-            <Badge variant="secondary" className="text-xs">LIVE</Badge>
+      <div className="flex h-16 items-center justify-between px-6 gap-4">
+        <div className="flex items-center gap-2">
+          <div className="text-2xl font-bold bg-gradient-to-r from-primary to-pink-500 bg-clip-text text-transparent">
+            BNBPOT
           </div>
+          <Badge variant="secondary" className="text-xs">LIVE</Badge>
+        </div>
 
-          <div className="hidden md:flex items-center gap-2">
-            <Button
-              data-testid="button-jackpot-tab"
-              variant={activeTab === "jackpot" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveTab("jackpot")}
-            >
-              Jackpot
-            </Button>
-            <Button
-              data-testid="button-coinflip-tab"
-              variant={activeTab === "coinflip" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveTab("coinflip")}
-            >
-              Coinflip
-            </Button>
-            <Button
-              data-testid="button-affiliates-tab"
-              variant={activeTab === "affiliates" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveTab("affiliates")}
-            >
-              Affiliates
-            </Button>
-          </div>
+        <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2">
+          <Button
+            data-testid="button-jackpot-tab"
+            variant={activeTab === "jackpot" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("jackpot")}
+          >
+            Jackpot
+          </Button>
+          <Button
+            data-testid="button-coinflip-tab"
+            variant={activeTab === "coinflip" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("coinflip")}
+          >
+            Coinflip
+          </Button>
+          <Button
+            data-testid="button-affiliates-tab"
+            variant={activeTab === "affiliates" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("affiliates")}
+          >
+            Affiliates
+          </Button>
         </div>
 
         <div className="flex items-center gap-2">
