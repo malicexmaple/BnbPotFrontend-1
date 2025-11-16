@@ -60,8 +60,8 @@ export default function Home() {
                 <span className="text-sm font-semibold text-foreground">Degen Chat</span>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className="gradient-purple-pink text-white text-xs font-bold px-2">322</Badge>
-                <button className="w-6 h-6 rounded bg-muted/50 flex items-center justify-center hover-elevate">
+                <Badge className="gradient-purple-pink text-white text-xs font-bold px-2" data-testid="badge-chat-count">322</Badge>
+                <button className="w-6 h-6 rounded bg-muted/50 flex items-center justify-center hover-elevate" data-testid="button-chat-collapse">
                   <svg className="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
               </div>
@@ -73,16 +73,16 @@ export default function Home() {
             <div className="glass-panel neon-border rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30">LIVE</Badge>
-                  <span className="text-lg font-bold gradient-text uppercase tracking-wide">AIRDROP</span>
+                  <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
+                  <span className="text-lg font-bold gradient-text uppercase tracking-wide" data-testid="text-airdrop-title">AIRDROP</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
-                  <span className="text-xl font-bold font-mono text-foreground">0.255</span>
+                  <span className="text-xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
                 </div>
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center" data-testid="icon-airdrop-lock">
                   <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
                 </div>
               </div>
@@ -151,17 +151,17 @@ export default function Home() {
                 className="h-10 text-sm bg-muted/30 border-border/20 pr-10" 
                 data-testid="input-chat" 
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center hover-elevate">
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center hover-elevate" data-testid="button-chat-emoji">
                 <svg className="w-3.5 h-3.5 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/></svg>
               </button>
             </div>
             <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
+              <button className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
                 <span>Chat Rules</span>
-              </div>
-              <span>solpot.com</span>
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">180</Badge>
+              </button>
+              <span data-testid="text-website">solpot.com</span>
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
             </div>
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function Home() {
                 </div>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
-                <Button className="gradient-purple-pink text-black font-bold shadow-[0_0_20px_rgba(240,185,11,0.6)] hover:shadow-[0_0_30px_rgba(240,185,11,0.8)]" data-testid="button-place-bet">Place Bet</Button>
+                <Button className="gradient-purple-pink text-white font-bold shadow-[0_0_20px_rgba(123,104,238,0.5)] hover:shadow-[0_0_30px_rgba(123,104,238,0.7)]" data-testid="button-place-bet">Place Bet</Button>
               </div>
             </div>
 
@@ -227,7 +227,7 @@ export default function Home() {
               {mockPlayers.slice(0, 5).map((p, i) => (
                 <div key={p.id || i} className={i === 2 ? 'p-1' : ''}>
                   <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${i === 2 ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
-                    <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(240,185,11,0.5)]">
+                    <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
                       <AvatarImage src={p.avatarUrl} />
                       <AvatarFallback>{p.username?.slice(0, 2) || 'W'}</AvatarFallback>
                     </Avatar>
@@ -256,8 +256,8 @@ export default function Home() {
               <div className="space-y-3">
                 {mockPlayers.map(p => (
                   <div key={p.id} className="flex items-center gap-3 hover-elevate" style={{
-                    background: 'linear-gradient(180deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95))',
-                    border: '1px solid rgba(240,185,11,0.25)',
+                    background: 'linear-gradient(180deg, rgba(26,24,46,0.7), rgba(20,18,38,0.85))',
+                    border: '1px solid rgba(123,104,238,0.25)',
                     padding: '12px 20px',
                     borderRadius: '14px',
                     backdropFilter: 'blur(20px)'
