@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import GameNavigation from "@/components/GameNavigation";
-import GameCanvas from "@/components/GameCanvas";
-import BettingSidebar from "@/components/BettingSidebar";
-import ChatSidebar from "@/components/ChatSidebar";
+import LiveAirdropSidebar from "@/components/LiveAirdropSidebar";
+import JackpotGameArea from "@/components/JackpotGameArea";
+import BettingRightSidebar from "@/components/BettingRightSidebar";
 import GameFooter from "@/components/GameFooter";
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
@@ -11,103 +11,96 @@ import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
-  const [timeRemaining, setTimeRemaining] = useState(305);
+  const [timeRemaining, setTimeRemaining] = useState(13);
   
   //todo: remove mock functionality
   const mockPlayers = [
     {
       id: '1',
-      username: 'charzard',
+      username: 'B0ZO',
       avatarUrl: avatar1,
-      betAmount: 0.05,
-      winChance: 16.01,
-      level: 47
+      betAmount: 0.033,
+      winChance: 8.22,
+      level: 10
     },
     {
       id: '2',
-      username: 'B0ZO',
+      username: 'B0Zo',
       avatarUrl: avatar2,
-      betAmount: 0.001,
-      winChance: 0.32,
-      level: 59
+      betAmount: 0.005,
+      winChance: 1.24,
+      level: 15
     },
     {
       id: '3',
-      username: '999BW',
+      username: 'shayand',
       avatarUrl: avatar3,
-      betAmount: 0.12,
-      winChance: 38.46,
-      level: 59
+      betAmount: 0.050,
+      winChance: 12.46,
+      level: 12
     },
     {
       id: '4',
-      username: 'QweezyLovesBizzy',
-      betAmount: 0.08,
-      winChance: 25.64,
-      level: 8
-    },
-    {
-      id: '5',
-      username: 'blueontops',
-      betAmount: 0.06,
-      winChance: 19.23,
+      username: 'B0Zo',
+      betAmount: 0.005,
+      winChance: 1.24,
       level: 10
     }
   ];
 
   //todo: remove mock functionality
-  const mockMessages = [
+  const mockAirdropPlayers = [
     {
       id: '1',
-      username: 'charzard',
+      username: 'Rosstopus',
       avatarUrl: avatar1,
-      message: '31% and didn\'t see my name lol',
-      timestamp: '13:55',
-      level: 47
+      amount: 0.01,
+      level: 10
     },
     {
       id: '2',
-      username: 'QweezyLovesBizzy',
-      avatarUrl: avatar2,
-      message: 'GGs snowy',
-      timestamp: '13:58',
-      level: 8
+      username: 'Rust Bucket Worth...',
+      amount: 0.0,
+      level: 15
     },
     {
       id: '3',
-      username: '999BW',
-      avatarUrl: avatar3,
-      message: 'Kinda need sol to do that my G...',
-      timestamp: '13:59',
-      level: 59
+      username: 'shayand',
+      avatarUrl: avatar2,
+      amount: 0.0,
+      level: 12
     },
     {
       id: '4',
-      username: 'blueontops',
-      message: 'If im 1st and 4h left id sell my stuff to remain 1st',
-      timestamp: '13:59',
+      username: 'B0Zo',
+      avatarUrl: avatar3,
+      amount: 0.0,
       level: 10
     },
     {
       id: '5',
-      username: 'dankus',
-      message: 'bro zardi on a tear',
-      timestamp: '13:58',
-      level: 12
+      username: 'B0000',
+      amount: 0.01,
+      level: 10
     },
     {
       id: '6',
-      username: 'Terp',
-      message: 'Noice',
-      timestamp: '13:56',
-      level: 14
+      username: 'B0Zo',
+      amount: 0.0,
+      level: 15
+    },
+    {
+      id: '7',
+      username: 'B0Zo',
+      amount: 0.0,
+      level: 10
     }
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining(prev => {
-        if (prev <= 0) return 305;
+        if (prev <= 0) return 13;
         return prev - 1;
       });
     }, 1000);
@@ -142,30 +135,29 @@ export default function Home() {
       />
 
       <div className="flex-1 flex overflow-hidden">
-        <div className="w-80 flex-shrink-0 hidden lg:block">
-          <BettingSidebar 
-            onPlaceBet={handlePlaceBet}
-            totalBets={11283195}
+        <div className="w-64 flex-shrink-0">
+          <LiveAirdropSidebar 
+            players={mockAirdropPlayers}
+            airdropValue={0.261}
+            timeRemaining="05:03"
           />
         </div>
 
         <div className="flex-1 overflow-hidden">
-          <GameCanvas 
+          <JackpotGameArea 
             players={mockPlayers}
-            jackpotValue={0.312}
+            jackpotValue={0.401}
+            yourWager={0.000}
+            yourChance={0.00}
             timeRemaining={timeRemaining}
-            roundNumber={186401}
-            blockStatus="Mining Block"
-            yourWager={0.25}
-            yourChance={32.5}
-            totalBets={11283195}
+            roundNumber={186407}
+            totalPlayers={11}
           />
         </div>
 
-        <div className="w-96 border-l border-border flex-shrink-0 hidden lg:block">
-          <ChatSidebar 
-            messages={mockMessages}
-            onlineCount={313}
+        <div className="w-72 flex-shrink-0">
+          <BettingRightSidebar 
+            onPlaceBet={handlePlaceBet}
           />
         </div>
       </div>
