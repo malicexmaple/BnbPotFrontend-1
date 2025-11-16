@@ -112,29 +112,31 @@ export default function Home() {
               </div>
             </div>
 
-            {/* STATS CARDS */}
-            <div className="grid grid-cols-4 gap-3">
-              <div className="glass-panel rounded-lg p-5 text-center neon-border">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
-                  <div className="text-5xl font-bold font-mono gradient-text">0.401</div>
+            {/* STATS BAR */}
+            <div className="glass-panel rounded-lg px-4 py-3 neon-border">
+              <div className="grid grid-cols-4">
+                <div className="text-center px-4 py-2">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                    <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
+                  </div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                 </div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
-              </div>
-              <div className="glass-panel rounded-lg p-5 text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
-                  <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
+                <div className="text-center px-4 py-2 border-l border-border/30">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                    <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
+                  </div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                 </div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
-              </div>
-              <div className="glass-panel rounded-lg p-5 text-center">
-                <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
-              </div>
-              <div className="glass-panel rounded-lg p-5 text-center">
-                <div className="text-4xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
+                <div className="text-center px-4 py-2 border-l border-border/30">
+                  <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
+                </div>
+                <div className="text-center px-4 py-2 border-l border-border/30">
+                  <div className="text-3xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
+                </div>
               </div>
             </div>
 
