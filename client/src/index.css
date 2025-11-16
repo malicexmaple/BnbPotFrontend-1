@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -43,9 +45,9 @@
   --chart-3: 240 60% 40%;
   --chart-4: 200 55% 38%;
   --chart-5: 160 50% 35%;
-  --font-sans: Open Sans, sans-serif;
+  --font-sans: Inter, system-ui, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
+  --font-mono: 'JetBrains Mono', Menlo, monospace;
   --radius: .5rem;
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
@@ -93,12 +95,12 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
-  --background: 256 52% 3%;
+  --background: 256 95% 1%;
   --foreground: 0 0% 98%;
-  --border: 270 60% 25%;
-  --card: 258 45% 6%;
+  --border: 270 40% 15%;
+  --card: 258 60% 4%;
   --card-foreground: 0 0% 98%;
-  --card-border: 270 60% 20%;
+  --card-border: 270 50% 12%;
   --sidebar: 280 6% 10%;
   --sidebar-foreground: 280 3% 95%;
   --sidebar-border: 280 6% 13%;
@@ -204,22 +206,80 @@
   }
 
   .glass-panel {
-    background: rgba(14, 9, 25, 0.5);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background: rgba(16, 10, 31, 0.78);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.1),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+    position: relative;
+  }
+  
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
   }
 
   .neon-border {
-    border: 1px solid rgba(139, 92, 246, 0.4);
-    box-shadow: 0 0 12px rgba(139, 92, 246, 0.25), inset 0 0 8px rgba(139, 92, 246, 0.1);
+    position: relative;
+    background: rgba(16, 10, 31, 0.85);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      inset 0 1px 2px rgba(255, 255, 255, 0.12),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+      0 0 28px rgba(107, 75, 255, 0.55),
+      0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+  
+  .neon-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(140deg, #693bff 0%, #c83bff 50%, #ff5bce 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .neon-border::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
   }
 
   .space-bg {
-    background: radial-gradient(ellipse at top, #0f0b1f 0%, #090614 50%, #050310 100%);
+    background: linear-gradient(180deg, #2a1b66 0%, rgba(4,1,9,0.9) 55%, #05020e 100%), #040109;
   }
   
   .gradient-purple-pink {
-    background: linear-gradient(135deg, #8b5cf6 0%, #c026d3 100%);
+    background: linear-gradient(135deg, #5a3bff 0%, #9a3bff 100%);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #5a3bff 0%, #c83bff 50%, #ff5bce 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
