@@ -50,7 +50,8 @@ export default function Home() {
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - LIVE AIRDROP + CHAT */}
         <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/30">
-          <div className="glass-panel m-3 rounded-lg p-4 space-y-3 neon-border">
+          <div className="m-6 p-1">
+            <div className="glass-panel p-4 space-y-3 neon-border" style={{borderRadius: '18px'}}>
             <div className="flex items-center justify-between">
               <Badge className="gradient-purple-pink text-white text-xs font-bold uppercase tracking-wider">LIVE</Badge>
               <Badge variant="secondary" className="text-xs uppercase tracking-wider">AIRDROP</Badge>
@@ -63,8 +64,8 @@ export default function Home() {
             <div className="text-xs text-muted-foreground uppercase tracking-wider">Joined</div>
           </div>
 
-          <ScrollArea className="flex-1 px-3">
-            <div className="space-y-1">
+          <ScrollArea className="flex-1 px-6">
+            <div className="space-y-2">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="flex items-center gap-2 p-2 rounded hover:bg-white/5">
                   <Avatar className="h-8 w-8">
@@ -80,9 +81,10 @@ export default function Home() {
             </div>
           </ScrollArea>
 
-          <div className="p-3 space-y-2 border-t border-border/30">
+          <div className="p-6 space-y-2 border-t border-border/30">
             <Input placeholder="Type Message Here..." className="h-9 text-sm glass-panel" data-testid="input-chat" />
             <Button variant="outline" className="w-full h-9 text-sm" data-testid="button-clear">Clear Bets</Button>
+          </div>
           </div>
         </div>
 
@@ -113,45 +115,49 @@ export default function Home() {
             </div>
 
             {/* STATS BAR */}
-            <div className="glass-panel rounded-lg neon-border overflow-visible">
-              <div className="grid grid-cols-4 divide-x divide-border/30">
-                <div className="text-center px-6 py-4">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
-                    <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
+            <div className="p-1">
+              <div className="glass-panel neon-border overflow-visible" style={{borderRadius: '18px', padding: '18px 28px'}}>
+                <div className="flex items-stretch">
+                  <div className="flex-1 text-center py-2">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                      <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                   </div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
-                </div>
-                <div className="text-center px-6 py-4">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
-                    <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
+                  <div className="flex-1 text-center py-2 stats-divider">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                      <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                   </div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
-                </div>
-                <div className="text-center px-6 py-4">
-                  <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
-                </div>
-                <div className="text-center px-6 py-4">
-                  <div className="text-3xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
+                  <div className="flex-1 text-center py-2 stats-divider">
+                    <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
+                  </div>
+                  <div className="flex-1 text-center py-2 stats-divider">
+                    <div className="text-3xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* PLAYER CAROUSEL */}
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-5 gap-4">
               {mockPlayers.slice(0, 5).map((p, i) => (
-                <div key={p.id || i} className={`glass-panel rounded-lg p-4 flex flex-col items-center gap-2 ${i === 2 ? 'neon-border scale-110 shadow-[0_0_30px_rgba(107,75,255,0.5)]' : ''}`}>
-                  <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(107,75,255,0.4)]">
-                    <AvatarImage src={p.avatarUrl} />
-                    <AvatarFallback>{p.username?.slice(0, 2) || 'W'}</AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm font-medium text-foreground">{p.username || 'Waiting'}</div>
-                  <div className="flex items-center gap-1 text-sm font-mono">
-                    <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
-                    <span className="text-foreground font-bold">{p.betAmount?.toFixed(3) || '0.000'}</span>
+                <div key={p.id || i} className={i === 2 ? 'p-1' : ''}>
+                  <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${i === 2 ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
+                    <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(107,75,255,0.4)]">
+                      <AvatarImage src={p.avatarUrl} />
+                      <AvatarFallback>{p.username?.slice(0, 2) || 'W'}</AvatarFallback>
+                    </Avatar>
+                    <div className="text-sm font-medium text-foreground">{p.username || 'Waiting'}</div>
+                    <div className="flex items-center gap-1 text-sm font-mono">
+                      <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
+                      <span className="text-foreground font-bold">{p.betAmount?.toFixed(3) || '0.000'}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -168,10 +174,16 @@ export default function Home() {
 
           {/* PLAYER LIST */}
           <div className="flex-1 border-t border-border/30 overflow-hidden">
-            <ScrollArea className="h-full p-4">
-              <div className="space-y-2">
+            <ScrollArea className="h-full px-6 py-5">
+              <div className="space-y-3">
                 {mockPlayers.map(p => (
-                  <div key={p.id} className="glass-panel rounded-lg p-3 flex items-center gap-3 hover-elevate border-0">
+                  <div key={p.id} className="flex items-center gap-3 hover-elevate" style={{
+                    background: 'linear-gradient(180deg, rgba(32,26,66,0.75), rgba(16,12,38,0.85))',
+                    border: '1px solid rgba(113,94,173,0.35)',
+                    padding: '12px 20px',
+                    borderRadius: '14px',
+                    backdropFilter: 'blur(20px)'
+                  }}>
                     <Avatar className="h-10 w-10 border border-primary/40"><AvatarImage src={p.avatarUrl} /><AvatarFallback>{p.username.slice(0, 2)}</AvatarFallback></Avatar>
                     <div className="flex-1 flex items-center justify-between">
                       <div><div className="font-medium text-sm text-foreground">{p.username}</div><div className="text-xs text-muted-foreground uppercase tracking-wider">LVL {p.level}</div></div>
@@ -187,8 +199,9 @@ export default function Home() {
         </div>
 
         {/* RIGHT SIDEBAR - LEADERBOARD */}
-        <div className="w-72 flex-shrink-0 p-4 space-y-3 border-l border-border/30">
-          <div className="glass-panel rounded-lg p-4 neon-border">
+        <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
+          <div className="p-1">
+            <div className="glass-panel p-4 neon-border" style={{borderRadius: '18px'}}>
             <div className="flex items-center justify-between mb-3">
               <div className="text-lg font-bold uppercase tracking-wider text-foreground">$25K WEEKLY</div>
               <TrendingUp className="h-5 w-5 text-primary" />
@@ -203,16 +216,17 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            </div>
           </div>
           
-          <div className="glass-panel rounded-lg p-4">
+          <div className="glass-panel p-4" style={{borderRadius: '18px'}}>
             <Badge className="gradient-purple-pink text-white text-xs mb-3 uppercase tracking-wider font-bold">LOOT OF THE DAY!</Badge>
             <div className="h-24 bg-background/30 rounded flex items-center justify-center border border-border/50">
               <div className="text-4xl">🎁</div>
             </div>
           </div>
 
-          <div className="glass-panel rounded-lg p-3">
+          <div className="glass-panel p-3" style={{borderRadius: '18px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={solanaLogo} className="h-3.5 w-3.5" /><span className="font-mono font-bold text-base text-foreground">0.769</span></div><span className="font-semibold text-foreground text-base">2.00%</span></div>
           </div>

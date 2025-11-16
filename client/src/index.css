@@ -239,7 +239,7 @@
   .neon-border::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: 0;
     border-radius: inherit;
     padding: 1px;
     background: linear-gradient(140deg, #693bff 0%, #c83bff 50%, #ff5bce 100%);
@@ -248,6 +248,20 @@
     mask-composite: exclude;
     pointer-events: none;
     z-index: -1;
+  }
+  
+  .stats-divider {
+    position: relative;
+  }
+  
+  .stats-divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background: rgba(124, 106, 180, 0.4);
   }
   
   .neon-border::after {
