@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import GameNavigation from "@/components/GameNavigation";
 import GameCanvas from "@/components/GameCanvas";
-import BettingPanel from "@/components/BettingPanel";
+import BettingSidebar from "@/components/BettingSidebar";
 import ChatSidebar from "@/components/ChatSidebar";
 import GameFooter from "@/components/GameFooter";
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
@@ -142,21 +142,27 @@ export default function Home() {
       />
 
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="w-80 flex-shrink-0 hidden lg:block">
+          <BettingSidebar 
+            onPlaceBet={handlePlaceBet}
+            totalBets={11283195}
+          />
+        </div>
+
+        <div className="flex-1 overflow-hidden">
           <GameCanvas 
             players={mockPlayers}
             jackpotValue={0.312}
             timeRemaining={timeRemaining}
             roundNumber={186401}
             blockStatus="Mining Block"
-            onPlaceBet={handlePlaceBet}
             yourWager={0.25}
             yourChance={32.5}
             totalBets={11283195}
           />
         </div>
 
-        <div className="w-full md:w-96 border-l border-border flex-shrink-0 flex flex-col">
+        <div className="w-96 border-l border-border flex-shrink-0 hidden lg:block">
           <ChatSidebar 
             messages={mockMessages}
             onlineCount={313}
