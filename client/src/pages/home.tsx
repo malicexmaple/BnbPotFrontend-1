@@ -513,26 +513,18 @@ export default function Home() {
               </label>
             </div>
           </div>
-          <button 
+          <Button 
             onClick={handleSignupSubmit}
-            className="w-full mt-6 text-white font-bold" 
+            className="w-full mt-6 text-white text-lg font-bold border-0 h-14" 
             style={{
-              borderRadius: '18px',
-              padding: '18px 28px',
-              background: 'rgba(15, 15, 15, 0.9)',
-              backdropFilter: 'blur(20px)',
-              border: '2px solid transparent',
-              backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box',
-              boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)',
-              cursor: 'pointer',
-              fontSize: '16px'
+              background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+              border: '2px solid rgba(234, 179, 8, 0.5)',
+              boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
             }} 
             data-testid="button-create-account"
           >
             Create Account
-          </button>
+          </Button>
         </DialogContent>
       </Dialog>
 
