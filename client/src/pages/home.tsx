@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Trophy, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
-import solanaLogo from '@assets/generated_images/Solana_cryptocurrency_logo_icon_b1e8938e.png';
+import bnbLogo from '@assets/vecteezy_binance-coin-bnb-glass-crypto-coin-3d-illustration_24092678_1763395390115.png';
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
@@ -122,7 +122,7 @@ export default function Home() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                  <img src={bnbLogo} alt="BNB" className="h-6 w-6" />
                   <span className="text-xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
                 </div>
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" data-testid="icon-airdrop-lock" style={{
@@ -193,7 +193,7 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <div className="text-xs text-muted-foreground uppercase">Bet Amount</div>
                   <Input value={betAmount} onChange={(e) => setBetAmount(e.target.value)} placeholder="0" className="w-32 h-10 text-center font-mono glass-panel" data-testid="input-bet" />
-                  <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
+                  <img src={bnbLogo} alt="BNB" className="h-5 w-5" />
                 </div>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
@@ -211,14 +211,14 @@ export default function Home() {
                 <div className="flex items-stretch" style={{overflow: 'visible'}}>
                   <div className="flex-1 text-center py-2" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                      <img src={bnbLogo} alt="BNB" className="h-6 w-6" />
                       <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                      <img src={bnbLogo} alt="BNB" className="h-6 w-6" />
                       <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
@@ -298,7 +298,7 @@ export default function Home() {
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
               <div><span className="text-foreground font-semibold">0</span> Players</div>
               <div>•</div>
-              <div>Payouts are settled in SOL</div>
+              <div>Payouts are settled in BNB</div>
               <div>•</div>
               <div>Round: <span className="font-mono" data-testid="text-round">#1</span></div>
             </div>
@@ -349,7 +349,7 @@ export default function Home() {
 
           <div className="glass-panel p-3" style={{borderRadius: '18px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
-            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={solanaLogo} className="h-3.5 w-3.5" /><span className="font-mono font-bold text-base text-foreground">0.769</span></div><span className="font-semibold text-foreground text-base">2.00%</span></div>
+            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[1.09rem] w-[1.09rem]" /><span className="font-mono font-bold text-base text-foreground">0.769</span></div><span className="font-semibold text-foreground text-base">2.00%</span></div>
           </div>
         </div>
       </div>

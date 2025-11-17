@@ -32,7 +32,7 @@ export default function GameNavigation({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}>
-        <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block', marginLeft: '20px'}} />
+        <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block', marginLeft: '-44px'}} />
         <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block', marginLeft: '-60px'}} />
       </div>
 
