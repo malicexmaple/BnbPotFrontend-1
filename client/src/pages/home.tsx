@@ -295,7 +295,7 @@ export default function Home() {
                       const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
                       
                       return (
-                        <div key={i} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px'}}>
+                        <div key={i} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px', zIndex: isCentered ? 10 : 1, position: 'relative'}}>
                           <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
                             borderRadius: '21px', 
                             padding: '26px 21px',
