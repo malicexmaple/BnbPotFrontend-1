@@ -21,37 +21,6 @@ export default function Home() {
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const cardWidthRef = useRef<number>(0);
-  const gapRef = useRef<number>(16);
-
-  // Measure actual card dimensions
-  useEffect(() => {
-    const measureCards = () => {
-      if (!carouselRef.current) return;
-      
-      const firstCard = carouselRef.current.querySelector('.carousel-card');
-      if (firstCard) {
-        const rect = firstCard.getBoundingClientRect();
-        cardWidthRef.current = rect.width;
-        
-        const computedStyle = window.getComputedStyle(carouselRef.current.querySelector('.carousel-track') as Element);
-        const gap = parseFloat(computedStyle.columnGap || '16');
-        gapRef.current = gap;
-      }
-    };
-
-    // Measure on mount and window resize
-    measureCards();
-    window.addEventListener('resize', measureCards);
-    
-    // Small delay to ensure DOM is ready
-    const timeout = setTimeout(measureCards, 100);
-    
-    return () => {
-      window.removeEventListener('resize', measureCards);
-      clearTimeout(timeout);
-    };
-  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -72,10 +41,15 @@ export default function Home() {
       
       setScrollOffset(prev => {
         const newOffset = prev + (delta * speed);
-        // Reset when we've scrolled past half the cards (10 cards)
-        const cardWidth = cardWidthRef.current || 200;
-        const gap = gapRef.current || 16;
+        if (!carouselRef.current) return newOffset;
+        
+        // Calculate actual card width from container
+        const containerWidth = carouselRef.current.offsetWidth;
+        const gap = 16; // gap-4 = 1rem = 16px
+        // Each card is 20% of container minus proportional gap
+        const cardWidth = (containerWidth / 5) - (gap * 4 / 5);
         const resetPoint = (cardWidth + gap) * 10;
+        
         if (newOffset >= resetPoint) {
           return newOffset - resetPoint;
         }
@@ -265,10 +239,13 @@ export default function Home() {
               >
                 {[...Array(20)].map((_, i) => {
                   // Calculate if this card is under the triangle (highlight when left edge reaches triangle)
-                  const cardWidth = cardWidthRef.current || 200;
-                  const gap = gapRef.current || 16;
+                  if (!carouselRef.current) return null;
+                  
+                  const containerWidth = carouselRef.current.offsetWidth;
+                  const gap = 16; // gap-4 = 1rem = 16px
+                  const cardWidth = (containerWidth / 5) - (gap * 4 / 5);
                   const cardPosition = i * (cardWidth + gap);
-                  const centerPosition = carouselRef.current ? carouselRef.current.offsetWidth / 2 : 400;
+                  const centerPosition = containerWidth / 2;
                   const cardLeftEdge = cardPosition - scrollOffset;
                   const cardRightEdge = cardLeftEdge + cardWidth;
                   const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
