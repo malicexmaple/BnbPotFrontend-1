@@ -643,4 +643,34 @@
       0 0 24px rgba(234, 179, 8, 0.4),
       0 4px 16px rgba(0, 0, 0, 0.7) !important;
   }
+
+  .stat-icon-wrapper {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon-wrapper img {
+    transform: scale(3);
+    transform-origin: center center;
+  }
+
+  .stat-icon-wrapper-small {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon-wrapper-small img {
+    transform: scale(3);
+    transform-origin: center center;
+  }
 }
