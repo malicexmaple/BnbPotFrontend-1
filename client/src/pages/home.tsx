@@ -232,8 +232,8 @@ export default function Home() {
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={clockIcon} alt="Clock" className="h-9 w-9" />
-                      <div className="text-4xl font-bold font-mono gradient-text" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                      <img src={clockIcon} alt="Clock" className="h-10 w-10 flex-shrink-0" />
+                      <div className="text-4xl font-bold font-mono gradient-text min-w-[120px]" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
                   </div>
