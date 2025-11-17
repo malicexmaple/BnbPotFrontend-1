@@ -252,7 +252,7 @@ export default function Home() {
               <div className="glass-panel neon-border relative" style={{borderRadius: '18px', paddingTop: '60px', paddingBottom: '60px', paddingLeft: '0', paddingRight: '0', overflow: 'hidden', width: '1168px'}}>
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
-                  <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-31px'}}>
+                  <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
                     <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
                       <defs>
                         <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
