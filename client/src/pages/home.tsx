@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import bnbLogo from '@assets/3dgifmaker03069_1763395807327.gif';
 import clockIcon from '@assets/3dgifmaker43080_1763398615139.gif';
+import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
@@ -328,10 +329,10 @@ export default function Home() {
         {/* RIGHT SIDEBAR - LEADERBOARD */}
         <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
           <div className="p-1">
-            <div className="glass-panel p-4 neon-border" style={{borderRadius: '18px'}}>
+            <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
+            <img src={coinStack} alt="Coins" className="absolute -top-8 right-4 w-20 h-20 z-10" />
             <div className="flex items-center justify-between mb-3">
               <div className="text-lg font-bold uppercase tracking-wider text-foreground">$25K WEEKLY</div>
-              <TrendingUp className="h-5 w-5 text-primary" />
             </div>
             <div className="text-xs text-muted-foreground mb-4 uppercase tracking-wider">LEADERBOARD</div>
             <div className="space-y-2">
