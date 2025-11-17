@@ -184,7 +184,7 @@ export default function Home() {
             {/* PLAYER CAROUSEL */}
             <div className="relative overflow-hidden">
               <div className="flex gap-4 carousel-animate">
-                {[...Array(10)].map((_, i) => {
+                {[...Array(20)].map((_, i) => {
                   const isCenter = i % 5 === 2;
                   return (
                     <div key={i} className={`flex-shrink-0 ${isCenter ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>

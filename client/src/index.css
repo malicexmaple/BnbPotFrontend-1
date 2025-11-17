@@ -296,12 +296,12 @@
       transform: translateX(0);
     }
     100% {
-      transform: translateX(calc(-20% - 16px));
+      transform: translateX(calc(-50% - 40px));
     }
   }
 
   .carousel-animate {
-    animation: carousel-slide 3s linear infinite;
+    animation: carousel-slide 10s linear infinite;
   }
 }
 
