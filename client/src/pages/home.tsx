@@ -17,7 +17,7 @@ import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurre
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
-import bnbpotBg from '@assets/bnbpotbg_1763390160060.png';
+import bnbpotBg from '@assets/MOSHED-2025-11-18-2-3-33_1763399210771.gif';
 import jackpotLogo from '@assets/Untitled-3_1763394568321.png';
 
 export default function Home() {
@@ -330,14 +330,28 @@ export default function Home() {
         <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
-            <div className="absolute -top-6 right-2 w-16 h-16 z-10 group cursor-pointer">
-              <img src={coinStack} alt="Coins" className="w-16 h-16 group-hover:animate-pulse" />
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0s'}}></div>
-                <div className="absolute top-1/4 right-0 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping" style={{animationDelay: '0.1s'}}></div>
-                <div className="absolute bottom-1/4 left-0 w-1 h-1 bg-yellow-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
-                <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0.15s'}}></div>
-                <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-yellow-200 rounded-full animate-ping" style={{animationDelay: '0.25s'}}></div>
+            <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
+              <img src={coinStack} alt="Coins" className="w-16 h-16" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                {/* Multiple sparkles with varied sizes and positions */}
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0s'}}></div>
+                <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.1s'}}></div>
+                <div className="absolute top-1/4 -left-2 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.15s'}}></div>
+                <div className="absolute top-1/2 -right-2 w-2 h-2 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.25s'}}></div>
+                <div className="absolute top-1/2 left-0 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.3s'}}></div>
+                <div className="absolute top-2/3 left-1/3 w-2 h-2 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.05s'}}></div>
+                <div className="absolute bottom-1/4 -right-1 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.35s'}}></div>
+                <div className="absolute bottom-1/3 left-1/4 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.4s'}}></div>
+                <div className="absolute -bottom-2 left-1/2 w-2 h-2 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.12s'}}></div>
+                <div className="absolute bottom-0 -left-1 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.18s'}}></div>
+                <div className="absolute top-1/4 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.22s'}}></div>
+                <div className="absolute top-3/4 right-1/3 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.28s'}}></div>
+                <div className="absolute top-1/2 left-1/4 w-2.5 h-2.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.08s'}}></div>
+                <div className="absolute bottom-1/2 right-0 w-2 h-2 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.33s'}}></div>
+                <div className="absolute top-0 left-1/4 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.38s'}}></div>
+                <div className="absolute bottom-0 right-1/4 w-2 h-2 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.14s'}}></div>
+                <div className="absolute top-1/3 left-0 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.27s'}}></div>
               </div>
             </div>
             <div className="flex items-center justify-between mb-3">
