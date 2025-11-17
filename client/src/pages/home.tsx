@@ -216,7 +216,7 @@ export default function Home() {
             {/* STATS BAR */}
             <div className="p-1">
               <div className="flex gap-4" style={{overflow: 'visible'}}>
-                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 12px', overflow: 'visible'}}>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
                   <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                     <div className="h-20 w-20 flex items-center justify-center" style={{overflow: 'visible'}}>
                       <img src={treasureChest} alt="Treasure Chest" className="h-24 w-24" />
@@ -225,7 +225,7 @@ export default function Home() {
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                 </div>
-                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 12px', overflow: 'visible'}}>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
                   <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                     <div className="h-20 w-20 flex items-center justify-center" style={{overflow: 'visible'}}>
                       <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
@@ -234,7 +234,7 @@ export default function Home() {
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                 </div>
-                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 12px', overflow: 'visible'}}>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
                   <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                     <div className="h-20 w-20 flex items-center justify-center" style={{overflow: 'visible'}}>
                       <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
@@ -243,7 +243,7 @@ export default function Home() {
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
                 </div>
-                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 12px', overflow: 'visible'}}>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
                   <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                     <div className="h-20 w-20 flex items-center justify-center" style={{overflow: 'visible'}}>
                       <img src={clockIcon} alt="Clock" className="h-14 w-14" />
