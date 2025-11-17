@@ -83,7 +83,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Zen Dots", "var(--font-sans)"],
+        sans: ["Inter", "var(--font-sans)"],
         serif: ["var(--font-serif)"],
         mono: ["Airstrike", "JetBrains Mono", "var(--font-mono)"],
       },
