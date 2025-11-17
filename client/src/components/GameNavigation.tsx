@@ -8,13 +8,15 @@ import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
 interface GameNavigationProps {
   onConnect?: () => void;
+  onDisconnect?: () => void;
   isConnected?: boolean;
   isConnecting?: boolean;
   walletAddress?: string;
 }
 
 export default function GameNavigation({ 
-  onConnect, 
+  onConnect,
+  onDisconnect,
   isConnected = false,
   isConnecting = false,
   walletAddress 
@@ -141,6 +143,7 @@ export default function GameNavigation({
                 data-testid="button-wallet-connected"
                 variant="outline"
                 size="sm"
+                onClick={onDisconnect}
                 className="font-mono border-border/40 px-3"
                 style={{height: '38px', fontSize: '13px'}}
               >

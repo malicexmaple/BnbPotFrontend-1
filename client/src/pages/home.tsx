@@ -27,7 +27,7 @@ import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 
 export default function Home() {
-  const { address, isConnecting, error, connect } = useWallet();
+  const { address, isConnecting, error, connect, disconnect } = useWallet();
   const { toast } = useToast();
   const { shouldShowSignup, markSignupComplete } = useSignupTracking(address);
   
@@ -158,7 +158,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen space-bg">
-      <GameNavigation onConnect={connect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} />
+      <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} />
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}
