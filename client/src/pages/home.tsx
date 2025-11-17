@@ -189,7 +189,7 @@ export default function Home() {
                   <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="shine-image">
+                  <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
                     <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '225px'}} />
                   </div>
                   <div className="text-xs uppercase tracking-wider shine-text" style={{color: 'rgb(161, 161, 170)'}}>Winner takes all...</div>
