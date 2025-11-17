@@ -655,6 +655,9 @@
   }
 
   .stat-icon-wrapper img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
     transform: scale(3);
     transform-origin: center center;
   }
@@ -670,6 +673,9 @@
   }
 
   .stat-icon-wrapper-small img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
     transform: scale(3);
     transform-origin: center center;
   }
