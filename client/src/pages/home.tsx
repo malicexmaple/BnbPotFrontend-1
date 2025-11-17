@@ -120,8 +120,8 @@ export default function Home() {
 
           {/* LIVE AIRDROP Section */}
           <div className="p-3">
-            <div className="glass-panel neon-border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
+            <div className="glass-panel neon-border rounded-xl p-3">
+              <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
                   <img src={airdropLogo} alt="AIRDROP" className="h-10" data-testid="img-airdrop-logo" />
