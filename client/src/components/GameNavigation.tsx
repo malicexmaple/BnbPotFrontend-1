@@ -21,9 +21,9 @@ export default function GameNavigation({
 
   return (
     <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '100px'}}>
-      {/* Left - Header Logo (320px to match chatbox width) */}
+      {/* Left - Header Logo */}
       <div className="flex items-center flex-shrink-0">
-        <img src={headerLogo} alt="SOLPOT" style={{width: '320px', height: '100px', display: 'block'}} />
+        <img src={headerLogo} alt="SOLPOT" style={{width: '224px', height: '70px', display: 'block'}} />
       </div>
 
       {/* Right side content - Two rows */}
