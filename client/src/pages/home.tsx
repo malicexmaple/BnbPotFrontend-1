@@ -19,7 +19,7 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
-  const [centerCardIndex, setCenterCardIndex] = useState(2);
+  const [scrollOffset, setScrollOffset] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,24 +31,29 @@ export default function Home() {
 
   useEffect(() => {
     let animationFrame: number;
-    let startTime = Date.now();
+    let lastTime = Date.now();
+    const speed = 0.02; // Adjust speed (pixels per ms)
     
-    const updateCenterCard = () => {
-      if (carouselRef.current) {
-        const elapsed = Date.now() - startTime;
-        const cycleDuration = 10000; // 10 seconds per cycle
-        const progress = (elapsed % cycleDuration) / cycleDuration;
-        
-        // Calculate which physical card is centered (0-19)
-        // Animation moves through 10 cards, so we need to map to 0-19
-        const position = progress * 10;
-        const centered = Math.floor(position + 2) % 20;
-        setCenterCardIndex(centered);
-      }
-      animationFrame = requestAnimationFrame(updateCenterCard);
+    const animate = () => {
+      const now = Date.now();
+      const delta = now - lastTime;
+      lastTime = now;
+      
+      setScrollOffset(prev => {
+        const newOffset = prev + (delta * speed);
+        // Reset when we've scrolled past one full set (10 cards)
+        const cardWidth = carouselRef.current ? carouselRef.current.offsetWidth / 5 : 200;
+        const resetPoint = cardWidth * 10 + 40; // 10 cards + gaps
+        if (newOffset >= resetPoint) {
+          return newOffset - resetPoint;
+        }
+        return newOffset;
+      });
+      
+      animationFrame = requestAnimationFrame(animate);
     };
     
-    animationFrame = requestAnimationFrame(updateCenterCard);
+    animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
@@ -210,14 +215,24 @@ export default function Home() {
             <div className="relative overflow-hidden" ref={carouselRef}>
               {/* Arrow indicator pointing to center card */}
               <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-primary drop-shadow-[0_0_8px_rgba(123,104,238,0.8)]">
                   <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               
-              <div className="flex gap-4 carousel-animate">
+              <div 
+                className="flex gap-4 transition-transform duration-75 ease-linear"
+                style={{transform: `translateX(-${scrollOffset}px)`}}
+              >
                 {[...Array(20)].map((_, i) => {
-                  const isCentered = i === centerCardIndex;
+                  // Calculate if this card is centered based on scroll position
+                  const cardWidth = carouselRef.current ? carouselRef.current.offsetWidth / 5 : 200;
+                  const cardPosition = i * (cardWidth + 16); // card width + gap
+                  const centerPosition = carouselRef.current ? carouselRef.current.offsetWidth / 2 : 400;
+                  const cardCenter = cardPosition + cardWidth / 2 - scrollOffset;
+                  const distanceFromCenter = Math.abs(cardCenter - centerPosition);
+                  const isCentered = distanceFromCenter < cardWidth / 2;
+                  
                   return (
                     <div key={i} className={`flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
                       <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
