@@ -558,10 +558,10 @@ export default function Home() {
               <div>
                 <h3 className="font-bold text-foreground mb-2">2. Licensing and Jurisdiction</h3>
                 <p className="text-muted-foreground">
-                  BNBPOT operates under the jurisdiction and regulatory oversight of the Curaçao Gaming Authority. The Platform 
-                  is licensed and regulated in accordance with the laws of Curaçao. By using this Platform, you agree that any 
+                  BNBPOT operates under the jurisdiction and regulatory oversight of the Anjouan Gaming Authority. The Platform 
+                  is licensed and regulated in accordance with the laws of Anjouan. By using this Platform, you agree that any 
                   legal matters, disputes, or regulatory issues shall be governed by and construed in accordance with the laws 
-                  of Curaçao. You acknowledge that you are accessing the Platform from a jurisdiction where online gambling is 
+                  of Anjouan. You acknowledge that you are accessing the Platform from a jurisdiction where online gambling is 
                   legal and that you are solely responsible for ensuring compliance with your local laws and regulations.
                 </p>
               </div>
@@ -669,10 +669,10 @@ export default function Home() {
                 </p>
                 <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
                   <li><span className="font-bold text-foreground">Step 1 - Direct Resolution:</span> You must first attempt to resolve the dispute by contacting BNBPOT customer support directly. We will make reasonable efforts to resolve disputes within 30 days.</li>
-                  <li><span className="font-bold text-foreground">Step 2 - Curaçao eGaming Authority:</span> If the dispute cannot be resolved directly, you may submit a complaint to the Curaçao Gaming Control Board, which provides independent dispute resolution and mediation services for players. Contact details and procedures are available through the licensing authority.</li>
-                  <li><span className="font-bold text-foreground">Step 3 - Arbitration:</span> Any disputes not resolved through the above steps shall be settled by binding arbitration conducted in Curaçao under the laws of Curaçao. The arbitration shall be conducted in English, and the decision of the arbitrator shall be final and binding on all parties.</li>
+                  <li><span className="font-bold text-foreground">Step 2 - Anjouan eGaming Authority:</span> If the dispute cannot be resolved directly, you may submit a complaint to the Anjouan Gaming Control Board, which provides independent dispute resolution and mediation services for players. Contact details and procedures are available through the licensing authority.</li>
+                  <li><span className="font-bold text-foreground">Step 3 - Arbitration:</span> Any disputes not resolved through the above steps shall be settled by binding arbitration conducted in Anjouan under the laws of Anjouan. The arbitration shall be conducted in English, and the decision of the arbitrator shall be final and binding on all parties.</li>
                   <li><span className="font-bold text-foreground">Class Action Waiver:</span> You agree to resolve disputes on an individual basis only and waive any right to participate in class action lawsuits or class-wide arbitration.</li>
-                  <li><span className="font-bold text-foreground">Governing Law:</span> These dispute resolution procedures shall be governed by and construed in accordance with the laws of Curaçao, without regard to conflict of law provisions.</li>
+                  <li><span className="font-bold text-foreground">Governing Law:</span> These dispute resolution procedures shall be governed by and construed in accordance with the laws of Anjouan, without regard to conflict of law provisions.</li>
                 </ul>
               </div>
 
@@ -720,9 +720,9 @@ export default function Home() {
               <div>
                 <h3 className="font-bold text-foreground mb-2">16. Jurisdiction and Governing Law</h3>
                 <p className="text-muted-foreground">
-                  These Terms shall be governed by and construed in accordance with the laws of [JURISDICTION TO BE SPECIFIED], 
+                  These Terms shall be governed by and construed in accordance with the laws of Anjouan, 
                   without regard to its conflict of law provisions. You agree to submit to the exclusive jurisdiction of courts 
-                  located in [JURISDICTION] for the resolution of any disputes. You waive any objection to venue in such courts.
+                  located in Anjouan for the resolution of any disputes. You waive any objection to venue in such courts.
                 </p>
               </div>
 
