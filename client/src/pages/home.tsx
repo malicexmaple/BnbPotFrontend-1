@@ -219,7 +219,7 @@ export default function Home() {
                 <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
                   <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                     <div className="h-20 w-20 flex items-center justify-center" style={{overflow: 'visible'}}>
-                      <img src={treasureChest} alt="Treasure Chest" className="h-20 w-20" />
+                      <img src={treasureChest} alt="Treasure Chest" className="h-24 w-24" />
                     </div>
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
                   </div>
