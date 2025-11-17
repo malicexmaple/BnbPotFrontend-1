@@ -394,9 +394,21 @@ export default function Home() {
               <p className="text-muted-foreground">Please use English in the main chat for better communication.</p>
             </div>
           </div>
-          <Button onClick={() => setShowChatRules(false)} className="w-full mt-6 text-white font-bold border-0 glass-panel neon-border" style={{borderRadius: '12px', padding: '12px'}} data-testid="button-close-rules">
+          <button onClick={() => setShowChatRules(false)} className="w-full mt-6 text-white font-bold" style={{
+            borderRadius: '18px',
+            padding: '18px 28px',
+            background: 'rgba(15, 15, 15, 0.9)',
+            backdropFilter: 'blur(20px)',
+            border: '2px solid transparent',
+            backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)',
+            cursor: 'pointer',
+            fontSize: '16px'
+          }} data-testid="button-close-rules">
             Got it!
-          </Button>
+          </button>
         </DialogContent>
       </Dialog>
     </div>
