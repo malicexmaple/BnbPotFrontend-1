@@ -4,7 +4,7 @@ import { Wallet, Trophy } from "lucide-react";
 import { useState } from "react";
 import crownLogo from '@assets/3dgifmaker76444_1763389385979.gif';
 import textLogo from '@assets/3dgifmaker22972_1763389385979.gif';
-import headerBg from '@assets/bnbpotbg2_1763390365244.png';
+import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
 interface GameNavigationProps {
   onConnect?: () => void;
