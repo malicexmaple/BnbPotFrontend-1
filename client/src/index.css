@@ -178,10 +178,17 @@
 @layer base {
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   }
 
   .font-mono {
     font-family: 'Airstrike', 'DM Mono', 'Roboto Mono', monospace;
+  }
+
+  /* Remove text-shadow from specific elements */
+  input::placeholder,
+  .no-text-shadow {
+    text-shadow: none;
   }
 
   input[type="number"],
