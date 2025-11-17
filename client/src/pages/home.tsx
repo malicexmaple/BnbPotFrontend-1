@@ -32,6 +32,13 @@ export default function Home() {
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [showChatRules, setShowChatRules] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const [signupData, setSignupData] = useState({
+    name: "",
+    email: "",
+    referralCode: "",
+    agreedToTerms: false
+  });
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -89,8 +96,41 @@ export default function Home() {
         title: "Wallet Connected",
         description: `Connected to ${address.slice(0, 6)}...${address.slice(-4)} on BNB Smart Chain`,
       });
+      
+      // Check if this wallet has completed signup
+      const completedSignups = JSON.parse(localStorage.getItem('completedSignups') || '[]');
+      if (!completedSignups.includes(address)) {
+        setShowSignup(true);
+      }
     }
   }, [address, error, toast]);
+
+  const handleSignupSubmit = () => {
+    if (!signupData.name || !signupData.email || !signupData.agreedToTerms) {
+      toast({
+        variant: "destructive",
+        title: "Incomplete Form",
+        description: "Please fill in all required fields and agree to the terms.",
+      });
+      return;
+    }
+
+    // Save to localStorage that this wallet has completed signup
+    const completedSignups = JSON.parse(localStorage.getItem('completedSignups') || '[]');
+    completedSignups.push(address);
+    localStorage.setItem('completedSignups', JSON.stringify(completedSignups));
+
+    // Here you would typically send this data to your backend
+    console.log('Signup data:', { ...signupData, walletAddress: address });
+
+    toast({
+      title: "Account Created",
+      description: "Welcome to BNBPOT!",
+    });
+
+    setShowSignup(false);
+    setSignupData({ name: "", email: "", referralCode: "", agreedToTerms: false });
+  };
 
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
@@ -410,6 +450,88 @@ export default function Home() {
       </div>
 
       <GameFooter />
+
+      {/* Signup Dialog */}
+      <Dialog open={showSignup} onOpenChange={() => {}}>
+        <DialogContent className="max-w-md border-0 p-6" style={{
+          borderRadius: '18px',
+          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+          border: '2px solid rgba(234, 179, 8, 0.5)',
+          boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+        }}>
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold gradient-text uppercase tracking-wide">Sign Up</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Complete your account to start playing
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">Enter Name</label>
+              <Input 
+                value={signupData.name}
+                onChange={(e) => setSignupData({...signupData, name: e.target.value})}
+                placeholder="Name"
+                className="h-10 text-sm bg-muted/30 border-border/20"
+                data-testid="input-signup-name"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">Enter Email</label>
+              <Input 
+                type="email"
+                value={signupData.email}
+                onChange={(e) => setSignupData({...signupData, email: e.target.value})}
+                placeholder="Email"
+                className="h-10 text-sm bg-muted/30 border-border/20"
+                data-testid="input-signup-email"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground mb-2 block">Referral Code</label>
+              <Input 
+                value={signupData.referralCode}
+                onChange={(e) => setSignupData({...signupData, referralCode: e.target.value})}
+                placeholder="Optional"
+                className="h-10 text-sm bg-muted/30 border-border/20"
+                data-testid="input-signup-referral"
+              />
+            </div>
+            <div className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                checked={signupData.agreedToTerms}
+                onChange={(e) => setSignupData({...signupData, agreedToTerms: e.target.checked})}
+                className="mt-1"
+                data-testid="checkbox-terms"
+              />
+              <label className="text-sm text-muted-foreground">
+                I agree that I am at least <span className="font-bold text-foreground">18 Years Old</span> and agree to the terms and conditions.
+              </label>
+            </div>
+          </div>
+          <button 
+            onClick={handleSignupSubmit}
+            className="w-full mt-6 text-white font-bold" 
+            style={{
+              borderRadius: '18px',
+              padding: '18px 28px',
+              background: 'rgba(15, 15, 15, 0.9)',
+              backdropFilter: 'blur(20px)',
+              border: '2px solid transparent',
+              backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box',
+              boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }} 
+            data-testid="button-create-account"
+          >
+            Create Account
+          </button>
+        </DialogContent>
+      </Dialog>
 
       {/* Chat Rules Dialog */}
       <Dialog open={showChatRules} onOpenChange={setShowChatRules}>
