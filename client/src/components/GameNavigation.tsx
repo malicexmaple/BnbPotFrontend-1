@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Menu, Shield, FileText, HelpCircle } from "lucide-react";
 import { useState } from "react";
+import headerLogo from '@assets/header_logo.png';
 
 interface GameNavigationProps {
   onConnect?: () => void;
@@ -50,16 +51,9 @@ export default function GameNavigation({
 
       {/* Bottom row - Main navigation with large logo */}
       <div className="flex items-center justify-between px-4 border-b border-border/20" style={{height: '70px'}}>
-        {/* Left - Large SOLPOT Logo */}
-        <div className="flex items-center gap-2.5" style={{minWidth: '140px'}}>
-          <div className="rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center" style={{width: '32px', height: '32px'}}>
-            <svg className="text-white" fill="currentColor" viewBox="0 0 24 24" style={{width: '18px', height: '18px'}}>
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <span className="font-bold tracking-tight text-foreground" style={{fontSize: '18px', letterSpacing: '0.02em'}}>
-            SOLPOT
-          </span>
+        {/* Left - Header Logo */}
+        <div className="flex items-center" style={{minWidth: '140px'}}>
+          <img src={headerLogo} alt="SOLPOT" style={{height: '50px', width: 'auto'}} />
         </div>
 
         {/* Center - Navigation tabs */}
