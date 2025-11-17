@@ -249,7 +249,18 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="glass-panel neon-border relative" style={{borderRadius: '18px', paddingTop: '60px', paddingBottom: '60px', paddingLeft: '0', paddingRight: '0', overflow: 'hidden', width: '1168px'}}>
+              <div className="relative" style={{
+                borderRadius: '18px',
+                paddingTop: '60px',
+                paddingBottom: '60px',
+                paddingLeft: '0',
+                paddingRight: '0',
+                overflow: 'hidden',
+                width: '1168px',
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                border: '2px solid rgba(234, 179, 8, 0.5)',
+                boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+              }}>
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
                   <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
