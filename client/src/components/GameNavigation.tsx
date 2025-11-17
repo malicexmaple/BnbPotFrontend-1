@@ -7,12 +7,14 @@ import headerLogo from '@assets/header_logo.png';
 interface GameNavigationProps {
   onConnect?: () => void;
   isConnected?: boolean;
+  isConnecting?: boolean;
   walletAddress?: string;
 }
 
 export default function GameNavigation({ 
   onConnect, 
   isConnected = false,
+  isConnecting = false,
   walletAddress 
 }: GameNavigationProps) {
   const [activeTab, setActiveTab] = useState("jackpot");
@@ -135,6 +137,7 @@ export default function GameNavigation({
               <Button
                 data-testid="button-connect-wallet"
                 onClick={onConnect}
+                disabled={isConnecting}
                 size="sm"
                 className="font-bold px-5 text-white border-0 glass-panel"
                 style={{
@@ -151,7 +154,7 @@ export default function GameNavigation({
                 <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                 </svg>
-                Connect
+                {isConnecting ? 'Connecting...' : 'Connect'}
               </Button>
             )}
           </div>

@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Trophy, TrendingUp } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@/hooks/useWallet";
 import solanaLogo from '@assets/generated_images/Solana_cryptocurrency_logo_icon_b1e8938e.png';
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
@@ -15,8 +17,8 @@ import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9
 import forestBg from '@assets/enchanted-magical-forest-desktop-wallpaper_1763379900531.png';
 
 export default function Home() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
+  const { address, isConnecting, error, connect } = useWallet();
+  const { toast } = useToast();
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
@@ -62,19 +64,31 @@ export default function Home() {
   }, []);
 
 
-  const handleConnect = () => {
-    setTimeout(() => {
-      setIsConnected(true);
-      setWalletAddress('8kTx...9mKp');
-    }, 1000);
-  };
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Wallet Connection Failed",
+        description: error,
+      });
+    }
+  }, [error, toast]);
+
+  useEffect(() => {
+    if (address && !error) {
+      toast({
+        title: "Wallet Connected",
+        description: `Connected to ${address.slice(0, 6)}...${address.slice(-4)} on BNB Smart Chain`,
+      });
+    }
+  }, [address, error, toast]);
 
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
 
   return (
     <div className="flex flex-col h-screen space-bg">
-      <GameNavigation onConnect={handleConnect} isConnected={isConnected} walletAddress={walletAddress} />
+      <GameNavigation onConnect={connect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} />
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}
@@ -137,20 +151,20 @@ export default function Home() {
           <div className="p-3 border-t border-border/10">
             <div className="relative">
               <Input 
-                placeholder={isConnected ? "Type Message Here..." : "Connect wallet to chat..."}
+                placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
                 className="h-10 text-sm bg-muted/30 border-border/20 pr-10" 
                 data-testid="input-chat"
-                disabled={!isConnected}
+                disabled={!address}
               />
               <button 
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center hover-elevate disabled:opacity-50 disabled:cursor-not-allowed" 
                 data-testid="button-chat-emoji"
-                disabled={!isConnected}
+                disabled={!address}
               >
                 <svg className="w-3.5 h-3.5 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/></svg>
               </button>
             </div>
-            {!isConnected && (
+            {!address && (
               <div className="mt-2 text-xs text-center text-muted-foreground/70 flex items-center justify-center gap-1">
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
                 <span>Connect your wallet to participate in chat</span>
