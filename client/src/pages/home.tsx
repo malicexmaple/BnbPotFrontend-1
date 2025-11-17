@@ -360,36 +360,40 @@ export default function Home() {
 
       {/* Chat Rules Dialog */}
       <Dialog open={showChatRules} onOpenChange={setShowChatRules}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md glass-panel neon-border p-6" style={{borderRadius: '18px'}}>
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Chat Rules</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-bold gradient-text uppercase tracking-wide">Chat Rules</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Please follow these rules to maintain a positive environment
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 text-sm">
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">1. Be Respectful</h3>
+          <div className="space-y-4 text-sm mt-4">
+            <div className="space-y-1">
+              <h3 className="font-bold text-foreground">1. Be Respectful</h3>
               <p className="text-muted-foreground">Treat all users with respect. No harassment, hate speech, or personal attacks.</p>
             </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">2. No Spam</h3>
+            <div className="space-y-1">
+              <h3 className="font-bold text-foreground">2. No Spam</h3>
               <p className="text-muted-foreground">Do not spam messages, links, or advertisements. Keep the chat clean and relevant.</p>
             </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">3. No Begging</h3>
+            <div className="space-y-1">
+              <h3 className="font-bold text-foreground">3. No Begging</h3>
               <p className="text-muted-foreground">Do not beg for coins, tips, or giveaways from other users.</p>
             </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">4. Keep it Legal</h3>
+            <div className="space-y-1">
+              <h3 className="font-bold text-foreground">4. Keep it Legal</h3>
               <p className="text-muted-foreground">No discussion of illegal activities or sharing of illegal content.</p>
             </div>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">5. Use English</h3>
+            <div className="space-y-1">
+              <h3 className="font-bold text-foreground">5. Use English</h3>
               <p className="text-muted-foreground">Please use English in the main chat for better communication.</p>
             </div>
           </div>
-          <Button onClick={() => setShowChatRules(false)} className="w-full" data-testid="button-close-rules">
+          <Button onClick={() => setShowChatRules(false)} className="w-full mt-6 text-white font-bold border-0" style={{
+            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+            border: '2px solid rgba(234, 179, 8, 0.5)',
+            boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+          }} data-testid="button-close-rules">
             Got it!
           </Button>
         </DialogContent>
