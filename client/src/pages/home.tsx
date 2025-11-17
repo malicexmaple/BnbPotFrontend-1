@@ -167,7 +167,7 @@ export default function Home() {
             {/* HEADER */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-yellow-600 flex items-center justify-center">
                   <Trophy className="h-6 w-6" />
                 </div>
                 <div>
@@ -183,7 +183,7 @@ export default function Home() {
                 </div>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
-                <Button className="gradient-purple-pink text-white font-bold shadow-[0_0_20px_rgba(123,104,238,0.5)] hover:shadow-[0_0_30px_rgba(123,104,238,0.7)]" data-testid="button-place-bet">Place Bet</Button>
+                <Button className="gradient-purple-pink text-white font-bold shadow-[0_0_20px_rgba(234,179,8,0.5)] hover:shadow-[0_0_30px_rgba(234,179,8,0.7)]" data-testid="button-place-bet">Place Bet</Button>
               </div>
             </div>
 
@@ -221,12 +221,12 @@ export default function Home() {
             <div className="relative overflow-visible pt-6" ref={carouselRef}>
               {/* Triangle indicator pointing to center card */}
               <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
-                <svg width="56" height="40" viewBox="0 0 56 40" fill="none" className="animate-pulse" style={{filter: 'drop-shadow(0 0 12px rgba(123, 104, 238, 0.8))'}}>
+                <svg width="56" height="40" viewBox="0 0 56 40" fill="none" className="animate-pulse" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
                   <defs>
                     <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" style={{stopColor: '#7B68EE', stopOpacity: 1}} />
-                      <stop offset="50%" style={{stopColor: '#9D8DF1', stopOpacity: 1}} />
-                      <stop offset="100%" style={{stopColor: '#7B68EE', stopOpacity: 1}} />
+                      <stop offset="0%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
+                      <stop offset="50%" style={{stopColor: '#FCD34D', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
                     </linearGradient>
                   </defs>
                   <path d="M28 36 L4 4 L52 4 Z" fill="url(#triangleGradient)" stroke="url(#triangleGradient)" strokeWidth="2"/>
@@ -253,7 +253,7 @@ export default function Home() {
                   return (
                     <div key={i} className={`carousel-card flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
                       <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
-                        <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
+                        <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(234,179,8,0.4)]">
                           <AvatarFallback>W</AvatarFallback>
                         </Avatar>
                         <div className="text-sm font-medium text-muted-foreground">Waiting</div>

@@ -20,26 +20,26 @@
   --sidebar: 0 0% 96%;
   --sidebar-foreground: 0 0% 9%;
   --sidebar-border: 0 0% 92%;
-  --sidebar-primary: 280 85% 45%;
-  --sidebar-primary-foreground: 280 10% 98%;
-  --sidebar-accent: 280 6% 92%;
-  --sidebar-accent-foreground: 280 8% 15%;
-  --sidebar-ring: 280 85% 45%;
+  --sidebar-primary: 45 90% 55%;
+  --sidebar-primary-foreground: 45 10% 98%;
+  --sidebar-accent: 45 6% 92%;
+  --sidebar-accent-foreground: 45 8% 15%;
+  --sidebar-ring: 45 90% 55%;
   --popover: 0 0% 94%;
   --popover-foreground: 0 0% 9%;
   --popover-border: 0 0% 90%;
-  --primary: 262 83% 68%;
+  --primary: 45 90% 55%;
   --primary-foreground: 0 0% 100%;
   --secondary: 240 20% 90%;
   --secondary-foreground: 240 25% 20%;
   --muted: 240 10% 85%;
   --muted-foreground: 240 5% 40%;
-  --accent: 262 83% 68%;
+  --accent: 45 90% 55%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 72% 35%;
   --destructive-foreground: 0 10% 98%;
   --input: 0 0% 75%;
-  --ring: 280 85% 45%;
+  --ring: 45 90% 55%;
   --chart-1: 280 70% 35%;
   --chart-2: 320 65% 40%;
   --chart-3: 240 60% 40%;
@@ -104,15 +104,15 @@
   --sidebar: 0 0% 8%;
   --sidebar-foreground: 0 0% 90%;
   --sidebar-border: 0 0% 15%;
-  --sidebar-primary: 262 83% 68%;
+  --sidebar-primary: 45 90% 55%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 0 0% 12%;
   --sidebar-accent-foreground: 0 0% 85%;
-  --sidebar-ring: 262 83% 68%;
+  --sidebar-ring: 45 90% 55%;
   --popover: 0 0% 8%;
   --popover-foreground: 0 0% 90%;
   --popover-border: 0 0% 15%;
-  --primary: 262 83% 68%;
+  --primary: 45 90% 55%;
   --primary-foreground: 0 0% 100%;
   --secondary: 0 0% 12%;
   --secondary-foreground: 0 0% 85%;
@@ -123,7 +123,7 @@
   --destructive: 0 72% 30%;
   --destructive-foreground: 0 10% 98%;
   --input: 0 0% 15%;
-  --ring: 262 83% 68%;
+  --ring: 45 90% 55%;
   --chart-1: 280 75% 65%;
   --chart-2: 320 70% 70%;
   --chart-3: 240 65% 68%;
@@ -175,11 +175,11 @@
   @keyframes pulse-glow {
     0%, 100% {
       opacity: 1;
-      filter: drop-shadow(0 0 8px rgba(123, 104, 238, 0.6));
+      filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.6));
     }
     50% {
       opacity: 0.8;
-      filter: drop-shadow(0 0 20px rgba(123, 104, 238, 0.9));
+      filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.9));
     }
   }
 
@@ -231,13 +231,13 @@
     border: 2px solid transparent;
     background-image: 
       linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)),
-      linear-gradient(140deg, #7B68EE 0%, #9D8DF1 50%, #7B68EE 100%);
+      linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
     box-shadow: 
-      inset 0 1px 2px rgba(123, 104, 238, 0.1),
+      inset 0 1px 2px rgba(234, 179, 8, 0.1),
       inset 0 -1px 3px rgba(0, 0, 0, 0.6),
-      0 0 24px rgba(123, 104, 238, 0.4),
+      0 0 24px rgba(234, 179, 8, 0.4),
       0 4px 16px rgba(0, 0, 0, 0.7);
   }
   
@@ -260,7 +260,7 @@
     top: 12px;
     bottom: 12px;
     width: 1px;
-    background: rgba(123, 104, 238, 0.3);
+    background: rgba(234, 179, 8, 0.3);
   }
   
   .neon-border::after {
@@ -281,11 +281,11 @@
   }
   
   .gradient-purple-pink {
-    background: linear-gradient(135deg, #7B68EE 0%, #9D8DF1 100%);
+    background: linear-gradient(135deg, #EAB308 0%, #FCD34D 100%);
   }
   
   .gradient-text {
-    background: linear-gradient(135deg, #7B68EE 0%, #9D8DF1 100%);
+    background: linear-gradient(135deg, #EAB308 0%, #FCD34D 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -311,13 +311,13 @@
     border: 2px solid transparent;
     background-image: 
       linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)),
-      linear-gradient(140deg, #7B68EE 0%, #9D8DF1 50%, #7B68EE 100%);
+      linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
     box-shadow: 
-      inset 0 1px 2px rgba(123, 104, 238, 0.1),
+      inset 0 1px 2px rgba(234, 179, 8, 0.1),
       inset 0 -1px 3px rgba(0, 0, 0, 0.6),
-      0 0 24px rgba(123, 104, 238, 0.4),
+      0 0 24px rgba(234, 179, 8, 0.4),
       0 4px 16px rgba(0, 0, 0, 0.7);
   }
   
