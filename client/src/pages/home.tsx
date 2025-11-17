@@ -22,6 +22,7 @@ import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/Untitled-3_1763394568321.png';
 import airdropLogo from '@assets/bnbpot-text_1763406183114.png';
+import crownIcon from '@assets/3dgifmaker00562_1763406826072.gif';
 
 export default function Home() {
   const { address, isConnecting, error, connect } = useWallet();
@@ -182,7 +183,7 @@ export default function Home() {
                   border: '1px solid rgba(252, 211, 77, 0.4)',
                   boxShadow: 'inset 0 2px 0 rgba(255, 255, 255, 0.25), inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(234, 179, 8, 0.4)'
                 }}>
-                  <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
+                  <img src={crownIcon} alt="Crown" className="h-8 w-8" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
