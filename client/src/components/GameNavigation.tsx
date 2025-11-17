@@ -135,17 +135,19 @@ export default function GameNavigation({
                 data-testid="button-connect-wallet"
                 onClick={onConnect}
                 size="sm"
-                className="font-bold px-5 text-black border-0 goldxeffect"
+                className="font-bold px-5 text-white border-0"
                 style={{
                   height: '38px',
                   fontSize: '14px',
-                  borderRadius: '10px'
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, rgba(50, 40, 100, 0.6), rgba(60, 50, 120, 0.6))',
+                  border: '1px solid rgba(234, 179, 8, 0.4)'
                 }}
               >
-                <svg className="mr-2 w-4 h-4 relative z-10" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                 </svg>
-                <span className="relative z-10">Connect</span>
+                Connect
               </Button>
             )}
           </div>

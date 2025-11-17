@@ -88,7 +88,10 @@ export default function Home() {
                 </div>
                 <span className="text-sm font-semibold text-foreground">Degen Chat</span>
               </div>
-              <Badge className="gradient-purple-pink text-black text-xs font-bold px-2" data-testid="badge-chat-count">{onlineUsers}</Badge>
+              <Badge className="text-white text-xs font-bold px-2 border-0" style={{
+                background: 'linear-gradient(135deg, rgba(50, 40, 100, 0.6), rgba(60, 50, 120, 0.6))',
+                border: '1px solid rgba(234, 179, 8, 0.4)'
+              }} data-testid="badge-chat-count">{onlineUsers}</Badge>
             </div>
           </div>
 
@@ -194,7 +197,10 @@ export default function Home() {
                 </div>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
-                <Button className="gradient-purple-pink text-black font-bold shadow-[0_0_20px_rgba(234,179,8,0.5)] hover:shadow-[0_0_30px_rgba(234,179,8,0.7)]" data-testid="button-place-bet">Place Bet</Button>
+                <Button className="text-white font-bold border-0" style={{
+                  background: 'linear-gradient(135deg, rgba(50, 40, 100, 0.6), rgba(60, 50, 120, 0.6))',
+                  border: '1px solid rgba(234, 179, 8, 0.4)'
+                }} data-testid="button-place-bet">Place Bet</Button>
               </div>
             </div>
 
