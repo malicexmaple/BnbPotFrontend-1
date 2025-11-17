@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
-import clockIcon from '@assets/3dgifmaker01363_1763402411268.gif';
+import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
 import treasureChest from '@assets/3dgifmaker97702_1763403893241.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
