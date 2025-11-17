@@ -61,7 +61,7 @@ export default function Home() {
                 <span className="text-sm font-semibold text-foreground">Degen Chat</span>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className="gradient-purple-pink text-white text-xs font-bold px-2" data-testid="badge-chat-count">289</Badge>
+                <Badge className="gradient-purple-pink text-white text-xs font-bold px-2" data-testid="badge-chat-count">322</Badge>
                 <button className="w-6 h-6 rounded bg-muted/50 flex items-center justify-center hover-elevate" data-testid="button-chat-collapse">
                   <svg className="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
@@ -69,84 +69,76 @@ export default function Home() {
             </div>
           </div>
 
-          {/* AIRDROP LIVE Section */}
+          {/* LIVE AIRDROP Section */}
           <div className="p-3">
-            <div className="rounded-2xl p-5 bg-gradient-to-br from-[#4a2d7c] via-[#6b46c1] to-[#4a2d7c] border-2 border-primary/40">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7B68EE] to-[#9D8DF1] flex items-center justify-center shadow-xl shadow-primary/50 flex-shrink-0 relative">
-                  <div className="absolute inset-0 rounded-full bg-white/10"></div>
-                  <svg className="w-9 h-9 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
-                    <path d="M19 10v2a7 7 0 11-14 0v-2a1 1 0 112 0v2a5 5 0 1010 0v-2a1 1 0 112 0z"/>
-                    <path d="M10.93 17.9A6.98 6.98 0 0112 18c.364 0 .72-.034 1.07-.1v3.1a1 1 0 11-2 0v-3.1z"/>
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <div className="text-2xl font-bold gradient-text uppercase tracking-wide mb-2" data-testid="text-airdrop-title">AIRDROP LIVE</div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-foreground/80">≡</span>
-                      <span className="text-lg font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.267</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-4 h-4 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/></svg>
-                      <span className="text-lg font-bold font-mono text-foreground">01:24</span>
-                    </div>
-                  </div>
+            <div className="glass-panel neon-border rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
+                  <span className="text-lg font-bold gradient-text uppercase tracking-wide" data-testid="text-airdrop-title">AIRDROP</span>
                 </div>
               </div>
-              <Button className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 text-white font-semibold shadow-lg shadow-primary/30" data-testid="button-airdrop-joined">
-                Joined ✓
-              </Button>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
+                  <span className="text-xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center" data-testid="icon-airdrop-lock">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Chat Messages */}
           <ScrollArea className="flex-1 px-3">
-            <div className="space-y-2 pb-3">
+            <div className="space-y-3 pb-3">
               {[
-                {user: "Princess_Procket", badge: 26, msg: "Yo", time: "15:03", img: avatar1},
-                {user: "Bluy", badge: 2, msg: "Hope you well haha", time: "15:03", img: avatar2},
-                {user: "sphatesme", badge: 28, msg: "noceeee big", time: "15:03", img: avatar3},
-                {user: "Amanda", badge: 91, msg: "char I need a ticket for that issue", time: "15:03", img: avatar1, reply: {msg: "noceeee big"}},
-                {user: "Big", badge: 18, msg: "thanks bae", time: "15:03", img: avatar2, reply: {msg: "thanks bae"}},
-                {user: "sphatesme", badge: 28, msg: "welcome pooks", time: "15:03", img: avatar3},
-                {user: "Ehmcaniwin", badge: 32, msg: "this site sucks amanda", time: "15:03", img: avatar1},
-                {user: "Bluy", badge: 2, msg: "Lmao", time: "15:04", img: avatar2},
-                {user: "Princess_Procket", badge: 26, msg: "Im doing alr Thanks", time: "15:04", img: avatar1, reply: {msg: "this site sucks amanda"}},
-                {user: "Amanda", badge: 91, msg: "sorry u feel that way", time: "15:04", img: avatar3}
+                {user: "I couldent give a shit about tb", time: "09:38", reactions: null},
+                {user: "999BW", badge: 99, msg: "Don't use the same toolbrush !!!", img: avatar1, time: "09:38", emoji: "🖼️"},
+                {user: "BOZO", badge: 50, msg: "Oh my 😳😊", img: avatar2, time: "09:39"},
+                {user: "CutBizyABreakSP", badge: 25, msg: "you can smell him", time: "09:39"},
+                {user: "Marvinmaster", badge: 36, msg: "oh yeah", time: "09:39"},
+                {user: "SHADOW-", badge: 23, msg: "It's just a extra perk for me being skiful", time: "09:39"},
+                {user: "420_Deadly_TACO", badge: 41, msg: "Dfm the leaderboard", time: "09:39"},
+                {user: "oh yeah", time: "09:39", reactions: "👍 3 in a row would be too obvious"},
+                {user: "QweezyLovezBitzy", badge: 8, msg: "😂", time: "09:39"},
+                {user: "SHADOW-", badge: 23, msg: "That's all I see it as tbh", time: "09:39"},
+                {user: "blueontops", badge: 10, msg: "Chat Paused", isPaused: true, time: "09:39"}
               ].map((chat, i) => (
                 <div key={i} className="space-y-1">
+                  {chat.reactions && (
+                    <div className="text-xs text-muted-foreground pl-1">{chat.reactions}</div>
+                  )}
                   <div className="flex items-start gap-2">
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                      <AvatarImage src={chat.img} />
-                      <AvatarFallback className="text-xs bg-muted">{chat.user.slice(0,2)}</AvatarFallback>
+                    <Avatar className="h-8 w-8 flex-shrink-0 mt-0.5">
+                      {chat.img ? <AvatarImage src={chat.img} /> : null}
+                      <AvatarFallback className="text-xs bg-muted">{chat.user?.slice(0,2) || 'U'}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-1 min-w-0 bg-muted/40 rounded-lg p-2">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-semibold text-foreground">{chat.user}</span>
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-full bg-primary/20 text-primary border-primary/30">{chat.badge}</Badge>
-                        </div>
-                        <span className="text-[10px] text-muted-foreground flex-shrink-0">{chat.time}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-sm font-semibold text-foreground truncate">{chat.user}</span>
+                        {chat.badge && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-full">{chat.badge}</Badge>
+                        )}
+                        <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">{chat.time}</span>
                       </div>
                       {chat.msg && (
-                        <div className="text-sm text-foreground/90">
+                        <div className="text-sm text-muted-foreground break-words">
                           {chat.msg}
+                        </div>
+                      )}
+                      {chat.emoji && (
+                        <div className="text-base mt-1">{chat.emoji}</div>
+                      )}
+                      {chat.isPaused && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V4z"/></svg>
+                          Chat Paused
                         </div>
                       )}
                     </div>
                   </div>
-                  {chat.reply && (
-                    <div className="flex items-start gap-2 ml-10">
-                      <Avatar className="h-6 w-6 flex-shrink-0">
-                        <AvatarFallback className="text-[10px] bg-muted">R</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 bg-muted/20 rounded px-2 py-1">
-                        <div className="text-xs text-muted-foreground">{chat.reply.msg}</div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -160,8 +152,8 @@ export default function Home() {
                 className="h-10 text-sm bg-muted/30 border-border/20 pr-10" 
                 data-testid="input-chat" 
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center hover-elevate text-primary" data-testid="button-chat-emoji">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z" clipRule="evenodd"/></svg>
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center hover-elevate" data-testid="button-chat-emoji">
+                <svg className="w-3.5 h-3.5 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/></svg>
               </button>
             </div>
             <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
@@ -170,7 +162,7 @@ export default function Home() {
                 <span>Chat Rules</span>
               </button>
               <span data-testid="text-website">solpot.com</span>
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">160</Badge>
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
             </div>
           </div>
         </div>
