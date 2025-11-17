@@ -26,6 +26,8 @@ export function useWallet() {
     error: null,
   });
 
+  const [hasManuallyConnected, setHasManuallyConnected] = useState(false);
+
   const switchToBSC = useCallback(async () => {
     if (!window.ethereum) return;
 
@@ -78,6 +80,7 @@ export function useWallet() {
       });
 
       if (accounts && accounts.length > 0) {
+        setHasManuallyConnected(true);
         setState({
           address: accounts[0],
           isConnecting: false,
@@ -108,6 +111,7 @@ export function useWallet() {
   }, [switchToBSC]);
 
   const disconnect = useCallback(() => {
+    setHasManuallyConnected(false);
     setState({
       address: null,
       isConnecting: false,
