@@ -136,14 +136,16 @@ export default function GameNavigation({
                 data-testid="button-connect-wallet"
                 onClick={onConnect}
                 size="sm"
-                className="font-bold px-5 text-white border-0"
+                className="font-bold px-5 text-white border-0 glass-panel"
                 style={{
                   height: '38px',
                   fontSize: '14px',
-                  borderRadius: '10px',
-                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '2px solid rgba(234, 179, 8, 0.5)',
-                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                  borderRadius: '12px',
+                  border: '2px solid transparent',
+                  backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                  backgroundOrigin: 'border-box',
+                  backgroundClip: 'padding-box, border-box',
+                  boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 12px rgba(0, 0, 0, 0.7)'
                 }}
               >
                 <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
