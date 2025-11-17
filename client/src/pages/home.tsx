@@ -18,6 +18,7 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
+  const [onlineUsers, setOnlineUsers] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,13 +27,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const mockPlayers = [
-    { id: '1', username: 'B0ZO', avatarUrl: avatar1, betAmount: 0.033, winChance: 8.22, level: 10 },
-    { id: '2', username: 'B0Zo', avatarUrl: avatar2, betAmount: 0.005, winChance: 1.24, level: 15 },
-    { id: '3', username: 'shayand', avatarUrl: avatar3, betAmount: 0.050, winChance: 12.46, level: 12 },
-    { id: '4', username: 'B0Zo', betAmount: 0.005, winChance: 1.24, level: 10 },
-    { id: '5', username: 'BOZo', avatarUrl: avatar1, betAmount: 0.015, winChance: 3.74, level: 8 },
-  ];
 
   const handleConnect = () => {
     setTimeout(() => {
@@ -60,12 +54,7 @@ export default function Home() {
                 </div>
                 <span className="text-sm font-semibold text-foreground">Degen Chat</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge className="gradient-purple-pink text-white text-xs font-bold px-2" data-testid="badge-chat-count">322</Badge>
-                <button className="w-6 h-6 rounded bg-muted/50 flex items-center justify-center hover-elevate" data-testid="button-chat-collapse">
-                  <svg className="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </button>
-              </div>
+              <Badge className="gradient-purple-pink text-white text-xs font-bold px-2" data-testid="badge-chat-count">{onlineUsers}</Badge>
             </div>
           </div>
 
@@ -92,55 +81,13 @@ export default function Home() {
 
           {/* Chat Messages */}
           <ScrollArea className="flex-1 px-3">
-            <div className="space-y-3 pb-3">
-              {[
-                {user: "I couldent give a shit about tb", time: "09:38", reactions: null},
-                {user: "999BW", badge: 99, msg: "Don't use the same toolbrush !!!", img: avatar1, time: "09:38", emoji: "🖼️"},
-                {user: "BOZO", badge: 50, msg: "Oh my 😳😊", img: avatar2, time: "09:39"},
-                {user: "CutBizyABreakSP", badge: 25, msg: "you can smell him", time: "09:39"},
-                {user: "Marvinmaster", badge: 36, msg: "oh yeah", time: "09:39"},
-                {user: "SHADOW-", badge: 23, msg: "It's just a extra perk for me being skiful", time: "09:39"},
-                {user: "420_Deadly_TACO", badge: 41, msg: "Dfm the leaderboard", time: "09:39"},
-                {user: "oh yeah", time: "09:39", reactions: "👍 3 in a row would be too obvious"},
-                {user: "QweezyLovezBitzy", badge: 8, msg: "😂", time: "09:39"},
-                {user: "SHADOW-", badge: 23, msg: "That's all I see it as tbh", time: "09:39"},
-                {user: "blueontops", badge: 10, msg: "Chat Paused", isPaused: true, time: "09:39"}
-              ].map((chat, i) => (
-                <div key={i} className="space-y-1">
-                  {chat.reactions && (
-                    <div className="text-xs text-muted-foreground pl-1">{chat.reactions}</div>
-                  )}
-                  <div className="glass-panel p-2.5 rounded-lg flex items-start gap-2.5 hover-elevate">
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                      {chat.img ? <AvatarImage src={chat.img} /> : null}
-                      <AvatarFallback className="text-xs bg-muted">{chat.user?.slice(0,2) || 'U'}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-sm font-semibold text-foreground truncate">{chat.user}</span>
-                        {chat.badge && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-full">{chat.badge}</Badge>
-                        )}
-                        <span className="text-[10px] text-muted-foreground ml-auto flex-shrink-0">{chat.time}</span>
-                      </div>
-                      {chat.msg && (
-                        <div className="text-sm text-muted-foreground break-words">
-                          {chat.msg}
-                        </div>
-                      )}
-                      {chat.emoji && (
-                        <div className="text-base mt-1">{chat.emoji}</div>
-                      )}
-                      {chat.isPaused && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V4z"/></svg>
-                          Chat Paused
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+              <div className="text-center space-y-2">
+                <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <p>No messages yet</p>
+              </div>
             </div>
           </ScrollArea>
 
@@ -236,17 +183,16 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="grid grid-cols-5 gap-4">
-              {mockPlayers.slice(0, 5).map((p, i) => (
-                <div key={p.id || i} className={i === 2 ? 'p-1' : ''}>
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={i === 2 ? 'p-1' : ''}>
                   <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${i === 2 ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
                     <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
-                      <AvatarImage src={p.avatarUrl} />
-                      <AvatarFallback>{p.username?.slice(0, 2) || 'W'}</AvatarFallback>
+                      <AvatarFallback>W</AvatarFallback>
                     </Avatar>
-                    <div className="text-sm font-medium text-foreground">{p.username || 'Waiting'}</div>
+                    <div className="text-sm font-medium text-muted-foreground">Waiting</div>
                     <div className="flex items-center gap-1 text-sm font-mono">
                       <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
-                      <span className="text-foreground font-bold">{p.betAmount?.toFixed(3) || '0.000'}</span>
+                      <span className="text-muted-foreground font-bold">0.000</span>
                     </div>
                   </div>
                 </div>
@@ -254,35 +200,24 @@ export default function Home() {
             </div>
 
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div><span className="text-foreground font-semibold">11</span> Players</div>
+              <div><span className="text-foreground font-semibold">0</span> Players</div>
               <div>•</div>
               <div>Payouts are settled in SOL</div>
               <div>•</div>
-              <div>Round: <span className="font-mono" data-testid="text-round">#186407</span></div>
+              <div>Round: <span className="font-mono" data-testid="text-round">#1</span></div>
             </div>
           </div>
 
           {/* PLAYER LIST */}
           <div className="flex-1 border-t border-border/30 overflow-hidden">
             <ScrollArea className="h-full px-6 py-5">
-              <div className="space-y-3">
-                {mockPlayers.map(p => (
-                  <div key={p.id} className="flex items-center gap-3 hover-elevate" style={{
-                    background: 'linear-gradient(180deg, rgba(26,24,46,0.7), rgba(20,18,38,0.85))',
-                    border: '1px solid rgba(123,104,238,0.25)',
-                    padding: '12px 20px',
-                    borderRadius: '14px',
-                    backdropFilter: 'blur(20px)'
-                  }}>
-                    <Avatar className="h-10 w-10 border border-primary/50"><AvatarImage src={p.avatarUrl} /><AvatarFallback>{p.username.slice(0, 2)}</AvatarFallback></Avatar>
-                    <div className="flex-1 flex items-center justify-between">
-                      <div><div className="font-medium text-sm text-foreground">{p.username}</div><div className="text-xs text-muted-foreground uppercase tracking-wider">LVL {p.level}</div></div>
-                      <div className="flex items-center gap-1 font-mono"><img src={solanaLogo} className="h-4 w-4" /><span className="text-foreground font-bold text-sm">{p.betAmount.toFixed(3)}</span></div>
-                      <div className="text-xs text-muted-foreground">~${(p.betAmount * 135).toFixed(2)}</div>
-                      <div className="text-right"><div className="text-xs text-muted-foreground uppercase tracking-wider">Chance</div><div className="font-semibold text-foreground text-sm">{p.winChance.toFixed(2)}%</div></div>
-                    </div>
-                  </div>
-                ))}
+              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                <div className="text-center space-y-2">
+                  <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <p>No players in this round</p>
+                </div>
               </div>
             </ScrollArea>
           </div>
