@@ -232,7 +232,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={cloverIcon} alt="Clover" className="h-20 w-20 flex-shrink-0" />
+                      <img src={cloverIcon} alt="Clover" className="h-14 w-14 flex-shrink-0" />
                       <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-chance">0.00%</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
