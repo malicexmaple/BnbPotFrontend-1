@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'Airstrike';
-  src: url('/attached_assets/airstrike_1763393718653.ttf') format('truetype');
+  src: url('/fonts/airstrike.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -178,6 +178,16 @@
 @layer base {
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  .font-mono {
+    font-family: 'Airstrike', 'DM Mono', 'Roboto Mono', monospace;
+  }
+
+  input[type="number"],
+  input[type="text"].font-mono,
+  .text-xl, .text-2xl, .text-3xl, .text-4xl {
+    font-variant-numeric: tabular-nums;
   }
 
   @keyframes pulse-glow {
