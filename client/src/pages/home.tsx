@@ -32,7 +32,7 @@ export default function Home() {
   useEffect(() => {
     let animationFrame: number;
     let lastTime = Date.now();
-    const speed = 0.02; // Adjust speed (pixels per ms)
+    const speed = 0.08; // Much faster speed
     
     const animate = () => {
       const now = Date.now();
@@ -43,7 +43,7 @@ export default function Home() {
         const newOffset = prev + (delta * speed);
         // Reset when we've scrolled past one full set (10 cards)
         const cardWidth = carouselRef.current ? carouselRef.current.offsetWidth / 5 : 200;
-        const resetPoint = cardWidth * 10 + 40; // 10 cards + gaps
+        const resetPoint = cardWidth * 10 + 160; // 10 cards + 10 gaps (16px each)
         if (newOffset >= resetPoint) {
           return newOffset - resetPoint;
         }
@@ -212,11 +212,11 @@ export default function Home() {
             </div>
 
             {/* PLAYER CAROUSEL */}
-            <div className="relative overflow-hidden" ref={carouselRef}>
+            <div className="relative overflow-hidden pt-12" ref={carouselRef}>
               {/* Arrow indicator pointing to center card */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-primary drop-shadow-[0_0_8px_rgba(123,104,238,0.8)]">
-                  <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-primary animate-pulse">
+                  <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               
