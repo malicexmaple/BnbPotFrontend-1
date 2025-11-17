@@ -54,18 +54,20 @@ export default function GameNavigation({
           </div>
 
           {/* Total Bets, Leaderboard and Connect on top right */}
-          <div className="flex items-center gap-4">
-            <div className="text-foreground font-bold" style={{fontSize: '14px'}} data-testid="text-total-bets">
+          <div className="flex items-center gap-3">
+            <div className="text-foreground font-bold" style={{fontSize: '13px'}} data-testid="text-total-bets">
               11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
             </div>
             
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{
-              background: 'linear-gradient(135deg, rgba(123, 104, 238, 0.15), rgba(157, 141, 241, 0.15))',
-              border: '1px solid rgba(123, 104, 238, 0.3)'
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
+              background: 'linear-gradient(135deg, rgba(50, 40, 100, 0.6), rgba(60, 50, 120, 0.6))',
+              border: '1px solid rgba(123, 104, 238, 0.4)'
             }} data-testid="badge-leaderboard">
-              <Trophy className="h-4 w-4" style={{color: '#7B68EE'}} />
-              <span className="text-sm font-bold gradient-text">$25K WEEKLY</span>
-              <span className="text-sm text-muted-foreground">LEADERBOARD</span>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{color: '#EAB308'}}>
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <span className="font-bold gradient-text italic" style={{fontSize: '13px'}}>$25K WEEKLY</span>
+              <span className="text-muted-foreground" style={{fontSize: '13px'}}>LEADERBOARD</span>
             </div>
             
             {isConnected && walletAddress ? (
@@ -74,7 +76,7 @@ export default function GameNavigation({
                 variant="outline"
                 size="sm"
                 className="font-mono border-border/40 px-3"
-                style={{height: '36px', fontSize: '13px'}}
+                style={{height: '38px', fontSize: '13px'}}
               >
                 <Wallet className="mr-1.5" style={{width: '16px', height: '16px'}} />
                 {walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}
@@ -84,15 +86,17 @@ export default function GameNavigation({
                 data-testid="button-connect-wallet"
                 onClick={onConnect}
                 size="sm"
-                className="font-bold px-6 text-white border-0"
+                className="font-bold px-5 text-white border-0"
                 style={{
-                  height: '36px',
-                  fontSize: '13px',
+                  height: '38px',
+                  fontSize: '14px',
                   background: '#7B68EE',
-                  borderRadius: '8px'
+                  borderRadius: '10px'
                 }}
               >
-                <Wallet className="mr-2" style={{width: '16px', height: '16px'}} />
+                <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                </svg>
                 Connect
               </Button>
             )}
