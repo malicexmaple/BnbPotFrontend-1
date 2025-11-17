@@ -80,12 +80,40 @@ export function useWallet() {
       });
 
       if (accounts && accounts.length > 0) {
-        setHasManuallyConnected(true);
-        setState({
-          address: accounts[0],
-          isConnecting: false,
-          error: null,
-        });
+        const address = accounts[0];
+        const message = `Welcome to BNBPOT!\n\nPlease sign this message to verify your wallet ownership.\n\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}`;
+        
+        try {
+          const signature = await window.ethereum.request({
+            method: 'personal_sign',
+            params: [message, address],
+          });
+
+          if (signature) {
+            setHasManuallyConnected(true);
+            setState({
+              address: address,
+              isConnecting: false,
+              error: null,
+            });
+          } else {
+            setState({
+              address: null,
+              isConnecting: false,
+              error: 'Signature verification failed',
+            });
+          }
+        } catch (signError: any) {
+          let errorMessage = 'Signature rejected';
+          if (signError.code === 4001) {
+            errorMessage = 'You must sign the message to connect';
+          }
+          setState({
+            address: null,
+            isConnecting: false,
+            error: errorMessage,
+          });
+        }
       } else {
         setState({
           address: null,
