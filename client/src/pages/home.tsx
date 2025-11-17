@@ -193,16 +193,16 @@ export default function Home() {
             {/* HEADER */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full flex items-center justify-center" style={{
+                <div className="h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0" style={{
                   background: 'linear-gradient(145deg, rgba(234, 179, 8, 0.9), rgba(202, 138, 4, 1))',
                   border: '1px solid rgba(252, 211, 77, 0.4)',
                   boxShadow: 'inset 0 2px 0 rgba(255, 255, 255, 0.25), inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(234, 179, 8, 0.4)'
                 }}>
                   <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
-                <div>
-                  <img src={jackpotLogo} alt="JACKPOT" style={{height: '200px', width: 'auto', display: 'block'}} />
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Winner takes all...</div>
+                <div className="flex flex-col">
+                  <img src={jackpotLogo} alt="JACKPOT" style={{height: '400px', width: 'auto', display: 'block', margin: '0'}} />
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider" style={{marginTop: '4px'}}>Winner takes all...</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
