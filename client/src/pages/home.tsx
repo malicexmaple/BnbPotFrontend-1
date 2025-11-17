@@ -183,7 +183,7 @@ export default function Home() {
           {/* LIVE AIRDROP Section */}
           <div className="p-3">
             <div className="glass-panel neon-border rounded-xl p-3">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center justify-center mb-1">
                 <div className="flex items-center gap-2">
                   <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
                   <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
