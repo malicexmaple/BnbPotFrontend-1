@@ -201,6 +201,19 @@
     animation: gradient-shift 3s ease infinite;
   }
 
+  @keyframes bounce-arrow {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .bounce-arrow {
+    animation: bounce-arrow 1.5s ease-in-out infinite;
+  }
+
   .glass-panel {
     background: rgba(20, 20, 20, 0.8);
     backdrop-filter: blur(20px);
