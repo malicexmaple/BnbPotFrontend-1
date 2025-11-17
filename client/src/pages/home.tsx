@@ -39,9 +39,10 @@ export default function Home() {
         const cycleDuration = 10000; // 10 seconds per cycle
         const progress = (elapsed % cycleDuration) / cycleDuration;
         
-        // Calculate which card is centered (moves through 10 cards in one cycle)
+        // Calculate which physical card is centered (0-19)
+        // Animation moves through 10 cards, so we need to map to 0-19
         const position = progress * 10;
-        const centered = Math.floor(position + 2) % 10;
+        const centered = Math.floor(position + 2) % 20;
         setCenterCardIndex(centered);
       }
       animationFrame = requestAnimationFrame(updateCenterCard);
@@ -207,9 +208,16 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="relative overflow-hidden" ref={carouselRef}>
+              {/* Arrow indicator pointing to center card */}
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-primary">
+                  <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              
               <div className="flex gap-4 carousel-animate">
                 {[...Array(20)].map((_, i) => {
-                  const isCentered = i === centerCardIndex || i === (centerCardIndex + 10);
+                  const isCentered = i === centerCardIndex;
                   return (
                     <div key={i} className={`flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
                       <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
