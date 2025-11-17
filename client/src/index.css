@@ -252,32 +252,42 @@
     }
   }
 
-  .shine-effect {
+  .shine-text {
+    background: linear-gradient(
+      90deg,
+      currentColor 0%,
+      currentColor 40%,
+      rgba(255, 255, 255, 0.9) 50%,
+      currentColor 60%,
+      currentColor 100%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine-sweep 3s ease-in-out infinite;
+  }
+
+  .shine-image {
     position: relative;
-    overflow: hidden;
     display: inline-block;
   }
 
-  .shine-effect::before {
+  .shine-image::after {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: -100%;
+    width: 50%;
     height: 100%;
     background: linear-gradient(
       90deg,
       transparent 0%,
-      transparent 40%,
-      rgba(255, 255, 255, 0.8) 50%,
-      transparent 60%,
+      rgba(255, 255, 255, 0.6) 50%,
       transparent 100%
     );
-    background-size: 200% 100%;
     animation: shine-sweep 3s ease-in-out infinite;
     pointer-events: none;
-    z-index: 2;
-    mix-blend-mode: overlay;
   }
 
   .glass-panel {
