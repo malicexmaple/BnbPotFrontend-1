@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Menu } from "lucide-react";
+import { Wallet, Menu, Shield, FileText, HelpCircle } from "lucide-react";
 import { useState } from "react";
 
 interface GameNavigationProps {
@@ -19,7 +19,7 @@ export default function GameNavigation({
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-black/95 backdrop-blur-xl">
       <div className="flex h-14 items-center justify-between px-6 gap-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/30">
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -29,6 +29,33 @@ export default function GameNavigation({
             <span className="text-xl font-bold tracking-tight text-foreground">
               SOLPOT
             </span>
+          </div>
+          
+          <div className="hidden lg:flex items-center gap-4">
+            <button
+              data-testid="link-provably-fair"
+              onClick={() => console.log('Provably Fair clicked')}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Shield className="h-4 w-4" />
+              Provably Fair
+            </button>
+            <button
+              data-testid="link-terms-of-service"
+              onClick={() => console.log('Terms of Service clicked')}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <FileText className="h-4 w-4" />
+              Terms of Service
+            </button>
+            <button
+              data-testid="link-support"
+              onClick={() => console.log('Support clicked')}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <HelpCircle className="h-4 w-4" />
+              Support
+            </button>
           </div>
         </div>
 
