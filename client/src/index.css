@@ -357,18 +357,19 @@
 
   .goldxeffect {
     position: relative;
-    background: linear-gradient(135deg, #EAB308 0%, #FCD34D 100%);
+    background: rgba(234, 179, 8, 0.15);
+    backdrop-filter: blur(20px);
     border: 2px solid transparent;
     background-image: 
-      linear-gradient(135deg, #EAB308 0%, #FCD34D 100%),
+      linear-gradient(rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.15)),
       linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
     box-shadow: 
-      inset 0 1px 2px rgba(234, 179, 8, 0.3),
-      inset 0 -1px 3px rgba(0, 0, 0, 0.4),
-      0 0 20px rgba(234, 179, 8, 0.5),
-      0 4px 12px rgba(234, 179, 8, 0.3);
+      inset 0 1px 1px rgba(255, 255, 255, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+      0 0 24px rgba(234, 179, 8, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.7);
   }
   
   .goldxeffect::before {
@@ -377,6 +378,7 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
   }
   
   .goldxeffect::after {
@@ -385,8 +387,8 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
     border-radius: inherit;
     pointer-events: none;
     z-index: 0;
@@ -394,10 +396,10 @@
 
   .goldxeffect:hover {
     box-shadow: 
-      inset 0 1px 2px rgba(234, 179, 8, 0.3),
-      inset 0 -1px 3px rgba(0, 0, 0, 0.4),
-      0 0 30px rgba(234, 179, 8, 0.7),
-      0 4px 16px rgba(234, 179, 8, 0.5);
+      inset 0 1px 1px rgba(255, 255, 255, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+      0 0 32px rgba(234, 179, 8, 0.6),
+      0 4px 16px rgba(0, 0, 0, 0.7);
   }
 }
 

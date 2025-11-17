@@ -135,7 +135,7 @@ export default function GameNavigation({
                 data-testid="button-connect-wallet"
                 onClick={onConnect}
                 size="sm"
-                className="font-bold px-5 text-black border-0 goldxeffect"
+                className="font-bold px-5 text-white border-0 goldxeffect"
                 style={{
                   height: '38px',
                   fontSize: '14px',
