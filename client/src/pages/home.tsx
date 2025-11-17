@@ -90,7 +90,8 @@ export default function Home() {
               </div>
               <Badge className="text-white text-xs font-bold px-2 border-0" style={{
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                border: '1px solid rgba(234, 179, 8, 0.4)'
+                border: '2px solid rgba(234, 179, 8, 0.5)',
+                boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
               }} data-testid="badge-chat-count">{onlineUsers}</Badge>
             </div>
           </div>
@@ -199,7 +200,8 @@ export default function Home() {
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
                 <Button className="text-white font-bold border-0" style={{
                   background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '1px solid rgba(234, 179, 8, 0.4)'
+                  border: '2px solid rgba(234, 179, 8, 0.5)',
+                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
                 }} data-testid="button-place-bet">Place Bet</Button>
               </div>
             </div>
