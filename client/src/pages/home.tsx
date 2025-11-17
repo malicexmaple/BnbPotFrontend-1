@@ -209,28 +209,28 @@ export default function Home() {
               <div className="flex gap-4 justify-center" style={{overflow: 'visible'}}>
                 <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
+                    <img src={treasureChest} alt="Treasure Chest" className="h-48 w-48" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                   </div>
                 </div>
                 <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
+                    <img src={bnbLogo} alt="BNB" className="h-48 w-48" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-wager">0.000</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                   </div>
                 </div>
                 <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
+                    <img src={cloverIcon} alt="Clover" className="h-42 w-42" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-chance">0.00%</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                   </div>
                 </div>
                 <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <img src={clockIcon} alt="Clock" className="h-14 w-14" />
+                    <img src={clockIcon} alt="Clock" className="h-42 w-42" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
                   </div>
