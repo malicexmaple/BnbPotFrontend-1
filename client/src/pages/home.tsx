@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
 import { Card } from "@/components/ui/card";
@@ -19,12 +19,36 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
+  const [centerCardIndex, setCenterCardIndex] = useState(2);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining(prev => prev <= 0 ? 13 : prev - 1);
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let animationFrame: number;
+    let startTime = Date.now();
+    
+    const updateCenterCard = () => {
+      if (carouselRef.current) {
+        const elapsed = Date.now() - startTime;
+        const cycleDuration = 10000; // 10 seconds per cycle
+        const progress = (elapsed % cycleDuration) / cycleDuration;
+        
+        // Calculate which card is centered (moves through 10 cards in one cycle)
+        const position = progress * 10;
+        const centered = Math.floor(position + 2) % 10;
+        setCenterCardIndex(centered);
+      }
+      animationFrame = requestAnimationFrame(updateCenterCard);
+    };
+    
+    animationFrame = requestAnimationFrame(updateCenterCard);
+    return () => cancelAnimationFrame(animationFrame);
   }, []);
 
 
@@ -182,26 +206,25 @@ export default function Home() {
             </div>
 
             {/* PLAYER CAROUSEL */}
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden" ref={carouselRef}>
               <div className="flex gap-4 carousel-animate">
-                {[...Array(20)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0" style={{width: 'calc(20% - 12.8px)'}}>
-                    <div className="glass-panel p-4 flex flex-col items-center gap-2" style={{borderRadius: '18px'}}>
-                      <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
-                        <AvatarFallback>W</AvatarFallback>
-                      </Avatar>
-                      <div className="text-sm font-medium text-muted-foreground">Waiting</div>
-                      <div className="flex items-center gap-1 text-sm font-mono">
-                        <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
-                        <span className="text-muted-foreground font-bold">0.000</span>
+                {[...Array(20)].map((_, i) => {
+                  const isCentered = i === centerCardIndex || i === (centerCardIndex + 10);
+                  return (
+                    <div key={i} className={`flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
+                      <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
+                        <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
+                          <AvatarFallback>W</AvatarFallback>
+                        </Avatar>
+                        <div className="text-sm font-medium text-muted-foreground">Waiting</div>
+                        <div className="flex items-center gap-1 text-sm font-mono">
+                          <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
+                          <span className="text-muted-foreground font-bold">0.000</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-              {/* Center highlight overlay - always in the middle (3rd position) */}
-              <div className="absolute top-0 pointer-events-none" style={{left: 'calc(40% + 8px)', width: 'calc(20% - 12.8px)', height: '100%'}}>
-                <div className="neon-border absolute inset-0 scale-110" style={{borderRadius: '18px'}}></div>
+                  );
+                })}
               </div>
             </div>
 
