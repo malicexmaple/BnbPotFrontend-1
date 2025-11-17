@@ -21,6 +21,37 @@ export default function Home() {
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const cardWidthRef = useRef<number>(0);
+  const gapRef = useRef<number>(16);
+
+  // Measure actual card dimensions
+  useEffect(() => {
+    const measureCards = () => {
+      if (!carouselRef.current) return;
+      
+      const firstCard = carouselRef.current.querySelector('.carousel-card');
+      if (firstCard) {
+        const rect = firstCard.getBoundingClientRect();
+        cardWidthRef.current = rect.width;
+        
+        const computedStyle = window.getComputedStyle(carouselRef.current.querySelector('.carousel-track') as Element);
+        const gap = parseFloat(computedStyle.columnGap || '16');
+        gapRef.current = gap;
+      }
+    };
+
+    // Measure on mount and window resize
+    measureCards();
+    window.addEventListener('resize', measureCards);
+    
+    // Small delay to ensure DOM is ready
+    const timeout = setTimeout(measureCards, 100);
+    
+    return () => {
+      window.removeEventListener('resize', measureCards);
+      clearTimeout(timeout);
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,7 +63,7 @@ export default function Home() {
   useEffect(() => {
     let animationFrame: number;
     let lastTime = Date.now();
-    const speed = 0.08; // Much faster speed
+    const speed = 0.08;
     
     const animate = () => {
       const now = Date.now();
@@ -41,9 +72,10 @@ export default function Home() {
       
       setScrollOffset(prev => {
         const newOffset = prev + (delta * speed);
-        // Reset when we've scrolled past one full set (10 cards)
-        const cardWidth = carouselRef.current ? carouselRef.current.offsetWidth / 5 : 200;
-        const resetPoint = cardWidth * 10 + 160; // 10 cards + 10 gaps (16px each)
+        // Reset when we've scrolled past half the cards (10 cards)
+        const cardWidth = cardWidthRef.current || 200;
+        const gap = gapRef.current || 16;
+        const resetPoint = (cardWidth + gap) * 10;
         if (newOffset >= resetPoint) {
           return newOffset - resetPoint;
         }
@@ -228,20 +260,21 @@ export default function Home() {
               </div>
               
               <div 
-                className="flex gap-4 transition-transform duration-75 ease-linear"
+                className="carousel-track flex gap-4"
                 style={{transform: `translateX(-${scrollOffset}px)`}}
               >
                 {[...Array(20)].map((_, i) => {
-                  // Calculate if this card is under the arrow (highlight when left edge reaches arrow)
-                  const cardWidth = carouselRef.current ? carouselRef.current.offsetWidth / 5 : 200;
-                  const cardPosition = i * (cardWidth + 16); // card width + gap
+                  // Calculate if this card is under the triangle (highlight when left edge reaches triangle)
+                  const cardWidth = cardWidthRef.current || 200;
+                  const gap = gapRef.current || 16;
+                  const cardPosition = i * (cardWidth + gap);
                   const centerPosition = carouselRef.current ? carouselRef.current.offsetWidth / 2 : 400;
                   const cardLeftEdge = cardPosition - scrollOffset;
                   const cardRightEdge = cardLeftEdge + cardWidth;
                   const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
                   
                   return (
-                    <div key={i} className={`flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
+                    <div key={i} className={`carousel-card flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
                       <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
                         <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
                           <AvatarFallback>W</AvatarFallback>
