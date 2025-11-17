@@ -12,6 +12,19 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.addEventListener('unhandledrejection', function(event) {
+        if (event.reason && (
+          (event.reason.message && event.reason.message.includes('MetaMask')) ||
+          (event.reason.message && event.reason.message.includes('User rejected')) ||
+          event.reason.code === 4001 ||
+          event.reason.code === -32603
+        )) {
+          event.preventDefault();
+          console.info('Wallet connection error handled by app');
+        }
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
