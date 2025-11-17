@@ -552,15 +552,6 @@ export default function Home() {
           </DialogHeader>
           <ScrollArea className="h-96 pr-4">
             <div className="space-y-4 text-sm">
-              <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
-                <p className="text-destructive font-bold mb-2">⚠️ LEGAL DISCLAIMER</p>
-                <p className="text-destructive-foreground text-xs">
-                  This is a TEMPLATE and does NOT constitute legal advice. You MUST consult with a qualified attorney 
-                  specializing in gambling law, cryptocurrency regulations, and your specific jurisdiction before deploying 
-                  this platform. Legal requirements vary significantly by country and region.
-                </p>
-              </div>
-
               <div>
                 <h3 className="font-bold text-foreground mb-2">1. Acceptance of Terms</h3>
                 <p className="text-muted-foreground">
@@ -715,13 +706,174 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg mt-6">
-                <p className="text-primary font-bold mb-2">⚖️ IMPORTANT LEGAL NOTICE</p>
-                <p className="text-foreground text-xs">
-                  These terms are a TEMPLATE ONLY. Before launching your platform, you MUST consult with legal professionals 
-                  who specialize in: (1) Online gambling regulations, (2) Cryptocurrency and blockchain law, (3) Consumer 
-                  protection laws, (4) Data privacy (GDPR, CCPA, etc.), (5) Anti-money laundering (AML) and Know Your 
-                  Customer (KYC) requirements, (6) Jurisdiction-specific gambling licenses and compliance.
+              <div>
+                <h3 className="font-bold text-foreground mb-2">16. Jurisdiction and Governing Law</h3>
+                <p className="text-muted-foreground">
+                  These Terms shall be governed by and construed in accordance with the laws of [JURISDICTION TO BE SPECIFIED], 
+                  without regard to its conflict of law provisions. You agree to submit to the exclusive jurisdiction of courts 
+                  located in [JURISDICTION] for the resolution of any disputes. You waive any objection to venue in such courts.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">17. Licensing and Regulatory Compliance</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT operates under applicable gaming licenses and regulatory frameworks. Users are prohibited from accessing 
+                  the Platform from jurisdictions where online gambling is illegal. By using the Platform, you represent and 
+                  warrant that you are in compliance with all applicable laws and regulations in your jurisdiction. We reserve 
+                  the right to verify your location and block access from restricted territories.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">18. Anti-Money Laundering (AML) and Know Your Customer (KYC)</h3>
+                <p className="text-muted-foreground mb-2">
+                  BNBPOT maintains strict AML and KYC policies. You agree that:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>We may require identity verification documents at any time</li>
+                  <li>Failure to provide requested documentation may result in account suspension</li>
+                  <li>We reserve the right to report suspicious activities to relevant authorities</li>
+                  <li>Accounts may be frozen pending investigation of potential violations</li>
+                  <li>Source of funds verification may be required for large transactions</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">19. Cryptocurrency and Digital Asset Risks</h3>
+                <p className="text-muted-foreground mb-2">
+                  <span className="font-bold text-foreground">YOU ACKNOWLEDGE THE FOLLOWING RISKS:</span>
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>Cryptocurrency values are extremely volatile and unpredictable</li>
+                  <li>Digital assets may lose all value without warning</li>
+                  <li>Blockchain transactions are irreversible once confirmed</li>
+                  <li>Network congestion may delay or prevent transactions</li>
+                  <li>Smart contract vulnerabilities could result in loss of funds</li>
+                  <li>Regulatory changes may impact the legality or value of digital assets</li>
+                  <li>We are not responsible for market fluctuations or technical blockchain issues</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">20. Wallet Security and Private Key Management</h3>
+                <p className="text-muted-foreground">
+                  <span className="font-bold text-foreground">CRITICAL:</span> You are solely and exclusively responsible for 
+                  the security of your cryptocurrency wallet and private keys. BNBPOT does not have access to, store, or manage 
+                  your private keys. Loss of private keys, seed phrases, or wallet credentials will result in permanent, 
+                  irreversible loss of funds. We cannot recover lost wallets or reverse transactions. Never share your private 
+                  keys with anyone, including individuals claiming to represent BNBPOT.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">21. Transaction Fees and Costs</h3>
+                <p className="text-muted-foreground">
+                  All blockchain transaction fees (gas fees), network fees, and associated costs are your sole responsibility. 
+                  These fees are determined by the blockchain network and are subject to change based on network conditions. 
+                  BNBPOT may charge platform fees, which will be clearly disclosed before transaction confirmation. All fees 
+                  are non-refundable.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">22. Platform Availability and Force Majeure</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT does not guarantee uninterrupted platform availability. We shall not be liable for service interruptions 
+                  caused by maintenance, technical issues, blockchain network problems, cyberattacks, natural disasters, government 
+                  actions, or any other circumstances beyond our reasonable control. We reserve the right to suspend operations 
+                  temporarily or permanently without prior notice.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">23. Audit Rights and Account Suspension</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT reserves the right to audit any account, transaction, or activity at any time. We may temporarily suspend 
+                  accounts during investigations of suspected fraud, money laundering, terms violations, or illegal activities. 
+                  Funds may be held pending resolution of investigations. We are not obligated to provide detailed explanations 
+                  for account suspensions or terminations.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">24. Bonus Terms and Promotional Offers</h3>
+                <p className="text-muted-foreground">
+                  All bonuses, promotions, and special offers are subject to specific terms and conditions, which will be provided 
+                  separately. Bonuses may have wagering requirements, time limitations, and withdrawal restrictions. BNBPOT reserves 
+                  the right to void bonuses if fraud or abuse is detected. Promotional terms may be modified or cancelled at any time.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">25. Data Privacy and Protection</h3>
+                <p className="text-muted-foreground">
+                  Your use of the Platform is subject to our Privacy Policy. We collect, process, and store personal data in 
+                  accordance with applicable data protection laws. By using the Platform, you consent to data collection and 
+                  processing as described in our Privacy Policy. We may share information with regulators, law enforcement, and 
+                  service providers as required by law or necessary for platform operations.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">26. Third-Party Services and Links</h3>
+                <p className="text-muted-foreground">
+                  The Platform may contain links to third-party services, wallets, or websites. BNBPOT is not responsible for the 
+                  content, security, or practices of third-party services. Your interactions with third parties are solely between 
+                  you and such parties. We disclaim all liability for third-party services.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">27. Winnings and Withdrawals</h3>
+                <p className="text-muted-foreground">
+                  Winnings are subject to verification and compliance checks before withdrawal. We reserve the right to delay or 
+                  refuse withdrawals if fraud is suspected, terms are violated, or identity verification is incomplete. Withdrawal 
+                  limits and processing times may apply. All withdrawals are subject to applicable fees and blockchain confirmation 
+                  times. Tax reporting obligations for winnings are your sole responsibility.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">28. Class Action Waiver</h3>
+                <p className="text-muted-foreground">
+                  <span className="font-bold text-foreground">YOU EXPRESSLY WAIVE YOUR RIGHT TO PARTICIPATE IN CLASS ACTIONS, 
+                  CLASS ARBITRATIONS, OR REPRESENTATIVE ACTIONS AGAINST BNBPOT.</span> All disputes must be brought individually. 
+                  You may not consolidate your claim with claims of other users. This waiver is binding and enforceable to the 
+                  maximum extent permitted by law.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">29. Limitation Period for Claims</h3>
+                <p className="text-muted-foreground">
+                  Any claim or cause of action arising from or related to use of the Platform must be filed within ONE (1) YEAR 
+                  after the claim or cause of action arose. Failure to file within this period constitutes a permanent bar to such 
+                  claim.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">30. Assignment and Transfer</h3>
+                <p className="text-muted-foreground">
+                  You may not assign, transfer, or delegate these Terms or your account to any third party. BNBPOT may freely 
+                  assign these Terms and all rights hereunder to any third party without notice or consent.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">31. Complete Disclaimer of Warranties</h3>
+                <p className="text-muted-foreground">
+                  <span className="font-bold text-foreground">THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES 
+                  OF ANY KIND, EXPRESS OR IMPLIED.</span> We disclaim all warranties including merchantability, fitness for a 
+                  particular purpose, non-infringement, accuracy, and reliability. We do not warrant that the Platform will be 
+                  error-free, secure, or uninterrupted.
+                </p>
+              </div>
+
+              <div className="p-4 bg-muted/30 border border-border/50 rounded-lg mt-6">
+                <p className="text-xs text-muted-foreground italic">
+                  Last Updated: November 2024. These terms are subject to change. Continued use constitutes acceptance of modified terms.
                 </p>
               </div>
             </div>
