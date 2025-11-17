@@ -394,7 +394,7 @@ export default function Home() {
               <p className="text-muted-foreground">Please use English in the main chat for better communication.</p>
             </div>
           </div>
-          <Button onClick={() => setShowChatRules(false)} className="w-full mt-6 text-black font-bold border-0 gradient-purple-pink" data-testid="button-close-rules">
+          <Button onClick={() => setShowChatRules(false)} className="w-full mt-6 text-white font-bold border-0 glass-panel neon-border" style={{borderRadius: '12px', padding: '12px'}} data-testid="button-close-rules">
             Got it!
           </Button>
         </DialogContent>
