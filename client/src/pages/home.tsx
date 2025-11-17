@@ -44,7 +44,7 @@ export default function Home() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}
-        <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/10" style={{background: 'rgba(26, 24, 46, 0.5)'}}>
+        <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/10" style={{background: 'rgba(15, 15, 15, 0.7)'}}>
           {/* Degen Chat Header */}
           <div className="p-3 border-b border-border/10">
             <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
