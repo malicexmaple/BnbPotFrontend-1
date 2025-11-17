@@ -459,7 +459,7 @@ export default function Home() {
 
       {/* Signup Dialog */}
       <Dialog open={shouldShowSignup} onOpenChange={() => {}}>
-        <DialogContent className="max-w-md border-0 p-6 [&>button]:hidden signup-dialog">
+        <DialogContent className="max-w-md border-0 p-6 [&>button:first-child]:hidden signup-dialog">
           <DialogHeader>
             <DialogTitle className="flex justify-center mb-2">
               <img src={signupLogo} alt="Sign Up" className="h-16" />
