@@ -721,7 +721,7 @@
     width: 16px;
     height: 16px;
     object-fit: contain;
-    transform: translateY(-10px) scale(14);
+    transform: translateY(-10px) scale(15.4);
     transform-origin: center center;
   }
 }
