@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Trophy } from "lucide-react";
 import { useState } from "react";
-import headerLogo from '@assets/ezgif-6aa6f8da6a5fb904-final_1763388786100.gif';
+import crownLogo from '@assets/3dgifmaker76444_1763389385979.gif';
+import textLogo from '@assets/3dgifmaker22972_1763389385979.gif';
 
 interface GameNavigationProps {
   onConnect?: () => void;
@@ -22,8 +23,9 @@ export default function GameNavigation({
   return (
     <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '100px'}}>
       {/* Left - Header Logo (320px to match chatbox width) */}
-      <div className="flex items-center justify-center flex-shrink-0" style={{width: '320px'}}>
-        <img src={headerLogo} alt="SOLPOT" style={{width: '224px', height: '70px', display: 'block'}} />
+      <div className="flex items-center justify-center gap-2 flex-shrink-0" style={{width: '320px'}}>
+        <img src={crownLogo} alt="Crown" style={{height: '70px', width: 'auto', display: 'block'}} />
+        <img src={textLogo} alt="BNBPOT" style={{height: '70px', width: 'auto', display: 'block'}} />
       </div>
 
       {/* Right side content - Two rows */}
