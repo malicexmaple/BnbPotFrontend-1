@@ -44,7 +44,7 @@ export default function Home() {
         if (!carouselRef.current) return newOffset;
         
         const gap = 12; // gap-3 = 0.75rem = 12px
-        const cardWidth = 180; // Fixed width in px
+        const cardWidth = 234; // 180 * 1.3 = 234px
         const resetPoint = (cardWidth + gap) * 10;
         
         if (newOffset >= resetPoint) {
@@ -248,7 +248,7 @@ export default function Home() {
                   
                   const containerWidth = carouselRef.current.offsetWidth;
                   const gap = 12; // gap-3 = 0.75rem = 12px
-                  const cardWidth = 180; // Fixed width in px
+                  const cardWidth = 234; // 180 * 1.3 = 234px
                   const cardPosition = i * (cardWidth + gap);
                   const centerPosition = containerWidth / 2;
                   const cardLeftEdge = cardPosition - scrollOffset;
@@ -256,22 +256,22 @@ export default function Home() {
                   const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
                   
                   return (
-                    <div key={i} className={`carousel-card flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: '180px'}}>
-                      <div className={`glass-panel flex flex-col items-center ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '16px', padding: '20px 16px'}}>
+                    <div key={i} className={`carousel-card flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: '234px'}}>
+                      <div className={`glass-panel flex flex-col items-center ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '21px', padding: '26px 21px'}}>
                         <div className="flex items-center justify-center relative" style={{
-                          width: '88px',
-                          height: '88px',
-                          borderRadius: '14px',
+                          width: '114px',
+                          height: '114px',
+                          borderRadius: '18px',
                           background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                           border: '1px solid rgba(60, 60, 60, 0.4)',
                           boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
                         }}>
-                          <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '42px', height: '42px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
+                          <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '55px', height: '55px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
                             <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
                           </svg>
                         </div>
-                        <div className="font-medium text-muted-foreground" style={{fontSize: '13px', marginTop: '14px'}}>Waiting</div>
-                        <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '13px', marginTop: '8px'}}>
+                        <div className="font-medium text-muted-foreground" style={{fontSize: '17px', marginTop: '18px'}}>Waiting</div>
+                        <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
                           <span className="text-muted-foreground/60">=</span>
                           <span className="text-foreground font-bold">0.000</span>
                         </div>
