@@ -12,6 +12,7 @@ import solanaLogo from '@assets/generated_images/Solana_cryptocurrency_logo_icon
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
+import forestBg from '@assets/enchanted-magical-forest-desktop-wallpaper_1763379900531.png';
 
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
@@ -163,8 +164,13 @@ export default function Home() {
         </div>
 
         {/* CENTER - MAIN GAME AREA */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="p-6 space-y-5">
+        <div className="flex-1 flex flex-col overflow-hidden relative" style={{
+          backgroundImage: `url(${forestBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}>
+          <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -292,7 +298,7 @@ export default function Home() {
           </div>
 
           {/* PLAYER LIST */}
-          <div className="flex-1 border-t border-border/30 overflow-hidden">
+          <div className="flex-1 border-t border-border/30 overflow-hidden relative z-10">
             <ScrollArea className="h-full px-6 py-5">
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
                 <div className="text-center space-y-2">
