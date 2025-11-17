@@ -21,6 +21,7 @@ import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e69
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/Untitled-3_1763394568321.png';
+import airdropLogo from '@assets/bnbpot-text_1763406183114.png';
 
 export default function Home() {
   const { address, isConnecting, error, connect } = useWallet();
@@ -123,20 +124,13 @@ export default function Home() {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
-                  <span className="text-lg font-bold gradient-text uppercase tracking-wide" data-testid="text-airdrop-title">AIRDROP</span>
+                  <img src={airdropLogo} alt="AIRDROP" className="h-5" data-testid="img-airdrop-logo" />
                 </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
                   <span className="text-xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
-                </div>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" data-testid="icon-airdrop-lock" style={{
-                  background: 'linear-gradient(145deg, rgba(234, 179, 8, 0.8), rgba(202, 138, 4, 0.95))',
-                  border: '1px solid rgba(252, 211, 77, 0.3)',
-                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(234, 179, 8, 0.3)'
-                }}>
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
                 </div>
               </div>
             </div>
