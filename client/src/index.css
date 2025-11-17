@@ -296,12 +296,23 @@
       transform: translateX(0);
     }
     100% {
-      transform: translateX(calc(-50% - 40px));
+      transform: translateX(calc(-50%));
     }
   }
 
   .carousel-animate {
     animation: carousel-slide 10s linear infinite;
+  }
+  
+  .carousel-center-scale {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+    width: calc(20% - 12.8px);
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
   }
 }
 
