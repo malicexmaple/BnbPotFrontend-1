@@ -221,16 +221,16 @@ export default function Home() {
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                       <img src={bnbLogo} alt="BNB" className="h-10 w-10" />
-                      <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
+                      <div className="text-4xl font-bold font-mono gradient-text" data-testid="text-your-wager">0.000</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
-                    <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
+                    <div className="text-4xl font-bold font-mono gradient-text mb-2" data-testid="text-your-chance">0.00%</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
-                    <div className="text-3xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    <div className="text-4xl font-bold font-mono gradient-text mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
                   </div>
                 </div>
