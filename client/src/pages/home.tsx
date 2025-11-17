@@ -249,7 +249,7 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="neon-border relative" style={{
+              <div className="relative" style={{
                 borderRadius: '18px',
                 paddingTop: '60px',
                 paddingBottom: '60px',
@@ -258,7 +258,12 @@ export default function Home() {
                 overflow: 'hidden',
                 width: '1168px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                backdropFilter: 'blur(8px)'
+                backdropFilter: 'blur(8px)',
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8)), linear-gradient(135deg, rgba(234, 179, 8, 0.8) 0%, rgba(234, 179, 8, 0.4) 25%, rgba(234, 179, 8, 0.15) 50%, rgba(234, 179, 8, 0.4) 75%, rgba(234, 179, 8, 0.8) 100%)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 4px rgba(255, 255, 255, 0.1)'
               }}>
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
