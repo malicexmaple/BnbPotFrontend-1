@@ -19,12 +19,20 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
+  const [activePlayerIndex, setActivePlayerIndex] = useState(2);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining(prev => prev <= 0 ? 13 : prev - 1);
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const carouselTimer = setInterval(() => {
+      setActivePlayerIndex(prev => (prev + 1) % 5);
+    }, 2000);
+    return () => clearInterval(carouselTimer);
   }, []);
 
 
@@ -184,8 +192,8 @@ export default function Home() {
             {/* PLAYER CAROUSEL */}
             <div className="grid grid-cols-5 gap-4">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className={i === 2 ? 'p-1' : ''}>
-                  <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${i === 2 ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
+                <div key={i} className={i === activePlayerIndex ? 'p-1' : ''}>
+                  <div className={`glass-panel p-4 flex flex-col items-center gap-2 transition-all duration-500 ${i === activePlayerIndex ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
                     <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
                       <AvatarFallback>W</AvatarFallback>
                     </Avatar>
