@@ -189,8 +189,10 @@ export default function Home() {
                   <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
                 <div className="flex items-center gap-2">
-                  <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '225px'}} />
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Winner takes all...</div>
+                  <div className="shine-effect" style={{display: 'inline-block'}}>
+                    <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '225px', position: 'relative', zIndex: 0}} />
+                  </div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider shine-effect" style={{display: 'inline-block', padding: '2px 4px'}}>Winner takes all...</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
