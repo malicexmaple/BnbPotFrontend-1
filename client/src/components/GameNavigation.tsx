@@ -32,8 +32,12 @@ export default function GameNavigation({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}>
-        <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block', marginLeft: '-30px'}} />
-        <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block', marginLeft: '-10px'}} />
+        <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
+          <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
+        </div>
+        <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
+          <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block'}} />
+        </div>
       </div>
 
       {/* Right side content - Two rows */}
