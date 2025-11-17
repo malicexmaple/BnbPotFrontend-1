@@ -31,6 +31,7 @@ export default function Home() {
     { id: '2', username: 'B0Zo', avatarUrl: avatar2, betAmount: 0.005, winChance: 1.24, level: 15 },
     { id: '3', username: 'shayand', avatarUrl: avatar3, betAmount: 0.050, winChance: 12.46, level: 12 },
     { id: '4', username: 'B0Zo', betAmount: 0.005, winChance: 1.24, level: 10 },
+    { id: '5', username: 'BOZo', avatarUrl: avatar1, betAmount: 0.015, winChance: 3.74, level: 8 },
   ];
 
   const handleConnect = () => {
