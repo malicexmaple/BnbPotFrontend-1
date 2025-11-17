@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Menu, Shield, FileText, HelpCircle } from "lucide-react";
+import { Wallet, Trophy } from "lucide-react";
 import { useState } from "react";
 import headerLogo from '@assets/header_logo.png';
 
@@ -53,15 +53,19 @@ export default function GameNavigation({
             </button>
           </div>
 
-          {/* Stats and Connect on top right */}
+          {/* Total Bets, Leaderboard and Connect on top right */}
           <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-4">
-              <div className="text-muted-foreground" style={{fontSize: '11px'}}>
-                <span className="font-bold text-foreground">313909.00</span> Total Bets
-              </div>
-              <div className="text-muted-foreground" style={{fontSize: '11px'}}>
-                AIRDROP WEEKLY <span className="font-bold text-primary">$4,000</span>
-              </div>
+            <div className="text-foreground font-bold" style={{fontSize: '14px'}} data-testid="text-total-bets">
+              11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
+            </div>
+            
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{
+              background: 'linear-gradient(135deg, rgba(123, 104, 238, 0.15), rgba(157, 141, 241, 0.15))',
+              border: '1px solid rgba(123, 104, 238, 0.3)'
+            }} data-testid="badge-leaderboard">
+              <Trophy className="h-4 w-4" style={{color: '#7B68EE'}} />
+              <span className="text-sm font-bold gradient-text">$25K WEEKLY</span>
+              <span className="text-sm text-muted-foreground">LEADERBOARD</span>
             </div>
             
             {isConnected && walletAddress ? (
@@ -70,9 +74,9 @@ export default function GameNavigation({
                 variant="outline"
                 size="sm"
                 className="font-mono border-border/40 px-3"
-                style={{height: '32px', fontSize: '11px'}}
+                style={{height: '36px', fontSize: '13px'}}
               >
-                <Wallet className="mr-1.5" style={{width: '13px', height: '13px'}} />
+                <Wallet className="mr-1.5" style={{width: '16px', height: '16px'}} />
                 {walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}
               </Button>
             ) : (
@@ -80,10 +84,15 @@ export default function GameNavigation({
                 data-testid="button-connect-wallet"
                 onClick={onConnect}
                 size="sm"
-                className="gradient-purple-pink text-white font-bold px-4 shadow-[0_0_20px_rgba(123,104,238,0.5)] hover:shadow-[0_0_30px_rgba(123,104,238,0.7)] border-0"
-                style={{height: '32px', fontSize: '11px'}}
+                className="font-bold px-6 text-white border-0"
+                style={{
+                  height: '36px',
+                  fontSize: '13px',
+                  background: '#7B68EE',
+                  borderRadius: '8px'
+                }}
               >
-                <Wallet className="mr-1.5" style={{width: '13px', height: '13px'}} />
+                <Wallet className="mr-2" style={{width: '16px', height: '16px'}} />
                 Connect
               </Button>
             )}
