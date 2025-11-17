@@ -556,7 +556,18 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">2. Eligibility Requirements</h3>
+                <h3 className="font-bold text-foreground mb-2">2. Licensing and Jurisdiction</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT operates under the jurisdiction and regulatory oversight of the Curaçao Gaming Authority. The Platform 
+                  is licensed and regulated in accordance with the laws of Curaçao. By using this Platform, you agree that any 
+                  legal matters, disputes, or regulatory issues shall be governed by and construed in accordance with the laws 
+                  of Curaçao. You acknowledge that you are accessing the Platform from a jurisdiction where online gambling is 
+                  legal and that you are solely responsible for ensuring compliance with your local laws and regulations.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">3. Eligibility Requirements</h3>
                 <p className="text-muted-foreground mb-2">
                   You must meet ALL of the following requirements to use this Platform:
                 </p>
@@ -570,7 +581,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">3. Provably Fair Gaming</h3>
+                <h3 className="font-bold text-foreground mb-2">4. Provably Fair Gaming</h3>
                 <p className="text-muted-foreground">
                   BNBPOT is committed to providing provably fair gaming experiences. Our platform utilizes cryptographic 
                   algorithms and blockchain technology to ensure game outcomes are verifiable and cannot be manipulated. 
@@ -580,7 +591,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">4. No Liability for Losses</h3>
+                <h3 className="font-bold text-foreground mb-2">5. No Liability for Losses</h3>
                 <p className="text-muted-foreground mb-2">
                   <span className="font-bold text-foreground">YOU ACKNOWLEDGE AND AGREE THAT:</span>
                 </p>
@@ -595,7 +606,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">5. Limitation of Liability</h3>
+                <h3 className="font-bold text-foreground mb-2">6. Limitation of Liability</h3>
                 <p className="text-muted-foreground">
                   TO THE MAXIMUM EXTENT PERMITTED BY LAW, BNBPOT, ITS OPERATORS, AFFILIATES, AND SERVICE PROVIDERS SHALL 
                   NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING 
@@ -606,7 +617,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">6. Responsible Gaming</h3>
+                <h3 className="font-bold text-foreground mb-2">7. Responsible Gaming</h3>
                 <p className="text-muted-foreground mb-2">
                   We encourage responsible gaming practices. You agree to:
                 </p>
@@ -619,7 +630,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">7. Prohibited Activities</h3>
+                <h3 className="font-bold text-foreground mb-2">8. Prohibited Activities</h3>
                 <p className="text-muted-foreground mb-2">
                   You agree NOT to:
                 </p>
@@ -634,7 +645,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">8. Account Security</h3>
+                <h3 className="font-bold text-foreground mb-2">9. Account Security</h3>
                 <p className="text-muted-foreground">
                   You are solely responsible for maintaining the security of your wallet and account credentials. BNBPOT 
                   will NEVER ask for your private keys or seed phrases. Any losses due to compromised accounts, lost 
@@ -643,7 +654,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">9. Intellectual Property</h3>
+                <h3 className="font-bold text-foreground mb-2">10. Intellectual Property</h3>
                 <p className="text-muted-foreground">
                   All content, trademarks, logos, and intellectual property on the Platform are owned by BNBPOT or its 
                   licensors. You may not copy, reproduce, distribute, or create derivative works without explicit permission.
@@ -651,7 +662,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">10. Dispute Resolution and Arbitration</h3>
+                <h3 className="font-bold text-foreground mb-2">11. Dispute Resolution and Arbitration</h3>
                 <p className="text-muted-foreground">
                   Any disputes arising from these terms or use of the Platform shall be resolved through binding arbitration 
                   rather than in court. You waive your right to participate in class action lawsuits. [NOTE: Specific 
@@ -660,7 +671,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">11. Indemnification</h3>
+                <h3 className="font-bold text-foreground mb-2">12. Indemnification</h3>
                 <p className="text-muted-foreground">
                   You agree to indemnify, defend, and hold harmless BNBPOT and its operators from any claims, damages, 
                   losses, liabilities, and expenses (including legal fees) arising from your use of the Platform, violation 
@@ -669,7 +680,7 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-bold text-foreground mb-2">12. Changes to Terms</h3>
+                <h3 className="font-bold text-foreground mb-2">13. Changes to Terms</h3>
                 <p className="text-muted-foreground">
                   BNBPOT reserves the right to modify these terms at any time. Continued use of the Platform after changes 
                   constitutes acceptance of the modified terms. You are responsible for regularly reviewing these terms.
