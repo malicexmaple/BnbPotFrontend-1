@@ -26,7 +26,7 @@ export default function GameNavigation({
 
       {/* Right side content - Two rows */}
       <div className="flex-1 flex flex-col justify-center px-4">
-        {/* Top row - Social icons and links */}
+        {/* Top row - Social icons and links on left, Total Bets on right */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-4">
             {/* Social Icons */}
@@ -53,12 +53,61 @@ export default function GameNavigation({
             </button>
           </div>
 
-          {/* Total Bets, Leaderboard and Connect on top right */}
+          {/* Total Bets on top right */}
+          <div className="text-foreground font-bold" style={{fontSize: '13px'}} data-testid="text-total-bets">
+            11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
+          </div>
+        </div>
+
+        {/* Bottom row - Navigation tabs on left, Leaderboard and Connect on right */}
+        <div className="flex items-center justify-between">
+          {/* Navigation tabs */}
+          <div className="flex items-center gap-1">
+          <Button
+            data-testid="button-jackpot-tab"
+            variant="ghost"
+            size="sm"
+            onClick={() => setActiveTab("jackpot")}
+            className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+            style={{height: '32px', fontSize: '12px'}}
+          >
+            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#7B68EE'}}>
+              <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+              <circle cx="10" cy="10" r="3" fill="currentColor"/>
+            </svg>
+            Jackpot
+          </Button>
+          <Button
+            data-testid="button-coinflip-tab"
+            variant="ghost"
+            size="sm"
+            onClick={() => setActiveTab("coinflip")}
+            className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+            style={{height: '32px', fontSize: '12px'}}
+          >
+            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
+              <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd"/>
+            </svg>
+            Coinflip
+          </Button>
+          <Button
+            data-testid="button-affiliates-tab"
+            variant="ghost"
+            size="sm"
+            onClick={() => setActiveTab("affiliates")}
+            className={`font-medium px-3 ${activeTab === "affiliates" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+            style={{height: '32px', fontSize: '12px'}}
+          >
+            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+            </svg>
+            Affiliates
+          </Button>
+          </div>
+
+          {/* Leaderboard and Connect button on bottom right */}
           <div className="flex items-center gap-3">
-            <div className="text-foreground font-bold" style={{fontSize: '13px'}} data-testid="text-total-bets">
-              11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
-            </div>
-            
             <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{
               background: 'linear-gradient(135deg, rgba(50, 40, 100, 0.6), rgba(60, 50, 120, 0.6))',
               border: '1px solid rgba(123, 104, 238, 0.4)'
@@ -101,51 +150,6 @@ export default function GameNavigation({
               </Button>
             )}
           </div>
-        </div>
-
-        {/* Bottom row - Navigation tabs with icons */}
-        <div className="flex items-center gap-1">
-          <Button
-            data-testid="button-jackpot-tab"
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("jackpot")}
-            className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '32px', fontSize: '12px'}}
-          >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#7B68EE'}}>
-              <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <circle cx="10" cy="10" r="3" fill="currentColor"/>
-            </svg>
-            Jackpot
-          </Button>
-          <Button
-            data-testid="button-coinflip-tab"
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("coinflip")}
-            className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '32px', fontSize: '12px'}}
-          >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
-              <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd"/>
-            </svg>
-            Coinflip
-          </Button>
-          <Button
-            data-testid="button-affiliates-tab"
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("affiliates")}
-            className={`font-medium px-3 ${activeTab === "affiliates" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '32px', fontSize: '12px'}}
-          >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
-              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-            </svg>
-            Affiliates
-          </Button>
         </div>
       </div>
     </nav>
