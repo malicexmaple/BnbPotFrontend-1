@@ -118,60 +118,18 @@ export function useWallet() {
   useEffect(() => {
     if (!window.ethereum) return;
 
-    const validateAndConnect = async (accounts: string[]) => {
-      if (accounts.length === 0 || !window.ethereum) return;
-
-      try {
-        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        
-        if (chainId !== BSC_MAINNET.chainId) {
-          try {
-            await switchToBSC();
-            setState(prev => ({ ...prev, address: accounts[0], error: null }));
-          } catch (error) {
-            setState(prev => ({
-              ...prev,
-              address: null,
-              error: 'Please switch to BNB Smart Chain to use this app',
-            }));
-          }
-        } else {
-          setState(prev => ({ ...prev, address: accounts[0], error: null }));
-        }
-      } catch (error) {
-        console.error('Failed to validate network:', error);
-      }
-    };
-
     const handleAccountsChanged = (accounts: string[]) => {
       if (accounts.length === 0) {
         disconnect();
-      } else {
-        validateAndConnect(accounts);
       }
     };
 
-    const handleChainChanged = async (chainId: string) => {
-      if (chainId !== BSC_MAINNET.chainId) {
-        try {
-          await switchToBSC();
-        } catch (error) {
-          disconnect();
-          setState(prev => ({
-            ...prev,
-            error: 'Network switch failed. Please manually switch to BNB Smart Chain and reconnect.',
-          }));
-        }
-      }
+    const handleChainChanged = () => {
+      disconnect();
     };
 
     window.ethereum.on('accountsChanged', handleAccountsChanged);
     window.ethereum.on('chainChanged', handleChainChanged);
-
-    window.ethereum
-      .request({ method: 'eth_accounts' })
-      .then(validateAndConnect)
-      .catch(console.error);
 
     return () => {
       if (window.ethereum) {
@@ -179,7 +137,7 @@ export function useWallet() {
         window.ethereum.removeListener('chainChanged', handleChainChanged);
       }
     };
-  }, [disconnect, switchToBSC]);
+  }, [disconnect]);
 
   return {
     address: state.address,
