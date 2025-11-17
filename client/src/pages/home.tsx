@@ -19,7 +19,7 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
-  const [activePlayerIndex, setActivePlayerIndex] = useState(2);
+  const [carouselOffset, setCarouselOffset] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -30,7 +30,11 @@ export default function Home() {
 
   useEffect(() => {
     const carouselTimer = setInterval(() => {
-      setActivePlayerIndex(prev => (prev + 1) % 5);
+      setCarouselOffset(prev => {
+        const next = prev - 1;
+        if (next <= -5) return 0;
+        return next;
+      });
     }, 2000);
     return () => clearInterval(carouselTimer);
   }, []);
@@ -190,21 +194,32 @@ export default function Home() {
             </div>
 
             {/* PLAYER CAROUSEL */}
-            <div className="grid grid-cols-5 gap-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className={i === activePlayerIndex ? 'p-1' : ''}>
-                  <div className={`glass-panel p-4 flex flex-col items-center gap-2 transition-all duration-500 ${i === activePlayerIndex ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
-                    <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
-                      <AvatarFallback>W</AvatarFallback>
-                    </Avatar>
-                    <div className="text-sm font-medium text-muted-foreground">Waiting</div>
-                    <div className="flex items-center gap-1 text-sm font-mono">
-                      <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
-                      <span className="text-muted-foreground font-bold">0.000</span>
+            <div className="relative overflow-hidden">
+              <div 
+                className="flex gap-4 transition-transform duration-1000 ease-in-out"
+                style={{
+                  transform: `translateX(calc(${carouselOffset * 20}% + ${carouselOffset * 16}px))`
+                }}
+              >
+                {[...Array(15)].map((_, i) => {
+                  const playerIndex = i % 5;
+                  const isCenter = (i - carouselOffset) % 5 === 2;
+                  return (
+                    <div key={i} className={`flex-shrink-0 ${isCenter ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
+                      <div className={`glass-panel p-4 flex flex-col items-center gap-2 transition-all duration-500 ${isCenter ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
+                        <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
+                          <AvatarFallback>W</AvatarFallback>
+                        </Avatar>
+                        <div className="text-sm font-medium text-muted-foreground">Waiting</div>
+                        <div className="flex items-center gap-1 text-sm font-mono">
+                          <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
+                          <span className="text-muted-foreground font-bold">0.000</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
 
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
