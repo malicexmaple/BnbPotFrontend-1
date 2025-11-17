@@ -18,7 +18,7 @@ import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurre
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
-import bnbpotBg from '@assets/MOSHED-2025-11-18-2-3-33_1763399210771.gif';
+import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/Untitled-3_1763394568321.png';
 
 export default function Home() {
