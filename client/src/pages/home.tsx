@@ -213,10 +213,17 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="relative overflow-hidden pt-12" ref={carouselRef}>
-              {/* Arrow indicator pointing to center card */}
+              {/* Triangle indicator pointing to center card */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-primary animate-pulse">
-                  <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg width="48" height="32" viewBox="0 0 48 32" fill="none" className="animate-pulse" style={{filter: 'drop-shadow(0 0 12px rgba(123, 104, 238, 0.8))'}}>
+                  <defs>
+                    <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style={{stopColor: '#7B68EE', stopOpacity: 1}} />
+                      <stop offset="50%" style={{stopColor: '#9D8DF1', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: '#7B68EE', stopOpacity: 1}} />
+                    </linearGradient>
+                  </defs>
+                  <path d="M24 28 L4 4 L44 4 Z" fill="url(#triangleGradient)" stroke="url(#triangleGradient)" strokeWidth="2"/>
                 </svg>
               </div>
               
