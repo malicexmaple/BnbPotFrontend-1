@@ -43,8 +43,8 @@ export default function Home() {
         const newOffset = prev + (delta * speed);
         if (!carouselRef.current) return newOffset;
         
-        const gap = 12; // gap-3
-        const cardWidth = 180;
+        const gap = 12; // gap-3 = 0.75rem = 12px
+        const cardWidth = 180; // Fixed width in px
         const resetPoint = (cardWidth + gap) * 10;
         
         if (newOffset >= resetPoint) {
@@ -77,9 +77,9 @@ export default function Home() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}
-        <div className="flex-shrink-0 flex flex-col border-r border-border/10" style={{width: '240px', background: 'rgba(15, 15, 15, 0.7)'}}>
+        <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/10" style={{background: 'rgba(15, 15, 15, 0.7)'}}>
           {/* Degen Chat Header */}
-          <div className="p-2.5 border-b border-border/10">
+          <div className="p-3 border-b border-border/10">
             <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
@@ -307,7 +307,7 @@ export default function Home() {
         </div>
 
         {/* RIGHT SIDEBAR - LEADERBOARD */}
-        <div className="flex-shrink-0 space-y-3 border-l border-border/30" style={{width: '260px', padding: '20px'}}>
+        <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
           <div className="p-1">
             <div className="glass-panel p-4 neon-border" style={{borderRadius: '18px'}}>
             <div className="flex items-center justify-between mb-3">
