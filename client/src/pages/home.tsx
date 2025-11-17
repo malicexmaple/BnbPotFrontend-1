@@ -215,40 +215,32 @@ export default function Home() {
 
             {/* STATS BAR */}
             <div className="p-1">
-              <div className="flex gap-4" style={{overflow: 'visible'}}>
-                <div className="flex-1 glass-panel neon-border py-4 px-6" style={{borderRadius: '18px', overflow: 'visible'}}>
-                  <div className="flex items-center justify-between mb-3" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center" style={{overflow: 'visible'}}>
-                      <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
-                    </div>
+              <div className="flex gap-4 justify-center" style={{overflow: 'visible'}}>
+                <div className="glass-panel neon-border" style={{borderRadius: '18px', padding: '24px 32px', overflow: 'visible', width: '280px'}}>
+                  <div className="flex items-center justify-between mb-4" style={{overflow: 'visible'}}>
+                    <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                 </div>
-                <div className="flex-1 glass-panel neon-border py-4 px-6" style={{borderRadius: '18px', overflow: 'visible'}}>
-                  <div className="flex items-center justify-between mb-3" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center" style={{overflow: 'visible'}}>
-                      <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
-                    </div>
+                <div className="glass-panel neon-border" style={{borderRadius: '18px', padding: '24px 32px', overflow: 'visible', width: '280px'}}>
+                  <div className="flex items-center justify-between mb-4" style={{overflow: 'visible'}}>
+                    <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-wager">0.000</div>
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                 </div>
-                <div className="flex-1 glass-panel neon-border py-4 px-6" style={{borderRadius: '18px', overflow: 'visible'}}>
-                  <div className="flex items-center justify-between mb-3" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center" style={{overflow: 'visible'}}>
-                      <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
-                    </div>
+                <div className="glass-panel neon-border" style={{borderRadius: '18px', padding: '24px 32px', overflow: 'visible', width: '280px'}}>
+                  <div className="flex items-center justify-between mb-4" style={{overflow: 'visible'}}>
+                    <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-chance">0.00%</div>
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                 </div>
-                <div className="flex-1 glass-panel neon-border py-4 px-6" style={{borderRadius: '18px', overflow: 'visible'}}>
-                  <div className="flex items-center justify-between mb-3" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center" style={{overflow: 'visible'}}>
-                      <img src={clockIcon} alt="Clock" className="h-14 w-14" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow min-w-[120px]" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                <div className="glass-panel neon-border" style={{borderRadius: '18px', padding: '24px 32px', overflow: 'visible', width: '280px'}}>
+                  <div className="flex items-center justify-between mb-4" style={{overflow: 'visible'}}>
+                    <img src={clockIcon} alt="Clock" className="h-14 w-14" />
+                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                   </div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
                 </div>
