@@ -17,9 +17,9 @@ export default function GameNavigation({
   const [activeTab, setActiveTab] = useState("jackpot");
 
   return (
-    <nav className="sticky top-0 z-50 bg-black">
+    <nav className="sticky top-0 z-50 bg-black" style={{height: '100px'}}>
       {/* Top row - Small links */}
-      <div className="flex items-center justify-end px-4 py-1 border-b border-border/10" style={{height: '20px'}}>
+      <div className="flex items-center justify-end px-4 border-b border-border/10" style={{height: '30px'}}>
         <div className="flex items-center gap-3">
           <button
             data-testid="link-provably-fair"
@@ -49,7 +49,7 @@ export default function GameNavigation({
       </div>
 
       {/* Bottom row - Main navigation with large logo */}
-      <div className="flex items-center justify-between px-4 border-b border-border/20" style={{height: '44px'}}>
+      <div className="flex items-center justify-between px-4 border-b border-border/20" style={{height: '70px'}}>
         {/* Left - Large SOLPOT Logo */}
         <div className="flex items-center gap-2.5" style={{minWidth: '140px'}}>
           <div className="rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center" style={{width: '32px', height: '32px'}}>
