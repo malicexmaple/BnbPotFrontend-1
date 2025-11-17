@@ -249,7 +249,7 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="glass-panel neon-border relative" style={{
+              <div className="neon-border relative" style={{
                 borderRadius: '18px',
                 paddingTop: '60px',
                 paddingBottom: '60px',
@@ -257,7 +257,8 @@ export default function Home() {
                 paddingRight: '0',
                 overflow: 'hidden',
                 width: '1168px',
-                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))'
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                backdropFilter: 'blur(8px)'
               }}>
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
