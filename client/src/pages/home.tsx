@@ -108,8 +108,12 @@ export default function Home() {
                   <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
                   <span className="text-xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
                 </div>
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center" data-testid="icon-airdrop-lock">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" data-testid="icon-airdrop-lock" style={{
+                  background: 'linear-gradient(145deg, rgba(234, 179, 8, 0.8), rgba(202, 138, 4, 0.95))',
+                  border: '1px solid rgba(252, 211, 77, 0.3)',
+                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(234, 179, 8, 0.3)'
+                }}>
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
                 </div>
               </div>
             </div>
@@ -167,8 +171,12 @@ export default function Home() {
             {/* HEADER */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-yellow-600 flex items-center justify-center">
-                  <Trophy className="h-6 w-6" />
+                <div className="h-12 w-12 rounded-full flex items-center justify-center" style={{
+                  background: 'linear-gradient(145deg, rgba(234, 179, 8, 0.9), rgba(202, 138, 4, 1))',
+                  border: '1px solid rgba(252, 211, 77, 0.4)',
+                  boxShadow: 'inset 0 2px 0 rgba(255, 255, 255, 0.25), inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(234, 179, 8, 0.4)'
+                }}>
+                  <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
                 <div>
                   <div className="text-4xl font-bold uppercase tracking-[0.2em] gradient-text">JACKPOT</div>
