@@ -14,6 +14,7 @@ import { useWallet } from "@/hooks/useWallet";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker01363_1763402411268.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
+import treasureChest from '@assets/3dgifmaker97702_1763403893241.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
@@ -218,7 +219,7 @@ export default function Home() {
                 <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
                   <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                     <div className="h-20 w-20 flex items-center justify-center" style={{overflow: 'visible'}}>
-                      <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
+                      <img src={treasureChest} alt="Treasure Chest" className="h-20 w-20" />
                     </div>
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
                   </div>
