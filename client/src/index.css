@@ -658,7 +658,7 @@
     width: 16px;
     height: 16px;
     object-fit: contain;
-    transform: scale(9) translateY(-30px);
+    transform: translateY(-30px) scale(9);
     transform-origin: center top;
   }
 
@@ -676,7 +676,7 @@
     width: 14px;
     height: 14px;
     object-fit: contain;
-    transform: scale(9) translateY(-30px);
+    transform: translateY(-30px) scale(9);
     transform-origin: center top;
   }
 }
