@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Trophy, TrendingUp } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Trophy, TrendingUp, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import bnbLogo from '@assets/3dgifmaker03069_1763395807327.gif';
@@ -24,6 +25,7 @@ export default function Home() {
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [showChatRules, setShowChatRules] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -157,7 +159,7 @@ export default function Home() {
               disabled={!address}
             />
             <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-              <button className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
+              <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
                 <span>Chat Rules</span>
               </button>
@@ -355,6 +357,43 @@ export default function Home() {
       </div>
 
       <GameFooter />
+
+      {/* Chat Rules Dialog */}
+      <Dialog open={showChatRules} onOpenChange={setShowChatRules}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Chat Rules</DialogTitle>
+            <DialogDescription>
+              Please follow these rules to maintain a positive environment
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 text-sm">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">1. Be Respectful</h3>
+              <p className="text-muted-foreground">Treat all users with respect. No harassment, hate speech, or personal attacks.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">2. No Spam</h3>
+              <p className="text-muted-foreground">Do not spam messages, links, or advertisements. Keep the chat clean and relevant.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">3. No Begging</h3>
+              <p className="text-muted-foreground">Do not beg for coins, tips, or giveaways from other users.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">4. Keep it Legal</h3>
+              <p className="text-muted-foreground">No discussion of illegal activities or sharing of illegal content.</p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">5. Use English</h3>
+              <p className="text-muted-foreground">Please use English in the main chat for better communication.</p>
+            </div>
+          </div>
+          <Button onClick={() => setShowChatRules(false)} className="w-full" data-testid="button-close-rules">
+            Got it!
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
