@@ -201,7 +201,7 @@ export default function Home() {
                   <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
                 <div className="relative overflow-visible" style={{height: '48px', width: '600px'}}>
-                  <img src={jackpotLogo} alt="JACKPOT" className="absolute" style={{height: '400px', width: 'auto', top: '-180px', left: '0', zIndex: 1}} />
+                  <img src={jackpotLogo} alt="JACKPOT" className="absolute" style={{height: '400px', width: 'auto', top: '-180px', left: '-15px', zIndex: 1}} />
                   <div className="absolute text-xs text-muted-foreground uppercase tracking-wider" style={{bottom: '-18px', left: '0', zIndex: 2}}>Winner takes all...</div>
                 </div>
               </div>
