@@ -4,6 +4,7 @@ import { Wallet, Trophy } from "lucide-react";
 import { useState } from "react";
 import crownLogo from '@assets/3dgifmaker76444_1763389385979.gif';
 import textLogo from '@assets/3dgifmaker22972_1763389385979.gif';
+import headerBg from '@assets/bnbpotbg2_1763390365244.png';
 
 interface GameNavigationProps {
   onConnect?: () => void;
@@ -23,7 +24,14 @@ export default function GameNavigation({
   return (
     <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '100px'}}>
       {/* Left - Header Logo (320px to match chatbox width) */}
-      <div className="flex items-center justify-center flex-shrink-0" style={{width: '320px'}}>
+      <div className="flex items-center justify-center flex-shrink-0" style={{
+        width: '320px',
+        height: '100px',
+        backgroundImage: `url(${headerBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
         <img src={crownLogo} alt="Crown" style={{height: '90px', width: 'auto', display: 'block'}} />
         <img src={textLogo} alt="BNBPOT" style={{width: '230px', height: 'auto', display: 'block', marginLeft: '-40px'}} />
       </div>
