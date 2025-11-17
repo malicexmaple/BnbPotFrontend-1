@@ -207,27 +207,27 @@ export default function Home() {
 
             {/* STATS BAR */}
             <div className="p-1">
-              <div className="glass-panel neon-border overflow-visible" style={{borderRadius: '18px', padding: '18px 28px'}}>
-                <div className="flex items-stretch">
-                  <div className="flex-1 text-center py-2">
-                    <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="glass-panel neon-border" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
+                <div className="flex items-stretch" style={{overflow: 'visible'}}>
+                  <div className="flex-1 text-center py-2" style={{overflow: 'visible'}}>
+                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                       <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
                       <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                   </div>
-                  <div className="flex-1 text-center py-2 stats-divider">
-                    <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
+                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
                       <img src={solanaLogo} alt="SOL" className="h-5 w-5" />
                       <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                   </div>
-                  <div className="flex-1 text-center py-2 stats-divider">
+                  <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="text-2xl font-bold font-mono text-foreground mb-2" data-testid="text-your-chance">0.00%</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
                   </div>
-                  <div className="flex-1 text-center py-2 stats-divider">
+                  <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="text-3xl font-bold font-mono text-foreground mb-2" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
                   </div>
