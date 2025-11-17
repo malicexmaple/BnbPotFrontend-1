@@ -658,8 +658,8 @@
     width: 16px;
     height: 16px;
     object-fit: contain;
-    transform: translateY(-30px) scale(9);
-    transform-origin: center top;
+    transform: translateY(-60px) scale(9);
+    transform-origin: center center;
   }
 
   .stat-icon-wrapper-small {
@@ -676,7 +676,7 @@
     width: 14px;
     height: 14px;
     object-fit: contain;
-    transform: translateY(-30px) scale(9);
-    transform-origin: center top;
+    transform: translateY(-60px) scale(6);
+    transform-origin: center center;
   }
 }
