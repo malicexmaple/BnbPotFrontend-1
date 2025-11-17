@@ -130,7 +130,7 @@ export default function Home() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
-                  <span className="text-4xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
+                  <span className="text-3xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
                 </div>
               </div>
             </div>
