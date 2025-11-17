@@ -249,8 +249,8 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="glass-panel neon-border relative" style={{borderRadius: '18px', padding: '32px', overflow: 'visible', width: '1168px'}}>
-                <div className="relative overflow-visible" ref={carouselRef}>
+              <div className="glass-panel neon-border relative" style={{borderRadius: '18px', padding: '32px', overflow: 'hidden', width: '1168px'}}>
+                <div className="relative overflow-hidden" ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
                   <div className="absolute -top-8 left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
                     <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
