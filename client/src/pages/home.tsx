@@ -663,11 +663,17 @@ export default function Home() {
 
               <div>
                 <h3 className="font-bold text-foreground mb-2">11. Dispute Resolution and Arbitration</h3>
-                <p className="text-muted-foreground">
-                  Any disputes arising from these terms or use of the Platform shall be resolved through binding arbitration 
-                  rather than in court. You waive your right to participate in class action lawsuits. [NOTE: Specific 
-                  arbitration clauses must be drafted by legal counsel based on your jurisdiction]
+                <p className="text-muted-foreground mb-2">
+                  In the event of a dispute arising from your use of the Platform or these Terms, you agree to follow the 
+                  dispute resolution process outlined below:
                 </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li><span className="font-bold text-foreground">Step 1 - Direct Resolution:</span> You must first attempt to resolve the dispute by contacting BNBPOT customer support directly. We will make reasonable efforts to resolve disputes within 30 days.</li>
+                  <li><span className="font-bold text-foreground">Step 2 - Curaçao eGaming Authority:</span> If the dispute cannot be resolved directly, you may submit a complaint to the Curaçao Gaming Control Board, which provides independent dispute resolution and mediation services for players. Contact details and procedures are available through the licensing authority.</li>
+                  <li><span className="font-bold text-foreground">Step 3 - Arbitration:</span> Any disputes not resolved through the above steps shall be settled by binding arbitration conducted in Curaçao under the laws of Curaçao. The arbitration shall be conducted in English, and the decision of the arbitrator shall be final and binding on all parties.</li>
+                  <li><span className="font-bold text-foreground">Class Action Waiver:</span> You agree to resolve disputes on an individual basis only and waive any right to participate in class action lawsuits or class-wide arbitration.</li>
+                  <li><span className="font-bold text-foreground">Governing Law:</span> These dispute resolution procedures shall be governed by and construed in accordance with the laws of Curaçao, without regard to conflict of law provisions.</li>
+                </ul>
               </div>
 
               <div>
