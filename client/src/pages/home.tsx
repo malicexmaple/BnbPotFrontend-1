@@ -333,25 +333,25 @@ export default function Home() {
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
               <img src={coinStack} alt="Coins" className="w-16 h-16" />
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                {/* Multiple sparkles with varied sizes and positions */}
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0s'}}></div>
-                <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.1s'}}></div>
-                <div className="absolute top-1/4 -left-2 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.2s'}}></div>
-                <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.15s'}}></div>
-                <div className="absolute top-1/2 -right-2 w-2 h-2 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.25s'}}></div>
-                <div className="absolute top-1/2 left-0 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.3s'}}></div>
-                <div className="absolute top-2/3 left-1/3 w-2 h-2 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.05s'}}></div>
-                <div className="absolute bottom-1/4 -right-1 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.35s'}}></div>
-                <div className="absolute bottom-1/3 left-1/4 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.4s'}}></div>
-                <div className="absolute -bottom-2 left-1/2 w-2 h-2 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.12s'}}></div>
-                <div className="absolute bottom-0 -left-1 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.18s'}}></div>
-                <div className="absolute top-1/4 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.22s'}}></div>
-                <div className="absolute top-3/4 right-1/3 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.28s'}}></div>
-                <div className="absolute top-1/2 left-1/4 w-2.5 h-2.5 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.08s'}}></div>
-                <div className="absolute bottom-1/2 right-0 w-2 h-2 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.33s'}}></div>
-                <div className="absolute top-0 left-1/4 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping shadow-lg shadow-yellow-300/50" style={{animationDelay: '0.38s'}}></div>
-                <div className="absolute bottom-0 right-1/4 w-2 h-2 bg-yellow-200 rounded-full animate-ping shadow-lg shadow-yellow-200/50" style={{animationDelay: '0.14s'}}></div>
-                <div className="absolute top-1/3 left-0 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping shadow-lg shadow-yellow-400/50" style={{animationDelay: '0.27s'}}></div>
+                {/* Multiple star sparkles with varied sizes and positions */}
+                <svg className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 animate-ping" style={{animationDelay: '0s', filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FCD34D"/></svg>
+                <svg className="absolute top-0 right-0 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.1s', filter: 'drop-shadow(0 0 3px rgba(254, 240, 138, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FEF08A"/></svg>
+                <svg className="absolute top-1/4 -left-2 w-3.5 h-3.5 animate-ping" style={{animationDelay: '0.2s', filter: 'drop-shadow(0 0 5px rgba(250, 204, 21, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FACC15"/></svg>
+                <svg className="absolute top-1/3 right-1/4 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.15s', filter: 'drop-shadow(0 0 3px rgba(253, 224, 71, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FDE047"/></svg>
+                <svg className="absolute top-1/2 -right-2 w-3 h-3 animate-ping" style={{animationDelay: '0.25s', filter: 'drop-shadow(0 0 4px rgba(254, 240, 138, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FEF08A"/></svg>
+                <svg className="absolute top-1/2 left-0 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.3s', filter: 'drop-shadow(0 0 3px rgba(250, 204, 21, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FACC15"/></svg>
+                <svg className="absolute top-2/3 left-1/3 w-3 h-3 animate-ping" style={{animationDelay: '0.05s', filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FDE047"/></svg>
+                <svg className="absolute bottom-1/4 -right-1 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.35s', filter: 'drop-shadow(0 0 3px rgba(254, 240, 138, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FEF08A"/></svg>
+                <svg className="absolute bottom-1/3 left-1/4 w-3.5 h-3.5 animate-ping" style={{animationDelay: '0.4s', filter: 'drop-shadow(0 0 5px rgba(250, 204, 21, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FACC15"/></svg>
+                <svg className="absolute -bottom-2 left-1/2 w-3 h-3 animate-ping" style={{animationDelay: '0.12s', filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FCD34D"/></svg>
+                <svg className="absolute bottom-0 -left-1 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.18s', filter: 'drop-shadow(0 0 3px rgba(254, 240, 138, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FEF08A"/></svg>
+                <svg className="absolute top-1/4 left-1/2 w-3 h-3 animate-ping" style={{animationDelay: '0.22s', filter: 'drop-shadow(0 0 4px rgba(250, 204, 21, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FACC15"/></svg>
+                <svg className="absolute top-3/4 right-1/3 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.28s', filter: 'drop-shadow(0 0 3px rgba(253, 224, 71, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FDE047"/></svg>
+                <svg className="absolute top-1/2 left-1/4 w-3.5 h-3.5 animate-ping" style={{animationDelay: '0.08s', filter: 'drop-shadow(0 0 5px rgba(254, 240, 138, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FEF08A"/></svg>
+                <svg className="absolute bottom-1/2 right-0 w-3 h-3 animate-ping" style={{animationDelay: '0.33s', filter: 'drop-shadow(0 0 4px rgba(250, 204, 21, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FACC15"/></svg>
+                <svg className="absolute top-0 left-1/4 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.38s', filter: 'drop-shadow(0 0 3px rgba(253, 224, 71, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FDE047"/></svg>
+                <svg className="absolute bottom-0 right-1/4 w-3 h-3 animate-ping" style={{animationDelay: '0.14s', filter: 'drop-shadow(0 0 4px rgba(254, 240, 138, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FEF08A"/></svg>
+                <svg className="absolute top-1/3 left-0 w-2.5 h-2.5 animate-ping" style={{animationDelay: '0.27s', filter: 'drop-shadow(0 0 3px rgba(250, 204, 21, 0.8))'}}><polygon points="12,2 15,11 24,11 17,17 20,26 12,21 4,26 7,17 0,11 9,11" fill="#FACC15"/></svg>
               </div>
             </div>
             <div className="flex items-center justify-between mb-3">
