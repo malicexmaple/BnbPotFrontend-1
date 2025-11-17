@@ -256,7 +256,8 @@ export default function Home() {
                 paddingLeft: '0',
                 paddingRight: '0',
                 overflow: 'hidden',
-                width: '1168px'
+                width: '1168px',
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))'
               }}>
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
