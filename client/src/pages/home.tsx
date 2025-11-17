@@ -225,13 +225,13 @@ export default function Home() {
                 style={{transform: `translateX(-${scrollOffset}px)`}}
               >
                 {[...Array(20)].map((_, i) => {
-                  // Calculate if this card is centered based on scroll position
+                  // Calculate if this card is under the arrow (highlight when left edge reaches arrow)
                   const cardWidth = carouselRef.current ? carouselRef.current.offsetWidth / 5 : 200;
                   const cardPosition = i * (cardWidth + 16); // card width + gap
                   const centerPosition = carouselRef.current ? carouselRef.current.offsetWidth / 2 : 400;
-                  const cardCenter = cardPosition + cardWidth / 2 - scrollOffset;
-                  const distanceFromCenter = Math.abs(cardCenter - centerPosition);
-                  const isCentered = distanceFromCenter < cardWidth / 3;
+                  const cardLeftEdge = cardPosition - scrollOffset;
+                  const cardRightEdge = cardLeftEdge + cardWidth;
+                  const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
                   
                   return (
                     <div key={i} className={`flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
