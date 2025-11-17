@@ -14,7 +14,7 @@ import solanaLogo from '@assets/generated_images/Solana_cryptocurrency_logo_icon
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
-import forestBg from '@assets/enchanted-magical-forest-desktop-wallpaper_1763379900531.png';
+import bnbpotBg from '@assets/bnbpotbg_1763390160060.png';
 
 export default function Home() {
   const { address, isConnecting, error, connect } = useWallet();
@@ -183,7 +183,7 @@ export default function Home() {
 
         {/* CENTER - MAIN GAME AREA */}
         <div className="flex-1 flex flex-col overflow-hidden relative" style={{
-          backgroundImage: `url(${forestBg})`,
+          backgroundImage: `url(${bnbpotBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
