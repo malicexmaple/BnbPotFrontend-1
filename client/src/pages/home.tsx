@@ -252,7 +252,7 @@ export default function Home() {
               <div className="glass-panel neon-border relative" style={{borderRadius: '18px', paddingTop: '56px', paddingBottom: '40px', paddingLeft: '0', paddingRight: '0', overflow: 'hidden', width: '1168px'}}>
                 <div className="relative overflow-hidden" ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
-                  <div className="absolute top-4 left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
+                  <div className="absolute -top-2 left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
                     <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
                       <defs>
                         <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -284,7 +284,7 @@ export default function Home() {
                       
                       return (
                         <div key={i} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px'}}>
-                          <div className={`glass-panel flex flex-col items-center ${isCentered ? 'carousel-center-card' : ''}`} style={{borderRadius: '21px', padding: '26px 21px'}}>
+                          <div className={`glass-panel flex flex-col items-center ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '21px', padding: '26px 21px'}}>
                             <div className="flex items-center justify-center relative" style={{
                               width: '114px',
                               height: '114px',
