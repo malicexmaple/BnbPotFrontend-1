@@ -23,6 +23,7 @@ import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/Untitled-3_1763394568321.png';
 import airdropLogo from '@assets/bnbpot-text_1763406183114.png';
 import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
+import signupLogo from '@assets/signupnew_1763410821936.png';
 
 export default function Home() {
   const { address, isConnecting, error, connect } = useWallet();
@@ -460,8 +461,10 @@ export default function Home() {
           boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
         }}>
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold gradient-text uppercase tracking-wide">Sign Up</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
+            <DialogTitle className="flex justify-center mb-2">
+              <img src={signupLogo} alt="Sign Up" className="h-16" />
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground text-center">
               Complete your account to start playing
             </DialogDescription>
           </DialogHeader>
