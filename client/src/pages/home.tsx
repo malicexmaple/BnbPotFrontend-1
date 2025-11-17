@@ -46,6 +46,9 @@ export default function Home() {
   /** Controls visibility of chat rules modal */
   const [showChatRules, setShowChatRules] = useState(false);
   
+  /** Controls visibility of terms and conditions modal */
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  
   /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
     name: "",
@@ -511,7 +514,15 @@ export default function Home() {
                 data-testid="checkbox-terms"
               />
               <label className="text-sm text-muted-foreground">
-                I agree that I am at least <span className="font-bold text-foreground">18 Years Old</span> and agree to the terms and conditions.
+                I agree that I am at least <span className="font-bold text-foreground">18 Years Old</span> and agree to the{' '}
+                <button
+                  type="button"
+                  onClick={() => setShowTermsModal(true)}
+                  className="text-primary hover:underline font-semibold"
+                  data-testid="button-terms"
+                >
+                  terms and conditions
+                </button>.
               </label>
             </div>
           </div>
@@ -526,6 +537,206 @@ export default function Home() {
             data-testid="button-create-account"
           >
             Create Account
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Terms and Conditions Dialog */}
+      <Dialog open={showTermsModal} onOpenChange={setShowTermsModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] border-0 p-6 signup-dialog">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold gradient-text uppercase tracking-wide">Terms and Conditions</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Please read these terms carefully before using BNBPOT
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="h-96 pr-4">
+            <div className="space-y-4 text-sm">
+              <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg">
+                <p className="text-destructive font-bold mb-2">⚠️ LEGAL DISCLAIMER</p>
+                <p className="text-destructive-foreground text-xs">
+                  This is a TEMPLATE and does NOT constitute legal advice. You MUST consult with a qualified attorney 
+                  specializing in gambling law, cryptocurrency regulations, and your specific jurisdiction before deploying 
+                  this platform. Legal requirements vary significantly by country and region.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">1. Acceptance of Terms</h3>
+                <p className="text-muted-foreground">
+                  By accessing and using BNBPOT ("the Platform"), you acknowledge that you have read, understood, and agree 
+                  to be bound by these Terms and Conditions. If you do not agree to these terms, you must immediately 
+                  discontinue use of the Platform.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">2. Eligibility Requirements</h3>
+                <p className="text-muted-foreground mb-2">
+                  You must meet ALL of the following requirements to use this Platform:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>You are at least 18 years of age (or the legal age of majority in your jurisdiction)</li>
+                  <li>You are legally permitted to participate in gambling activities in your jurisdiction</li>
+                  <li>You are not located in a jurisdiction where online gambling is prohibited</li>
+                  <li>You are acting on your own behalf and not on behalf of any third party</li>
+                  <li>All information provided during registration is accurate and truthful</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">3. Provably Fair Gaming</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT is committed to providing provably fair gaming experiences. Our platform utilizes cryptographic 
+                  algorithms and blockchain technology to ensure game outcomes are verifiable and cannot be manipulated. 
+                  Game results are generated using transparent, auditable mechanisms. However, we make no guarantees 
+                  regarding winning outcomes, as all games involve an element of chance.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">4. No Liability for Losses</h3>
+                <p className="text-muted-foreground mb-2">
+                  <span className="font-bold text-foreground">YOU ACKNOWLEDGE AND AGREE THAT:</span>
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>All gambling involves risk, and you may lose your entire wager</li>
+                  <li>BNBPOT is NOT responsible for any financial losses incurred through use of the Platform</li>
+                  <li>You are solely responsible for your gambling decisions and their consequences</li>
+                  <li>We do not guarantee any specific outcomes or returns on your wagers</li>
+                  <li>Cryptocurrency values are volatile and may result in additional financial risk</li>
+                  <li>Network fees, gas fees, and transaction costs are your responsibility</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">5. Limitation of Liability</h3>
+                <p className="text-muted-foreground">
+                  TO THE MAXIMUM EXTENT PERMITTED BY LAW, BNBPOT, ITS OPERATORS, AFFILIATES, AND SERVICE PROVIDERS SHALL 
+                  NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING 
+                  FROM OR RELATED TO YOUR USE OF THE PLATFORM. This includes but is not limited to: loss of funds, loss of 
+                  profits, loss of data, service interruptions, technical malfunctions, unauthorized access, or any other 
+                  losses or damages.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">6. Responsible Gaming</h3>
+                <p className="text-muted-foreground mb-2">
+                  We encourage responsible gaming practices. You agree to:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>Only wager amounts you can afford to lose</li>
+                  <li>Set personal limits on your gambling activities</li>
+                  <li>Seek help if you believe you may have a gambling problem</li>
+                  <li>Not use the Platform as a source of income or financial investment</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">7. Prohibited Activities</h3>
+                <p className="text-muted-foreground mb-2">
+                  You agree NOT to:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>Use the Platform for money laundering or other illegal activities</li>
+                  <li>Create multiple accounts or use the Platform fraudulently</li>
+                  <li>Attempt to manipulate, exploit, or hack the Platform</li>
+                  <li>Use bots, scripts, or automated systems</li>
+                  <li>Collude with other users to gain unfair advantages</li>
+                  <li>Provide false or misleading information</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">8. Account Security</h3>
+                <p className="text-muted-foreground">
+                  You are solely responsible for maintaining the security of your wallet and account credentials. BNBPOT 
+                  will NEVER ask for your private keys or seed phrases. Any losses due to compromised accounts, lost 
+                  private keys, or unauthorized access are your sole responsibility.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">9. Intellectual Property</h3>
+                <p className="text-muted-foreground">
+                  All content, trademarks, logos, and intellectual property on the Platform are owned by BNBPOT or its 
+                  licensors. You may not copy, reproduce, distribute, or create derivative works without explicit permission.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">10. Dispute Resolution and Arbitration</h3>
+                <p className="text-muted-foreground">
+                  Any disputes arising from these terms or use of the Platform shall be resolved through binding arbitration 
+                  rather than in court. You waive your right to participate in class action lawsuits. [NOTE: Specific 
+                  arbitration clauses must be drafted by legal counsel based on your jurisdiction]
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">11. Indemnification</h3>
+                <p className="text-muted-foreground">
+                  You agree to indemnify, defend, and hold harmless BNBPOT and its operators from any claims, damages, 
+                  losses, liabilities, and expenses (including legal fees) arising from your use of the Platform, violation 
+                  of these terms, or violation of any applicable laws.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">12. Changes to Terms</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT reserves the right to modify these terms at any time. Continued use of the Platform after changes 
+                  constitutes acceptance of the modified terms. You are responsible for regularly reviewing these terms.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">13. Termination</h3>
+                <p className="text-muted-foreground">
+                  We reserve the right to suspend or terminate your access to the Platform at any time, for any reason, 
+                  without notice. Upon termination, these terms shall remain in effect for any disputes or claims.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">14. Severability</h3>
+                <p className="text-muted-foreground">
+                  If any provision of these terms is found to be invalid or unenforceable, the remaining provisions shall 
+                  continue in full force and effect.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">15. Entire Agreement</h3>
+                <p className="text-muted-foreground">
+                  These terms constitute the entire agreement between you and BNBPOT regarding use of the Platform and 
+                  supersede all prior agreements or understandings.
+                </p>
+              </div>
+
+              <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg mt-6">
+                <p className="text-primary font-bold mb-2">⚖️ IMPORTANT LEGAL NOTICE</p>
+                <p className="text-foreground text-xs">
+                  These terms are a TEMPLATE ONLY. Before launching your platform, you MUST consult with legal professionals 
+                  who specialize in: (1) Online gambling regulations, (2) Cryptocurrency and blockchain law, (3) Consumer 
+                  protection laws, (4) Data privacy (GDPR, CCPA, etc.), (5) Anti-money laundering (AML) and Know Your 
+                  Customer (KYC) requirements, (6) Jurisdiction-specific gambling licenses and compliance.
+                </p>
+              </div>
+            </div>
+          </ScrollArea>
+          <Button 
+            onClick={() => setShowTermsModal(false)} 
+            className="w-full mt-4 text-white text-base font-bold border-0" 
+            style={{
+              background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+              border: '2px solid rgba(234, 179, 8, 0.5)',
+              boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+            }} 
+            data-testid="button-close-terms"
+          >
+            Close
           </Button>
         </DialogContent>
       </Dialog>
