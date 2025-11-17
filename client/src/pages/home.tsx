@@ -252,14 +252,16 @@ export default function Home() {
                   
                   return (
                     <div key={i} className={`carousel-card flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
-                      <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
-                        <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(234,179,8,0.4)]">
-                          <AvatarFallback>W</AvatarFallback>
-                        </Avatar>
+                      <div className={`glass-panel p-4 flex flex-col items-center gap-3 ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '18px'}}>
+                        <div className="w-20 h-20 rounded-xl bg-black/40 border border-border/30 flex items-center justify-center">
+                          <svg className="w-10 h-10 text-muted-foreground/60" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                          </svg>
+                        </div>
                         <div className="text-sm font-medium text-muted-foreground">Waiting</div>
-                        <div className="flex items-center gap-1 text-sm font-mono">
-                          <img src={solanaLogo} alt="SOL" className="h-4 w-4" />
-                          <span className="text-muted-foreground font-bold">0.000</span>
+                        <div className="flex items-center gap-1.5 text-sm font-mono">
+                          <span className="text-muted-foreground/60">=</span>
+                          <span className="text-foreground font-bold">0.000</span>
                         </div>
                       </div>
                     </div>
