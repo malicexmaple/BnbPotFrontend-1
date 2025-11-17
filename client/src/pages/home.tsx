@@ -214,36 +214,34 @@ export default function Home() {
 
             {/* STATS BAR */}
             <div className="p-1">
-              <div className="glass-panel neon-border" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
-                <div className="flex items-stretch" style={{overflow: 'visible'}}>
-                  <div className="flex-1 text-center py-2" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
-                      <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
+              <div className="flex gap-4" style={{overflow: 'visible'}}>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
+                  <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
+                    <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
+                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
                   </div>
-                  <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
-                      <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-wager">0.000</div>
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
+                </div>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
+                  <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
+                    <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
+                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-wager">0.000</div>
                   </div>
-                  <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={cloverIcon} alt="Clover" className="h-14 w-14 flex-shrink-0" />
-                      <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-chance">0.00%</div>
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
+                </div>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
+                  <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
+                    <img src={cloverIcon} alt="Clover" className="h-14 w-14 flex-shrink-0" />
+                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-chance">0.00%</div>
                   </div>
-                  <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
-                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={clockIcon} alt="Clock" className="h-16 w-16 flex-shrink-0" />
-                      <div className="text-4xl font-bold font-mono gradient-text no-text-shadow min-w-[120px]" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
+                </div>
+                <div className="flex-1 glass-panel neon-border text-center py-2" style={{borderRadius: '18px', padding: '18px 28px', overflow: 'visible'}}>
+                  <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
+                    <img src={clockIcon} alt="Clock" className="h-16 w-16 flex-shrink-0" />
+                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow min-w-[120px]" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                   </div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
                 </div>
               </div>
             </div>
