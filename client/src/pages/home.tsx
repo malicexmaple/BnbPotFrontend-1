@@ -12,7 +12,7 @@ import { Trophy, TrendingUp, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import bnbLogo from '@assets/3dgifmaker03069_1763395807327.gif';
-import clockIcon from '@assets/vecteezy_binance-coin-bnb-glass-crypto-coin-3d-illustration_240926wwww78_1763398556769.png';
+import clockIcon from '@assets/3dgifmaker43080_1763398615139.gif';
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
@@ -232,7 +232,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={clockIcon} alt="Clock" className="h-10 w-10" />
+                      <img src={clockIcon} alt="Clock" className="h-8 w-8" />
                       <div className="text-4xl font-bold font-mono gradient-text" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
