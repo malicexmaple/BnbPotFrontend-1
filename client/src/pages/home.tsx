@@ -231,7 +231,7 @@ export default function Home() {
                   const centerPosition = carouselRef.current ? carouselRef.current.offsetWidth / 2 : 400;
                   const cardCenter = cardPosition + cardWidth / 2 - scrollOffset;
                   const distanceFromCenter = Math.abs(cardCenter - centerPosition);
-                  const isCentered = distanceFromCenter < cardWidth / 2;
+                  const isCentered = distanceFromCenter < cardWidth / 3;
                   
                   return (
                     <div key={i} className={`flex-shrink-0 transition-all duration-300 ${isCentered ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
