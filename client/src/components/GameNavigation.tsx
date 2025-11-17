@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Trophy } from "lucide-react";
 import { useState } from "react";
-import headerLogo from '@assets/header_logo.png';
+import headerLogo from '@assets/ezgif-6aa6f8da6a5fb904-final_1763388786100.gif';
 
 interface GameNavigationProps {
   onConnect?: () => void;
