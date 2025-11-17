@@ -200,9 +200,9 @@ export default function Home() {
                 }}>
                   <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
-                <div className="flex flex-col">
-                  <img src={jackpotLogo} alt="JACKPOT" style={{height: '400px', width: 'auto', display: 'block', margin: '0'}} />
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider" style={{marginTop: '4px'}}>Winner takes all...</div>
+                <div className="relative overflow-visible" style={{height: '48px'}}>
+                  <img src={jackpotLogo} alt="JACKPOT" className="absolute" style={{height: '400px', width: 'auto', bottom: '6px', left: '0'}} />
+                  <div className="absolute text-xs text-muted-foreground uppercase tracking-wider" style={{bottom: '-18px', left: '0'}}>Winner takes all...</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
