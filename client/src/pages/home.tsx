@@ -249,10 +249,10 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="glass-panel neon-border relative" style={{borderRadius: '18px', paddingTop: '56px', paddingBottom: '40px', paddingLeft: '0', paddingRight: '0', overflow: 'hidden', width: '1168px'}}>
-                <div className="relative overflow-hidden" ref={carouselRef}>
+              <div className="glass-panel neon-border relative" style={{borderRadius: '18px', paddingTop: '60px', paddingBottom: '60px', paddingLeft: '0', paddingRight: '0', overflow: 'hidden', width: '1168px'}}>
+                <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
-                  <div className="absolute -top-2 left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
+                  <div className="absolute -top-4 left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
                     <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
                       <defs>
                         <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -267,7 +267,7 @@ export default function Home() {
                   
                   <div 
                     className="carousel-track flex gap-3"
-                    style={{transform: `translateX(-${scrollOffset}px)`}}
+                    style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible'}}
                   >
                     {[...Array(20)].map((_, i) => {
                       // Calculate if this card is under the triangle (highlight when left edge reaches triangle)
@@ -284,7 +284,12 @@ export default function Home() {
                       
                       return (
                         <div key={i} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px'}}>
-                          <div className={`glass-panel flex flex-col items-center ${isCentered ? 'carousel-center-card scale-110' : ''}`} style={{borderRadius: '21px', padding: '26px 21px'}}>
+                          <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
+                            borderRadius: '21px', 
+                            padding: '26px 21px',
+                            transform: isCentered ? 'scale(1.1)' : 'scale(1)',
+                            boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
+                          }}>
                             <div className="flex items-center justify-center relative" style={{
                               width: '114px',
                               height: '114px',
