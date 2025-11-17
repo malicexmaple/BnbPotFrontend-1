@@ -706,4 +706,22 @@
     transform: translateY(-10px) scale(7.2);
     transform-origin: center center;
   }
+
+  .stat-icon-wrapper-large {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon-wrapper-large img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    transform: translateY(-10px) scale(14);
+    transform-origin: center center;
+  }
 }

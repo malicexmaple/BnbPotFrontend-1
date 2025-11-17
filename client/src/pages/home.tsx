@@ -270,7 +270,7 @@ export default function Home() {
               <div className="flex gap-4 justify-center" style={{overflow: 'visible'}}>
                 <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper">
+                    <div className="stat-icon-wrapper-large">
                       <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
                     </div>
                     <div className="text-4xl font-bold font-mono gradient-text no-text-shadow">0.401</div>
