@@ -33,7 +33,7 @@ export default function GameNavigation({
         backgroundRepeat: 'no-repeat'
       }}>
         <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block', marginLeft: '20px'}} />
-        <img src={textLogo} alt="BNBPOT" style={{width: '290px', height: 'auto', display: 'block', marginLeft: '-60px'}} />
+        <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block', marginLeft: '-60px'}} />
       </div>
 
       {/* Right side content - Two rows */}
