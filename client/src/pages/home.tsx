@@ -19,24 +19,12 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState(13);
   const [betAmount, setBetAmount] = useState("");
   const [onlineUsers, setOnlineUsers] = useState(0);
-  const [carouselOffset, setCarouselOffset] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining(prev => prev <= 0 ? 13 : prev - 1);
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const carouselTimer = setInterval(() => {
-      setCarouselOffset(prev => {
-        const next = prev - 1;
-        if (next <= -5) return 0;
-        return next;
-      });
-    }, 2000);
-    return () => clearInterval(carouselTimer);
   }, []);
 
 
@@ -195,18 +183,12 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="relative overflow-hidden">
-              <div 
-                className="flex gap-4 transition-transform duration-1000 ease-in-out"
-                style={{
-                  transform: `translateX(calc(${carouselOffset * 20}% + ${carouselOffset * 16}px))`
-                }}
-              >
-                {[...Array(15)].map((_, i) => {
-                  const playerIndex = i % 5;
-                  const isCenter = (i - carouselOffset) % 5 === 2;
+              <div className="flex gap-4 carousel-animate">
+                {[...Array(10)].map((_, i) => {
+                  const isCenter = i % 5 === 2;
                   return (
                     <div key={i} className={`flex-shrink-0 ${isCenter ? 'p-1' : ''}`} style={{width: 'calc(20% - 12.8px)'}}>
-                      <div className={`glass-panel p-4 flex flex-col items-center gap-2 transition-all duration-500 ${isCenter ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
+                      <div className={`glass-panel p-4 flex flex-col items-center gap-2 ${isCenter ? 'neon-border scale-110' : ''}`} style={{borderRadius: '18px'}}>
                         <Avatar className="h-16 w-16 border-2 border-primary/60 shadow-[0_0_15px_rgba(123,104,238,0.4)]">
                           <AvatarFallback>W</AvatarFallback>
                         </Avatar>

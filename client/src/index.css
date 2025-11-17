@@ -290,6 +290,19 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  @keyframes carousel-slide {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-20% - 16px));
+    }
+  }
+
+  .carousel-animate {
+    animation: carousel-slide 3s linear infinite;
+  }
 }
 
 /**
