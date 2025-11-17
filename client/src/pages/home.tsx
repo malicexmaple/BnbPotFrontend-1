@@ -225,7 +225,7 @@ export default function Home() {
             {/* PLAYER CAROUSEL */}
             <div className="relative overflow-visible pt-6" ref={carouselRef}>
               {/* Triangle indicator pointing to center card */}
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
+              <div className="absolute -top-2 left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow">
                 <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
                   <defs>
                     <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
