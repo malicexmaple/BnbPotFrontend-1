@@ -330,7 +330,16 @@ export default function Home() {
         <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
-            <img src={coinStack} alt="Coins" className="absolute -top-6 right-2 w-16 h-16 z-10" />
+            <div className="absolute -top-6 right-2 w-16 h-16 z-10 group cursor-pointer">
+              <img src={coinStack} alt="Coins" className="w-16 h-16 group-hover:animate-pulse" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0s'}}></div>
+                <div className="absolute top-1/4 right-0 w-1.5 h-1.5 bg-yellow-200 rounded-full animate-ping" style={{animationDelay: '0.1s'}}></div>
+                <div className="absolute bottom-1/4 left-0 w-1 h-1 bg-yellow-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0.15s'}}></div>
+                <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-yellow-200 rounded-full animate-ping" style={{animationDelay: '0.25s'}}></div>
+              </div>
+            </div>
             <div className="flex items-center justify-between mb-3">
               <div className="text-lg font-bold uppercase tracking-wider text-foreground">$25K WEEKLY</div>
             </div>
