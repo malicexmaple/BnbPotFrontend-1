@@ -462,7 +462,9 @@ export default function Home() {
         <DialogContent className="max-w-md border-0 p-6 [&>button:first-child]:hidden signup-dialog">
           <DialogHeader>
             <DialogTitle className="flex justify-center mb-2">
-              <img src={signupLogo} alt="Sign Up" className="h-16" />
+              <div className="shine-image" style={{'--shine-mask': `url(${signupLogo})`} as React.CSSProperties}>
+                <img src={signupLogo} alt="Sign Up" className="h-16" />
+              </div>
             </DialogTitle>
             <DialogDescription className="text-muted-foreground text-center">
               Complete your account to start playing
