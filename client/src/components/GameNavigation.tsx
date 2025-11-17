@@ -25,7 +25,7 @@ export default function GameNavigation({
       {/* Left - Header Logo (320px to match chatbox width) */}
       <div className="flex items-center justify-center flex-shrink-0" style={{width: '320px'}}>
         <img src={crownLogo} alt="Crown" style={{height: '80px', width: 'auto', display: 'block'}} />
-        <img src={textLogo} alt="BNBPOT" style={{width: '200px', height: 'auto', display: 'block', marginLeft: '-8px'}} />
+        <img src={textLogo} alt="BNBPOT" style={{width: '200px', height: 'auto', display: 'block', marginLeft: '-20px'}} />
       </div>
 
       {/* Right side content - Two rows */}
