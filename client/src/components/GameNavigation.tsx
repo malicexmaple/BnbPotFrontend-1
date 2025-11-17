@@ -24,8 +24,8 @@ export default function GameNavigation({
     <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '100px'}}>
       {/* Left - Header Logo (320px to match chatbox width) */}
       <div className="flex items-center justify-center gap-3 flex-shrink-0" style={{width: '320px'}}>
-        <img src={crownLogo} alt="Crown" style={{height: '90px', width: 'auto', display: 'block'}} />
-        <img src={textLogo} alt="BNBPOT" style={{height: '90px', width: 'auto', display: 'block'}} />
+        <img src={crownLogo} alt="Crown" style={{height: '70px', width: 'auto', display: 'block'}} />
+        <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block'}} />
       </div>
 
       {/* Right side content - Two rows */}
