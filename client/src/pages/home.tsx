@@ -22,7 +22,7 @@ import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e69
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/jackpotnew_1763414192793.png';
-import airdropLogo from '@assets/bnbpot-text_1763406183114.png';
+import airdropLogo from '@assets/airdropnew_1763414250628.png';
 import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 
