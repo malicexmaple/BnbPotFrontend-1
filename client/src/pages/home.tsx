@@ -125,7 +125,9 @@ export default function Home() {
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
-                  <img src={airdropLogo} alt="AIRDROP" className="h-10" data-testid="img-airdrop-logo" />
+                  <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
+                    <img src={airdropLogo} alt="AIRDROP" className="h-10" data-testid="img-airdrop-logo" />
+                  </div>
                 </div>
               </div>
               <div className="flex items-center justify-between">
