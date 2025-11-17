@@ -330,7 +330,7 @@ export default function Home() {
         <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
-            <img src={coinStack} alt="Coins" className="absolute -top-8 right-4 w-20 h-20 z-10" />
+            <img src={coinStack} alt="Coins" className="absolute -top-6 right-2 w-16 h-16 z-10" />
             <div className="flex items-center justify-between mb-3">
               <div className="text-lg font-bold uppercase tracking-wider text-foreground">$25K WEEKLY</div>
             </div>
