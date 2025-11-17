@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Trophy, TrendingUp, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
+import { useSignupTracking } from "@/hooks/useSignupTracking";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker01363_1763402411268.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
@@ -28,18 +29,32 @@ import signupLogo from '@assets/signupnew_1763410821936.png';
 export default function Home() {
   const { address, isConnecting, error, connect } = useWallet();
   const { toast } = useToast();
+  const { shouldShowSignup, markSignupComplete } = useSignupTracking(address);
+  
+  /** Time remaining in seconds for the current game round */
   const [timeRemaining, setTimeRemaining] = useState(13);
+  
+  /** Current bet amount entered by user */
   const [betAmount, setBetAmount] = useState("");
+  
+  /** Number of users currently online */
   const [onlineUsers, setOnlineUsers] = useState(0);
+  
+  /** Horizontal scroll offset in pixels for carousel animation */
   const [scrollOffset, setScrollOffset] = useState(0);
+  
+  /** Controls visibility of chat rules modal */
   const [showChatRules, setShowChatRules] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
+  
+  /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
     name: "",
     email: "",
     referralCode: "",
     agreedToTerms: false
   });
+  
+  /** Reference to carousel container for scroll calculations */
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,10 +64,15 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  /**
+   * Carousel auto-scroll animation using requestAnimationFrame for smooth 60fps scrolling.
+   * Creates an infinite loop effect by resetting scroll position after 10 cards.
+   * Uses delta time to ensure consistent speed regardless of frame rate.
+   */
   useEffect(() => {
     let animationFrame: number;
     let lastTime = Date.now();
-    const speed = 0.08;
+    const speed = 0.08; // pixels per millisecond
     
     const animate = () => {
       const now = Date.now();
@@ -67,6 +87,7 @@ export default function Home() {
         const cardWidth = 234; // 180 * 1.3 = 234px
         const resetPoint = (cardWidth + gap) * 10;
         
+        // Reset scroll position to create seamless loop
         if (newOffset >= resetPoint) {
           return newOffset - resetPoint;
         }
@@ -97,15 +118,14 @@ export default function Home() {
         title: "Wallet Connected",
         description: `Connected to ${address.slice(0, 6)}...${address.slice(-4)} on BNB Smart Chain`,
       });
-      
-      // Check if this wallet has completed signup
-      const completedSignups = JSON.parse(localStorage.getItem('completedSignups') || '[]');
-      if (!completedSignups.includes(address)) {
-        setShowSignup(true);
-      }
     }
   }, [address, error, toast]);
 
+  /**
+   * Handles new user signup form submission.
+   * Validates required fields, marks wallet as registered, and resets form.
+   * In production, this would send data to backend API.
+   */
   const handleSignupSubmit = () => {
     if (!signupData.name || !signupData.email || !signupData.agreedToTerms) {
       toast({
@@ -116,12 +136,10 @@ export default function Home() {
       return;
     }
 
-    // Save to localStorage that this wallet has completed signup
-    const completedSignups = JSON.parse(localStorage.getItem('completedSignups') || '[]');
-    completedSignups.push(address);
-    localStorage.setItem('completedSignups', JSON.stringify(completedSignups));
+    // Mark signup as complete in localStorage
+    markSignupComplete();
 
-    // Here you would typically send this data to your backend
+    // TODO: Send signup data to backend API
     console.log('Signup data:', { ...signupData, walletAddress: address });
 
     toast({
@@ -129,7 +147,6 @@ export default function Home() {
       description: "Welcome to BNBPOT!",
     });
 
-    setShowSignup(false);
     setSignupData({ name: "", email: "", referralCode: "", agreedToTerms: false });
   };
 
@@ -248,7 +265,7 @@ export default function Home() {
             {/* STATS BAR */}
             <div className="p-1">
               <div className="flex gap-4 justify-center" style={{overflow: 'visible'}}>
-                <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
+                <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper">
                       <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
@@ -257,7 +274,7 @@ export default function Home() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                   </div>
                 </div>
-                <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
+                <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper">
                       <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
@@ -266,7 +283,7 @@ export default function Home() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                   </div>
                 </div>
-                <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
+                <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper-small">
                       <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
@@ -275,7 +292,7 @@ export default function Home() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                   </div>
                 </div>
-                <div className="stat-box" style={{borderRadius: '18px', padding: '20px 16px', overflow: 'visible', width: '240px', background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))', backdropFilter: 'blur(8px)', border: '2px solid rgba(250, 204, 21, 0.9)', boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)', transition: 'all 0.3s ease'}}>
+                <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper-small">
                       <img src={clockIcon} alt="Clock" className="h-14 w-14" />
@@ -289,19 +306,7 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="relative" style={{
-                borderRadius: '18px',
-                paddingTop: '60px',
-                paddingBottom: '60px',
-                paddingLeft: '0',
-                paddingRight: '0',
-                overflow: 'hidden',
-                width: '1008px',
-                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                backdropFilter: 'blur(8px)',
-                border: '2px solid rgba(250, 204, 21, 0.9)',
-                boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
-              }}>
+              <div className="carousel-container">
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
                   <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
@@ -453,13 +458,8 @@ export default function Home() {
       <GameFooter />
 
       {/* Signup Dialog */}
-      <Dialog open={showSignup} onOpenChange={() => {}}>
-        <DialogContent className="max-w-md border-0 p-6" style={{
-          borderRadius: '18px',
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-          border: '2px solid rgba(250, 204, 21, 0.9)',
-          boxShadow: '0 0 25px rgba(250, 204, 21, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-        }}>
+      <Dialog open={shouldShowSignup} onOpenChange={() => {}}>
+        <DialogContent className="max-w-md border-0 p-6 [&>button]:hidden signup-dialog">
           <DialogHeader>
             <DialogTitle className="flex justify-center mb-2">
               <img src={signupLogo} alt="Sign Up" className="h-16" />

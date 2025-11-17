@@ -624,6 +624,14 @@
 
   .stat-box {
     position: relative;
+    border-radius: 18px;
+    padding: 20px 16px;
+    overflow: visible;
+    width: 240px;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8));
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(250, 204, 21, 0.9);
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
     transition: all 0.3s ease;
   }
 
@@ -642,6 +650,25 @@
       inset 0 -1px 3px rgba(0, 0, 0, 0.6),
       0 0 24px rgba(234, 179, 8, 0.4),
       0 4px 16px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .carousel-container {
+    position: relative;
+    border-radius: 18px;
+    padding: 60px 0;
+    overflow: hidden;
+    width: 1008px;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8));
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(250, 204, 21, 0.9);
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+  }
+
+  .signup-dialog {
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8));
+    border: 2px solid rgba(250, 204, 21, 0.9);
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
   }
 
   .stat-icon-wrapper {
