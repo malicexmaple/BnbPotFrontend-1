@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Trophy, TrendingUp, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
-import bnbLogo from '@assets/3dgifmaker03069_1763395807327.gif';
+import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker43080_1763398615139.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c2368d.png';
