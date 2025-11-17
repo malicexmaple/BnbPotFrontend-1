@@ -17,62 +17,62 @@ export default function GameNavigation({
   const [activeTab, setActiveTab] = useState("jackpot");
 
   return (
-    <nav className="sticky top-0 z-50 bg-black border-b border-border/20">
-      {/* Top row - Logo and small links */}
-      <div className="flex items-center justify-between px-5 border-b border-border/10" style={{height: '36px'}}>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center" style={{width: '28px', height: '28px'}}>
-              <svg className="text-white" fill="currentColor" viewBox="0 0 24 24" style={{width: '16px', height: '16px'}}>
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-            </div>
-            <span className="font-bold tracking-tight text-foreground" style={{fontSize: '16px'}}>
-              SOLPOT
-            </span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-3 ml-2">
-            <button
-              data-testid="link-provably-fair"
-              onClick={() => console.log('Provably Fair clicked')}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              style={{fontSize: '11px'}}
-            >
-              Provably Fair
-            </button>
-            <button
-              data-testid="link-terms-of-service"
-              onClick={() => console.log('Terms of Service clicked')}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              style={{fontSize: '11px'}}
-            >
-              Terms of Service
-            </button>
-            <button
-              data-testid="link-support"
-              onClick={() => console.log('Support clicked')}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              style={{fontSize: '11px'}}
-            >
-              Support
-            </button>
-          </div>
+    <nav className="sticky top-0 z-50 bg-black">
+      {/* Top row - Small links */}
+      <div className="flex items-center justify-end px-4 py-1 border-b border-border/10" style={{height: '20px'}}>
+        <div className="flex items-center gap-3">
+          <button
+            data-testid="link-provably-fair"
+            onClick={() => console.log('Provably Fair clicked')}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            style={{fontSize: '9px'}}
+          >
+            Provably Fair
+          </button>
+          <button
+            data-testid="link-terms-of-service"
+            onClick={() => console.log('Terms of Service clicked')}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            style={{fontSize: '9px'}}
+          >
+            Terms of Service
+          </button>
+          <button
+            data-testid="link-support"
+            onClick={() => console.log('Support clicked')}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            style={{fontSize: '9px'}}
+          >
+            Support
+          </button>
         </div>
       </div>
 
-      {/* Bottom row - Main navigation */}
-      <div className="flex items-center justify-between px-5" style={{height: '52px'}}>
-        <div className="flex items-center gap-2">
+      {/* Bottom row - Main navigation with large logo */}
+      <div className="flex items-center justify-between px-4 border-b border-border/20" style={{height: '44px'}}>
+        {/* Left - Large SOLPOT Logo */}
+        <div className="flex items-center gap-2.5" style={{minWidth: '140px'}}>
+          <div className="rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center" style={{width: '32px', height: '32px'}}>
+            <svg className="text-white" fill="currentColor" viewBox="0 0 24 24" style={{width: '18px', height: '18px'}}>
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span className="font-bold tracking-tight text-foreground" style={{fontSize: '18px', letterSpacing: '0.02em'}}>
+            SOLPOT
+          </span>
+        </div>
+
+        {/* Center - Navigation tabs */}
+        <div className="flex items-center gap-1">
           <Button
             data-testid="button-jackpot-tab"
             variant="ghost"
             size="sm"
             onClick={() => setActiveTab("jackpot")}
             className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '36px', fontSize: '13px'}}
+            style={{height: '32px', fontSize: '12px'}}
           >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '14px', height: '14px'}}>
+            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
             </svg>
             Jackpot
@@ -83,9 +83,9 @@ export default function GameNavigation({
             size="sm"
             onClick={() => setActiveTab("coinflip")}
             className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '36px', fontSize: '13px'}}
+            style={{height: '32px', fontSize: '12px'}}
           >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '14px', height: '14px'}}>
+            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
               <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd"/>
             </svg>
@@ -97,21 +97,22 @@ export default function GameNavigation({
             size="sm"
             onClick={() => setActiveTab("affiliates")}
             className={`font-medium px-3 ${activeTab === "affiliates" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '36px', fontSize: '13px'}}
+            style={{height: '32px', fontSize: '12px'}}
           >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '14px', height: '14px'}}>
+            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '13px', height: '13px'}}>
               <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
             </svg>
             Affiliates
           </Button>
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Right - Stats and Connect */}
+        <div className="flex items-center gap-4" style={{minWidth: '400px', justifyContent: 'flex-end'}}>
           <div className="hidden lg:flex items-center gap-4">
-            <div className="text-muted-foreground" style={{fontSize: '12px'}}>
+            <div className="text-muted-foreground" style={{fontSize: '11px'}}>
               <span className="font-bold text-foreground">313909.00</span> Total Bets
             </div>
-            <div className="text-muted-foreground" style={{fontSize: '12px'}}>
+            <div className="text-muted-foreground" style={{fontSize: '11px'}}>
               AIRDROP WEEKLY <span className="font-bold text-primary">$4,000</span>
             </div>
           </div>
@@ -122,9 +123,9 @@ export default function GameNavigation({
               variant="outline"
               size="sm"
               className="font-mono border-border/40 px-3"
-              style={{height: '36px', fontSize: '12px'}}
+              style={{height: '32px', fontSize: '11px'}}
             >
-              <Wallet className="mr-1.5" style={{width: '14px', height: '14px'}} />
+              <Wallet className="mr-1.5" style={{width: '13px', height: '13px'}} />
               {walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}
             </Button>
           ) : (
@@ -133,21 +134,12 @@ export default function GameNavigation({
               onClick={onConnect}
               size="sm"
               className="gradient-purple-pink text-white font-bold px-4 shadow-[0_0_20px_rgba(123,104,238,0.5)] hover:shadow-[0_0_30px_rgba(123,104,238,0.7)] border-0"
-              style={{height: '36px', fontSize: '12px'}}
+              style={{height: '32px', fontSize: '11px'}}
             >
-              <Wallet className="mr-1.5" style={{width: '14px', height: '14px'}} />
+              <Wallet className="mr-1.5" style={{width: '13px', height: '13px'}} />
               Connect
             </Button>
           )}
-          <Button
-            data-testid="button-menu"
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            style={{height: '36px', width: '36px'}}
-          >
-            <Menu style={{width: '18px', height: '18px'}} />
-          </Button>
         </div>
       </div>
     </nav>
