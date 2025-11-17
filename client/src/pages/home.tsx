@@ -122,7 +122,7 @@ export default function Home() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <img src={bnbLogo} alt="BNB" className="h-18 w-18" />
+                  <img src={bnbLogo} alt="BNB" className="h-6 w-6" />
                   <span className="text-xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
                 </div>
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" data-testid="icon-airdrop-lock" style={{
@@ -193,7 +193,7 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <div className="text-xs text-muted-foreground uppercase">Bet Amount</div>
                   <Input value={betAmount} onChange={(e) => setBetAmount(e.target.value)} placeholder="0" className="w-32 h-10 text-center font-mono glass-panel" data-testid="input-bet" />
-                  <img src={bnbLogo} alt="BNB" className="h-15 w-15" />
+                  <img src={bnbLogo} alt="BNB" className="h-5 w-5" />
                 </div>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
                 <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
@@ -211,14 +211,14 @@ export default function Home() {
                 <div className="flex items-stretch" style={{overflow: 'visible'}}>
                   <div className="flex-1 text-center py-2" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={bnbLogo} alt="BNB" className="h-18 w-18" />
+                      <img src={bnbLogo} alt="BNB" className="h-6 w-6" />
                       <div className="text-4xl font-bold font-mono gradient-text">0.401</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Jackpot Value</div>
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={bnbLogo} alt="BNB" className="h-18 w-18" />
+                      <img src={bnbLogo} alt="BNB" className="h-6 w-6" />
                       <div className="text-2xl font-bold font-mono text-foreground" data-testid="text-your-wager">0.000</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
@@ -349,7 +349,7 @@ export default function Home() {
 
           <div className="glass-panel p-3" style={{borderRadius: '18px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
-            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[3.27rem] w-[3.27rem]" /><span className="font-mono font-bold text-base text-foreground">0.769</span></div><span className="font-semibold text-foreground text-base">2.00%</span></div>
+            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[1.09rem] w-[1.09rem]" /><span className="font-mono font-bold text-base text-foreground">0.769</span></div><span className="font-semibold text-foreground text-base">2.00%</span></div>
           </div>
         </div>
       </div>
