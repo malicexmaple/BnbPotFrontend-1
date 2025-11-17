@@ -90,6 +90,10 @@ export function useWallet() {
           });
 
           if (signature) {
+            console.log('🔐 Wallet Connected & Signed:', {
+              address: address,
+              signature: signature.slice(0, 20) + '...'
+            });
             setHasManuallyConnected(true);
             setState({
               address: address,

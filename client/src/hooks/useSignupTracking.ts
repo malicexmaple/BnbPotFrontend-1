@@ -22,7 +22,14 @@ export function useSignupTracking(walletAddress: string | null) {
       );
       
       if (Array.isArray(completedSignups)) {
-        setHasCompletedSignup(completedSignups.includes(walletAddress));
+        const hasCompleted = completedSignups.includes(walletAddress);
+        console.log('🔍 Wallet Signup Check:', {
+          wallet: walletAddress,
+          hasCompletedSignup: hasCompleted,
+          totalRegisteredWallets: completedSignups.length,
+          allRegisteredWallets: completedSignups
+        });
+        setHasCompletedSignup(hasCompleted);
       } else {
         // Reset if data is malformed
         localStorage.setItem('completedSignups', '[]');
@@ -49,6 +56,10 @@ export function useSignupTracking(walletAddress: string | null) {
       if (!completedSignups.includes(walletAddress)) {
         completedSignups.push(walletAddress);
         localStorage.setItem('completedSignups', JSON.stringify(completedSignups));
+        console.log('✅ Wallet Signup Completed:', {
+          newWallet: walletAddress,
+          totalRegisteredWallets: completedSignups.length
+        });
       }
       
       setHasCompletedSignup(true);
