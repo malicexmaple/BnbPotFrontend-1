@@ -15,6 +15,7 @@ import avatar1 from '@assets/generated_images/Gaming_avatar_placeholder_1_a3c236
 import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e6961.png';
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
 import bnbpotBg from '@assets/bnbpotbg_1763390160060.png';
+import jackpotLogo from '@assets/3dgifmaker60407_1763391337140.gif';
 
 export default function Home() {
   const { address, isConnecting, error, connect } = useWallet();
@@ -200,7 +201,7 @@ export default function Home() {
                   <Trophy className="h-6 w-6" style={{filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}} />
                 </div>
                 <div>
-                  <div className="text-4xl font-bold uppercase tracking-[0.2em] gradient-text">JACKPOT</div>
+                  <img src={jackpotLogo} alt="JACKPOT" style={{height: '36px', width: 'auto', display: 'block'}} />
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">Winner takes all...</div>
                 </div>
               </div>
