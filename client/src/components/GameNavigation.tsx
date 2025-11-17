@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Trophy } from "lucide-react";
 import { useState } from "react";
-import crownLogo from '@assets/3dgifmaker76444_1763389385979.gif';
+import crownLogo from '@assets/3f51d38e8e16e37_1763391170208.gif';
 import textLogo from '@assets/3dgifmaker22972_1763389385979.gif';
 import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
