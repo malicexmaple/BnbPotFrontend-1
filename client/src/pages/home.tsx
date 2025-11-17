@@ -230,12 +230,15 @@ export default function Home() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Wager</div>
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
-                    <div className="text-4xl font-bold font-mono gradient-text no-text-shadow mb-2" data-testid="text-your-chance">0.00%</div>
+                    <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
+                      <div className="w-20" style={{flexShrink: 0}}></div>
+                      <div className="text-4xl font-bold font-mono gradient-text no-text-shadow" data-testid="text-your-chance">0.00%</div>
+                    </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Your Chance</div>
                   </div>
                   <div className="flex-1 text-center py-2 stats-divider" style={{overflow: 'visible'}}>
                     <div className="flex items-center justify-center gap-2 mb-2" style={{overflow: 'visible'}}>
-                      <img src={clockIcon} alt="Clock" className="h-11 w-11 flex-shrink-0" />
+                      <img src={clockIcon} alt="Clock" className="h-24 w-24 flex-shrink-0" />
                       <div className="text-4xl font-bold font-mono gradient-text no-text-shadow min-w-[120px]" data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">Time Remaining</div>
