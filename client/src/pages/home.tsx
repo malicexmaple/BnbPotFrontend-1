@@ -544,12 +544,6 @@ export default function Home() {
       {/* Terms and Conditions Dialog */}
       <Dialog open={showTermsModal} onOpenChange={setShowTermsModal}>
         <DialogContent className="max-w-2xl max-h-[80vh] border-0 p-6 signup-dialog">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold gradient-text uppercase tracking-wide">Terms and Conditions</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Please read these terms carefully before using BNBPOT
-            </DialogDescription>
-          </DialogHeader>
           <ScrollArea className="h-96 pr-4">
             <div className="space-y-4 text-sm">
               <div>
@@ -878,18 +872,6 @@ export default function Home() {
               </div>
             </div>
           </ScrollArea>
-          <Button 
-            onClick={() => setShowTermsModal(false)} 
-            className="w-full mt-4 text-white text-base font-bold border-0" 
-            style={{
-              background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-              border: '2px solid rgba(234, 179, 8, 0.5)',
-              boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-            }} 
-            data-testid="button-close-terms"
-          >
-            Close
-          </Button>
         </DialogContent>
       </Dialog>
 
