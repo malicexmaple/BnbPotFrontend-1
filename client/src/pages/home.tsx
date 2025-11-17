@@ -457,8 +457,8 @@ export default function Home() {
         <DialogContent className="max-w-md border-0 p-6" style={{
           borderRadius: '18px',
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-          border: '2px solid rgba(234, 179, 8, 0.5)',
-          boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+          border: '2px solid rgba(250, 204, 21, 0.9)',
+          boxShadow: '0 0 25px rgba(250, 204, 21, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
         }}>
           <DialogHeader>
             <DialogTitle className="flex justify-center mb-2">
