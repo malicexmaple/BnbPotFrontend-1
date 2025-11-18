@@ -34,14 +34,30 @@ export default function GameNavigation({
   const [activeTab, setActiveTab] = useState("jackpot");
 
   return (
-    <>
-      {/* Top Header - 30px */}
-      <div className="sticky top-0 z-50 flex" style={{height: '30px'}}>
-        {/* Left - Empty space matching logo section (320px) */}
-        <div className="flex-shrink-0" style={{width: '320px'}}></div>
+    <div className="sticky top-0 z-50 flex" style={{height: '100px'}}>
+      {/* Left - Logo section (320px, full height) */}
+      <div className="flex items-start justify-center flex-shrink-0" style={{
+        width: '320px',
+        height: '100px',
+        backgroundImage: `url(${headerBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
+        <div className="flex items-center justify-center" style={{height: '100px'}}>
+          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
+            <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
+          </div>
+          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
+            <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
+          </div>
+        </div>
+      </div>
 
-        {/* Right - Top header content */}
-        <nav className="flex-1 bg-black flex items-center justify-between px-4 border-b border-border/20">
+      {/* Right - Stacked header content */}
+      <div className="flex-1 flex flex-col">
+        {/* Top Header - 30px */}
+        <nav className="bg-black flex items-center justify-between px-4 border-b border-border/20" style={{height: '30px'}}>
           <div className="flex items-center gap-3">
             {/* Social Icons */}
             <button className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate" data-testid="button-social-x">
@@ -72,29 +88,14 @@ export default function GameNavigation({
             11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
           </div>
         </nav>
-      </div>
 
-      {/* Bottom Header - 70px */}
-      <nav className="sticky z-50 bg-black flex items-center border-b border-border/20" style={{height: '70px', top: '30px'}}>
-        {/* Left - Header Logo (320px to match chatbox width) */}
-        <div className="flex items-center justify-center flex-shrink-0" style={{
-          width: '320px',
+        {/* Bottom Header - 70px */}
+        <nav className="flex items-center justify-between px-4" style={{
           height: '70px',
-          backgroundImage: `url(${headerBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+          border: '1px solid rgba(250, 204, 21, 0.9)',
+          boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
         }}>
-          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
-            <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
-          </div>
-          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
-            <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
-          </div>
-        </div>
-
-        {/* Right side content */}
-        <div className="flex-1 flex items-center justify-between px-4">
           {/* Navigation tabs */}
           <div className="flex items-center gap-1">
           <Button
@@ -142,7 +143,7 @@ export default function GameNavigation({
 
           {/* Leaderboard and Connect button on bottom right */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 px-4 rounded-lg" style={{
+            <div className="flex items-center gap-3 px-4" style={{
               height: '60px',
               background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
               border: '2px solid rgba(234, 179, 8, 0.5)',
@@ -274,8 +275,8 @@ export default function GameNavigation({
               </Button>
             )}
           </div>
-        </div>
-      </nav>
-    </>
+        </nav>
+      </div>
+    </div>
   );
 }
