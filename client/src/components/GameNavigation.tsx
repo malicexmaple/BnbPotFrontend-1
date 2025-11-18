@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
 import textLogo from '@assets/bnbpotlogonew_1763432221839.png';
-import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
 interface GameNavigationProps {
   onConnect?: () => void;
@@ -36,18 +35,14 @@ export default function GameNavigation({
   return (
     <nav className="sticky top-0 z-50 flex items-center border-b border-border/20" style={{
       height: '100px',
-      background: 'linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 30%, rgba(20, 20, 20, 0.8) 100%)',
+      background: 'linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 30%, rgba(20, 20, 20, 0.35) 100%)',
       backdropFilter: 'blur(10px)',
       WebkitBackdropFilter: 'blur(10px)'
     }}>
       {/* Left - Header Logo (320px to match chatbox width) */}
       <div className="flex items-center justify-center flex-shrink-0" style={{
         width: '320px',
-        height: '100px',
-        backgroundImage: `url(${headerBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        height: '100px'
       }}>
         <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
           <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
