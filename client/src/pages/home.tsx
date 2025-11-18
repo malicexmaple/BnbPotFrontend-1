@@ -181,6 +181,10 @@ export default function Home() {
           {/* LEFT SIDEBAR - CHAT */}
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             width: isChatCollapsed ? '0px' : '345px',
+            paddingLeft: '0px',
+            paddingTop: '0px',
+            paddingBottom: '0px',
+            paddingRight: isChatCollapsed ? '0px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
             backdropFilter: 'blur(4px)',
             overflow: 'visible',
@@ -214,7 +218,7 @@ export default function Home() {
           {!isChatCollapsed && (
             <>
               {/* Degen Chat Header */}
-              <div className="p-3 border-b border-border/10">
+              <div className="p-3 border-b border-border/10 mr-auto" style={{width: '306px'}}>
                 <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
@@ -231,7 +235,7 @@ export default function Home() {
               </div>
 
               {/* LIVE AIRDROP Section */}
-              <div className="p-2">
+              <div className="p-2 mr-auto" style={{width: '306px'}}>
                 <div className="glass-panel neon-border rounded-xl p-2">
                   <div className="flex items-center justify-center">
                     <div className="flex items-center gap-1.5">
