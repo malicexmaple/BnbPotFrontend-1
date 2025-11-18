@@ -189,21 +189,21 @@ export default function Home() {
             {/* Collapse Button - Positioned on the outer right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="glass-panel absolute top-1/2 -translate-y-1/2 w-18 h-18 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
                 left: 'calc(100% - 19px)',
                 zIndex: 9999,
-                borderRadius: '4px'
+                borderRadius: '8px'
               }}
               data-testid="button-collapse-chat"
             >
               {isChatCollapsed ? (
-                <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-8 h-8 text-foreground" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
                   <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
                 </svg>
               ) : (
-                <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               )}
@@ -457,15 +457,15 @@ export default function Home() {
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="glass-panel absolute top-1/2 -translate-y-1/2 w-18 h-18 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
                 left: '-48px',
                 zIndex: 9999,
-                borderRadius: '4px'
+                borderRadius: '8px'
               }}
               data-testid="button-collapse-leaderboard"
             >
-              <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+              <svg className="w-8 h-8 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
                 transform: isLeaderboardCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
               }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
