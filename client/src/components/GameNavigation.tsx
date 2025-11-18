@@ -157,7 +157,7 @@ export default function GameNavigation({
                   <Button
                     data-testid="button-user-menu"
                     size="sm"
-                    className="font-bold px-5 text-white border-0 glass-panel"
+                    className="font-bold pl-2 pr-5 text-white border-0 glass-panel"
                     style={{
                       height: '60px',
                       fontSize: '14px',
