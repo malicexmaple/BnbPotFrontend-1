@@ -53,7 +53,7 @@ export default function GameNavigation({
       </div>
 
       {/* Right side content - Two rows */}
-      <div className="flex-1 flex flex-col justify-center px-4" style={{paddingTop: '-4px'}}>
+      <div className="flex-1 flex flex-col justify-center px-4" style={{paddingTop: '-10px'}}>
         {/* Top row - Social icons and links on left, Total Bets on right */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
