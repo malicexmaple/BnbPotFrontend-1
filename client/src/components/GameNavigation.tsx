@@ -8,8 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
-import textLogo from '@assets/bnbpot-text1_1763394945404.png';
+import newLogo from '@assets/image_1763432064037.png';
 import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
 interface GameNavigationProps {
@@ -44,11 +43,8 @@ export default function GameNavigation({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}>
-        <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
-          <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
-        </div>
-        <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
-          <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block'}} />
+        <div className="shine-image" style={{'--shine-mask': `url(${newLogo})`} as React.CSSProperties}>
+          <img src={newLogo} alt="BNBPOT" style={{height: '60px', width: 'auto', display: 'block'}} />
         </div>
       </div>
 
