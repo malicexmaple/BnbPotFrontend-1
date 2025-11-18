@@ -166,16 +166,17 @@ export default function Home() {
     }}>
       <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* LEFT SIDEBAR - CHAT */}
-        <div className="w-80 flex-shrink-0 flex flex-col" style={{
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-          borderLeft: '1px solid rgba(250, 204, 21, 0.9)',
-          borderRight: '1px solid rgba(250, 204, 21, 0.9)',
-          borderBottom: '1px solid rgba(250, 204, 21, 0.9)',
-          boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
-          backdropFilter: 'blur(8px)'
-        }}>
+      {/* Golden border wrapper around bottom nav + content */}
+      <div className="flex-1 flex flex-col overflow-hidden" style={{
+        border: '1px solid rgba(250, 204, 21, 0.85)',
+        boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
+      }}>
+        <div className="flex-1 flex overflow-hidden">
+          {/* LEFT SIDEBAR - CHAT */}
+          <div className="w-80 flex-shrink-0 flex flex-col" style={{
+            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
+            backdropFilter: 'blur(8px)'
+          }}>
           {/* Degen Chat Header */}
           <div className="p-3 border-b border-border/10">
             <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
@@ -408,15 +409,11 @@ export default function Home() {
           </div>
         </div>
 
-        {/* RIGHT SIDEBAR - LEADERBOARD */}
-        <div className="w-72 flex-shrink-0 p-6 space-y-3" style={{
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-          borderLeft: '1px solid rgba(250, 204, 21, 0.9)',
-          borderRight: '1px solid rgba(250, 204, 21, 0.9)',
-          borderBottom: '1px solid rgba(250, 204, 21, 0.9)',
-          boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
-          backdropFilter: 'blur(8px)'
-        }}>
+          {/* RIGHT SIDEBAR - LEADERBOARD */}
+          <div className="w-72 flex-shrink-0 p-6 space-y-3" style={{
+            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
+            backdropFilter: 'blur(8px)'
+          }}>
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
@@ -470,6 +467,7 @@ export default function Home() {
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
+        </div>
         </div>
       </div>
 
