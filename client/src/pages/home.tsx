@@ -29,7 +29,7 @@ import signupLogo from '@assets/signupnew_1763410821936.png';
 export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
   const { toast } = useToast();
-  const { shouldShowSignup, markSignupComplete } = useSignupTracking(address);
+  const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
   
   /** Time remaining in seconds for the current game round */
   const [timeRemaining, setTimeRemaining] = useState(13);
@@ -139,15 +139,15 @@ export default function Home() {
       return;
     }
 
-    // Mark signup as complete in localStorage
-    markSignupComplete();
+    // Mark signup as complete in localStorage with username
+    markSignupComplete(signupData.name);
 
     // TODO: Send signup data to backend API
     console.log('Signup data:', { ...signupData, walletAddress: address });
 
     toast({
       title: "Account Created",
-      description: "Welcome to BNBPOT!",
+      description: `Welcome to BNBPOT, ${signupData.name}!`,
     });
 
     setSignupData({ name: "", email: "", referralCode: "", agreedToTerms: false });
@@ -158,7 +158,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen space-bg">
-      <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} />
+      <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} />
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}

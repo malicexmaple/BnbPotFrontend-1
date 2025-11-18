@@ -12,6 +12,7 @@ interface GameNavigationProps {
   isConnected?: boolean;
   isConnecting?: boolean;
   walletAddress?: string;
+  username?: string;
 }
 
 export default function GameNavigation({ 
@@ -19,7 +20,8 @@ export default function GameNavigation({
   onDisconnect,
   isConnected = false,
   isConnecting = false,
-  walletAddress 
+  walletAddress,
+  username
 }: GameNavigationProps) {
   const [activeTab, setActiveTab] = useState("jackpot");
 
@@ -137,6 +139,21 @@ export default function GameNavigation({
               <span className="font-bold gradient-text italic" style={{fontSize: '13px'}}>$25K WEEKLY</span>
               <span className="text-muted-foreground" style={{fontSize: '13px'}}>LEADERBOARD</span>
             </div>
+            
+            {isConnected && username && (
+              <Button
+                data-testid="button-username"
+                variant="outline"
+                size="sm"
+                className="border-border/40 px-3 font-semibold"
+                style={{height: '38px', fontSize: '13px'}}
+              >
+                <svg className="mr-1.5 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                </svg>
+                {username}
+              </Button>
+            )}
             
             {isConnected && walletAddress ? (
               <Button
