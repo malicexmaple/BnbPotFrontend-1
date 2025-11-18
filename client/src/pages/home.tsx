@@ -373,7 +373,7 @@ export default function Home() {
         <div className="flex-1 flex flex-col overflow-hidden relative">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
-            <div className="flex flex-col gap-4">
+            <div className="flex items-start justify-between">
               <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
                   <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '450px'}} />
