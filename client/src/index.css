@@ -204,6 +204,9 @@
     backface-visibility: hidden;
     position: relative;
     z-index: 1000;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.8);
+    text-stroke: 1px rgba(0, 0, 0, 0.8);
+    paint-order: stroke fill;
   }
 
   input[type="number"],
