@@ -254,9 +254,12 @@ export default function Home() {
                 borderRadius: isChatCollapsed ? '8px' : '4px',
                 width: isChatCollapsed ? '89px' : '34px',
                 height: '79px',
-                background: 'rgba(20, 20, 20, 1)',
-                border: '1px solid rgba(60, 60, 60, 0.4)',
-                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
+                background: 'rgba(15, 15, 15, 0.9)',
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
               }}
               data-testid="button-collapse-chat"
             >
@@ -391,16 +394,22 @@ export default function Home() {
               
               <div className="px-4 py-3" style={{
                 borderRadius: '18px',
-                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                border: '2px solid rgba(60, 60, 60, 0.4)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
+                background: 'rgba(15, 15, 15, 0.9)',
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
               }}>
                 <div className="flex items-center justify-center gap-2">
                   <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
+                    background: 'rgba(15, 15, 15, 0.9)',
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
                     minWidth: '160px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                    boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
                   }}>
                     <div className="flex items-center gap-2">
                       <svg className="w-4 h-4" style={{color: '#EAB308'}} fill="currentColor" viewBox="0 0 20 20">
@@ -422,9 +431,12 @@ export default function Home() {
                   </div>
                   
                   <div className="px-5 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                    background: 'rgba(15, 15, 15, 0.9)',
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
                   }}>
                     <button 
                       onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
@@ -436,9 +448,12 @@ export default function Home() {
                   </div>
                   
                   <div className="px-5 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                    background: 'rgba(15, 15, 15, 0.9)',
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
                   }}>
                     <button 
                       onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
@@ -450,9 +465,12 @@ export default function Home() {
                   </div>
                   
                   <div className="px-5 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                    background: 'rgba(15, 15, 15, 0.9)',
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
                   }}>
                     <button 
                       onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
@@ -635,9 +653,12 @@ export default function Home() {
                 borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
                 width: isLeaderboardCollapsed ? '89px' : '34px',
                 height: '79px',
-                background: 'rgba(20, 20, 20, 1)',
-                border: '1px solid rgba(60, 60, 60, 0.4)',
-                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
+                background: 'rgba(15, 15, 15, 0.9)',
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                backgroundOrigin: 'border-box',
+                backgroundClip: 'padding-box, border-box',
+                boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
               }}
               data-testid="button-collapse-leaderboard"
             >
