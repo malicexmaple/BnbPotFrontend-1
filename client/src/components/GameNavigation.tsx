@@ -34,28 +34,10 @@ export default function GameNavigation({
   const [activeTab, setActiveTab] = useState("jackpot");
 
   return (
-    <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '100px'}}>
-      {/* Left - Header Logo (320px to match chatbox width) */}
-      <div className="flex items-center justify-center flex-shrink-0" style={{
-        width: '320px',
-        height: '100px',
-        backgroundImage: `url(${headerBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}>
-        <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
-          <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
-        </div>
-        <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
-          <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
-        </div>
-      </div>
-
-      {/* Right side content - Two rows */}
-      <div className="flex-1 flex flex-col justify-center px-4" style={{paddingTop: '-10px'}}>
-        {/* Top row - Social icons and links on left, Total Bets on right */}
-        <div className="flex items-center justify-between mb-3">
+    <>
+      {/* Top Header - 30px */}
+      <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '30px'}}>
+        <div className="flex-1 flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             {/* Social Icons */}
             <button className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate" data-testid="button-social-x">
@@ -86,9 +68,29 @@ export default function GameNavigation({
             11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
           </div>
         </div>
+      </nav>
 
-        {/* Bottom row - Navigation tabs on left, Leaderboard and Connect on right */}
-        <div className="flex items-center justify-between" style={{marginTop: '-16px'}}>
+      {/* Bottom Header - 70px */}
+      <nav className="sticky z-50 bg-black flex items-center border-b border-border/20" style={{height: '70px', top: '30px'}}>
+        {/* Left - Header Logo (320px to match chatbox width) */}
+        <div className="flex items-center justify-center flex-shrink-0" style={{
+          width: '320px',
+          height: '70px',
+          backgroundImage: `url(${headerBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}>
+          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
+            <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
+          </div>
+          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
+            <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
+          </div>
+        </div>
+
+        {/* Right side content */}
+        <div className="flex-1 flex items-center justify-between px-4">
           {/* Navigation tabs */}
           <div className="flex items-center gap-1">
           <Button
@@ -269,7 +271,7 @@ export default function GameNavigation({
             )}
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }
