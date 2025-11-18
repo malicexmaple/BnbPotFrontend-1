@@ -10,6 +10,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: 'Ethnocentric';
+  src: url('/fonts/ethnocentric.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -57,7 +67,7 @@
   --chart-5: 160 50% 35%;
   --font-sans: 'Sora', system-ui, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: 'Neon AI', 'DM Mono', 'Roboto Mono', monospace;
+  --font-mono: 'Ethnocentric', 'DM Mono', 'Roboto Mono', monospace;
   --radius: .5rem;
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
@@ -184,9 +194,9 @@
   }
 
   .font-mono {
-    font-family: 'Neon AI', 'DM Mono', 'Roboto Mono', monospace;
+    font-family: 'Ethnocentric', 'DM Mono', 'Roboto Mono', monospace;
     letter-spacing: 0.02em;
-    font-weight: 500;
+    font-weight: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
