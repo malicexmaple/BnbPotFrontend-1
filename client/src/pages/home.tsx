@@ -410,7 +410,7 @@ export default function Home() {
                         value={betAmount} 
                         onChange={(e) => setBetAmount(e.target.value)} 
                         placeholder="0.1" 
-                        className="w-16 h-6 text-base font-mono font-semibold bg-transparent border-0 p-0 text-foreground focus-visible:ring-0" 
+                        className="w-16 h-6 text-base font-mono font-semibold bg-transparent border-0 p-0 text-foreground focus:outline-none focus:ring-0 focus-visible:ring-0" 
                         data-testid="input-bet" 
                       />
                     </div>
