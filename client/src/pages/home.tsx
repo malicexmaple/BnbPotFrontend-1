@@ -195,7 +195,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-center -mt-6" style={{marginLeft: '-0.5rem'}}>
+              <div className="flex items-center justify-center -mt-6" style={{marginLeft: '-1rem'}}>
                 <div className="flex items-center justify-center gap-0">
                   <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '5.25rem', width: '5.25rem', marginRight: '-0.25rem'}} />
                   <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.5rem'}} data-testid="text-airdrop-amount">0.255</span>
