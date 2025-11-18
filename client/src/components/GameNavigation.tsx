@@ -164,10 +164,13 @@ export default function GameNavigation({
                       boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 12px rgba(0, 0, 0, 0.7)'
                     }}
                   >
-                    <div className="w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center mr-2">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                      </svg>
+                    <div 
+                      className="w-6 h-6 rounded-full flex items-center justify-center mr-2 text-xs font-bold"
+                      style={{
+                        background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
+                      }}
+                    >
+                      {username.slice(0, 2).toUpperCase()}
                     </div>
                     {username}
                     <ChevronRight className="ml-2" style={{width: '14px', height: '14px'}} />
@@ -176,10 +179,13 @@ export default function GameNavigation({
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border/40">
                   <div className="px-3 py-3 border-b border-border/20">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center flex-shrink-0">
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                        </svg>
+                      <div 
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+                        style={{
+                          background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
+                        }}
+                      >
+                        {username.slice(0, 2).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-foreground">{username}</div>
