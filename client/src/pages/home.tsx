@@ -53,6 +53,9 @@ export default function Home() {
   /** Controls visibility of profile modal */
   const [showProfileModal, setShowProfileModal] = useState(false);
   
+  /** Controls whether chat sidebar is collapsed */
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
+  
   /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
     name: "",
@@ -173,7 +176,8 @@ export default function Home() {
       }}>
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT SIDEBAR - CHAT */}
-          <div className="w-80 flex-shrink-0 flex flex-col" style={{
+          <div className="flex-shrink-0 flex flex-col transition-all duration-300" style={{
+            width: isChatCollapsed ? '60px' : '320px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
@@ -184,64 +188,83 @@ export default function Home() {
                 <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
                   <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
                 </div>
-                <span className="text-sm font-semibold text-foreground">Degen Chat</span>
+                {!isChatCollapsed && <span className="text-sm font-semibold text-foreground">Degen Chat</span>}
               </div>
-              <Badge className="text-white text-xs font-bold px-2 border-0" style={{
-                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                border: '2px solid rgba(234, 179, 8, 0.5)',
-                boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-              }} data-testid="badge-chat-count">{onlineUsers}</Badge>
+              <div className="flex items-center gap-2">
+                {!isChatCollapsed && (
+                  <Badge className="text-white text-xs font-bold px-2 border-0" style={{
+                    background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                    border: '2px solid rgba(234, 179, 8, 0.5)',
+                    boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                  }} data-testid="badge-chat-count">{onlineUsers}</Badge>
+                )}
+                <button
+                  onClick={() => setIsChatCollapsed(!isChatCollapsed)}
+                  className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate active-elevate-2"
+                  data-testid="button-collapse-chat"
+                >
+                  <svg className="w-4 h-4 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+                    transform: isChatCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
+                  }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* LIVE AIRDROP Section */}
-          <div className="p-3">
-            <div className="glass-panel neon-border rounded-xl p-3">
-              <div className="flex items-center justify-center">
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
-                  <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
-                    <img src={airdropLogo} alt="AIRDROP" className="h-10" data-testid="img-airdrop-logo" />
+          {!isChatCollapsed && (
+            <>
+              {/* LIVE AIRDROP Section */}
+              <div className="p-3">
+                <div className="glass-panel neon-border rounded-xl p-3">
+                  <div className="flex items-center justify-center">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
+                      <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
+                        <img src={airdropLogo} alt="AIRDROP" className="h-10" data-testid="img-airdrop-logo" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center -mt-6" style={{marginLeft: '-1rem'}}>
+                    <div className="flex items-center justify-center gap-0">
+                      <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '5.25rem', width: '5.25rem', marginRight: '-0.25rem'}} />
+                      <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.5rem'}} data-testid="text-airdrop-amount">0.255</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-center -mt-6" style={{marginLeft: '-1rem'}}>
-                <div className="flex items-center justify-center gap-0">
-                  <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '5.25rem', width: '5.25rem', marginRight: '-0.25rem'}} />
-                  <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.5rem'}} data-testid="text-airdrop-amount">0.255</span>
+
+              {/* Chat Messages */}
+              <ScrollArea className="flex-1 px-3">
+                  <div className="flex items-center justify-center h-full text-muted-foreground text-sm pt-32">
+                    <div className="text-center space-y-2">
+                      <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <p>No messages yet</p>
+                    </div>
+                  </div>
+              </ScrollArea>
+
+              {/* Chat Input */}
+              <div className="p-3 border-t border-border/10">
+                <Input 
+                  placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
+                  className="h-10 text-sm bg-muted/30 border-border/20" 
+                  data-testid="input-chat"
+                  disabled={!address}
+                />
+                <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+                  <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
+                    <span>Chat Rules</span>
+                  </button>
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Chat Messages */}
-          <ScrollArea className="flex-1 px-3">
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm pt-32">
-                <div className="text-center space-y-2">
-                  <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                  <p>No messages yet</p>
-                </div>
-              </div>
-          </ScrollArea>
-
-          {/* Chat Input */}
-          <div className="p-3 border-t border-border/10">
-            <Input 
-              placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
-              className="h-10 text-sm bg-muted/30 border-border/20" 
-              data-testid="input-chat"
-              disabled={!address}
-            />
-            <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-              <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
-                <span>Chat Rules</span>
-              </button>
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
-            </div>
-          </div>
+            </>
+          )}
         </div>
 
         {/* CENTER - MAIN GAME AREA */}
