@@ -172,12 +172,14 @@ export default function GameNavigation({
                     <div 
                       className="w-12 h-12 rounded flex items-center justify-center mr-2 text-base font-bold"
                       style={{
-                        background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`,
+                        background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                         border: '2px solid rgba(60, 60, 60, 0.6)',
                         boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
                       }}
                     >
-                      {username.slice(0, 2).toUpperCase()}
+                      <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '24px', height: '24px'}}>
+                        <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                      </svg>
                     </div>
                     {username}
                     <ChevronRight className="ml-2" style={{width: '14px', height: '14px'}} />
