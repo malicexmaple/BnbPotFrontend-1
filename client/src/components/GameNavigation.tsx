@@ -235,7 +235,7 @@ export default function GameNavigation({
                 onClick={onConnect}
                 disabled={isConnecting}
                 size="sm"
-                className="font-bold px-5 text-white border-0 glass-panel"
+                className="font-bold px-5 text-white border-0 glass-panel no-default-hover-elevate"
                 style={{
                   height: '60px',
                   fontSize: '14px',

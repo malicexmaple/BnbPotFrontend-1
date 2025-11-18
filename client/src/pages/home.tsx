@@ -472,7 +472,7 @@ export default function Home() {
                     boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
                   }}>
                     <button 
-                      className="text-white font-bold text-base hover-elevate"
+                      className="text-white font-bold text-base"
                       data-testid="button-place-bet"
                     >
                       Place Bet
