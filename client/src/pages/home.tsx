@@ -217,7 +217,7 @@ export default function Home() {
             </button>
 
           {!isChatCollapsed && (
-            <div className="flex flex-col flex-1" style={{width: '297px'}}>
+            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '-12px'}}>
               {/* Degen Chat Header */}
               <div className="glass-panel p-3 flex items-center justify-between" style={{borderRadius: '18px 18px 0 0'}}>
                 <div className="flex items-center gap-2">
