@@ -181,7 +181,7 @@ export default function Home() {
           {/* LEFT SIDEBAR - CHAT */}
           <div className="flex-shrink-0 transition-all duration-300 relative glass-panel" style={{
             width: isChatCollapsed ? '0px' : '345px',
-            paddingLeft: isChatCollapsed ? '0px' : '4px',
+            paddingLeft: '0px',
             paddingTop: '0px',
             paddingBottom: isChatCollapsed ? '0px' : '24px',
             paddingRight: '0px',
@@ -462,7 +462,7 @@ export default function Home() {
             paddingLeft: '0px',
             paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
             paddingBottom: isLeaderboardCollapsed ? '0px' : '24px',
-            paddingRight: isLeaderboardCollapsed ? '0px' : '4px',
+            paddingRight: '0px',
             overflow: 'visible',
             zIndex: 50,
             borderRadius: '0px'
