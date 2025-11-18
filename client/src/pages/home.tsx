@@ -189,7 +189,7 @@ export default function Home() {
             {/* Collapse Button - Positioned on the outer right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
                 left: 'calc(100% - 19px)',
                 zIndex: 9999,
@@ -457,7 +457,7 @@ export default function Home() {
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
                 left: '-48px',
                 zIndex: 9999,
