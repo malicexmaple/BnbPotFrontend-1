@@ -450,7 +450,10 @@ export default function Home() {
           {/* RIGHT SIDEBAR - LEADERBOARD */}
           <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
             width: isLeaderboardCollapsed ? '0px' : '313px',
-            padding: isLeaderboardCollapsed ? '0px' : '24px',
+            paddingLeft: isLeaderboardCollapsed ? '0px' : '24px',
+            paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
+            paddingBottom: isLeaderboardCollapsed ? '0px' : '24px',
+            paddingRight: '0px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
             backdropFilter: 'blur(4px)',
             overflow: 'visible',
@@ -478,7 +481,7 @@ export default function Home() {
           
           {!isLeaderboardCollapsed && (
             <>
-          <div className="p-1 ml-auto" style={{width: '265px'}}>
+          <div className="p-1 ml-auto" style={{width: '289px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
               <img src={coinStack} alt="Coins" className="w-16 h-16" />
@@ -520,14 +523,14 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="glass-panel p-4 ml-auto" style={{borderRadius: '18px', width: '265px'}}>
+          <div className="glass-panel p-4 ml-auto" style={{borderRadius: '18px', width: '289px'}}>
             <Badge className="gradient-purple-pink text-black text-xs mb-3 uppercase tracking-wider font-bold no-text-shadow">LOOT OF THE DAY!</Badge>
             <div className="h-24 bg-background/30 rounded flex items-center justify-center border border-border/50">
               <div className="text-4xl">🎁</div>
             </div>
           </div>
 
-          <div className="glass-panel p-3 ml-auto" style={{borderRadius: '18px', width: '265px'}}>
+          <div className="glass-panel p-3 ml-auto" style={{borderRadius: '18px', width: '289px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
