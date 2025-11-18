@@ -194,8 +194,8 @@ export default function Home() {
                 left: 'calc(100% - 19px)',
                 zIndex: 9999,
                 borderRadius: isChatCollapsed ? '8px' : '4px',
-                width: isChatCollapsed ? '79px' : '24px',
-                height: isChatCollapsed ? '79px' : '24px'
+                width: isChatCollapsed ? '89px' : '34px',
+                height: '79px'
               }}
               data-testid="button-collapse-chat"
             >
@@ -464,8 +464,8 @@ export default function Home() {
                 left: '-48px',
                 zIndex: 9999,
                 borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
-                width: isLeaderboardCollapsed ? '79px' : '24px',
-                height: isLeaderboardCollapsed ? '79px' : '24px'
+                width: isLeaderboardCollapsed ? '89px' : '34px',
+                height: '79px'
               }}
               data-testid="button-collapse-leaderboard"
             >
