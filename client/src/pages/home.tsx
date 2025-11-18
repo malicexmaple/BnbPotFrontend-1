@@ -388,120 +388,70 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="relative" style={{paddingTop: '20px'}}>
-                {/* Background Glass Box */}
-                <div className="px-4 py-4 pt-6" style={{
-                  borderRadius: '18px',
-                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '2px solid rgba(250, 204, 21, 0.9)',
-                  boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
+                  background: 'rgba(20, 20, 20, 0.7)',
+                  border: '1px solid rgba(60, 60, 60, 0.4)',
+                  minWidth: '160px'
                 }}>
-                  {/* Info Row */}
-                  <div className="flex items-center justify-between text-sm mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Bet Amount -$0</span>
-                      <div className="flex items-center gap-1">
-                        <svg className="w-3 h-3 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
-                        </svg>
-                        <span className="text-foreground font-medium">0.000</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Balance:</span>
-                      <div className="flex items-center gap-1">
-                        <svg className="w-3 h-3 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
-                        </svg>
-                        <span className="text-foreground font-medium">0.00905593</span>
-                      </div>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4" style={{color: '#EAB308'}} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                    </svg>
+                    <Input 
+                      value={betAmount} 
+                      onChange={(e) => setBetAmount(e.target.value)} 
+                      placeholder="0.1" 
+                      className="w-16 h-6 text-base font-mono font-semibold bg-transparent border-0 p-0 text-foreground focus-visible:ring-0" 
+                      data-testid="input-bet" 
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 pl-3 border-l border-border/20">
+                    <span className="text-sm font-semibold text-foreground">BNB</span>
                   </div>
                 </div>
-
-                {/* Controls Row - Positioned on top */}
-                <div className="absolute left-0 right-0 flex items-center justify-center gap-2 px-4" style={{top: '0px'}}>
-                  <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    minWidth: '160px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                  }}>
-                    <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" style={{color: '#EAB308'}} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
-                      </svg>
-                      <Input 
-                        value={betAmount} 
-                        onChange={(e) => setBetAmount(e.target.value)} 
-                        placeholder="0.1" 
-                        className="w-16 h-6 text-base font-mono font-semibold bg-transparent border-0 p-0 text-foreground focus-visible:ring-0" 
-                        data-testid="input-bet" 
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 pl-3 border-l border-border/20">
-                      <span className="text-sm font-semibold text-foreground">BNB</span>
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    size="sm" 
-                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
-                    className="px-5 h-10 text-sm font-semibold text-white"
-                    style={{
-                      borderRadius: '8px',
-                      background: 'rgba(20, 20, 20, 0.9)',
-                      border: '1px solid rgba(60, 60, 60, 0.5)',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                    }}
-                    data-testid="button-plus-0.1"
-                  >
-                    +0.1
-                  </Button>
-                  
-                  <Button 
-                    size="sm" 
-                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
-                    className="px-5 h-10 text-sm font-semibold text-white"
-                    style={{
-                      borderRadius: '8px',
-                      background: 'rgba(20, 20, 20, 0.9)',
-                      border: '1px solid rgba(60, 60, 60, 0.5)',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                    }}
-                    data-testid="button-plus-0.5"
-                  >
-                    +0.5
-                  </Button>
-                  
-                  <Button 
-                    size="sm" 
-                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
-                    className="px-5 h-10 text-sm font-semibold text-white"
-                    style={{
-                      borderRadius: '8px',
-                      background: 'rgba(20, 20, 20, 0.9)',
-                      border: '1px solid rgba(60, 60, 60, 0.5)',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                    }}
-                    data-testid="button-plus"
-                  >
-                    +1
-                  </Button>
-                  
-                  <Button 
-                    className="text-white font-bold px-10 h-10 text-base"
-                    style={{
-                      borderRadius: '8px',
-                      background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
-                      border: '2px solid rgba(234, 179, 8, 0.7)',
-                      boxShadow: '0 0 20px rgba(234, 179, 8, 0.5), 0 2px 8px rgba(0, 0, 0, 0.6)'
-                    }}
-                    data-testid="button-place-bet"
-                  >
-                    Place Bet
-                  </Button>
-                </div>
+                
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
+                  className="px-5 h-10 text-sm font-semibold"
+                  data-testid="button-plus-0.1"
+                >
+                  +0.1
+                </Button>
+                
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
+                  className="px-5 h-10 text-sm font-semibold"
+                  data-testid="button-plus-0.5"
+                >
+                  +0.5
+                </Button>
+                
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
+                  className="px-5 h-10 text-sm font-semibold"
+                  data-testid="button-plus"
+                >
+                  +1
+                </Button>
+                
+                <Button 
+                  className="text-white font-bold border-0 px-10 h-10 text-base"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                    border: '2px solid rgba(234, 179, 8, 0.5)',
+                    boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                  }}
+                  data-testid="button-place-bet"
+                >
+                  Place Bet
+                </Button>
               </div>
             </div>
 
