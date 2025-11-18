@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Trophy } from "lucide-react";
+import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut } from "lucide-react";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
 import textLogo from '@assets/bnbpot-text1_1763394945404.png';
 import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
@@ -140,33 +146,84 @@ export default function GameNavigation({
               <span className="text-muted-foreground" style={{fontSize: '13px'}}>LEADERBOARD</span>
             </div>
             
-            {isConnected && username && (
-              <Button
-                data-testid="button-username"
-                variant="outline"
-                size="sm"
-                className="border-border/40 px-3 font-semibold"
-                style={{height: '38px', fontSize: '13px'}}
-              >
-                <svg className="mr-1.5 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                </svg>
-                {username}
-              </Button>
-            )}
-            
-            {isConnected && walletAddress ? (
-              <Button
-                data-testid="button-wallet-connected"
-                variant="outline"
-                size="sm"
-                onClick={onDisconnect}
-                className="font-mono border-border/40 px-3"
-                style={{height: '38px', fontSize: '13px'}}
-              >
-                <Wallet className="mr-1.5" style={{width: '16px', height: '16px'}} />
-                {walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}
-              </Button>
+            {isConnected && username ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    data-testid="button-user-menu"
+                    size="sm"
+                    className="font-bold px-5 text-white border-0 glass-panel"
+                    style={{
+                      height: '38px',
+                      fontSize: '14px',
+                      borderRadius: '12px',
+                      border: '2px solid transparent',
+                      backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
+                      backgroundOrigin: 'border-box',
+                      backgroundClip: 'padding-box, border-box',
+                      boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 12px rgba(0, 0, 0, 0.7)'
+                    }}
+                  >
+                    <div className="w-6 h-6 rounded-full bg-muted/50 flex items-center justify-center mr-2">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    {username}
+                    <ChevronRight className="ml-2" style={{width: '14px', height: '14px'}} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-card border-border/40">
+                  <div className="px-3 py-3 border-b border-border/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                        </svg>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-foreground">{username}</div>
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 mt-1">1</Badge>
+                      </div>
+                      <ChevronRight className="text-muted-foreground flex-shrink-0" style={{width: '16px', height: '16px'}} />
+                    </div>
+                  </div>
+                  
+                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" style={{
+                    border: '2px solid rgba(234, 179, 8, 0.4)',
+                    borderRadius: '8px',
+                    margin: '8px',
+                    background: 'rgba(234, 179, 8, 0.05)'
+                  }} data-testid="menu-leaderboard">
+                    <Trophy className="mr-3" style={{width: '18px', height: '18px', color: '#EAB308'}} />
+                    <span className="font-semibold">SP Leaderboard</span>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" data-testid="menu-options">
+                    <Settings className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                    <span>Options</span>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" data-testid="menu-statistics">
+                    <BarChart3 className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                    <span>Statistics</span>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" data-testid="menu-transactions">
+                    <Receipt className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                    <span>Transactions</span>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    className="px-3 py-2.5 cursor-pointer" 
+                    onClick={onDisconnect}
+                    data-testid="menu-disconnect"
+                  >
+                    <LogOut className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                    <span>Disconnect</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button
                 data-testid="button-connect-wallet"
