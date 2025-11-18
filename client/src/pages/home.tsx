@@ -214,8 +214,8 @@ export default function Home() {
           {!isChatCollapsed && (
             <>
               {/* Degen Chat Header */}
-              <div className="p-2 border-b border-border/10">
-                <div className="glass-panel p-2 rounded-lg flex items-center justify-between">
+              <div className="p-3 border-b border-border/10">
+                <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
                       <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
@@ -231,7 +231,7 @@ export default function Home() {
               </div>
 
               {/* LIVE AIRDROP Section */}
-              <div className="p-1.5">
+              <div className="p-2">
                 <div className="glass-panel neon-border rounded-xl p-2">
                   <div className="flex items-center justify-center">
                     <div className="flex items-center gap-1.5">
@@ -450,7 +450,7 @@ export default function Home() {
           {/* RIGHT SIDEBAR - LEADERBOARD */}
           <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
             width: isLeaderboardCollapsed ? '0px' : '313px',
-            padding: isLeaderboardCollapsed ? '0px' : '12px',
+            padding: isLeaderboardCollapsed ? '0px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
             backdropFilter: 'blur(4px)',
             overflow: 'visible',
