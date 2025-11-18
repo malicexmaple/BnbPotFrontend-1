@@ -388,34 +388,38 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 px-4 py-3 rounded-lg" style={{
-                background: 'rgba(20, 20, 20, 0.6)',
-                border: '1px solid rgba(60, 60, 60, 0.4)'
+              <div className="flex flex-col gap-3 px-5 py-4 rounded-xl" style={{
+                background: 'rgba(15, 15, 20, 0.95)',
+                border: '1px solid rgba(50, 50, 60, 0.3)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)'
               }}>
                 {/* Top Row - Info */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Bet Amount</span>
-                    <span className="text-sm text-muted-foreground">-$0</span>
-                    <svg className="w-3 h-3 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
-                    </svg>
-                    <span className="text-sm font-semibold text-foreground">0.000</span>
+                    <span className="text-muted-foreground">Bet Amount -$0</span>
+                    <div className="flex items-center gap-1">
+                      <svg className="w-3 h-3 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                      </svg>
+                      <span className="text-foreground font-medium">0.000</span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Balance:</span>
-                    <svg className="w-3 h-3 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
-                    </svg>
-                    <span className="text-sm font-semibold text-foreground">0.009005593</span>
+                    <span className="text-muted-foreground">Balance:</span>
+                    <div className="flex items-center gap-1">
+                      <svg className="w-3 h-3 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                      </svg>
+                      <span className="text-foreground font-medium">0.00905593</span>
+                    </div>
                   </div>
                 </div>
                 
                 {/* Bottom Row - Controls */}
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 px-3 py-2 rounded" style={{
-                    background: 'rgba(30, 30, 30, 0.8)',
-                    border: '1px solid rgba(60, 60, 60, 0.4)'
+                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg" style={{
+                    background: 'rgba(25, 25, 30, 0.9)',
+                    border: '1px solid rgba(60, 60, 70, 0.4)'
                   }}>
                     <svg className="w-4 h-4" style={{color: '#EAB308'}} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
@@ -424,17 +428,17 @@ export default function Home() {
                       value={betAmount} 
                       onChange={(e) => setBetAmount(e.target.value)} 
                       placeholder="0.1" 
-                      className="w-16 h-6 text-sm font-mono bg-transparent border-0 p-0 text-foreground focus-visible:ring-0" 
+                      className="w-16 h-6 text-base font-mono font-semibold bg-transparent border-0 p-0 text-foreground focus-visible:ring-0" 
                       data-testid="input-bet" 
                     />
                   </div>
                   
-                  <div className="flex items-center gap-1 px-3 py-2 rounded" style={{
-                    background: 'rgba(30, 30, 30, 0.8)',
-                    border: '1px solid rgba(60, 60, 60, 0.4)'
+                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer hover-elevate" style={{
+                    background: 'rgba(25, 25, 30, 0.9)',
+                    border: '1px solid rgba(60, 60, 70, 0.4)'
                   }}>
                     <span className="text-sm font-semibold text-foreground">BNB</span>
-                    <svg className="w-3 h-3 text-muted-foreground ml-1" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-3.5 h-3.5 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
                     </svg>
                   </div>
@@ -443,7 +447,7 @@ export default function Home() {
                     size="sm" 
                     variant="outline" 
                     onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
-                    className="px-4 h-9 text-sm font-semibold"
+                    className="px-5 h-10 text-sm font-semibold"
                     data-testid="button-plus-0.1"
                   >
                     +0.1
@@ -453,14 +457,14 @@ export default function Home() {
                     size="sm" 
                     variant="outline" 
                     onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
-                    className="px-4 h-9 text-sm font-semibold"
+                    className="px-5 h-10 text-sm font-semibold"
                     data-testid="button-plus"
                   >
                     +1
                   </Button>
                   
                   <Button 
-                    className="text-white font-bold border-0 px-8 h-9"
+                    className="text-white font-bold border-0 px-10 h-10 text-base"
                     style={{
                       background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
                       border: '2px solid rgba(234, 179, 8, 0.5)',
