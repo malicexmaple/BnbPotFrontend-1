@@ -200,13 +200,14 @@
     -moz-osx-font-smoothing: grayscale;
     font-weight: 700 !important;
     filter: none !important;
-    transform: none !important;
     backface-visibility: hidden;
     position: relative;
     z-index: 1000;
     -webkit-text-stroke: 2.5px rgba(0, 0, 0, 0.9);
     text-stroke: 2.5px rgba(0, 0, 0, 0.9);
     paint-order: stroke fill;
+    line-height: 1.2 !important;
+    transform: scaleY(1.1) !important;
   }
 
   input[type="number"],
