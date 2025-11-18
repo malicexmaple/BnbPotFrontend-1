@@ -137,7 +137,7 @@ export default function GameNavigation({
           {/* Leaderboard and Connect button on bottom right */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-3 px-4 rounded-lg" style={{
-              height: '70px',
+              height: '60px',
               background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
               border: '2px solid rgba(234, 179, 8, 0.5)',
               boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
@@ -159,7 +159,7 @@ export default function GameNavigation({
                     size="sm"
                     className="font-bold px-5 text-white border-0 glass-panel"
                     style={{
-                      height: '70px',
+                      height: '60px',
                       fontSize: '14px',
                       borderRadius: '12px',
                       border: '2px solid transparent',
@@ -247,7 +247,7 @@ export default function GameNavigation({
                 size="sm"
                 className="font-bold px-5 text-white border-0 glass-panel"
                 style={{
-                  height: '70px',
+                  height: '60px',
                   fontSize: '14px',
                   borderRadius: '12px',
                   border: '2px solid transparent',
