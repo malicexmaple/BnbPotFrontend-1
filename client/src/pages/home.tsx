@@ -193,9 +193,9 @@ export default function Home() {
               style={{
                 left: 'calc(100% - 19px)',
                 zIndex: 9999,
-                borderRadius: '10px',
-                width: '94px',
-                height: '94px'
+                borderRadius: '8px',
+                width: '79px',
+                height: '79px'
               }}
               data-testid="button-collapse-chat"
             >
@@ -463,9 +463,9 @@ export default function Home() {
               style={{
                 left: '-48px',
                 zIndex: 9999,
-                borderRadius: '10px',
-                width: '94px',
-                height: '94px'
+                borderRadius: '8px',
+                width: '79px',
+                height: '79px'
               }}
               data-testid="button-collapse-leaderboard"
             >
