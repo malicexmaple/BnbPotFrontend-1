@@ -378,7 +378,7 @@ export default function Home() {
                 <img src={crownIcon} alt="Crown" className="h-16 w-16 flex-shrink-0" />
                 <div className="flex items-center gap-2">
                   <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
-                    <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '225px'}} />
+                    <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '300px'}} />
                   </div>
                   <div className="text-xs uppercase tracking-wider shine-text" style={{color: 'rgb(161, 161, 170)'}}>Winner takes all...</div>
                 </div>
