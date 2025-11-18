@@ -53,9 +53,9 @@ export default function GameNavigation({
       </div>
 
       {/* Right side content - Two rows */}
-      <div className="flex-1 flex flex-col justify-center px-4">
+      <div className="flex-1 flex flex-col justify-center px-4" style={{paddingTop: '8px'}}>
         {/* Top row - Social icons and links on left, Total Bets on right */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-4">
             {/* Social Icons */}
             <button className="w-8 h-8 rounded bg-muted/30 flex items-center justify-center hover-elevate" data-testid="button-social-x">
