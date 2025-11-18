@@ -388,19 +388,86 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="text-xs text-muted-foreground uppercase">Bet Amount</div>
-                  <Input value={betAmount} onChange={(e) => setBetAmount(e.target.value)} placeholder="0" className="w-32 h-10 text-center font-mono glass-panel" data-testid="input-bet" />
-                  <img src={bnbLogo} alt="BNB" className="h-[4.5rem] w-[4.5rem]" />
+              <div className="flex items-center gap-3 px-4 py-3 rounded-lg" style={{
+                background: 'rgba(20, 20, 20, 0.6)',
+                border: '1px solid rgba(60, 60, 60, 0.4)'
+              }}>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Bet Amount</span>
+                    <span className="text-sm font-semibold text-foreground">-$0</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                    </svg>
+                    <span className="text-sm text-muted-foreground">Balance:</span>
+                    <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                    </svg>
+                    <span className="text-sm font-semibold text-foreground">0.00905593</span>
+                  </div>
                 </div>
-                <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) - 0.1))} data-testid="button-minus">-0.1</Button>
-                <Button size="sm" variant="outline" onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} data-testid="button-plus">+1</Button>
-                <Button className="text-white font-bold border-0" style={{
-                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '2px solid rgba(234, 179, 8, 0.5)',
-                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                }} data-testid="button-place-bet">Place Bet</Button>
+                
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded" style={{
+                    background: 'rgba(30, 30, 30, 0.8)',
+                    border: '1px solid rgba(60, 60, 60, 0.4)'
+                  }}>
+                    <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+                    </svg>
+                    <Input 
+                      value={betAmount} 
+                      onChange={(e) => setBetAmount(e.target.value)} 
+                      placeholder="0.1" 
+                      className="w-20 h-6 text-sm font-mono bg-transparent border-0 p-0 text-foreground focus-visible:ring-0" 
+                      data-testid="input-bet" 
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-1 px-2 py-2 rounded" style={{
+                    background: 'rgba(30, 30, 30, 0.8)',
+                    border: '1px solid rgba(60, 60, 60, 0.4)'
+                  }}>
+                    <img src={bnbLogo} alt="BNB" className="h-4 w-4" />
+                    <span className="text-sm font-semibold text-foreground">BNB</span>
+                    <svg className="w-3 h-3 text-muted-foreground ml-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
+                    </svg>
+                  </div>
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
+                    className="px-3 h-8 text-xs font-semibold"
+                    data-testid="button-plus-0.1"
+                  >
+                    +0.1
+                  </Button>
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
+                    className="px-3 h-8 text-xs font-semibold"
+                    data-testid="button-plus"
+                  >
+                    +1
+                  </Button>
+                  
+                  <Button 
+                    className="text-white font-bold border-0 px-6 h-9"
+                    style={{
+                      background: 'linear-gradient(135deg, #7C3AED, #A855F7)',
+                      boxShadow: '0 0 20px rgba(168, 85, 247, 0.4)'
+                    }}
+                    data-testid="button-place-bet"
+                  >
+                    Place Bet
+                  </Button>
+                </div>
               </div>
             </div>
 
