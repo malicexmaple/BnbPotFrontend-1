@@ -375,7 +375,6 @@ export default function Home() {
             {/* HEADER */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <img src={crownIcon} alt="Crown" className="h-16 w-16 flex-shrink-0" />
                 <div className="flex items-center gap-2">
                   <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
                     <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '300px'}} />
