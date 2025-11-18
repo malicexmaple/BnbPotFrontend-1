@@ -277,7 +277,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper-large">
                       <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
                     </div>
-                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}}>0.401</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}}>0.401</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                   </div>
                 </div>
@@ -286,7 +286,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper">
                       <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
                     </div>
-                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}} data-testid="text-your-wager">0.000</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-your-wager">0.000</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper-small">
                       <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
                     </div>
-                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}} data-testid="text-your-chance">0.00%</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-your-chance">0.00%</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                   </div>
                 </div>
@@ -304,7 +304,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper-small">
                       <img src={clockIcon} alt="Clock" className="h-14 w-14" />
                     </div>
-                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
                   </div>
                 </div>
