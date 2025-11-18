@@ -406,12 +406,12 @@ export default function Home() {
                       <svg className="w-4 h-4" style={{color: '#EAB308'}} fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
                       </svg>
-                      <Input 
+                      <input 
+                        type="text"
                         value={betAmount} 
                         onChange={(e) => setBetAmount(e.target.value)} 
                         placeholder="0.1" 
-                        className="w-16 text-sm font-mono font-semibold bg-transparent border-0 p-0 text-foreground focus:outline-none focus:ring-0 focus-visible:ring-0 flex items-center" 
-                        style={{height: 'auto', lineHeight: '1'}}
+                        className="w-16 text-sm font-mono font-semibold bg-transparent border-0 outline-none text-foreground"
                         data-testid="input-bet" 
                       />
                     </div>
