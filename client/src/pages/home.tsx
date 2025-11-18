@@ -56,6 +56,9 @@ export default function Home() {
   /** Controls whether chat sidebar is collapsed */
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   
+  /** Controls whether leaderboard sidebar is collapsed */
+  const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
+  
   /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
     name: "",
@@ -176,11 +179,31 @@ export default function Home() {
       }}>
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT SIDEBAR - CHAT */}
-          <div className="flex-shrink-0 flex flex-col transition-all duration-300" style={{
+          <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             width: isChatCollapsed ? '60px' : '320px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
+            {/* Collapse Button - Positioned on the right edge */}
+            <button
+              onClick={() => setIsChatCollapsed(!isChatCollapsed)}
+              className="absolute top-1/2 -translate-y-1/2 z-20 w-8 h-16 rounded-r-lg flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              style={{
+                right: '-8px',
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
+                border: '1px solid rgba(250, 204, 21, 0.85)',
+                boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
+                backdropFilter: 'blur(8px)'
+              }}
+              data-testid="button-collapse-chat"
+            >
+              <svg className="w-4 h-4 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+                transform: isChatCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
+              }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
           {/* Degen Chat Header */}
           <div className="p-3 border-b border-border/10">
             <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
@@ -190,26 +213,13 @@ export default function Home() {
                 </div>
                 {!isChatCollapsed && <span className="text-sm font-semibold text-foreground">Degen Chat</span>}
               </div>
-              <div className="flex items-center gap-2">
-                {!isChatCollapsed && (
-                  <Badge className="text-white text-xs font-bold px-2 border-0" style={{
-                    background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                    border: '2px solid rgba(234, 179, 8, 0.5)',
-                    boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                  }} data-testid="badge-chat-count">{onlineUsers}</Badge>
-                )}
-                <button
-                  onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-                  className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate active-elevate-2"
-                  data-testid="button-collapse-chat"
-                >
-                  <svg className="w-4 h-4 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
-                    transform: isChatCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
-                  }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
+              {!isChatCollapsed && (
+                <Badge className="text-white text-xs font-bold px-2 border-0" style={{
+                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                  border: '2px solid rgba(234, 179, 8, 0.5)',
+                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                }} data-testid="badge-chat-count">{onlineUsers}</Badge>
+              )}
             </div>
           </div>
 
@@ -433,10 +443,34 @@ export default function Home() {
         </div>
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
-          <div className="w-72 flex-shrink-0 p-6 space-y-3" style={{
+          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
+            width: isLeaderboardCollapsed ? '60px' : '288px',
+            padding: isLeaderboardCollapsed ? '24px 12px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
+            {/* Collapse Button - Positioned on the left edge */}
+            <button
+              onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
+              className="absolute top-1/2 -translate-y-1/2 z-20 w-8 h-16 rounded-l-lg flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              style={{
+                left: '-8px',
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
+                border: '1px solid rgba(250, 204, 21, 0.85)',
+                boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
+                backdropFilter: 'blur(8px)'
+              }}
+              data-testid="button-collapse-leaderboard"
+            >
+              <svg className="w-4 h-4 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+                transform: isLeaderboardCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
+              }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          
+          {!isLeaderboardCollapsed && (
+            <>
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
@@ -490,6 +524,8 @@ export default function Home() {
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
+          </>
+          )}
         </div>
         </div>
       </div>
