@@ -419,8 +419,8 @@ export default function Home() {
                 {/* Bottom Row - Controls */}
                 <div className="flex items-center gap-2">
                   <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
-                    background: 'rgba(25, 25, 30, 0.9)',
-                    border: '1px solid rgba(60, 60, 70, 0.4)',
+                    background: 'rgba(20, 20, 20, 0.6)',
+                    border: '1px solid rgba(60, 60, 60, 0.3)',
                     minWidth: '160px'
                   }}>
                     <div className="flex items-center gap-2">
@@ -435,11 +435,8 @@ export default function Home() {
                         data-testid="input-bet" 
                       />
                     </div>
-                    <div className="flex items-center gap-2 cursor-pointer hover-elevate pl-3 border-l border-border/20">
+                    <div className="flex items-center gap-2 pl-3 border-l border-border/20">
                       <span className="text-sm font-semibold text-foreground">BNB</span>
-                      <svg className="w-3.5 h-3.5 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"/>
-                      </svg>
                     </div>
                   </div>
                   
