@@ -520,7 +520,7 @@ export default function Home() {
                 <svg className="absolute top-1/3 left-0 w-2.5 h-2.5 animate-ping" viewBox="0 0 24 24" style={{animationDelay: '0.27s', filter: 'drop-shadow(0 0 3px rgba(250, 204, 21, 0.8))'}}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#FACC15"/></svg>
               </div>
             </div>
-            <div className="flex items-center justify-between mb-3" style={{marginTop: '-30px'}}>
+            <div className="flex items-center justify-between mb-3">
               <div className="text-lg font-bold uppercase tracking-wider text-foreground">$25K WEEKLY</div>
             </div>
             <div className="text-xs text-muted-foreground mb-4 uppercase tracking-wider">LEADERBOARD</div>
