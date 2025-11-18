@@ -456,6 +456,16 @@ export default function Home() {
                   <Button 
                     size="sm" 
                     variant="outline" 
+                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
+                    className="px-5 h-10 text-sm font-semibold"
+                    data-testid="button-plus-0.5"
+                  >
+                    +0.5
+                  </Button>
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
                     onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
                     className="px-5 h-10 text-sm font-semibold"
                     data-testid="button-plus"
