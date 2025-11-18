@@ -179,16 +179,15 @@ export default function Home() {
       }}>
         <div className="flex-1 flex" style={{overflow: 'visible'}}>
           {/* LEFT SIDEBAR - CHAT */}
-          <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
+          <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative glass-panel" style={{
             width: isChatCollapsed ? '0px' : '345px',
             paddingLeft: isChatCollapsed ? '0px' : '4px',
             paddingTop: '0px',
             paddingBottom: '0px',
             paddingRight: '0px',
-            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
-            backdropFilter: 'blur(4px)',
             overflow: 'visible',
-            zIndex: 50
+            zIndex: 50,
+            borderRadius: '0px'
           }}>
             {/* Collapse Button - Positioned on the outer right edge */}
             <button
@@ -452,16 +451,15 @@ export default function Home() {
         </div>
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
-          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
+          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
             paddingLeft: '0px',
             paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
             paddingBottom: isLeaderboardCollapsed ? '0px' : '24px',
             paddingRight: isLeaderboardCollapsed ? '0px' : '4px',
-            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
-            backdropFilter: 'blur(4px)',
             overflow: 'visible',
-            zIndex: 50
+            zIndex: 50,
+            borderRadius: '0px'
           }}>
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
