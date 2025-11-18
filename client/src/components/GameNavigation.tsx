@@ -170,7 +170,7 @@ export default function GameNavigation({
                     }}
                   >
                     <div 
-                      className="w-8 h-8 rounded flex items-center justify-center mr-2 text-sm font-bold"
+                      className="w-12 h-12 rounded flex items-center justify-center mr-2 text-base font-bold"
                       style={{
                         background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
                       }}
