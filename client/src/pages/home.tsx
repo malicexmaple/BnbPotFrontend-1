@@ -183,14 +183,15 @@ export default function Home() {
             width: isChatCollapsed ? '60px' : '320px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)',
-            overflow: 'visible'
+            overflow: 'visible',
+            zIndex: 50
           }}>
-            {/* Collapse Button - Positioned on the right edge from inside */}
+            {/* Collapse Button - Positioned on the outer right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                right: '-3px',
+                left: 'calc(100% + 1px)',
                 zIndex: 9999,
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
@@ -449,14 +450,15 @@ export default function Home() {
             padding: isLeaderboardCollapsed ? '24px 12px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)',
-            overflow: 'visible'
+            overflow: 'visible',
+            zIndex: 50
           }}>
-            {/* Collapse Button - Positioned on the left edge from inside */}
+            {/* Collapse Button - Positioned on the outer left edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: '-3px',
+                left: '-48px',
                 zIndex: 9999,
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
