@@ -460,8 +460,9 @@ export default function Home() {
                   <Button 
                     className="text-white font-bold border-0 px-6 h-9"
                     style={{
-                      background: 'linear-gradient(135deg, #7C3AED, #A855F7)',
-                      boxShadow: '0 0 20px rgba(168, 85, 247, 0.4)'
+                      background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                      border: '2px solid rgba(234, 179, 8, 0.5)',
+                      boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
                     }}
                     data-testid="button-place-bet"
                   >
