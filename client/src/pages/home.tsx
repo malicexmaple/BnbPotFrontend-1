@@ -442,9 +442,14 @@ export default function Home() {
                   
                   <Button 
                     size="sm" 
-                    variant="outline" 
                     onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
-                    className="px-5 h-10 text-sm font-semibold"
+                    className="px-5 h-10 text-sm font-semibold text-white border-0"
+                    style={{
+                      borderRadius: '18px',
+                      background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                      border: '2px solid rgba(250, 204, 21, 0.9)',
+                      boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+                    }}
                     data-testid="button-plus-0.1"
                   >
                     +0.1
@@ -452,9 +457,14 @@ export default function Home() {
                   
                   <Button 
                     size="sm" 
-                    variant="outline" 
                     onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
-                    className="px-5 h-10 text-sm font-semibold"
+                    className="px-5 h-10 text-sm font-semibold text-white border-0"
+                    style={{
+                      borderRadius: '18px',
+                      background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                      border: '2px solid rgba(250, 204, 21, 0.9)',
+                      boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+                    }}
                     data-testid="button-plus-0.5"
                   >
                     +0.5
@@ -462,9 +472,14 @@ export default function Home() {
                   
                   <Button 
                     size="sm" 
-                    variant="outline" 
                     onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
-                    className="px-5 h-10 text-sm font-semibold"
+                    className="px-5 h-10 text-sm font-semibold text-white border-0"
+                    style={{
+                      borderRadius: '18px',
+                      background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                      border: '2px solid rgba(250, 204, 21, 0.9)',
+                      boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+                    }}
                     data-testid="button-plus"
                   >
                     +1
@@ -473,9 +488,10 @@ export default function Home() {
                   <Button 
                     className="text-white font-bold border-0 px-10 h-10 text-base"
                     style={{
+                      borderRadius: '18px',
                       background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                      border: '2px solid rgba(234, 179, 8, 0.5)',
-                      boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                      border: '2px solid rgba(250, 204, 21, 0.9)',
+                      boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
                     }}
                     data-testid="button-place-bet"
                   >
