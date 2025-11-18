@@ -177,7 +177,7 @@ export default function Home() {
         border: '1px solid rgba(250, 204, 21, 0.85)',
         boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
       }}>
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex" style={{overflow: 'visible'}}>
           {/* LEFT SIDEBAR - CHAT */}
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             width: isChatCollapsed ? '60px' : '320px',
