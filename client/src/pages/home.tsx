@@ -466,7 +466,7 @@ export default function Home() {
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
               className="glass-panel absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: '-3px',
+                left: '-1px',
                 zIndex: 9999,
                 borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
                 width: isLeaderboardCollapsed ? '89px' : '34px',
