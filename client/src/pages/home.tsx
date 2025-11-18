@@ -220,7 +220,7 @@ export default function Home() {
             </button>
 
           {!isChatCollapsed && (
-            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '-12px'}}>
+            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '-62px'}}>
               {/* Degen Chat Header */}
               <div className="glass-panel p-3 flex items-center justify-between" style={{borderRadius: '18px 18px 0 0'}}>
                 <div className="flex items-center gap-2">
@@ -493,7 +493,7 @@ export default function Home() {
             </button>
           
           {!isLeaderboardCollapsed && (
-            <>
+            <div style={{marginTop: '-50px'}}>
           <div className="p-1 ml-auto" style={{width: '297px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
@@ -547,7 +547,7 @@ export default function Home() {
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
-          </>
+          </div>
           )}
         </div>
         </div>
