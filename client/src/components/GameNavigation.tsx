@@ -45,10 +45,10 @@ export default function GameNavigation({
         backgroundRepeat: 'no-repeat'
       }}>
         <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
-          <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
+          <img src={crownLogo} alt="Crown" style={{height: '126.5px', width: 'auto', display: 'block'}} />
         </div>
         <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
-          <img src={textLogo} alt="BNBPOT" style={{width: '180px', height: 'auto', display: 'block'}} />
+          <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
         </div>
       </div>
 
