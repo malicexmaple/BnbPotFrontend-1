@@ -3,8 +3,16 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil } from "lucide-react";
+import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, ChevronDown } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 interface ProfileModalProps {
   open: boolean;
@@ -24,10 +32,16 @@ export default function ProfileModal({
   const [activeTab, setActiveTab] = useState("options");
   const [showClientSeed, setShowClientSeed] = useState(false);
   const [streamerMode, setStreamerMode] = useState(false);
+  const [timeRange, setTimeRange] = useState("7days");
 
   const getAvatarColor = () => {
     return `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`;
   };
+
+  const chartData = [
+    { games: 0, profit: 0 },
+    { games: 1, profit: 0 },
+  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -329,10 +343,149 @@ export default function ProfileModal({
             )}
 
             {activeTab === "statistics" && (
-              <div className="flex items-center justify-center h-full text-muted-foreground">
-                <div className="text-center">
-                  <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p>Statistics coming soon</p>
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-4">Statistics</h2>
+                  
+                  {/* Net Profit Card */}
+                  <div className="p-6 rounded-xl" style={{
+                    background: 'linear-gradient(135deg, rgba(88, 28, 135, 0.15), rgba(59, 130, 246, 0.15))',
+                    border: '1px solid rgba(139, 92, 246, 0.2)'
+                  }}>
+                    <div className="text-sm text-muted-foreground mb-2">Net Profit</div>
+                    <div className="flex items-center gap-2">
+                      <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+                        <rect y="8" width="3" height="8" fill="#ef4444"/>
+                        <rect x="5" y="0" width="3" height="16" fill="#22c55e"/>
+                      </svg>
+                      <span className="text-3xl font-bold font-mono">0.01</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Wager Stats Chart */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Wager Stats</h3>
+                    <Select value={timeRange} onValueChange={setTimeRange}>
+                      <SelectTrigger className="w-40 bg-muted/30 border-border/20" data-testid="select-time-range">
+                        <SelectValue placeholder="Last 7 Days" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7days">Last 7 Days</SelectItem>
+                        <SelectItem value="30days">Last 30 Days</SelectItem>
+                        <SelectItem value="90days">Last 90 Days</SelectItem>
+                        <SelectItem value="all">All Time</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="p-6 rounded-xl" style={{
+                    background: 'rgba(30, 30, 40, 0.5)',
+                    border: '1px solid rgba(60, 60, 70, 0.3)'
+                  }}>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 100, 110, 0.2)" />
+                        <XAxis 
+                          dataKey="games" 
+                          stroke="rgba(150, 150, 160, 0.5)"
+                          label={{ value: 'GAMES PLAYED', position: 'insideBottom', offset: -5, fill: 'rgba(150, 150, 160, 0.5)' }}
+                        />
+                        <YAxis 
+                          stroke="rgba(150, 150, 160, 0.5)"
+                          label={{ value: 'NET PROFIT', angle: -90, position: 'insideLeft', fill: 'rgba(150, 150, 160, 0.5)' }}
+                        />
+                        <Line type="monotone" dataKey="profit" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Wager Stats Cards */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Wager Stats</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-5 rounded-xl" style={{
+                      background: 'rgba(30, 30, 40, 0.5)',
+                      border: '1px solid rgba(60, 60, 70, 0.3)'
+                    }}>
+                      <div className="text-sm text-muted-foreground mb-2">Total Wagered</div>
+                      <div className="flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <rect width="16" height="16" rx="2" fill="rgba(139, 92, 246, 0.3)"/>
+                          <path d="M8 4v8M4 8h8" stroke="#8b5cf6" strokeWidth="1.5"/>
+                        </svg>
+                        <span className="text-2xl font-bold font-mono">0.01</span>
+                      </div>
+                    </div>
+
+                    <div className="p-5 rounded-xl" style={{
+                      background: 'rgba(30, 30, 40, 0.5)',
+                      border: '1px solid rgba(60, 60, 70, 0.3)'
+                    }}>
+                      <div className="text-sm text-muted-foreground mb-2">Profit</div>
+                      <div className="flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <rect width="16" height="16" rx="2" fill="rgba(139, 92, 246, 0.3)"/>
+                          <path d="M8 4v8M4 8h8" stroke="#8b5cf6" strokeWidth="1.5"/>
+                        </svg>
+                        <span className="text-2xl font-bold font-mono">-0.01</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Game Stats Cards */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Game Stats</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-5 rounded-xl" style={{
+                      background: 'rgba(30, 30, 40, 0.5)',
+                      border: '1px solid rgba(60, 60, 70, 0.3)'
+                    }}>
+                      <div className="text-sm text-muted-foreground mb-3">Luckiest Win</div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect width="16" height="16" rx="2" fill="rgba(139, 92, 246, 0.3)"/>
+                            <path d="M8 4v8M4 8h8" stroke="#8b5cf6" strokeWidth="1.5"/>
+                          </svg>
+                          <span className="text-xl font-bold font-mono">0</span>
+                        </div>
+                        <div className="px-3 py-1.5 rounded-lg font-bold text-sm" style={{
+                          background: 'rgba(34, 197, 94, 0.15)',
+                          border: '1px solid rgba(34, 197, 94, 0.3)',
+                          color: '#22c55e'
+                        }}>
+                          0.00%
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-5 rounded-xl" style={{
+                      background: 'rgba(30, 30, 40, 0.5)',
+                      border: '1px solid rgba(60, 60, 70, 0.3)'
+                    }}>
+                      <div className="text-sm text-muted-foreground mb-3">Biggest Win</div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect width="16" height="16" rx="2" fill="rgba(139, 92, 246, 0.3)"/>
+                            <path d="M8 4v8M4 8h8" stroke="#8b5cf6" strokeWidth="1.5"/>
+                          </svg>
+                          <span className="text-xl font-bold font-mono">0</span>
+                        </div>
+                        <div className="px-3 py-1.5 rounded-lg font-bold text-sm" style={{
+                          background: 'rgba(139, 92, 246, 0.15)',
+                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          color: '#a78bfa'
+                        }}>
+                          0.00x
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
