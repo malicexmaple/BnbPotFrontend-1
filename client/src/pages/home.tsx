@@ -388,29 +388,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="relative" style={{paddingTop: '24px'}}>
-                {/* Background Glass Box */}
-                <div className="px-4 py-6 pt-8" style={{
-                  borderRadius: '18px',
-                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '2px solid rgba(250, 204, 21, 0.9)',
-                  boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
-                }}>
-                  {/* Info text */}
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Bet Amount</span>
-                      <span className="text-foreground font-medium">-$0</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Balance:</span>
-                      <span className="text-foreground font-medium">0.00905593</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Controls on top */}
-                <div className="absolute left-0 right-0 flex items-center justify-center gap-2 px-4" style={{top: '0px'}}>
+              <div className="px-4 py-3" style={{
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                border: '2px solid rgba(250, 204, 21, 0.9)',
+                boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+              }}>
+                <div className="flex items-center justify-center gap-2">
                   <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
                     background: 'rgba(20, 20, 20, 0.9)',
                     border: '1px solid rgba(60, 60, 60, 0.5)',
