@@ -194,13 +194,16 @@ export default function Home() {
             {/* Collapse Button - Positioned on the outer right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
                 left: 'calc(100% - 33px)',
                 zIndex: 9999,
                 borderRadius: isChatCollapsed ? '8px' : '4px',
                 width: isChatCollapsed ? '89px' : '34px',
-                height: '79px'
+                height: '79px',
+                background: 'rgba(20, 20, 20, 1)',
+                border: '1px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
               }}
               data-testid="button-collapse-chat"
             >
@@ -467,13 +470,16 @@ export default function Home() {
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
                 left: '-1px',
                 zIndex: 9999,
                 borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
                 width: isLeaderboardCollapsed ? '89px' : '34px',
-                height: '79px'
+                height: '79px',
+                background: 'rgba(20, 20, 20, 1)',
+                border: '1px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
               }}
               data-testid="button-collapse-leaderboard"
             >
