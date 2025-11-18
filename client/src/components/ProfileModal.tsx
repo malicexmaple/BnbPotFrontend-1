@@ -62,7 +62,7 @@ export default function ProfileModal({
             background: 'rgba(10, 10, 10, 0.5)'
           }}>
             <div className="mb-6 flex justify-center">
-              <img src={profileLogo} alt="PROFILE" style={{height: '40px', width: 'auto'}} />
+              <img src={profileLogo} alt="PROFILE" className="w-40" />
             </div>
 
             <button
