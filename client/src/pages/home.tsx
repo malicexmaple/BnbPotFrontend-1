@@ -220,7 +220,7 @@ export default function Home() {
             </button>
 
           {!isChatCollapsed && (
-            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '-12px'}}>
+            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '4px'}}>
               {/* Degen Chat Header */}
               <div className="glass-panel p-3 flex items-center justify-between" style={{borderRadius: '18px 18px 0 0'}}>
                 <div className="flex items-center gap-2">
@@ -460,7 +460,7 @@ export default function Home() {
           <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
             paddingLeft: '0px',
-            paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
+            paddingTop: isLeaderboardCollapsed ? '0px' : '4px',
             paddingBottom: isLeaderboardCollapsed ? '0px' : '24px',
             paddingRight: isLeaderboardCollapsed ? '0px' : '4px',
             overflow: 'visible',
