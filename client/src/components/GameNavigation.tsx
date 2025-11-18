@@ -105,10 +105,6 @@ export default function GameNavigation({
             className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
             style={{height: '32px', fontSize: '14px'}}
           >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#7B68EE'}}>
-              <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <circle cx="10" cy="10" r="3" fill="currentColor"/>
-            </svg>
             <img src={jackpotTabLogo} alt="Jackpot" style={{height: '16px', width: 'auto'}} />
           </Button>
           <Button
