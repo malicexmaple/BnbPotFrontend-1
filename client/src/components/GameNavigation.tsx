@@ -88,7 +88,7 @@ export default function GameNavigation({
         </div>
 
         {/* Bottom row - Navigation tabs on left, Leaderboard and Connect on right */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between" style={{marginTop: '-10px'}}>
           {/* Navigation tabs */}
           <div className="flex items-center gap-1">
           <Button
