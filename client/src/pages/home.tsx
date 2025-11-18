@@ -185,12 +185,12 @@ export default function Home() {
             backdropFilter: 'blur(8px)',
             overflow: 'visible'
           }}>
-            {/* Collapse Button - Positioned on the outer right edge */}
+            {/* Collapse Button - Positioned on the right edge from inside */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: 'calc(100% + 1px)',
+                right: '-3px',
                 zIndex: 9999,
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
@@ -451,12 +451,12 @@ export default function Home() {
             backdropFilter: 'blur(8px)',
             overflow: 'visible'
           }}>
-            {/* Collapse Button - Positioned on the outer left edge */}
+            {/* Collapse Button - Positioned on the left edge from inside */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: '-48px',
+                left: '-3px',
                 zIndex: 9999,
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
