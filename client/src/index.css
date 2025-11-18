@@ -650,7 +650,7 @@
   .stat-box {
     position: relative;
     border-radius: 18px;
-    padding: 20px 16px;
+    padding: 12px 16px;
     overflow: visible;
     width: 240px;
     background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8));
