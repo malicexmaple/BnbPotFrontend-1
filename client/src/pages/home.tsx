@@ -195,7 +195,7 @@ export default function Home() {
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="glass-panel absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: 'calc(100% - 34px)',
+                left: 'calc(100% - 4px)',
                 zIndex: 9999,
                 borderRadius: isChatCollapsed ? '8px' : '4px',
                 width: isChatCollapsed ? '89px' : '34px',
