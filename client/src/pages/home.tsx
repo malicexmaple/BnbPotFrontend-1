@@ -411,8 +411,8 @@ export default function Home() {
                         value={betAmount} 
                         onChange={(e) => setBetAmount(e.target.value)} 
                         placeholder="0.1" 
-                        className="w-16 text-sm font-mono font-semibold bg-transparent border-0 outline-none text-foreground"
-                        style={{paddingTop: '2px'}}
+                        className="w-16 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
+                        style={{lineHeight: '1.25rem', paddingTop: '1px'}}
                         data-testid="input-bet" 
                       />
                     </div>
