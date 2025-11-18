@@ -415,7 +415,7 @@ export default function Home() {
                       />
                     </div>
                     <div className="flex items-center gap-1.5 pl-3 border-l border-border/20">
-                      <img src={bnbIcon} alt="BNB" className="w-3.5 h-3.5" />
+                      <img src={bnbIcon} alt="BNB" className="w-4 h-4" />
                       <span className="text-sm font-semibold text-foreground">BNB</span>
                     </div>
                   </div>
