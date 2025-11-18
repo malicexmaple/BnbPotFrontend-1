@@ -749,4 +749,14 @@
     transform: translateY(-10px) scale(15.4);
     transform-origin: center center;
   }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+  }
+
+  .wiggle-on-hover:hover {
+    animation: wiggle 0.3s ease-in-out infinite;
+  }
 }

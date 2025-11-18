@@ -497,7 +497,7 @@ export default function Home() {
           <div className="p-1" style={{width: '297px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-2 right-6 w-20 h-20 z-10 group cursor-pointer">
-              <img src={coinStack} alt="Coins" className="w-20 h-20" />
+              <img src={coinStack} alt="Coins" className="w-20 h-20 wiggle-on-hover" />
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                 {/* Multiple star sparkles with varied sizes and positions */}
                 <svg className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 animate-ping" viewBox="0 0 24 24" style={{animationDelay: '0s', filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'}}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#FCD34D"/></svg>
