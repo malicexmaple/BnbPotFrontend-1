@@ -172,7 +172,9 @@ export default function GameNavigation({
                     <div 
                       className="w-12 h-12 rounded flex items-center justify-center mr-2 text-base font-bold"
                       style={{
-                        background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
+                        background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`,
+                        border: '2px solid rgba(234, 179, 8, 0.5)',
+                        boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
                       }}
                     >
                       {username.slice(0, 2).toUpperCase()}
