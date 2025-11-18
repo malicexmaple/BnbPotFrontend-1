@@ -493,7 +493,7 @@ export default function Home() {
             </button>
           
           {!isLeaderboardCollapsed && (
-            <div style={{marginTop: '-50px', marginLeft: '23px'}}>
+            <div style={{marginTop: '-75px', marginLeft: '23px'}}>
           <div className="p-1" style={{width: '297px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
