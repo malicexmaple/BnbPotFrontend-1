@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
+import bnbCoinStatic from '@assets/png-transparent-bnb-crypto-cryptocurrency-cryptocurrencies-cash-money-bank-payment-icon_1763474240800.png';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
 import treasureChest from '@assets/3dgifmaker81317_1763413607076.gif';
@@ -251,7 +252,7 @@ export default function Home() {
                       </div>
                       <div className="flex items-center justify-center -mt-5" style={{marginLeft: '-0.75rem'}}>
                         <div className="flex items-center justify-center gap-0">
-                          <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '4rem', width: '4rem', marginRight: '-0.25rem'}} />
+                          <img src={bnbCoinStatic} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '4rem', width: '4rem', marginRight: '-0.25rem'}} />
                           <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
                         </div>
                       </div>
