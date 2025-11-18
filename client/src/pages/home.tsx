@@ -215,7 +215,7 @@ export default function Home() {
             </button>
 
           {!isChatCollapsed && (
-            <div style={{marginTop: '-50px'}}>
+            <>
               {/* Degen Chat Header */}
               <div className="p-3 border-b border-border/10" style={{width: '297px'}}>
                 <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
@@ -234,7 +234,7 @@ export default function Home() {
               </div>
 
               {/* Chat Box Container */}
-              <div className="flex-1 flex flex-col relative" style={{width: '297px'}}>
+              <div className="flex-1 flex flex-col relative pb-3" style={{width: '297px'}}>
                 <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '18px', overflow: 'hidden'}}>
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
@@ -286,7 +286,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
 
