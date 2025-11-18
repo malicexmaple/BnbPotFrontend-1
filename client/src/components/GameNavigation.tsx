@@ -36,8 +36,12 @@ export default function GameNavigation({
   return (
     <>
       {/* Top Header - 30px */}
-      <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '30px'}}>
-        <div className="flex-1 flex items-center justify-between px-4">
+      <div className="sticky top-0 z-50 flex" style={{height: '30px'}}>
+        {/* Left - Empty space matching logo section (320px) */}
+        <div className="flex-shrink-0" style={{width: '320px'}}></div>
+
+        {/* Right - Top header content */}
+        <nav className="flex-1 bg-black flex items-center justify-between px-4 border-b border-border/20">
           <div className="flex items-center gap-3">
             {/* Social Icons */}
             <button className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate" data-testid="button-social-x">
@@ -67,8 +71,8 @@ export default function GameNavigation({
           <div className="text-foreground font-bold" style={{fontSize: '11px'}} data-testid="text-total-bets">
             11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* Bottom Header - 70px */}
       <nav className="sticky z-50 bg-black flex items-center border-b border-border/20" style={{height: '70px', top: '30px'}}>
