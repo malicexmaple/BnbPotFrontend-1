@@ -198,7 +198,8 @@
     text-shadow: none !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-weight: 700 !important;
+    font-weight: normal !important;
+    font-synthesis: none !important;
     filter: none !important;
     transform: none !important;
     backface-visibility: hidden;
@@ -352,6 +353,7 @@
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
     border-radius: inherit;
     pointer-events: none;
+    z-index: -1;
   }
 
   .neon-border {
@@ -377,6 +379,7 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
+    z-index: -1;
   }
   
   .stats-divider {
@@ -403,7 +406,7 @@
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
     border-radius: inherit;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 
   .space-bg {
