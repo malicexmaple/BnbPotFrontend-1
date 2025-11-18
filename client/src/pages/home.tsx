@@ -182,8 +182,8 @@ export default function Home() {
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative glass-panel" style={{
             width: isChatCollapsed ? '0px' : '345px',
             paddingLeft: isChatCollapsed ? '0px' : '4px',
-            paddingTop: '0px',
-            paddingBottom: '0px',
+            paddingTop: isChatCollapsed ? '0px' : '24px',
+            paddingBottom: isChatCollapsed ? '0px' : '24px',
             paddingRight: '0px',
             overflow: 'visible',
             zIndex: 50,
