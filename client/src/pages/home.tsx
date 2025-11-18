@@ -240,7 +240,7 @@ export default function Home() {
               <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '0 0 18px 18px', overflow: 'hidden'}}>
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
-                    <div className="glass-panel neon-border rounded-xl p-2">
+                    <div className="glass-panel neon-border p-2">
                       <div className="flex items-center justify-center">
                         <div className="flex items-center gap-1.5">
                           <Badge className="bg-primary/20 text-primary text-xs font-bold px-1.5 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
