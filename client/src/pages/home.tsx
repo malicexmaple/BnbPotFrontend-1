@@ -472,7 +472,7 @@ export default function Home() {
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                right: isLeaderboardCollapsed ? '77px' : 'calc(100% - 16px)',
+                right: isLeaderboardCollapsed ? '77px' : 'calc(100% - 116px)',
                 zIndex: 9999,
                 borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
                 width: isLeaderboardCollapsed ? '89px' : '34px',
