@@ -161,10 +161,7 @@ export default function Home() {
   const seconds = timeRemaining % 60;
 
   return (
-    <div className="flex flex-col h-screen relative">
-      {/* Fixed background that extends behind header */}
-      <div className="fixed inset-0 space-bg -z-10"></div>
-      
+    <div className="flex flex-col h-screen space-bg">
       <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
 
       <div className="flex-1 flex overflow-hidden">
