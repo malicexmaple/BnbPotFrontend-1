@@ -420,7 +420,11 @@
   }
 
   .space-bg {
-    background: linear-gradient(180deg, #0a0a0a 0%, #000000 60%, #000000 100%), #000000;
+    background-image: url('/attached_assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
   
   .gradient-purple-pink {
