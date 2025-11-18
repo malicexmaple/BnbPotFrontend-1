@@ -180,7 +180,7 @@ export default function Home() {
         <div className="flex-1 flex" style={{overflow: 'visible'}}>
           {/* LEFT SIDEBAR - CHAT */}
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
-            width: isChatCollapsed ? '60px' : '320px',
+            width: isChatCollapsed ? '0px' : '320px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)',
             overflow: 'visible',
@@ -446,8 +446,8 @@ export default function Home() {
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
           <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
-            width: isLeaderboardCollapsed ? '60px' : '288px',
-            padding: isLeaderboardCollapsed ? '24px 12px' : '24px',
+            width: isLeaderboardCollapsed ? '0px' : '288px',
+            padding: isLeaderboardCollapsed ? '0px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)',
             overflow: 'visible',
