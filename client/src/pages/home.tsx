@@ -184,12 +184,12 @@ export default function Home() {
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
-            {/* Collapse Button - Positioned on the right edge */}
+            {/* Collapse Button - Positioned on the outer right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 z-20 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                right: '4px',
+                right: '-6px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
                 boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
@@ -205,24 +205,24 @@ export default function Home() {
               </svg>
             </button>
 
-          {/* Degen Chat Header */}
-          <div className="p-3 border-b border-border/10">
-            <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
-                  <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
+          {!isChatCollapsed && (
+            <>
+              {/* Degen Chat Header */}
+              <div className="p-3 border-b border-border/10">
+                <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
+                      <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
+                    </div>
+                    <span className="text-sm font-semibold text-foreground">Degen Chat</span>
+                  </div>
+                  <Badge className="text-white text-xs font-bold px-2 border-0" style={{
+                    background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                    border: '2px solid rgba(234, 179, 8, 0.5)',
+                    boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                  }} data-testid="badge-chat-count">{onlineUsers}</Badge>
                 </div>
-                {!isChatCollapsed && <span className="text-sm font-semibold text-foreground">Degen Chat</span>}
               </div>
-              {!isChatCollapsed && (
-                <Badge className="text-white text-xs font-bold px-2 border-0" style={{
-                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '2px solid rgba(234, 179, 8, 0.5)',
-                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                }} data-testid="badge-chat-count">{onlineUsers}</Badge>
-              )}
-            </div>
-          </div>
 
               {/* LIVE AIRDROP Section */}
               <div className="p-3">
@@ -272,6 +272,8 @@ export default function Home() {
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
                 </div>
               </div>
+            </>
+          )}
         </div>
 
         {/* CENTER - MAIN GAME AREA */}
@@ -440,16 +442,18 @@ export default function Home() {
         </div>
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
-          <div className="w-72 flex-shrink-0 p-6 space-y-3 transition-all duration-300 relative" style={{
+          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
+            width: isLeaderboardCollapsed ? '60px' : '288px',
+            padding: isLeaderboardCollapsed ? '24px 12px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
-            {/* Collapse Button - Positioned on the left inner edge */}
+            {/* Collapse Button - Positioned on the outer left edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 z-20 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: '8px',
+                left: '-6px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
                 boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
@@ -464,6 +468,9 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
+          
+          {!isLeaderboardCollapsed && (
+            <>
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
@@ -517,6 +524,8 @@ export default function Home() {
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
+          </>
+          )}
         </div>
         </div>
       </div>
