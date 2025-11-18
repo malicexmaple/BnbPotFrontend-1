@@ -85,7 +85,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "var(--font-sans)"],
         serif: ["var(--font-serif)"],
-        mono: ["Airstrike", "JetBrains Mono", "var(--font-mono)"],
+        mono: ["Neon AI", "JetBrains Mono", "var(--font-mono)"],
       },
       keyframes: {
         "accordion-down": {
