@@ -233,52 +233,57 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* LIVE AIRDROP Section */}
-              <div className="p-2" style={{width: '297px'}}>
-                <div className="glass-panel neon-border rounded-xl p-2">
-                  <div className="flex items-center justify-center">
-                    <div className="flex items-center gap-1.5">
-                      <Badge className="bg-primary/20 text-primary text-xs font-bold px-1.5 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
-                      <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
-                        <img src={airdropLogo} alt="AIRDROP" className="h-8" data-testid="img-airdrop-logo" />
+              {/* Chat Box Container */}
+              <div className="flex-1 flex flex-col relative" style={{width: '297px'}}>
+                <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '18px', overflow: 'hidden'}}>
+                  {/* LIVE AIRDROP Section - Overlaying at top */}
+                  <div className="absolute top-2 left-2 right-2 z-10">
+                    <div className="glass-panel neon-border rounded-xl p-2">
+                      <div className="flex items-center justify-center">
+                        <div className="flex items-center gap-1.5">
+                          <Badge className="bg-primary/20 text-primary text-xs font-bold px-1.5 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
+                          <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
+                            <img src={airdropLogo} alt="AIRDROP" className="h-8" data-testid="img-airdrop-logo" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-center -mt-5" style={{marginLeft: '-0.75rem'}}>
+                        <div className="flex items-center justify-center gap-0">
+                          <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '4rem', width: '4rem', marginRight: '-0.25rem'}} />
+                          <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center -mt-5" style={{marginLeft: '-0.75rem'}}>
-                    <div className="flex items-center justify-center gap-0">
-                      <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '4rem', width: '4rem', marginRight: '-0.25rem'}} />
-                      <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
+
+                  {/* Chat Messages */}
+                  <ScrollArea className="flex-1 px-3">
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm pt-32">
+                      <div className="text-center space-y-2">
+                        <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <p>No messages yet</p>
+                      </div>
+                    </div>
+                  </ScrollArea>
+
+                  {/* Chat Input */}
+                  <div className="p-3 border-t border-border/10">
+                    <Input 
+                      placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
+                      className="h-10 text-sm bg-muted/30 border-border/20" 
+                      data-testid="input-chat"
+                      disabled={!address}
+                    />
+                    <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+                      <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
+                        <span>Chat Rules</span>
+                      </button>
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Chat Messages */}
-              <ScrollArea className="flex-1 px-3">
-                  <div className="flex items-center justify-center h-full text-muted-foreground text-sm pt-32">
-                    <div className="text-center space-y-2">
-                      <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                      </svg>
-                      <p>No messages yet</p>
-                    </div>
-                  </div>
-              </ScrollArea>
-
-              {/* Chat Input */}
-              <div className="p-3 border-t border-border/10">
-                <Input 
-                  placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
-                  className="h-10 text-sm bg-muted/30 border-border/20" 
-                  data-testid="input-chat"
-                  disabled={!address}
-                />
-                <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                  <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
-                    <span>Chat Rules</span>
-                  </button>
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
                 </div>
               </div>
             </>
