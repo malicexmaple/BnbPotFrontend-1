@@ -373,13 +373,19 @@ export default function Home() {
         <div className="flex-1 flex flex-col overflow-hidden relative">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
-                    <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '300px'}} />
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col gap-1">
+                <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
+                  <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '450px'}} />
+                </div>
+                <div className="flex justify-end pr-4">
+                  <div className="text-sm uppercase tracking-widest shine-text font-semibold italic" style={{
+                    color: 'rgb(161, 161, 170)',
+                    textShadow: '0 0 10px rgba(234, 179, 8, 0.3)',
+                    letterSpacing: '0.15em'
+                  }}>
+                    Winner takes all...
                   </div>
-                  <div className="text-xs uppercase tracking-wider shine-text" style={{color: 'rgb(161, 161, 170)'}}>Winner takes all...</div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
