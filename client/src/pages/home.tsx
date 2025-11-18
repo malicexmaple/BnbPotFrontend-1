@@ -183,12 +183,12 @@ export default function Home() {
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
-            {/* Collapse Button - Positioned on the right inner edge */}
+            {/* Collapse Button - Positioned on the right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 z-20 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                right: '8px',
+                right: '-32px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
                 boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
