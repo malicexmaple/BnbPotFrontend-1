@@ -217,6 +217,47 @@ export default function Home() {
     setSignupData({ name: "", email: "", referralCode: "", agreedToTerms: false });
   };
 
+  /**
+   * Handles placing a bet.
+   * Requires wallet connection and signup completion.
+   */
+  const handlePlaceBet = () => {
+    if (!address) {
+      toast({
+        variant: "destructive",
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to place a bet.",
+      });
+      return;
+    }
+
+    if (!username) {
+      toast({
+        variant: "destructive",
+        title: "Signup Required",
+        description: "Please complete signup to place bets.",
+      });
+      return;
+    }
+
+    if (!betAmount || parseFloat(betAmount) <= 0) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Bet Amount",
+        description: "Please enter a valid bet amount.",
+      });
+      return;
+    }
+
+    // TODO: Send bet to backend API
+    console.log('Placing bet:', { amount: betAmount, username, address });
+
+    toast({
+      title: "Bet Placed",
+      description: `You bet ${betAmount} BNB on this round!`,
+    });
+  };
+
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
 
@@ -471,6 +512,7 @@ export default function Home() {
                     boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
                   }}>
                     <button 
+                      onClick={handlePlaceBet}
                       className="text-white font-bold text-base"
                       data-testid="button-place-bet"
                     >
