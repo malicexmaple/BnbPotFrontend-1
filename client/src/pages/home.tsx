@@ -179,7 +179,8 @@ export default function Home() {
       }}>
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT SIDEBAR - CHAT */}
-          <div className="w-80 flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
+          <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
+            width: isChatCollapsed ? '60px' : '320px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
@@ -188,7 +189,7 @@ export default function Home() {
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 z-20 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                right: '-302px',
+                right: '4px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
                 boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
