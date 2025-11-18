@@ -198,7 +198,7 @@ export default function Home() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
-                  <span className="text-3xl font-bold font-mono text-foreground" data-testid="text-airdrop-amount">0.255</span>
+                  <span className="text-3xl font-bold font-mono text-foreground no-text-shadow" data-testid="text-airdrop-amount">0.255</span>
                 </div>
               </div>
             </div>
@@ -441,7 +441,7 @@ export default function Home() {
                 <div key={i} className="flex items-center gap-2 p-2 bg-background/50 rounded hover-elevate">
                   <Badge className="gradient-purple-pink text-black font-bold">{i}</Badge>
                   <div className="flex-1 text-sm font-medium">Player{i}</div>
-                  <div className="text-sm font-mono text-foreground font-bold">0.188</div>
+                  <div className="text-sm font-mono text-foreground font-bold no-text-shadow">0.188</div>
                 </div>
               ))}
             </div>
@@ -457,7 +457,7 @@ export default function Home() {
 
           <div className="glass-panel p-3" style={{borderRadius: '18px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
-            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold text-base text-foreground">0.769</span></div><span className="font-semibold text-foreground text-base">2.00%</span></div>
+            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold text-base text-foreground no-text-shadow">0.769</span></div><span className="font-semibold text-foreground text-base no-text-shadow">2.00%</span></div>
           </div>
         </div>
       </div>
