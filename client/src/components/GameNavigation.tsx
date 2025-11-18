@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
 import textLogo from '@assets/bnbpotlogonew_1763432221839.png';
+import jackpotTabLogo from '@assets/jackpotnew_1763477420573.png';
 
 interface GameNavigationProps {
   onConnect?: () => void;
@@ -108,7 +109,7 @@ export default function GameNavigation({
               <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
               <circle cx="10" cy="10" r="3" fill="currentColor"/>
             </svg>
-            Jackpot
+            <img src={jackpotTabLogo} alt="Jackpot" style={{height: '16px', width: 'auto'}} />
           </Button>
           <Button
             data-testid="button-coinflip-tab"
