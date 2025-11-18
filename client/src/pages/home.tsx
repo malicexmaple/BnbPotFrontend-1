@@ -168,7 +168,12 @@ export default function Home() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}
-        <div className="w-80 flex-shrink-0 flex flex-col border-r border-border/10" style={{background: 'rgba(15, 15, 15, 0.7)'}}>
+        <div className="w-80 flex-shrink-0 flex flex-col" style={{
+          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
+          border: '1px solid rgba(250, 204, 21, 0.9)',
+          boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
+          backdropFilter: 'blur(8px)'
+        }}>
           {/* Degen Chat Header */}
           <div className="p-3 border-b border-border/10">
             <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
@@ -206,16 +211,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Chat Box Container */}
-          <div className="flex-1 flex flex-col m-3" style={{
-            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-            border: '1px solid rgba(250, 204, 21, 0.9)',
-            boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
-            backdropFilter: 'blur(8px)',
-            borderRadius: '0.5rem'
-          }}>
-            {/* Chat Messages */}
-            <ScrollArea className="flex-1 px-3">
+          {/* Chat Messages */}
+          <ScrollArea className="flex-1 px-3">
               <div className="flex items-center justify-center h-full text-muted-foreground text-sm pt-32">
                 <div className="text-center space-y-2">
                   <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,10 +221,10 @@ export default function Home() {
                   <p>No messages yet</p>
                 </div>
               </div>
-            </ScrollArea>
+          </ScrollArea>
 
-            {/* Chat Input */}
-            <div className="p-3 border-t border-border/10">
+          {/* Chat Input */}
+          <div className="p-3 border-t border-border/10">
             <Input 
               placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
               className="h-10 text-sm bg-muted/30 border-border/20" 
@@ -241,7 +238,6 @@ export default function Home() {
               </button>
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
             </div>
-          </div>
           </div>
         </div>
 
