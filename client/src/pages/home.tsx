@@ -406,8 +406,7 @@ export default function Home() {
 
             {/* STATS BAR */}
             <div className="p-1">
-              <div className="flex flex-col gap-4 items-center" style={{overflow: 'visible'}}>
-                {/* Top Row: Jackpot Value */}
+              <div className="flex gap-4 justify-center" style={{overflow: 'visible'}}>
                 <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper-large">
@@ -417,35 +416,31 @@ export default function Home() {
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                   </div>
                 </div>
-                
-                {/* Bottom Row: Other 3 Stats */}
-                <div className="flex gap-4 justify-center">
-                  <div className="stat-box">
-                    <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                      <div className="stat-icon-wrapper">
-                        <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
-                      </div>
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">0.000</div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper">
+                      <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
                     </div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">0.000</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                   </div>
-                  <div className="stat-box">
-                    <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                      <div className="stat-icon-wrapper-small">
-                        <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
-                      </div>
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-chance">0.00%</div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
+                </div>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper-small">
+                      <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
                     </div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-chance">0.00%</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                   </div>
-                  <div className="stat-box">
-                    <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                      <div className="stat-icon-wrapper-small">
-                        <img src={clockIcon} alt="Clock" className="h-14 w-14" />
-                      </div>
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
+                </div>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper-small">
+                      <img src={clockIcon} alt="Clock" className="h-14 w-14" />
                     </div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
                   </div>
                 </div>
               </div>
