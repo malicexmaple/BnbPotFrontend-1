@@ -373,7 +373,7 @@ export default function Home() {
         <div className="flex-1 flex flex-col overflow-hidden relative">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
                   <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '450px'}} />
@@ -388,11 +388,12 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              
               <div className="px-4 py-3" style={{
                 borderRadius: '18px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                border: '2px solid rgba(250, 204, 21, 0.9)',
-                boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
+                border: '2px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
               }}>
                 <div className="flex items-center justify-center gap-2">
                   <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
