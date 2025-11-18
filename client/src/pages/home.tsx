@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
+import ProfileModal from "@/components/ProfileModal";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,9 @@ export default function Home() {
   
   /** Controls visibility of terms and conditions modal */
   const [showTermsModal, setShowTermsModal] = useState(false);
+  
+  /** Controls visibility of profile modal */
+  const [showProfileModal, setShowProfileModal] = useState(false);
   
   /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
@@ -158,7 +162,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen space-bg">
-      <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} />
+      <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
 
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT SIDEBAR - CHAT */}
@@ -945,6 +949,14 @@ export default function Home() {
           </button>
         </DialogContent>
       </Dialog>
+
+      <ProfileModal
+        open={showProfileModal}
+        onOpenChange={setShowProfileModal}
+        username={username || "User"}
+        walletAddress={address}
+        onDisconnect={disconnect}
+      />
     </div>
   );
 }

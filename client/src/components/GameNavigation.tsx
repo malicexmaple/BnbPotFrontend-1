@@ -19,6 +19,7 @@ interface GameNavigationProps {
   isConnecting?: boolean;
   walletAddress?: string;
   username?: string;
+  onOpenProfile?: () => void;
 }
 
 export default function GameNavigation({ 
@@ -27,7 +28,8 @@ export default function GameNavigation({
   isConnected = false,
   isConnecting = false,
   walletAddress,
-  username
+  username,
+  onOpenProfile
 }: GameNavigationProps) {
   const [activeTab, setActiveTab] = useState("jackpot");
 
@@ -205,7 +207,11 @@ export default function GameNavigation({
                     <span className="font-semibold">SP Leaderboard</span>
                   </DropdownMenuItem>
                   
-                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" data-testid="menu-options">
+                  <DropdownMenuItem 
+                    className="px-3 py-2.5 cursor-pointer" 
+                    onClick={onOpenProfile}
+                    data-testid="menu-options"
+                  >
                     <Settings className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
                     <span>Options</span>
                   </DropdownMenuItem>
