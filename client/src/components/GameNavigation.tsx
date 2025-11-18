@@ -111,7 +111,7 @@ export default function GameNavigation({
               <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
               <circle cx="10" cy="10" r="3" fill="currentColor"/>
             </svg>
-            <img src={jackpotTabLogo} alt="Jackpot" style={{height: '26px', width: 'auto'}} />
+            <img src={jackpotTabLogo} alt="Jackpot" style={{height: '34px', width: 'auto'}} />
           </Button>
           <Button
             data-testid="button-coinflip-tab"
@@ -121,7 +121,7 @@ export default function GameNavigation({
             className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
             style={{height: '32px', fontSize: '14px'}}
           >
-            <img src={coinflipLogo} alt="Coinflip" style={{height: '26px', width: 'auto'}} />
+            <img src={coinflipLogo} alt="Coinflip" style={{height: '34px', width: 'auto'}} />
           </Button>
           <Button
             data-testid="button-prediction-markets-tab"
@@ -131,7 +131,7 @@ export default function GameNavigation({
             className={`font-medium px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
             style={{height: '32px', fontSize: '14px'}}
           >
-            <img src={predictionMarketsLogo} alt="Prediction Markets" style={{height: '26px', width: 'auto'}} />
+            <img src={predictionMarketsLogo} alt="Prediction Markets" style={{height: '34px', width: 'auto'}} />
           </Button>
           </div>
 
