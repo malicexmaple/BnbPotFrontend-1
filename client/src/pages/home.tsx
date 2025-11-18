@@ -193,9 +193,9 @@ export default function Home() {
               style={{
                 left: 'calc(100% - 19px)',
                 zIndex: 9999,
-                borderRadius: '8px',
-                width: '79px',
-                height: '79px'
+                borderRadius: isChatCollapsed ? '8px' : '4px',
+                width: isChatCollapsed ? '79px' : '24px',
+                height: isChatCollapsed ? '79px' : '24px'
               }}
               data-testid="button-collapse-chat"
             >
@@ -205,7 +205,7 @@ export default function Home() {
                   <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               )}
@@ -463,13 +463,13 @@ export default function Home() {
               style={{
                 left: '-48px',
                 zIndex: 9999,
-                borderRadius: '8px',
-                width: '79px',
-                height: '79px'
+                borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
+                width: isLeaderboardCollapsed ? '79px' : '24px',
+                height: isLeaderboardCollapsed ? '79px' : '24px'
               }}
               data-testid="button-collapse-leaderboard"
             >
-              <svg className="w-8 h-8 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+              <svg className={`${isLeaderboardCollapsed ? 'w-8 h-8' : 'w-3 h-3'} text-foreground transition-transform duration-300`} fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
                 transform: isLeaderboardCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
               }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
