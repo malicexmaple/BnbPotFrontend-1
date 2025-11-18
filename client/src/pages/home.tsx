@@ -179,25 +179,25 @@ export default function Home() {
       }}>
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT SIDEBAR - CHAT */}
-          <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
-            width: isChatCollapsed ? '60px' : '320px',
+          <div className="w-80 flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
-            {/* Collapse Button - Positioned on the right edge */}
+            {/* Collapse Button - Positioned on the right inner edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-              className="absolute top-1/2 -translate-y-1/2 z-20 w-8 h-16 rounded-r-lg flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="absolute top-1/2 -translate-y-1/2 z-20 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                right: '-8px',
+                right: '8px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
                 boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
-                backdropFilter: 'blur(8px)'
+                backdropFilter: 'blur(8px)',
+                borderRadius: '4px'
               }}
               data-testid="button-collapse-chat"
             >
-              <svg className="w-4 h-4 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+              <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
                 transform: isChatCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
               }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -223,8 +223,6 @@ export default function Home() {
             </div>
           </div>
 
-          {!isChatCollapsed && (
-            <>
               {/* LIVE AIRDROP Section */}
               <div className="p-3">
                 <div className="glass-panel neon-border rounded-xl p-3">
@@ -273,8 +271,6 @@ export default function Home() {
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
                 </div>
               </div>
-            </>
-          )}
         </div>
 
         {/* CENTER - MAIN GAME AREA */}
@@ -443,34 +439,30 @@ export default function Home() {
         </div>
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
-          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
-            width: isLeaderboardCollapsed ? '60px' : '288px',
-            padding: isLeaderboardCollapsed ? '24px 12px' : '24px',
+          <div className="w-72 flex-shrink-0 p-6 space-y-3 transition-all duration-300 relative" style={{
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
             backdropFilter: 'blur(8px)'
           }}>
-            {/* Collapse Button - Positioned on the left edge */}
+            {/* Collapse Button - Positioned on the left inner edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
-              className="absolute top-1/2 -translate-y-1/2 z-20 w-8 h-16 rounded-l-lg flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="absolute top-1/2 -translate-y-1/2 z-20 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: '-8px',
+                left: '8px',
                 background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
                 border: '1px solid rgba(250, 204, 21, 0.85)',
                 boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
-                backdropFilter: 'blur(8px)'
+                backdropFilter: 'blur(8px)',
+                borderRadius: '4px'
               }}
               data-testid="button-collapse-leaderboard"
             >
-              <svg className="w-4 h-4 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
+              <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{
                 transform: isLeaderboardCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
               }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
-          
-          {!isLeaderboardCollapsed && (
-            <>
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
@@ -524,8 +516,6 @@ export default function Home() {
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
-          </>
-          )}
         </div>
         </div>
       </div>
@@ -1022,7 +1012,7 @@ export default function Home() {
         open={showProfileModal}
         onOpenChange={setShowProfileModal}
         username={username || "User"}
-        walletAddress={address}
+        walletAddress={address || undefined}
         onDisconnect={disconnect}
       />
     </div>
