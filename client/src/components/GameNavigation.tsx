@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
-import textLogo from '@assets/image_1763432064037.png';
+import textLogo from '@assets/bnbpotlogonew_1763432221839.png';
 import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
 interface GameNavigationProps {
