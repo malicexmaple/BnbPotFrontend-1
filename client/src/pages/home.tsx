@@ -182,7 +182,8 @@ export default function Home() {
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             width: isChatCollapsed ? '60px' : '320px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-            backdropFilter: 'blur(8px)'
+            backdropFilter: 'blur(8px)',
+            overflow: 'visible'
           }}>
             {/* Collapse Button - Positioned on the outer right edge */}
             <button
@@ -446,7 +447,8 @@ export default function Home() {
             width: isLeaderboardCollapsed ? '60px' : '288px',
             padding: isLeaderboardCollapsed ? '24px 12px' : '24px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-            backdropFilter: 'blur(8px)'
+            backdropFilter: 'blur(8px)',
+            overflow: 'visible'
           }}>
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
