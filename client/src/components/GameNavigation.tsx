@@ -92,7 +92,9 @@ export default function GameNavigation({
         <nav className="flex items-center justify-between px-4" style={{
           height: '70px',
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-          border: '1px solid rgba(250, 204, 21, 0.9)',
+          borderTop: '1px solid rgba(250, 204, 21, 0.9)',
+          borderLeft: '1px solid rgba(250, 204, 21, 0.9)',
+          borderRight: '1px solid rgba(250, 204, 21, 0.9)',
           boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
           backdropFilter: 'blur(8px)'
         }}>

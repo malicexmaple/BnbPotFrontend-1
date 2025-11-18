@@ -170,7 +170,9 @@ export default function Home() {
         {/* LEFT SIDEBAR - CHAT */}
         <div className="w-80 flex-shrink-0 flex flex-col" style={{
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-          border: '1px solid rgba(250, 204, 21, 0.9)',
+          borderLeft: '1px solid rgba(250, 204, 21, 0.9)',
+          borderRight: '1px solid rgba(250, 204, 21, 0.9)',
+          borderBottom: '1px solid rgba(250, 204, 21, 0.9)',
           boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
           backdropFilter: 'blur(8px)'
         }}>
@@ -409,7 +411,9 @@ export default function Home() {
         {/* RIGHT SIDEBAR - LEADERBOARD */}
         <div className="w-72 flex-shrink-0 p-6 space-y-3" style={{
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-          border: '1px solid rgba(250, 204, 21, 0.9)',
+          borderLeft: '1px solid rgba(250, 204, 21, 0.9)',
+          borderRight: '1px solid rgba(250, 204, 21, 0.9)',
+          borderBottom: '1px solid rgba(250, 204, 21, 0.9)',
           boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
           backdropFilter: 'blur(8px)'
         }}>
