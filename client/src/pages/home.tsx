@@ -411,47 +411,57 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
-                  className="px-5 h-10 text-sm font-semibold"
-                  data-testid="button-plus-0.1"
-                >
-                  +0.1
-                </Button>
+                <div className="px-5 py-2.5 rounded-lg" style={{
+                  background: 'rgba(20, 20, 20, 0.7)',
+                  border: '1px solid rgba(60, 60, 60, 0.4)'
+                }}>
+                  <button 
+                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
+                    className="text-sm font-semibold text-foreground hover-elevate"
+                    data-testid="button-plus-0.1"
+                  >
+                    +0.1
+                  </button>
+                </div>
                 
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
-                  className="px-5 h-10 text-sm font-semibold"
-                  data-testid="button-plus-0.5"
-                >
-                  +0.5
-                </Button>
+                <div className="px-5 py-2.5 rounded-lg" style={{
+                  background: 'rgba(20, 20, 20, 0.7)',
+                  border: '1px solid rgba(60, 60, 60, 0.4)'
+                }}>
+                  <button 
+                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
+                    className="text-sm font-semibold text-foreground hover-elevate"
+                    data-testid="button-plus-0.5"
+                  >
+                    +0.5
+                  </button>
+                </div>
                 
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
-                  className="px-5 h-10 text-sm font-semibold"
-                  data-testid="button-plus"
-                >
-                  +1
-                </Button>
+                <div className="px-5 py-2.5 rounded-lg" style={{
+                  background: 'rgba(20, 20, 20, 0.7)',
+                  border: '1px solid rgba(60, 60, 60, 0.4)'
+                }}>
+                  <button 
+                    onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
+                    className="text-sm font-semibold text-foreground hover-elevate"
+                    data-testid="button-plus"
+                  >
+                    +1
+                  </button>
+                </div>
                 
-                <Button 
-                  className="text-white font-bold border-0 px-10 h-10 text-base"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                    border: '2px solid rgba(234, 179, 8, 0.5)',
-                    boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                  }}
-                  data-testid="button-place-bet"
-                >
-                  Place Bet
-                </Button>
+                <div className="px-10 py-2.5 rounded-lg" style={{
+                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                  border: '2px solid rgba(234, 179, 8, 0.5)',
+                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                }}>
+                  <button 
+                    className="text-white font-bold text-base hover-elevate"
+                    data-testid="button-place-bet"
+                  >
+                    Place Bet
+                  </button>
+                </div>
               </div>
             </div>
 
