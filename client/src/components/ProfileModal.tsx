@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import profileLogo from '@assets/PROIFILE_1763429559487.png';
 
 interface ProfileModalProps {
   open: boolean;
@@ -60,13 +61,8 @@ export default function ProfileModal({
           <div className="w-52 border-r border-border/20 p-4 space-y-1" style={{
             background: 'rgba(10, 10, 10, 0.5)'
           }}>
-            <div className="text-xl font-bold mb-6 italic" style={{
-              background: 'linear-gradient(135deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              PROFILE
+            <div className="mb-6 flex justify-center">
+              <img src={profileLogo} alt="PROFILE" style={{height: '40px', width: 'auto'}} />
             </div>
 
             <button
