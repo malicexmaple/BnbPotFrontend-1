@@ -165,7 +165,7 @@ export default function GameNavigation({
                     }}
                   >
                     <div 
-                      className="w-6 h-6 rounded-full flex items-center justify-center mr-2 text-xs font-bold"
+                      className="w-8 h-8 rounded flex items-center justify-center mr-2 text-sm font-bold"
                       style={{
                         background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
                       }}
@@ -180,7 +180,7 @@ export default function GameNavigation({
                   <div className="px-3 py-3 border-b border-border/20">
                     <div className="flex items-center gap-3">
                       <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+                        className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0 text-base font-bold"
                         style={{
                           background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
                         }}
