@@ -34,7 +34,12 @@ export default function GameNavigation({
   const [activeTab, setActiveTab] = useState("jackpot");
 
   return (
-    <nav className="sticky top-0 z-50 bg-black flex items-center border-b border-border/20" style={{height: '100px'}}>
+    <nav className="sticky top-0 z-50 flex items-center border-b border-border/20" style={{
+      height: '100px',
+      background: 'linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 30%, rgba(20, 20, 20, 0.8) 100%)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)'
+    }}>
       {/* Left - Header Logo (320px to match chatbox width) */}
       <div className="flex items-center justify-center flex-shrink-0" style={{
         width: '320px',
