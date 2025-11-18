@@ -224,20 +224,20 @@ export default function Home() {
               </div>
 
               {/* LIVE AIRDROP Section */}
-              <div className="p-3">
-                <div className="glass-panel neon-border rounded-xl p-3">
+              <div className="p-2">
+                <div className="glass-panel neon-border rounded-xl p-2">
                   <div className="flex items-center justify-center">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-primary/20 text-primary text-xs font-bold px-2 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className="bg-primary/20 text-primary text-xs font-bold px-1.5 border border-primary/30" data-testid="badge-airdrop-live">LIVE</Badge>
                       <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
-                        <img src={airdropLogo} alt="AIRDROP" className="h-10" data-testid="img-airdrop-logo" />
+                        <img src={airdropLogo} alt="AIRDROP" className="h-8" data-testid="img-airdrop-logo" />
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center -mt-6" style={{marginLeft: '-1rem'}}>
+                  <div className="flex items-center justify-center -mt-5" style={{marginLeft: '-0.75rem'}}>
                     <div className="flex items-center justify-center gap-0">
-                      <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '5.25rem', width: '5.25rem', marginRight: '-0.25rem'}} />
-                      <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.5rem'}} data-testid="text-airdrop-amount">0.255</span>
+                      <img src={bnbLogo} alt="BNB" className="h-21 w-21 -mt-1" style={{height: '4rem', width: '4rem', marginRight: '-0.25rem'}} />
+                      <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
                     </div>
                   </div>
                 </div>
