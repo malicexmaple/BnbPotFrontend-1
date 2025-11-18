@@ -394,12 +394,9 @@ export default function Home() {
               
               <div className="px-4 py-3" style={{
                 borderRadius: '18px',
-                background: 'rgba(15, 15, 15, 0.9)',
-                border: '2px solid transparent',
-                backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
-                backgroundOrigin: 'border-box',
-                backgroundClip: 'padding-box, border-box',
-                boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                border: '2px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
               }}>
                 <div className="flex items-center justify-center gap-2">
                   <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
