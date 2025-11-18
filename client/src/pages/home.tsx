@@ -27,6 +27,7 @@ import jackpotLogo from '@assets/jackpotnew_1763477420573.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
 import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
 import signupLogo from '@assets/signupnew_1763410821936.png';
+import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 
 export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
@@ -403,9 +404,6 @@ export default function Home() {
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
                   }}>
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4" style={{color: '#EAB308'}} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
-                      </svg>
                       <input 
                         type="text"
                         value={betAmount} 
@@ -416,7 +414,8 @@ export default function Home() {
                         data-testid="input-bet" 
                       />
                     </div>
-                    <div className="flex items-center gap-2 pl-3 border-l border-border/20">
+                    <div className="flex items-center gap-1.5 pl-3 border-l border-border/20">
+                      <img src={bnbIcon} alt="BNB" className="w-3.5 h-3.5" />
                       <span className="text-sm font-semibold text-foreground">BNB</span>
                     </div>
                   </div>
