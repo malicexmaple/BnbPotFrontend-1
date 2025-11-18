@@ -388,10 +388,11 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-3 px-5 py-4 rounded-xl" style={{
-                background: 'rgba(15, 15, 20, 0.95)',
-                border: '1px solid rgba(50, 50, 60, 0.3)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)'
+              <div className="flex flex-col gap-3 px-4 py-3" style={{
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                border: '2px solid rgba(250, 204, 21, 0.9)',
+                boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)'
               }}>
                 {/* Top Row - Info */}
                 <div className="flex items-center justify-between text-sm">
