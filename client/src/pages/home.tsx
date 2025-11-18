@@ -220,7 +220,7 @@ export default function Home() {
             </button>
 
           {!isChatCollapsed && (
-            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '0px'}}>
+            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '-12px'}}>
               {/* Degen Chat Header */}
               <div className="glass-panel p-3 flex items-center justify-between" style={{borderRadius: '18px 18px 0 0'}}>
                 <div className="flex items-center gap-2">
@@ -457,10 +457,10 @@ export default function Home() {
         </div>
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
-          <div className="flex-shrink-0 space-y-0 transition-all duration-300 relative glass-panel" style={{
+          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
             paddingLeft: '0px',
-            paddingTop: '0px',
+            paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
             paddingBottom: isLeaderboardCollapsed ? '0px' : '24px',
             paddingRight: isLeaderboardCollapsed ? '0px' : '4px',
             overflow: 'visible',
@@ -494,7 +494,7 @@ export default function Home() {
           
           {!isLeaderboardCollapsed && (
             <>
-          <div className="p-0 ml-auto" style={{width: '297px'}}>
+          <div className="p-1 ml-auto" style={{width: '297px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
               <img src={coinStack} alt="Coins" className="w-16 h-16" />
