@@ -13,6 +13,7 @@ import { Trophy, TrendingUp, X, Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
+import { useChat } from "@/hooks/useChat";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
@@ -31,6 +32,7 @@ export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
   const { toast } = useToast();
   const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
+  const { messages, isConnected, sendMessage } = useChat(username || undefined);
   
   /** Time remaining in seconds for the current game round */
   const [timeRemaining, setTimeRemaining] = useState(13);
@@ -59,6 +61,9 @@ export default function Home() {
   /** Controls whether leaderboard sidebar is collapsed */
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
   
+  /** Current chat message being typed */
+  const [chatInput, setChatInput] = useState("");
+  
   /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
     name: "",
@@ -69,6 +74,9 @@ export default function Home() {
   
   /** Reference to carousel container for scroll calculations */
   const carouselRef = useRef<HTMLDivElement>(null);
+  
+  /** Reference to chat messages container for auto-scroll */
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -133,6 +141,51 @@ export default function Home() {
       });
     }
   }, [address, error, toast]);
+
+  /**
+   * Auto-scroll chat to bottom when new messages arrive
+   */
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  /**
+   * Handles sending a chat message
+   */
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) return;
+    
+    if (!address) {
+      toast({
+        variant: "destructive",
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to chat.",
+      });
+      return;
+    }
+
+    if (!username) {
+      toast({
+        variant: "destructive",
+        title: "Username Required",
+        description: "Please complete signup to use chat.",
+      });
+      return;
+    }
+
+    const success = sendMessage(chatInput);
+    if (success) {
+      setChatInput("");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failed to Send",
+        description: "Could not send message. Please try again.",
+      });
+    }
+  };
 
   /**
    * Handles new user signup form submission.
@@ -259,31 +312,57 @@ export default function Home() {
                   </div>
 
                   {/* Chat Messages */}
-                  <ScrollArea className="flex-1 px-3">
-                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm pt-32">
-                      <div className="text-center space-y-2">
-                        <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        <p>No messages yet</p>
+                  <div className="flex-1 overflow-y-auto px-3 pt-32" ref={chatMessagesRef}>
+                    {messages.length === 0 ? (
+                      <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                        <div className="text-center space-y-2">
+                          <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                          <p>No messages yet</p>
+                        </div>
                       </div>
-                    </div>
-                  </ScrollArea>
+                    ) : (
+                      <div className="space-y-2 pb-3">
+                        {messages.map((msg) => (
+                          <div key={msg.id} className="flex gap-2">
+                            <Avatar className="w-7 h-7 flex-shrink-0">
+                              <AvatarFallback className="text-xs bg-muted">
+                                {msg.username.charAt(0).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-xs font-semibold text-foreground">{msg.username}</span>
+                                <span className="text-[10px] text-muted-foreground">
+                                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                              <p className="text-xs text-foreground break-words">{msg.message}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Chat Input */}
                   <div className="p-3 border-t border-border/10">
                     <Input 
-                      placeholder={address ? "Type Message Here..." : "Connect wallet to chat..."}
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                      placeholder={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
                       className="h-10 text-sm bg-muted/30 border-border/20" 
                       data-testid="input-chat"
-                      disabled={!address}
+                      disabled={!address || !username}
                     />
                     <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
                       <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
                         <span>Chat Rules</span>
                       </button>
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">{messages.length}</Badge>
                     </div>
                   </div>
               </div>
