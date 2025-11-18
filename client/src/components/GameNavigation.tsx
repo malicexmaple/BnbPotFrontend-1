@@ -34,9 +34,9 @@ export default function GameNavigation({
 
   return (
     <div className="sticky top-0 z-50 flex" style={{height: '100px'}}>
-      {/* Left - Logo section (320px, full height) */}
+      {/* Left - Logo section (345px, full height) */}
       <div className="flex items-start justify-center flex-shrink-0" style={{
-        width: '320px',
+        width: '345px',
         height: '100px'
       }}>
         <div className="flex items-center justify-center" style={{height: '100px'}}>
