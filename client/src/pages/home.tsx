@@ -217,25 +217,22 @@ export default function Home() {
           {!isChatCollapsed && (
             <>
               {/* Degen Chat Header */}
-              <div className="p-3 border-b border-border/10" style={{width: '297px'}}>
-                <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
-                      <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
-                    </div>
-                    <span className="text-sm font-semibold text-foreground">Degen Chat</span>
+              <div className="glass-panel p-3 rounded-lg flex items-center justify-between mb-3" style={{width: '297px'}}>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
+                    <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
                   </div>
-                  <Badge className="text-white text-xs font-bold px-2 border-0" style={{
-                    background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                    border: '2px solid rgba(234, 179, 8, 0.5)',
-                    boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                  }} data-testid="badge-chat-count">{onlineUsers}</Badge>
+                  <span className="text-sm font-semibold text-foreground">Degen Chat</span>
                 </div>
+                <Badge className="text-white text-xs font-bold px-2 border-0" style={{
+                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+                  border: '2px solid rgba(234, 179, 8, 0.5)',
+                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                }} data-testid="badge-chat-count">{onlineUsers}</Badge>
               </div>
 
               {/* Chat Box Container */}
-              <div className="flex-1 flex flex-col relative pb-3" style={{width: '297px'}}>
-                <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '18px', overflow: 'hidden'}}>
+              <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '18px', overflow: 'hidden', width: '297px'}}>
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
                     <div className="glass-panel neon-border rounded-xl p-2">
@@ -284,7 +281,6 @@ export default function Home() {
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4" data-testid="badge-footer-count">180</Badge>
                     </div>
                   </div>
-                </div>
               </div>
             </>
           )}
