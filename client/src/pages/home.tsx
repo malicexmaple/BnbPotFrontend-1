@@ -181,10 +181,10 @@ export default function Home() {
           {/* LEFT SIDEBAR - CHAT */}
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             width: isChatCollapsed ? '0px' : '345px',
-            paddingLeft: '0px',
+            paddingLeft: isChatCollapsed ? '0px' : '24px',
             paddingTop: '0px',
             paddingBottom: '0px',
-            paddingRight: isChatCollapsed ? '0px' : '24px',
+            paddingRight: '0px',
             background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
             backdropFilter: 'blur(4px)',
             overflow: 'visible',
@@ -218,7 +218,7 @@ export default function Home() {
           {!isChatCollapsed && (
             <>
               {/* Degen Chat Header */}
-              <div className="p-3 border-b border-border/10 mr-auto" style={{width: '306px'}}>
+              <div className="p-3 border-b border-border/10" style={{width: '297px'}}>
                 <div className="glass-panel p-3 rounded-lg flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
@@ -235,7 +235,7 @@ export default function Home() {
               </div>
 
               {/* LIVE AIRDROP Section */}
-              <div className="p-2 mr-auto" style={{width: '306px'}}>
+              <div className="p-2" style={{width: '297px'}}>
                 <div className="glass-panel neon-border rounded-xl p-2">
                   <div className="flex items-center justify-center">
                     <div className="flex items-center gap-1.5">
@@ -468,7 +468,7 @@ export default function Home() {
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
               className="glass-panel absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: '-18px',
+                left: '-19px',
                 zIndex: 9999,
                 borderRadius: isLeaderboardCollapsed ? '8px' : '4px',
                 width: isLeaderboardCollapsed ? '89px' : '34px',
@@ -485,7 +485,7 @@ export default function Home() {
           
           {!isLeaderboardCollapsed && (
             <>
-          <div className="p-1 ml-auto" style={{width: '306px'}}>
+          <div className="p-1" style={{width: '297px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
               <img src={coinStack} alt="Coins" className="w-16 h-16" />
@@ -527,14 +527,14 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="glass-panel p-4 ml-auto" style={{borderRadius: '18px', width: '306px'}}>
+          <div className="glass-panel p-4" style={{borderRadius: '18px', width: '297px'}}>
             <Badge className="gradient-purple-pink text-black text-xs mb-3 uppercase tracking-wider font-bold no-text-shadow">LOOT OF THE DAY!</Badge>
             <div className="h-24 bg-background/30 rounded flex items-center justify-center border border-border/50">
               <div className="text-4xl">🎁</div>
             </div>
           </div>
 
-          <div className="glass-panel p-3 ml-auto" style={{borderRadius: '18px', width: '306px'}}>
+          <div className="glass-panel p-3" style={{borderRadius: '18px', width: '297px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
