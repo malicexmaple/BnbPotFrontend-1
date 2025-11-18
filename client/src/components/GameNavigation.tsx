@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
 import textLogo from '@assets/bnbpotlogonew_1763432221839.png';
-import headerBg from '@assets/MOSHED-2025-11-18-1-42-5_1763390565114.gif';
 
 interface GameNavigationProps {
   onConnect?: () => void;
@@ -38,11 +37,7 @@ export default function GameNavigation({
       {/* Left - Logo section (320px, full height) */}
       <div className="flex items-start justify-center flex-shrink-0" style={{
         width: '320px',
-        height: '100px',
-        backgroundImage: `url(${headerBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        height: '100px'
       }}>
         <div className="flex items-center justify-center" style={{height: '100px'}}>
           <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
@@ -57,7 +52,11 @@ export default function GameNavigation({
       {/* Right - Stacked header content */}
       <div className="flex-1 flex flex-col">
         {/* Top Header - 30px */}
-        <nav className="bg-black flex items-center justify-between px-4 border-b border-border/20" style={{height: '30px'}}>
+        <nav className="flex items-center justify-between px-4 border-b border-border/20" style={{
+          height: '30px',
+          background: 'rgba(0, 0, 0, 0.3)',
+          backdropFilter: 'blur(8px)'
+        }}>
           <div className="flex items-center gap-3">
             {/* Social Icons */}
             <button className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate" data-testid="button-social-x">
