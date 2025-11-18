@@ -204,8 +204,8 @@
     backface-visibility: hidden;
     position: relative;
     z-index: 1000;
-    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.8);
-    text-stroke: 1px rgba(0, 0, 0, 0.8);
+    -webkit-text-stroke: 2.5px rgba(0, 0, 0, 0.9);
+    text-stroke: 2.5px rgba(0, 0, 0, 0.9);
     paint-order: stroke fill;
   }
 
