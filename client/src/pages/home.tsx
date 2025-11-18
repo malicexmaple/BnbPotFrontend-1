@@ -198,7 +198,7 @@ export default function Home() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <img src={bnbLogo} alt="BNB" className="h-20 w-20" />
-                  <span className="text-3xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-airdrop-amount">0.255</span>
+                  <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.16rem'}} data-testid="text-airdrop-amount">0.255</span>
                 </div>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper-large">
                       <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}}>0.401</div>
+                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}}>0.401</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                   </div>
                 </div>
@@ -286,7 +286,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper">
                       <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-your-wager">0.000</div>
+                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}} data-testid="text-your-wager">0.000</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper-small">
                       <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-your-chance">0.00%</div>
+                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}} data-testid="text-your-chance">0.00%</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                   </div>
                 </div>
@@ -304,7 +304,7 @@ export default function Home() {
                     <div className="stat-icon-wrapper-small">
                       <img src={clockIcon} alt="Clock" className="h-14 w-14" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    <div className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '2.59rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
                   </div>
                 </div>
@@ -441,7 +441,7 @@ export default function Home() {
                 <div key={i} className="flex items-center gap-2 p-2 bg-background/50 rounded hover-elevate">
                   <Badge className="gradient-purple-pink text-black font-bold">{i}</Badge>
                   <div className="flex-1 text-sm font-medium">Player{i}</div>
-                  <div className="text-sm font-mono font-bold no-text-shadow" style={{color: '#FCD34D'}}>0.188</div>
+                  <div className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.01rem'}}>0.188</div>
                 </div>
               ))}
             </div>
@@ -457,7 +457,7 @@ export default function Home() {
 
           <div className="glass-panel p-3" style={{borderRadius: '18px'}}>
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
-            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold text-base no-text-shadow" style={{color: '#FCD34D'}}>0.769</span></div><span className="font-semibold text-base no-text-shadow" style={{color: '#FCD34D'}}>2.00%</span></div>
+            <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
         </div>
       </div>
