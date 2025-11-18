@@ -181,21 +181,18 @@ export default function Home() {
           {/* LEFT SIDEBAR - CHAT */}
           <div className="flex-shrink-0 flex flex-col transition-all duration-300 relative" style={{
             width: isChatCollapsed ? '0px' : '320px',
-            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-            backdropFilter: 'blur(8px)',
+            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
+            backdropFilter: 'blur(4px)',
             overflow: 'visible',
             zIndex: 50
           }}>
             {/* Collapse Button - Positioned on the outer right edge */}
             <button
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300 rounded-lg"
               style={{
                 left: 'calc(100% + 1px)',
-                zIndex: 9999,
-                border: '1px solid rgba(250, 204, 21, 0.85)',
-                boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
-                borderRadius: '4px'
+                zIndex: 9999
               }}
               data-testid="button-collapse-chat"
             >
@@ -446,21 +443,18 @@ export default function Home() {
           <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative" style={{
             width: isLeaderboardCollapsed ? '0px' : '288px',
             padding: isLeaderboardCollapsed ? '0px' : '24px',
-            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-            backdropFilter: 'blur(8px)',
+            background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
+            backdropFilter: 'blur(4px)',
             overflow: 'visible',
             zIndex: 50
           }}>
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
-              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
+              className="glass-panel absolute top-1/2 -translate-y-1/2 w-6 h-20 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300 rounded-lg"
               style={{
                 left: '-48px',
-                zIndex: 9999,
-                border: '1px solid rgba(250, 204, 21, 0.85)',
-                boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
-                borderRadius: '4px'
+                zIndex: 9999
               }}
               data-testid="button-collapse-leaderboard"
             >

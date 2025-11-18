@@ -91,8 +91,8 @@ export default function GameNavigation({
         {/* Bottom Header - 70px */}
         <nav className="flex items-center justify-between px-4" style={{
           height: '70px',
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
-          backdropFilter: 'blur(8px)'
+          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
+          backdropFilter: 'blur(4px)'
         }}>
           {/* Navigation tabs */}
           <div className="flex items-center gap-1">
