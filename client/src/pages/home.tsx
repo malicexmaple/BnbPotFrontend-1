@@ -407,7 +407,12 @@ export default function Home() {
         </div>
 
         {/* RIGHT SIDEBAR - LEADERBOARD */}
-        <div className="w-72 flex-shrink-0 p-6 space-y-3 border-l border-border/30">
+        <div className="w-72 flex-shrink-0 p-6 space-y-3" style={{
+          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.5), rgba(30, 30, 30, 0.5))',
+          border: '1px solid rgba(250, 204, 21, 0.9)',
+          boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
+          backdropFilter: 'blur(8px)'
+        }}>
           <div className="p-1">
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-4 right-2 w-16 h-16 z-10 group cursor-pointer">
