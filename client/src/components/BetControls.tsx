@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
+import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
 
 interface BetControlsProps {
   betAmount: string;
@@ -64,17 +65,19 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
         ))}
 
         {/* Place Bet Button */}
-        <div className="px-10 py-2.5 rounded-lg" style={{
-          background: DARK_BG.SOLID,
-          border: '2px solid transparent',
-          backgroundImage: `${DARK_BG.SOLID}, linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)`,
-          backgroundOrigin: 'border-box',
-          backgroundClip: 'padding-box, border-box'
-        }}>
+        <div className="glass-panel neon-border px-10 py-2.5 rounded-lg relative overflow-hidden">
+          {/* Background coins image */}
+          <div className="absolute inset-0 z-0" style={{
+            backgroundImage: `url(${coinsBackground})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.3,
+            borderRadius: 'inherit'
+          }} />
           <Button
             onClick={onPlaceBet}
             variant="ghost"
-            className="text-sm font-bold text-white no-default-hover-elevate no-default-active-elevate h-auto p-0"
+            className="text-sm font-bold text-white no-default-hover-elevate no-default-active-elevate h-auto p-0 relative z-10"
             data-testid="button-place-bet"
           >
             PLACE BET
