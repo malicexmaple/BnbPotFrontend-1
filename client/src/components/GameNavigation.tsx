@@ -51,8 +51,18 @@ export default function GameNavigation({
       }
     };
 
+    const handleStorageChange = (event: StorageEvent) => {
+      if (username && event.key === `avatar_${username}`) {
+        setAvatarUrl(event.newValue);
+      }
+    };
+
     window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [username]);
 
   return (

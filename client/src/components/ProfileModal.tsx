@@ -46,7 +46,7 @@ export default function ProfileModal({
     window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { username, avatarUrl: newAvatarUrl } }));
   };
 
-  // Listen for avatar updates from child modals
+  // Listen for avatar updates from child modals and other tabs
   useEffect(() => {
     const handleAvatarEvent = (event: CustomEvent) => {
       if (event.detail.username === username) {
@@ -54,8 +54,18 @@ export default function ProfileModal({
       }
     };
 
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === `avatar_${username}`) {
+        setAvatarUrl(event.newValue);
+      }
+    };
+
     window.addEventListener('avatarUpdated', handleAvatarEvent as EventListener);
-    return () => window.removeEventListener('avatarUpdated', handleAvatarEvent as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('avatarUpdated', handleAvatarEvent as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [username]);
 
   const getAvatarColor = () => {

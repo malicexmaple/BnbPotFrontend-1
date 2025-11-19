@@ -51,15 +51,26 @@ export default function ChatSidebar({
     setAvatarUrls(newAvatarUrls);
   }, [messages]);
 
-  // Listen for avatar updates
+  // Listen for avatar updates from same tab and other tabs
   useEffect(() => {
     const handleAvatarUpdate = (event: CustomEvent) => {
       const { username, avatarUrl } = event.detail;
       setAvatarUrls(prev => ({ ...prev, [username]: avatarUrl }));
     };
 
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key && event.key.startsWith('avatar_')) {
+        const username = event.key.replace('avatar_', '');
+        setAvatarUrls(prev => ({ ...prev, [username]: event.newValue }));
+      }
+    };
+
     window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const handleSendMessage = () => {
