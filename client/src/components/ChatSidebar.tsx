@@ -123,7 +123,7 @@ export default function ChatSidebar({
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
-              <div className="glass-panel neon-border p-2 relative" style={{
+              <div className="glass-panel neon-border p-1 relative" style={{
                 animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
                 {/* Background coins image */}
@@ -172,8 +172,8 @@ export default function ChatSidebar({
                     />
                   ))}
                 </div>
-                <div className="flex items-center justify-start relative z-10" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
-                  <div className="flex items-center gap-2 px-3 py-1.5" style={{
+                <div className="flex items-center justify-start relative z-10" style={{paddingLeft: '5px', marginTop: '0.125rem'}}>
+                  <div className="flex items-center gap-2 px-2.5 py-1" style={{
                     background: DARK_BG.SOLID,
                     border: GOLDEN.BORDER,
                     borderRadius: BORDER_RADIUS.SMALL,
@@ -191,7 +191,7 @@ export default function ChatSidebar({
                     }} data-testid="text-airdrop-amount">0.255</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.25rem'}}>
+                <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.125rem'}}>
                   <div className="shine-image relative" style={{
                     '--shine-mask': `url(${airdropLogo})`,
                     animation: 'floatAirdrop 2s ease-in-out infinite'
