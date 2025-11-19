@@ -200,7 +200,8 @@ export default function ChatSidebar({
                       src={airdropLogo} 
                       alt="AIRDROP" 
                       style={{
-                        height: '4rem'
+                        height: '4rem',
+                        filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
                       }} 
                       data-testid="img-airdrop-logo" 
                     />
