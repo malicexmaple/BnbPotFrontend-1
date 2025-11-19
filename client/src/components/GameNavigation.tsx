@@ -57,8 +57,8 @@ export default function GameNavigation({
         {/* Top Header - 30px */}
         <nav className="flex items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',
-          background: 'rgba(0, 0, 0, 0.3)',
-          backdropFilter: 'blur(8px)'
+          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
+          backdropFilter: 'blur(4px)'
         }}>
           <div className="flex items-center gap-3">
             {/* Social Icons */}
