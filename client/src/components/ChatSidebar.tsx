@@ -122,7 +122,9 @@ export default function ChatSidebar({
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
-              <div className="glass-panel neon-border p-2 relative">
+              <div className="glass-panel neon-border p-2 relative" style={{
+                animation: 'wobbleAirdropBox 3s ease-in-out infinite'
+              }}>
                 {/* Parachute with air streams */}
                 <div className="absolute z-[9999]" style={{
                   right: `${AIRDROP.PARACHUTE_RIGHT}px`,
