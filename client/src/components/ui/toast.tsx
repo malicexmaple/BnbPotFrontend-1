@@ -47,18 +47,14 @@ const Toast = React.forwardRef<
   return (
     <ToastPrimitives.Root
       ref={ref}
-      className={cn(toastVariants({ variant }), className)}
+      className={cn(toastVariants({ variant }), "glass-panel", className)}
       style={{
-        background: isDestructive 
-          ? 'linear-gradient(145deg, rgba(40, 20, 20, 0.95), rgba(30, 10, 10, 0.95))'
-          : 'linear-gradient(145deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.95))',
         border: isDestructive 
           ? '2px solid rgba(239, 68, 68, 0.5)'
           : '2px solid rgba(234, 179, 8, 0.5)',
         boxShadow: isDestructive
-          ? '0 0 24px rgba(239, 68, 68, 0.3), 0 4px 12px rgba(0, 0, 0, 0.7)'
-          : '0 0 24px rgba(234, 179, 8, 0.3), 0 4px 12px rgba(0, 0, 0, 0.7)',
-        backdropFilter: 'blur(8px)'
+          ? 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 0 24px rgba(239, 68, 68, 0.3), 0 4px 12px rgba(0, 0, 0, 0.7)'
+          : 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 0 24px rgba(234, 179, 8, 0.3), 0 4px 12px rgba(0, 0, 0, 0.7)'
       }}
       {...props}
     />
