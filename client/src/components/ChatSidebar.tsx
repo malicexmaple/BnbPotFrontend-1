@@ -178,13 +178,15 @@ export default function ChatSidebar({
                   </div>
                 </div>
                 <div className="flex items-center justify-start relative" style={{marginTop: '0.25rem'}}>
-                  <div className="shine-image relative" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
+                  <div className="shine-image relative" style={{
+                    '--shine-mask': `url(${airdropLogo})`,
+                    animation: 'floatAirdrop 2s ease-in-out infinite'
+                  } as React.CSSProperties}>
                     <img 
                       src={airdropLogo} 
                       alt="AIRDROP" 
                       style={{
-                        height: '3.125rem',
-                        animation: 'floatAirdrop 2s ease-in-out infinite'
+                        height: '3.125rem'
                       }} 
                       data-testid="img-airdrop-logo" 
                     />
