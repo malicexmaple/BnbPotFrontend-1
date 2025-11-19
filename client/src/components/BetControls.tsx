@@ -87,7 +87,8 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
               alt="PLACE BET" 
               style={{
                 height: '1rem',
-                width: 'auto'
+                width: 'auto',
+                filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
               }}
             />
           </button>
