@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
+import placeBetImage from '@assets/placebet_1763568453332.png';
 
 interface BetControlsProps {
   betAmount: string;
@@ -76,14 +77,20 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
             opacity: 0.3,
             borderRadius: 'inherit'
           }} />
-          <Button
+          <button
             onClick={onPlaceBet}
-            variant="ghost"
-            className="text-sm font-bold text-white no-default-hover-elevate no-default-active-elevate h-auto p-0 relative z-10"
+            className="relative z-10 hover-elevate active-elevate-2 transition-all"
             data-testid="button-place-bet"
           >
-            PLACE BET
-          </Button>
+            <img 
+              src={placeBetImage} 
+              alt="PLACE BET" 
+              style={{
+                height: '1.25rem',
+                width: 'auto'
+              }}
+            />
+          </button>
         </div>
       </div>
     </div>
