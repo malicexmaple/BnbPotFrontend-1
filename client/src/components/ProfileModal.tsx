@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, ChevronDown } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import AvatarUploadModal from "./AvatarUploadModal";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,7 @@ export default function ProfileModal({
   const [showClientSeed, setShowClientSeed] = useState(false);
   const [streamerMode, setStreamerMode] = useState(false);
   const [timeRange, setTimeRange] = useState("7days");
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false);
 
   const getAvatarColor = () => {
     return `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`;
@@ -138,13 +140,27 @@ export default function ProfileModal({
                 <div className="flex items-start gap-4">
                   <div className="relative group">
                     <div
-                      className="w-24 h-24 rounded-lg flex items-center justify-center text-2xl font-bold"
-                      style={{ background: getAvatarColor() }}
+                      className="w-24 h-24 flex items-center justify-center text-2xl font-bold glass-panel"
+                      style={{
+                        background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
+                        border: '2px solid rgba(234, 179, 8, 0.3)',
+                        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)',
+                        borderRadius: '18px'
+                      }}
                     >
                       {username.slice(0, 2).toUpperCase()}
                     </div>
-                    <button className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-muted flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-border/40">
-                      <Pencil className="w-4 h-4" />
+                    <button 
+                      onClick={() => setShowAvatarUpload(true)}
+                      className="absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover-elevate"
+                      style={{
+                        background: 'rgba(234, 179, 8, 0.2)',
+                        border: '2px solid rgba(234, 179, 8, 0.5)',
+                        boxShadow: '0 0 12px rgba(234, 179, 8, 0.3)'
+                      }}
+                      data-testid="button-upload-avatar"
+                    >
+                      <Pencil className="w-4 h-4" style={{ color: '#FCD34D' }} />
                     </button>
                   </div>
                   <div>
@@ -308,7 +324,7 @@ export default function ProfileModal({
                       </div>
                     </div>
                     <Button size="sm" style={{
-                      background: 'linear-gradient(135deg, #059669, #10b981)',
+                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
                       color: 'white'
                     }} data-testid="button-follow-twitter">
                       Follow now
@@ -328,7 +344,7 @@ export default function ProfileModal({
                       </div>
                     </div>
                     <Button size="sm" style={{
-                      background: 'linear-gradient(135deg, #059669, #10b981)',
+                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
                       color: 'white'
                     }} data-testid="button-join-discord">
                       Join
@@ -506,6 +522,13 @@ export default function ProfileModal({
           </div>
         </div>
       </DialogContent>
+
+      <AvatarUploadModal
+        open={showAvatarUpload}
+        onOpenChange={setShowAvatarUpload}
+        username={username}
+        avatarColor={getAvatarColor()}
+      />
     </Dialog>
   );
 }
