@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Flame } from "lucide-react";
 import { SIDEBAR, AIRDROP, BORDER_RADIUS, GOLDEN, DARK_BG } from "@/constants/layout";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
@@ -39,12 +39,34 @@ export default function ChatSidebar({
 }: ChatSidebarProps) {
   const [chatInput, setChatInput] = useState("");
   const chatMessagesRef = useRef<HTMLDivElement>(null);
+  const [avatarUrls, setAvatarUrls] = useState<Record<string, string | null>>({});
 
   useEffect(() => {
     if (chatMessagesRef.current) {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Load avatar URLs for all users in messages
+  useEffect(() => {
+    const newAvatarUrls: Record<string, string | null> = {};
+    messages.forEach(msg => {
+      const storedAvatar = localStorage.getItem(`avatar_${msg.username}`);
+      newAvatarUrls[msg.username] = storedAvatar;
+    });
+    setAvatarUrls(newAvatarUrls);
+  }, [messages]);
+
+  // Listen for avatar updates
+  useEffect(() => {
+    const handleAvatarUpdate = (event: CustomEvent) => {
+      const { username, avatarUrl } = event.detail;
+      setAvatarUrls(prev => ({ ...prev, [username]: avatarUrl }));
+    };
+
+    window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+  }, []);
 
   const handleSendMessage = () => {
     if (!chatInput.trim() || !canChat) return;
@@ -253,8 +275,9 @@ export default function ChatSidebar({
                 <div className="space-y-2 pb-3">
                   {messages.map((msg) => (
                     <div key={msg.id} className="flex gap-2">
-                      <Avatar className="w-7 h-7 flex-shrink-0">
-                        <AvatarFallback className="text-xs bg-muted">
+                      <Avatar className="w-7 h-7 flex-shrink-0 rounded-md">
+                        <AvatarImage src={avatarUrls[msg.username] || undefined} alt={msg.username} />
+                        <AvatarFallback className="text-xs bg-muted rounded-md">
                           {msg.username.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>

@@ -176,7 +176,7 @@ export default function GameNavigation({
                     }}
                   >
                     <div 
-                      className="w-12 h-12 rounded flex items-center justify-center mr-2 text-base font-bold overflow-hidden"
+                      className="w-12 h-12 rounded-md flex items-center justify-center mr-2 text-base font-bold overflow-hidden"
                       style={{
                         background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                         border: '2px solid rgba(60, 60, 60, 0.6)',
@@ -199,7 +199,7 @@ export default function GameNavigation({
                   <div className="px-3 py-3 border-b border-border/20">
                     <div className="flex items-center gap-3">
                       <div 
-                        className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0 text-base font-bold overflow-hidden"
+                        className="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 text-base font-bold overflow-hidden"
                         style={{
                           background: avatarUrl ? 'transparent' : `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
                         }}
