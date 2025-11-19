@@ -123,17 +123,41 @@ export default function ChatSidebar({
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
               <div className="glass-panel neon-border p-2 relative">
-                <img
-                  src={airdropPackage}
-                  alt="Gift Package"
-                  className="h-48 w-48 absolute z-[9999]"
-                  style={{
-                    right: `${AIRDROP.PARACHUTE_RIGHT}px`,
-                    top: `${AIRDROP.PARACHUTE_TOP}px`,
-                    filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
-                  }}
-                  data-testid="img-gift-package"
-                />
+                {/* Parachute with air streams */}
+                <div className="absolute z-[9999]" style={{
+                  right: `${AIRDROP.PARACHUTE_RIGHT}px`,
+                  top: `${AIRDROP.PARACHUTE_TOP}px`,
+                  width: '12rem',
+                  height: '12rem'
+                }}>
+                  <img
+                    src={airdropPackage}
+                    alt="Gift Package"
+                    className="h-48 w-48 relative z-10"
+                    style={{
+                      filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
+                    }}
+                    data-testid="img-gift-package"
+                  />
+                  {/* Air stream effects around parachute */}
+                  {[...Array(8)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute"
+                      style={{
+                        left: `${15 + (i * 15)}%`,
+                        bottom: '20%',
+                        width: '3px',
+                        height: '20px',
+                        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0))',
+                        borderRadius: '50%',
+                        animation: `airStream${i} ${1.5 + (i * 0.2)}s ease-in-out infinite`,
+                        animationDelay: `${i * 0.15}s`,
+                        opacity: 0.6
+                      }}
+                    />
+                  ))}
+                </div>
                 <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
                   <div className="flex items-center gap-2 px-3 py-1.5" style={{
                     background: DARK_BG.SOLID,
@@ -153,9 +177,27 @@ export default function ChatSidebar({
                     }} data-testid="text-airdrop-amount">0.255</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-start" style={{marginTop: '0.25rem'}}>
-                  <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
+                <div className="flex items-center justify-start relative" style={{marginTop: '0.25rem'}}>
+                  <div className="shine-image relative" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
                     <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
+                    {/* Air stream effects around airdrop logo */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute"
+                        style={{
+                          left: `${10 + (i * 12)}%`,
+                          bottom: '-10px',
+                          width: '2px',
+                          height: '15px',
+                          background: 'linear-gradient(to bottom, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.5), rgba(250, 204, 21, 0))',
+                          borderRadius: '50%',
+                          animation: `airStreamLogo${i} ${1.2 + (i * 0.15)}s ease-in-out infinite`,
+                          animationDelay: `${i * 0.1}s`,
+                          opacity: 0.5
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
                 <Badge className="text-primary font-bold px-2 py-0.5" style={{
