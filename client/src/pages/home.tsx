@@ -337,17 +337,15 @@ export default function Home() {
                       <img src={airdropPackage} alt="Gift Package" className="h-14 w-14" style={{position: 'absolute', right: '8px', top: '8px'}} data-testid="img-gift-package" />
                       <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
                         <div className="flex items-center justify-start gap-1">
-                          <img src={bnbIcon} alt="BNB" style={{width: '2.4rem', height: '2.4rem', marginTop: '-0.25rem'}} />
                           <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
+                          <img src={bnbIcon} alt="BNB" style={{width: '2.4rem', height: '2.4rem', marginTop: '-0.25rem'}} />
                         </div>
                       </div>
-                      <div className="flex items-center justify-start" style={{marginTop: '0.25rem'}}>
-                        <div className="flex items-center gap-2">
-                          <Badge className="bg-primary/20 text-primary font-bold px-2 py-0.5 border border-primary/30" style={{fontSize: '1.09375rem'}} data-testid="badge-airdrop-live">LIVE</Badge>
-                          <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
-                            <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
-                          </div>
+                      <div className="flex items-center justify-between" style={{marginTop: '0.25rem'}}>
+                        <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
+                          <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
                         </div>
+                        <Badge className="bg-primary/20 text-primary font-bold px-2 py-0.5 border border-primary/30" style={{fontSize: '1.09375rem'}} data-testid="badge-airdrop-live">LIVE</Badge>
                       </div>
                     </div>
                   </div>
