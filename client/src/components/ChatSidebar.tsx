@@ -123,15 +123,16 @@ export default function ChatSidebar({
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
-              <div className="glass-panel neon-border p-2 relative overflow-hidden" style={{
+              <div className="glass-panel neon-border p-2 relative" style={{
                 animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
                 {/* Background coins image */}
-                <div className="absolute inset-0 z-0" style={{
+                <div className="absolute inset-0 z-0 overflow-hidden" style={{
                   backgroundImage: `url(${coinsBackground})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  opacity: 0.3
+                  opacity: 0.3,
+                  borderRadius: 'inherit'
                 }} />
                 {/* Gift package with air streams */}
                 <div className="absolute z-10" style={{
