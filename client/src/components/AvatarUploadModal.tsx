@@ -12,13 +12,17 @@ interface AvatarUploadModalProps {
   onOpenChange: (open: boolean) => void;
   username: string;
   avatarColor: string;
+  onAvatarUpdate: (avatarUrl: string | null) => void;
+  currentAvatar?: string | null;
 }
 
 export default function AvatarUploadModal({ 
   open, 
   onOpenChange, 
   username,
-  avatarColor
+  avatarColor,
+  onAvatarUpdate,
+  currentAvatar
 }: AvatarUploadModalProps) {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [imageLink, setImageLink] = useState("");
@@ -29,23 +33,48 @@ export default function AvatarUploadModal({
   };
 
   const handleRemove = () => {
-    // TODO: Implement remove avatar logic
-    console.log("Remove avatar");
+    localStorage.removeItem(`avatar_${username}`);
+    onAvatarUpdate(null);
     onOpenChange(false);
   };
 
   const handleFileUpload = (file: File) => {
-    // TODO: Implement file upload logic
-    console.log("Upload file:", file);
-    setShowUploadDialog(false);
-    onOpenChange(false);
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+    
+    if (file.size > 2 * 1024 * 1024) {
+      alert('File size must be less than 2 MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      localStorage.setItem(`avatar_${username}`, dataUrl);
+      onAvatarUpdate(dataUrl);
+      setShowUploadDialog(false);
+      onOpenChange(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleLinkUpload = () => {
-    // TODO: Implement link upload logic
-    console.log("Upload from link:", imageLink);
-    setShowUploadDialog(false);
-    onOpenChange(false);
+    if (!imageLink.trim()) return;
+    
+    const img = new Image();
+    img.onload = () => {
+      localStorage.setItem(`avatar_${username}`, imageLink);
+      onAvatarUpdate(imageLink);
+      setImageLink("");
+      setShowUploadDialog(false);
+      onOpenChange(false);
+    };
+    img.onerror = () => {
+      alert('Invalid image URL. Please check the link and try again.');
+    };
+    img.src = imageLink;
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -201,7 +230,7 @@ export default function AvatarUploadModal({
           {/* Avatar Preview */}
           <div className="flex justify-center">
             <div
-              className="w-32 h-32 flex items-center justify-center text-3xl font-bold glass-panel"
+              className="w-32 h-32 flex items-center justify-center text-3xl font-bold glass-panel overflow-hidden"
               style={{
                 background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                 border: '2px solid rgba(234, 179, 8, 0.3)',
@@ -209,7 +238,11 @@ export default function AvatarUploadModal({
                 borderRadius: '50%'
               }}
             >
-              {username.slice(0, 2).toUpperCase()}
+              {currentAvatar ? (
+                <img src={currentAvatar} alt={username} className="w-full h-full object-cover" />
+              ) : (
+                username.slice(0, 2).toUpperCase()
+              )}
             </div>
           </div>
 

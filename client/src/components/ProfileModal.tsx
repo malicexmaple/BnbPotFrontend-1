@@ -36,6 +36,9 @@ export default function ProfileModal({
   const [streamerMode, setStreamerMode] = useState(false);
   const [timeRange, setTimeRange] = useState("7days");
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(() => {
+    return localStorage.getItem(`avatar_${username}`) || null;
+  });
 
   const getAvatarColor = () => {
     return `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`;
@@ -140,7 +143,7 @@ export default function ProfileModal({
                 <div className="flex items-start gap-4">
                   <div className="relative group">
                     <div
-                      className="w-24 h-24 flex items-center justify-center text-2xl font-bold glass-panel"
+                      className="w-24 h-24 flex items-center justify-center text-2xl font-bold glass-panel overflow-hidden"
                       style={{
                         background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                         border: '2px solid rgba(60, 60, 60, 0.4)',
@@ -148,7 +151,11 @@ export default function ProfileModal({
                         borderRadius: '18px'
                       }}
                     >
-                      {username.slice(0, 2).toUpperCase()}
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={username} className="w-full h-full object-cover" />
+                      ) : (
+                        username.slice(0, 2).toUpperCase()
+                      )}
                     </div>
                     <button 
                       onClick={() => setShowAvatarUpload(true)}
@@ -528,6 +535,8 @@ export default function ProfileModal({
         onOpenChange={setShowAvatarUpload}
         username={username}
         avatarColor={getAvatarColor()}
+        onAvatarUpdate={setAvatarUrl}
+        currentAvatar={avatarUrl}
       />
     </Dialog>
   );
