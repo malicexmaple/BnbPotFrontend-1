@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +45,18 @@ export default function ProfileModal({
     // Dispatch custom event to notify other components
     window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { username, avatarUrl: newAvatarUrl } }));
   };
+
+  // Listen for avatar updates from child modals
+  useEffect(() => {
+    const handleAvatarEvent = (event: CustomEvent) => {
+      if (event.detail.username === username) {
+        setAvatarUrl(event.detail.avatarUrl);
+      }
+    };
+
+    window.addEventListener('avatarUpdated', handleAvatarEvent as EventListener);
+    return () => window.removeEventListener('avatarUpdated', handleAvatarEvent as EventListener);
+  }, [username]);
 
   const getAvatarColor = () => {
     return `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`;
