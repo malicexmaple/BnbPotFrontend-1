@@ -333,10 +333,8 @@ export default function Home() {
               <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '0 0 18px 18px', overflow: 'hidden'}}>
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
-                    <div className="glass-panel neon-border p-2">
-                      <div className="flex items-center justify-start">
-                        <img src={airdropPackage} alt="Gift Package" style={{height: '3.125rem'}} data-testid="img-gift-package" />
-                      </div>
+                    <div className="glass-panel neon-border p-2 relative">
+                      <img src={airdropPackage} alt="Gift Package" style={{height: '3.125rem', position: 'absolute', right: '8px', top: '8px'}} data-testid="img-gift-package" />
                       <div className="flex items-center justify-start">
                         <div className="flex items-center justify-start gap-0">
                           <img src={bnbIcon} alt="BNB" className="w-12 h-12 -mt-1" style={{marginRight: '-0.25rem'}} />
