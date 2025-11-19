@@ -349,8 +349,8 @@ export default function Home() {
                       <Badge className="text-primary font-bold px-2 py-0.5" style={{
                         fontSize: '0.875rem',
                         position: 'absolute',
-                        right: '0px',
-                        bottom: '0px',
+                        right: '-6px',
+                        bottom: '-6px',
                         background: 'rgba(15, 15, 15, 0.9)',
                         border: '1px solid rgba(234, 179, 8, 0.5)',
                         borderRadius: '4px'
