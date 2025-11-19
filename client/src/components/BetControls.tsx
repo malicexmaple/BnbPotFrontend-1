@@ -65,7 +65,9 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
         ))}
 
         {/* Place Bet Button */}
-        <div className="glass-panel neon-border px-10 py-2.5 rounded-lg relative overflow-hidden">
+        <div className="glass-panel neon-border px-10 py-2.5 rounded-lg relative overflow-hidden" style={{
+          animation: 'floatAirdropBox 2s ease-in-out infinite'
+        }}>
           {/* Background coins image */}
           <div className="absolute inset-0 z-0" style={{
             backgroundImage: `url(${coinsBackground})`,
