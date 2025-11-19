@@ -341,7 +341,7 @@ export default function Home() {
                           <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-start" style={{marginTop: '-0.5rem'}}>
+                      <div className="flex items-center justify-start" style={{marginTop: '0.25rem'}}>
                         <div className="flex items-center gap-2">
                           <Badge className="bg-primary/20 text-primary font-bold px-2 py-0.5 border border-primary/30" style={{fontSize: '1.09375rem'}} data-testid="badge-airdrop-live">LIVE</Badge>
                           <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
