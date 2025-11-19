@@ -40,6 +40,12 @@ export default function ProfileModal({
     return localStorage.getItem(`avatar_${username}`) || null;
   });
 
+  const handleAvatarUpdate = (newAvatarUrl: string | null) => {
+    setAvatarUrl(newAvatarUrl);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { username, avatarUrl: newAvatarUrl } }));
+  };
+
   const getAvatarColor = () => {
     return `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`;
   };
@@ -535,7 +541,7 @@ export default function ProfileModal({
         onOpenChange={setShowAvatarUpload}
         username={username}
         avatarColor={getAvatarColor()}
-        onAvatarUpdate={setAvatarUrl}
+        onAvatarUpdate={handleAvatarUpdate}
         currentAvatar={avatarUrl}
       />
     </Dialog>

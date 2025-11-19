@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +34,26 @@ export default function GameNavigation({
   onOpenProfile
 }: GameNavigationProps) {
   const [activeTab, setActiveTab] = useState("jackpot");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(() => {
+    return username ? localStorage.getItem(`avatar_${username}`) : null;
+  });
+
+  useEffect(() => {
+    if (username) {
+      setAvatarUrl(localStorage.getItem(`avatar_${username}`));
+    }
+  }, [username]);
+
+  useEffect(() => {
+    const handleAvatarUpdate = (event: CustomEvent) => {
+      if (username && event.detail.username === username) {
+        setAvatarUrl(event.detail.avatarUrl);
+      }
+    };
+
+    window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
+  }, [username]);
 
   return (
     <div className="sticky top-0 z-50 flex" style={{height: '100px'}}>
@@ -156,16 +176,20 @@ export default function GameNavigation({
                     }}
                   >
                     <div 
-                      className="w-12 h-12 rounded flex items-center justify-center mr-2 text-base font-bold"
+                      className="w-12 h-12 rounded flex items-center justify-center mr-2 text-base font-bold overflow-hidden"
                       style={{
                         background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                         border: '2px solid rgba(60, 60, 60, 0.6)',
                         boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
                       }}
                     >
-                      <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '24px', height: '24px'}}>
-                        <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
-                      </svg>
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={username} className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '24px', height: '24px'}}>
+                          <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                        </svg>
+                      )}
                     </div>
                     {username}
                     <ChevronRight className="ml-2" style={{width: '14px', height: '14px'}} />
@@ -175,12 +199,16 @@ export default function GameNavigation({
                   <div className="px-3 py-3 border-b border-border/20">
                     <div className="flex items-center gap-3">
                       <div 
-                        className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0 text-base font-bold"
+                        className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0 text-base font-bold overflow-hidden"
                         style={{
-                          background: `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
+                          background: avatarUrl ? 'transparent' : `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
                         }}
                       >
-                        {username.slice(0, 2).toUpperCase()}
+                        {avatarUrl ? (
+                          <img src={avatarUrl} alt={username} className="w-full h-full object-cover" />
+                        ) : (
+                          username.slice(0, 2).toUpperCase()
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-foreground">{username}</div>
