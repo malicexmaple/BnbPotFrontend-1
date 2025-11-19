@@ -126,7 +126,7 @@ export default function ChatSidebar({
                 animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
                 {/* Gift package with air streams */}
-                <div className="absolute z-[9999]" style={{
+                <div className="absolute z-10" style={{
                   right: '40px',
                   top: '-35px',
                   width: '5.6rem',
