@@ -330,7 +330,7 @@ export default function Home() {
               </div>
 
               {/* Chat Box Container */}
-              <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '0 0 18px 18px', overflow: 'hidden'}}>
+              <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '0 0 18px 18px', overflow: 'visible'}}>
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
                     <div className="glass-panel neon-border p-2 relative">
