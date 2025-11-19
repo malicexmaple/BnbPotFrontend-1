@@ -291,7 +291,7 @@ export default function Home() {
               onClick={() => setIsChatCollapsed(!isChatCollapsed)}
               className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
               style={{
-                left: 'calc(100% - 16px)',
+                left: 'calc(100% - 20px)',
                 zIndex: 9999,
                 borderRadius: isChatCollapsed ? '8px' : '4px',
                 width: isChatCollapsed ? '89px' : '34px',
@@ -303,10 +303,7 @@ export default function Home() {
               data-testid="button-collapse-chat"
             >
               {isChatCollapsed ? (
-                <svg className="w-8 h-8 text-foreground" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
-                  <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
-                </svg>
+                <Flame className="w-8 h-8 text-white" fill="white" />
               ) : (
                 <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
