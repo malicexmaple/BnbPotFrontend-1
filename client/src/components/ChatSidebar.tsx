@@ -172,7 +172,7 @@ export default function ChatSidebar({
                     />
                   ))}
                 </div>
-                <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
+                <div className="flex items-center justify-start relative z-10" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
                   <div className="flex items-center gap-2 px-3 py-1.5" style={{
                     background: DARK_BG.SOLID,
                     border: GOLDEN.BORDER,
@@ -191,7 +191,7 @@ export default function ChatSidebar({
                     }} data-testid="text-airdrop-amount">0.255</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-start relative" style={{marginTop: '0.25rem'}}>
+                <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.25rem'}}>
                   <div className="shine-image relative" style={{
                     '--shine-mask': `url(${airdropLogo})`,
                     animation: 'floatAirdrop 2s ease-in-out infinite'
@@ -224,7 +224,7 @@ export default function ChatSidebar({
                     ))}
                   </div>
                 </div>
-                <Badge className="text-primary font-bold px-2 py-0.5" style={{
+                <Badge className="text-primary font-bold px-2 py-0.5 relative z-20" style={{
                   fontSize: '0.875rem',
                   position: 'absolute',
                   right: '-6px',
