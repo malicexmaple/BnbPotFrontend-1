@@ -6,6 +6,7 @@ import { Upload } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
+import AvatarCropModal from "./AvatarCropModal";
 
 interface AvatarUploadModalProps {
   open: boolean;
@@ -25,8 +26,10 @@ export default function AvatarUploadModal({
   currentAvatar
 }: AvatarUploadModalProps) {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [showCropDialog, setShowCropDialog] = useState(false);
   const [imageLink, setImageLink] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [tempImageUrl, setTempImageUrl] = useState<string>("");
 
   const handleUploadClick = () => {
     setShowUploadDialog(true);
@@ -52,10 +55,9 @@ export default function AvatarUploadModal({
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
-      localStorage.setItem(`avatar_${username}`, dataUrl);
-      onAvatarUpdate(dataUrl);
+      setTempImageUrl(dataUrl);
       setShowUploadDialog(false);
-      onOpenChange(false);
+      setShowCropDialog(true);
     };
     reader.readAsDataURL(file);
   };
@@ -65,16 +67,28 @@ export default function AvatarUploadModal({
     
     const img = new Image();
     img.onload = () => {
-      localStorage.setItem(`avatar_${username}`, imageLink);
-      onAvatarUpdate(imageLink);
+      setTempImageUrl(imageLink);
       setImageLink("");
       setShowUploadDialog(false);
-      onOpenChange(false);
+      setShowCropDialog(true);
     };
     img.onerror = () => {
       alert('Invalid image URL. Please check the link and try again.');
     };
     img.src = imageLink;
+  };
+
+  const handleCropSave = (croppedImageUrl: string) => {
+    localStorage.setItem(`avatar_${username}`, croppedImageUrl);
+    onAvatarUpdate(croppedImageUrl);
+    setShowCropDialog(false);
+    onOpenChange(false);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropDialog(false);
+    setShowUploadDialog(true);
+    setTempImageUrl("");
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -277,6 +291,15 @@ export default function AvatarUploadModal({
           </div>
         </div>
       </DialogContent>
+
+      <AvatarCropModal
+        open={showCropDialog}
+        onOpenChange={setShowCropDialog}
+        imageUrl={tempImageUrl}
+        username={username}
+        onSave={handleCropSave}
+        onCancel={handleCropCancel}
+      />
     </Dialog>
   );
 }
