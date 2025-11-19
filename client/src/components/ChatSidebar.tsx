@@ -6,7 +6,7 @@ import { Flame } from "lucide-react";
 import { SIDEBAR, AIRDROP, BORDER_RADIUS, GOLDEN, DARK_BG } from "@/constants/layout";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
-import airdropPackage from '@assets/3dgifmaker97425_1763538142348.gif';
+import airdropPackage from '@assets/airdrop-pachage_1763541781462.png';
 
 interface Message {
   id: string;
