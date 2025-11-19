@@ -336,9 +336,14 @@ export default function Home() {
                     <div className="glass-panel neon-border p-2 relative">
                       <img src={airdropPackage} alt="Gift Package" className="h-14 w-14" style={{position: 'absolute', right: '8px', top: '8px'}} data-testid="img-gift-package" />
                       <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
-                        <div className="flex items-center justify-start gap-1">
-                          <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
-                          <img src={bnbIcon} alt="BNB" style={{width: '2.4rem', height: '2.4rem', marginTop: '-0.25rem'}} />
+                        <div className="flex items-center gap-2 px-3 py-1.5" style={{
+                          background: 'rgba(15, 15, 15, 0.9)',
+                          border: '2px solid rgba(250, 204, 21, 0.85)',
+                          borderRadius: '12px',
+                          boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
+                        }}>
+                          <img src={bnbIcon} alt="BNB" style={{width: '1.5rem', height: '1.5rem'}} />
+                          <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1rem'}} data-testid="text-airdrop-amount">0.255</span>
                         </div>
                       </div>
                       <div className="flex items-center justify-start" style={{marginTop: '0.25rem'}}>
