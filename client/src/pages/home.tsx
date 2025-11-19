@@ -335,6 +335,9 @@ export default function Home() {
                   <div className="absolute top-2 left-2 right-2 z-10">
                     <div className="glass-panel neon-border p-2">
                       <div className="flex items-center justify-start">
+                        <img src={airdropPackage} alt="Gift Package" style={{height: '3.125rem'}} data-testid="img-gift-package" />
+                      </div>
+                      <div className="flex items-center justify-start">
                         <div className="flex items-center justify-start gap-0">
                           <img src={bnbIcon} alt="BNB" className="w-12 h-12 -mt-1" style={{marginRight: '-0.25rem'}} />
                           <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
@@ -343,7 +346,6 @@ export default function Home() {
                       <div className="flex items-center justify-start -mt-5">
                         <div className="flex items-center gap-2">
                           <Badge className="bg-primary/20 text-primary font-bold px-2 py-0.5 border border-primary/30" style={{fontSize: '1.09375rem'}} data-testid="badge-airdrop-live">LIVE</Badge>
-                          <img src={airdropPackage} alt="Gift Package" style={{height: '3.125rem'}} data-testid="img-gift-package" />
                           <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
                             <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
                           </div>
