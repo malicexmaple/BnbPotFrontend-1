@@ -781,7 +781,7 @@
   /* Floating animation for airdrop logo */
   @keyframes floatAirdrop {
     0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-4px); }
   }
 
   /* Gentle floating animation for airdrop box */
