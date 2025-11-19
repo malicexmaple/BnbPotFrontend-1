@@ -139,21 +139,21 @@ export default function ChatSidebar({
                     }}
                     data-testid="img-gift-package"
                   />
-                  {/* Air stream effects around parachute */}
-                  {[...Array(8)].map((_, i) => (
+                  {/* Air stream effects around parachute - more intense */}
+                  {[...Array(15)].map((_, i) => (
                     <div
                       key={i}
                       className="absolute"
                       style={{
-                        left: `${15 + (i * 15)}%`,
-                        bottom: '20%',
-                        width: '3px',
-                        height: '20px',
-                        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0))',
+                        left: `${20 + (i * 5)}%`,
+                        top: `${50 + (i % 3) * 10}%`,
+                        width: '4px',
+                        height: '35px',
+                        background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0))',
                         borderRadius: '50%',
-                        animation: `airStream${i} ${1.5 + (i * 0.2)}s ease-in-out infinite`,
-                        animationDelay: `${i * 0.15}s`,
-                        opacity: 0.6
+                        animation: `airStream${i % 8} ${0.8 + (i * 0.1)}s ease-out infinite`,
+                        animationDelay: `${i * 0.08}s`,
+                        filter: 'blur(0.5px)'
                       }}
                     />
                   ))}
@@ -179,22 +179,30 @@ export default function ChatSidebar({
                 </div>
                 <div className="flex items-center justify-start relative" style={{marginTop: '0.25rem'}}>
                   <div className="shine-image relative" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
-                    <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
-                    {/* Air stream effects around airdrop logo */}
-                    {[...Array(6)].map((_, i) => (
+                    <img 
+                      src={airdropLogo} 
+                      alt="AIRDROP" 
+                      style={{
+                        height: '3.125rem',
+                        animation: 'floatAirdrop 2s ease-in-out infinite'
+                      }} 
+                      data-testid="img-airdrop-logo" 
+                    />
+                    {/* Air stream effects around airdrop logo - more intense and closer */}
+                    {[...Array(12)].map((_, i) => (
                       <div
                         key={i}
                         className="absolute"
                         style={{
-                          left: `${10 + (i * 12)}%`,
-                          bottom: '-10px',
-                          width: '2px',
-                          height: '15px',
-                          background: 'linear-gradient(to bottom, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.5), rgba(250, 204, 21, 0))',
+                          left: `${5 + (i * 8)}%`,
+                          bottom: `${-5 - (i % 3) * 5}px`,
+                          width: '3px',
+                          height: '25px',
+                          background: 'linear-gradient(to bottom, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.9), rgba(250, 204, 21, 0))',
                           borderRadius: '50%',
-                          animation: `airStreamLogo${i} ${1.2 + (i * 0.15)}s ease-in-out infinite`,
-                          animationDelay: `${i * 0.1}s`,
-                          opacity: 0.5
+                          animation: `airStreamLogo${i % 6} ${0.7 + (i * 0.08)}s ease-out infinite`,
+                          animationDelay: `${i * 0.05}s`,
+                          filter: 'blur(0.5px)'
                         }}
                       />
                     ))}
