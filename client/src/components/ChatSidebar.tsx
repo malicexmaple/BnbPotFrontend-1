@@ -139,16 +139,16 @@ export default function ChatSidebar({
                     }}
                     data-testid="img-gift-package"
                   />
-                  {/* Air stream effects around parachute - more intense */}
+                  {/* Air stream effects around parachute - closer and thinner */}
                   {[...Array(15)].map((_, i) => (
                     <div
                       key={i}
                       className="absolute"
                       style={{
-                        left: `${20 + (i * 5)}%`,
-                        top: `${50 + (i % 3) * 10}%`,
-                        width: '4px',
-                        height: '35px',
+                        left: `${30 + (i * 3)}%`,
+                        top: `${55 + (i % 4) * 8}%`,
+                        width: '2px',
+                        height: '30px',
                         background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0))',
                         borderRadius: '50%',
                         animation: `airStream${i % 8} ${0.8 + (i * 0.1)}s ease-out infinite`,
@@ -188,17 +188,17 @@ export default function ChatSidebar({
                       }} 
                       data-testid="img-airdrop-logo" 
                     />
-                    {/* Air stream effects around airdrop logo - more intense and closer */}
+                    {/* Air stream effects around airdrop logo - white, thinner, and closer */}
                     {[...Array(12)].map((_, i) => (
                       <div
                         key={i}
                         className="absolute"
                         style={{
-                          left: `${5 + (i * 8)}%`,
-                          bottom: `${-5 - (i % 3) * 5}px`,
-                          width: '3px',
-                          height: '25px',
-                          background: 'linear-gradient(to bottom, rgba(250, 204, 21, 0), rgba(250, 204, 21, 0.9), rgba(250, 204, 21, 0))',
+                          left: `${15 + (i * 6)}%`,
+                          bottom: `${0 - (i % 3) * 4}px`,
+                          width: '2px',
+                          height: '22px',
+                          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0))',
                           borderRadius: '50%',
                           animation: `airStreamLogo${i % 6} ${0.7 + (i * 0.08)}s ease-out infinite`,
                           animationDelay: `${i * 0.05}s`,
