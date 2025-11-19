@@ -334,7 +334,7 @@ export default function Home() {
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
                     <div className="glass-panel neon-border p-2 relative">
-                      <img src={airdropPackage} alt="Gift Package" className="h-48 w-48 absolute right-[-10px] top-[-115px] z-[9999]" style={{filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'}} data-testid="img-gift-package" />
+                      <img src={airdropPackage} alt="Gift Package" className="h-48 w-48 absolute right-[-10px] top-[-100px] z-[9999]" style={{filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'}} data-testid="img-gift-package" />
                       <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
                         <div className="flex items-center gap-2 px-3 py-1.5" style={{
                           background: 'rgba(15, 15, 15, 0.9)',
