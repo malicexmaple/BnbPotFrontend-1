@@ -337,11 +337,11 @@ export default function Home() {
                       <img src={airdropPackage} alt="Gift Package" style={{height: '3.125rem', position: 'absolute', right: '8px', top: '8px'}} data-testid="img-gift-package" />
                       <div className="flex items-center justify-start">
                         <div className="flex items-center justify-start gap-0">
-                          <img src={bnbIcon} alt="BNB" className="w-12 h-12 -mt-1" style={{marginRight: '-0.25rem'}} />
+                          <img src={bnbIcon} alt="BNB" style={{width: '2.4rem', height: '2.4rem', marginTop: '-0.25rem', marginRight: '-0.25rem'}} />
                           <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-start -mt-5">
+                      <div className="flex items-center justify-start -mt-3">
                         <div className="flex items-center gap-2">
                           <Badge className="bg-primary/20 text-primary font-bold px-2 py-0.5 border border-primary/30" style={{fontSize: '1.09375rem'}} data-testid="badge-airdrop-live">LIVE</Badge>
                           <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
