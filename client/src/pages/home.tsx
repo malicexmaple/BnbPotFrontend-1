@@ -344,6 +344,8 @@ export default function Home() {
                             borderRadius: '21px', 
                             padding: '26px 21px',
                             transform: isCentered ? 'scale(1.1)' : 'scale(1)',
+                            transformOrigin: 'center center',
+                            willChange: 'transform',
                             boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
                           }}>
                             <div className="flex items-center justify-center relative" style={{
