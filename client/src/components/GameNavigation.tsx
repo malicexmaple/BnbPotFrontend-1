@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import crownLogo from '@assets/3dgifmaker00562_1763407280610.gif';
+import crownLogo from '@assets/3dgifmaker85766_1763561140520.gif';
 import textLogo from '@assets/bnbpotlogonew_1763432221839.png';
 import jackpotTabLogo from '@assets/jackpotnew_1763477420573.png';
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
