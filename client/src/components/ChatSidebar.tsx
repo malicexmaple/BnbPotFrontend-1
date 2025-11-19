@@ -200,7 +200,7 @@ export default function ChatSidebar({
                       src={airdropLogo} 
                       alt="AIRDROP" 
                       style={{
-                        height: '3.125rem'
+                        height: '4rem'
                       }} 
                       data-testid="img-airdrop-logo" 
                     />
