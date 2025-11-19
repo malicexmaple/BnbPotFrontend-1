@@ -352,9 +352,9 @@ export default function Home() {
                         right: '-6px',
                         bottom: '-6px',
                         background: 'rgba(15, 15, 15, 0.9)',
-                        border: '2px solid rgba(234, 179, 8, 0.5)',
+                        border: '2px solid rgba(250, 204, 21, 0.85)',
                         borderRadius: '4px',
-                        boxShadow: '0 0 8px rgba(234, 179, 8, 0.22)'
+                        boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
                       }} data-testid="badge-airdrop-live">LIVE</Badge>
                     </div>
                   </div>
