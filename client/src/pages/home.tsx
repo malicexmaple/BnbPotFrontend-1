@@ -335,7 +335,7 @@ export default function Home() {
                     <div className="glass-panel neon-border p-2">
                       <div className="flex items-center justify-start">
                         <div className="flex items-center justify-start gap-0">
-                          <img src={bnbIcon} alt="BNB" className="w-16 h-16 -mt-1" style={{marginRight: '-0.25rem'}} />
+                          <img src={bnbIcon} alt="BNB" className="w-12 h-12 -mt-1" style={{marginRight: '-0.25rem'}} />
                           <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.25rem'}} data-testid="text-airdrop-amount">0.255</span>
                         </div>
                       </div>
