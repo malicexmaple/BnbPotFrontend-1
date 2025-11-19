@@ -6,7 +6,7 @@ import { Flame } from "lucide-react";
 import { SIDEBAR, AIRDROP, BORDER_RADIUS, GOLDEN, DARK_BG } from "@/constants/layout";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
-import airdropPackage from '@assets/3dgifmaker93227_1763541901943.gif';
+import airdropPackage from '@assets/airdrop-pachage_1763543740528.png';
 
 interface Message {
   id: string;
@@ -125,12 +125,13 @@ export default function ChatSidebar({
               <div className="glass-panel neon-border p-2 relative" style={{
                 animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
-                {/* Parachute with air streams */}
+                {/* Gift package with air streams */}
                 <div className="absolute z-[9999]" style={{
                   right: `${AIRDROP.PARACHUTE_RIGHT}px`,
                   top: `${AIRDROP.PARACHUTE_TOP}px`,
                   width: '12rem',
-                  height: '12rem'
+                  height: '12rem',
+                  animation: 'floatAirdrop 2s ease-in-out infinite'
                 }}>
                   <img
                     src={airdropPackage}
@@ -141,7 +142,7 @@ export default function ChatSidebar({
                     }}
                     data-testid="img-gift-package"
                   />
-                  {/* Air stream effects around parachute - closer and thinner */}
+                  {/* Air stream effects around package - closer and thinner */}
                   {[...Array(15)].map((_, i) => (
                     <div
                       key={i}
