@@ -127,8 +127,8 @@ export default function ChatSidebar({
               }}>
                 {/* Gift package with air streams */}
                 <div className="absolute z-[9999]" style={{
-                  right: `${AIRDROP.PARACHUTE_RIGHT}px`,
-                  top: `${AIRDROP.PARACHUTE_TOP}px`,
+                  right: '-5px',
+                  top: '-70px',
                   width: '8rem',
                   height: '8rem',
                   animation: 'floatAirdrop 2s ease-in-out infinite'
