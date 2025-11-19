@@ -25,7 +25,7 @@ import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/jackpotnew_1763477420573.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
-import airdropPackage from '@assets/airdrop-pachage_1763525829440.png';
+import airdropPackage from '@assets/airdrop-pachage_1763527111539.png';
 import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
@@ -334,7 +334,7 @@ export default function Home() {
                   {/* LIVE AIRDROP Section - Overlaying at top */}
                   <div className="absolute top-2 left-2 right-2 z-10">
                     <div className="glass-panel neon-border p-2 relative">
-                      <img src={airdropPackage} alt="Gift Package" style={{height: '3.125rem', position: 'absolute', right: '8px', top: '8px'}} data-testid="img-gift-package" />
+                      <img src={airdropPackage} alt="Gift Package" className="h-14 w-14" style={{position: 'absolute', right: '8px', top: '8px'}} data-testid="img-gift-package" />
                       <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
                         <div className="flex items-center justify-start gap-0">
                           <img src={bnbIcon} alt="BNB" style={{width: '2.4rem', height: '2.4rem', marginTop: '-0.25rem', marginRight: '-0.25rem'}} />
