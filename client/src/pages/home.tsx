@@ -25,7 +25,7 @@ import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/jackpotnew_1763477420573.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
-import airdropPackage from '@assets/airdrop-pachage_1763527111539.png';
+import airdropPackage from '@assets/3dgifmaker36521_1763536142612.gif';
 import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
