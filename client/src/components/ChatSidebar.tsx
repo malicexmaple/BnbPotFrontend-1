@@ -127,17 +127,17 @@ export default function ChatSidebar({
               }}>
                 {/* Gift package with air streams */}
                 <div className="absolute z-10" style={{
-                  right: '40px',
-                  top: '-35px',
-                  width: '5.6rem',
-                  height: '5.6rem',
+                  right: '45px',
+                  top: '-25px',
+                  width: '4rem',
+                  height: '4rem',
                   animation: 'floatAirdrop 2s ease-in-out infinite'
                 }}>
                   <img
                     src={airdropPackage}
                     alt="Gift Package"
                     style={{
-                      width: '90px',
+                      width: '65px',
                       height: 'auto',
                       filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
                     }}
