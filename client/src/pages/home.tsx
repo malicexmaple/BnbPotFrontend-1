@@ -346,7 +346,15 @@ export default function Home() {
                           <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
                         </div>
                       </div>
-                      <Badge className="bg-primary/20 text-primary font-bold px-2 py-0.5 border border-primary/30" style={{fontSize: '1.09375rem', position: 'absolute', right: '-4px', bottom: '-4px'}} data-testid="badge-airdrop-live">LIVE</Badge>
+                      <Badge className="text-primary font-bold px-3 py-1 border-0" style={{
+                        fontSize: '1.09375rem',
+                        position: 'absolute',
+                        right: '-4px',
+                        bottom: '-4px',
+                        background: 'rgba(20, 20, 20, 0.95)',
+                        border: '2px solid rgba(234, 179, 8, 0.6)',
+                        boxShadow: '0 0 16px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                      }} data-testid="badge-airdrop-live">LIVE</Badge>
                     </div>
                   </div>
 
