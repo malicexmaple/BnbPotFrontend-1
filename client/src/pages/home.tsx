@@ -343,7 +343,7 @@ export default function Home() {
                           boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
                         }}>
                           <img src={bnbIcon} alt="BNB" style={{width: '1.5rem', height: '1.5rem'}} />
-                          <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1rem', lineHeight: '1', display: 'flex', alignItems: 'center', height: '1.5rem', paddingTop: '3px'}} data-testid="text-airdrop-amount">0.255</span>
+                          <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1rem', lineHeight: '1', display: 'flex', alignItems: 'center', height: '1.5rem', paddingTop: '6px'}} data-testid="text-airdrop-amount">0.255</span>
                         </div>
                       </div>
                       <div className="flex items-center justify-start" style={{marginTop: '0.25rem'}}>
