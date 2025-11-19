@@ -138,7 +138,7 @@ export default function ChatSidebar({
                     alt="Gift Package"
                     style={{
                       width: '90px',
-                      height: '90px',
+                      height: 'auto',
                       filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
                     }}
                     className="relative z-10"
