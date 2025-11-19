@@ -143,7 +143,7 @@ export default function ProfileModal({
                       className="w-24 h-24 flex items-center justify-center text-2xl font-bold glass-panel"
                       style={{
                         background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
-                        border: '2px solid rgba(234, 179, 8, 0.3)',
+                        border: '2px solid rgba(60, 60, 60, 0.4)',
                         boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)',
                         borderRadius: '18px'
                       }}
