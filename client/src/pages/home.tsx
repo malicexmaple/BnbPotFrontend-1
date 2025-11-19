@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
 import ProfileModal from "@/components/ProfileModal";
+import ChatSidebar from "@/components/ChatSidebar";
+import BetControls from "@/components/BetControls";
+import ChatRulesModal from "@/components/ChatRulesModal";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import { useChat } from "@/hooks/useChat";
+import { GAME, CAROUSEL, GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
@@ -24,11 +28,8 @@ import avatar2 from '@assets/generated_images/Gaming_avatar_placeholder_2_b74e69
 import avatar3 from '@assets/generated_images/Gaming_avatar_placeholder_3_f673a9f2.png';
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/jackpotnew_1763477420573.png';
-import airdropLogo from '@assets/airdropnew_1763414250628.png';
-import airdropPackage from '@assets/3dgifmaker97425_1763538142348.gif';
 import crownIcon from '@assets/3dgifmaker00562_1763407280610.gif';
 import signupLogo from '@assets/signupnew_1763410821936.png';
-import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 
 export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
@@ -36,66 +37,33 @@ export default function Home() {
   const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
   const { messages, isConnected, sendMessage } = useChat(username || undefined);
   
-  /** Time remaining in seconds for the current game round */
-  const [timeRemaining, setTimeRemaining] = useState(13);
-  
-  /** Current bet amount entered by user */
+  const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
-  
-  /** Number of users currently online */
   const [onlineUsers, setOnlineUsers] = useState(0);
-  
-  /** Horizontal scroll offset in pixels for carousel animation */
   const [scrollOffset, setScrollOffset] = useState(0);
-  
-  /** Controls visibility of chat rules modal */
   const [showChatRules, setShowChatRules] = useState(false);
-  
-  /** Controls visibility of terms and conditions modal */
   const [showTermsModal, setShowTermsModal] = useState(false);
-  
-  /** Controls visibility of profile modal */
   const [showProfileModal, setShowProfileModal] = useState(false);
-  
-  /** Controls whether chat sidebar is collapsed */
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
-  
-  /** Controls whether leaderboard sidebar is collapsed */
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
-  
-  /** Current chat message being typed */
-  const [chatInput, setChatInput] = useState("");
-  
-  /** Form data for new user signup */
   const [signupData, setSignupData] = useState({
     name: "",
     email: "",
     referralCode: "",
     agreedToTerms: false
   });
-  
-  /** Reference to carousel container for scroll calculations */
   const carouselRef = useRef<HTMLDivElement>(null);
-  
-  /** Reference to chat messages container for auto-scroll */
-  const chatMessagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeRemaining(prev => prev <= 0 ? 13 : prev - 1);
+      setTimeRemaining(prev => prev <= 0 ? GAME.ROUND_DURATION : prev - 1);
     }, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  /**
-   * Carousel auto-scroll animation using requestAnimationFrame for smooth 60fps scrolling.
-   * Creates an infinite loop effect by resetting scroll position after 10 cards.
-   * Uses delta time to ensure consistent speed regardless of frame rate.
-   */
   useEffect(() => {
     let animationFrame: number;
     let lastTime = Date.now();
-    const speed = 0.08; // pixels per millisecond
     
     const animate = () => {
       const now = Date.now();
@@ -103,14 +71,11 @@ export default function Home() {
       lastTime = now;
       
       setScrollOffset(prev => {
-        const newOffset = prev + (delta * speed);
+        const newOffset = prev + (delta * CAROUSEL.ANIMATION_SPEED);
         if (!carouselRef.current) return newOffset;
         
-        const gap = 12; // gap-3 = 0.75rem = 12px
-        const cardWidth = 234; // 180 * 1.3 = 234px
-        const resetPoint = (cardWidth + gap) * 10;
+        const resetPoint = (CAROUSEL.CARD_WIDTH + CAROUSEL.GAP) * CAROUSEL.TOTAL_CARDS;
         
-        // Reset scroll position to create seamless loop
         if (newOffset >= resetPoint) {
           return newOffset - resetPoint;
         }
@@ -144,21 +109,7 @@ export default function Home() {
     }
   }, [address, error, toast]);
 
-  /**
-   * Auto-scroll chat to bottom when new messages arrive
-   */
-  useEffect(() => {
-    if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  /**
-   * Handles sending a chat message
-   */
-  const handleSendMessage = () => {
-    if (!chatInput.trim()) return;
-    
+  const handleSendMessage = (message: string) => {
     if (!address) {
       toast({
         variant: "destructive",
@@ -177,10 +128,8 @@ export default function Home() {
       return;
     }
 
-    const success = sendMessage(chatInput);
-    if (success) {
-      setChatInput("");
-    } else {
+    const success = sendMessage(message);
+    if (!success) {
       toast({
         variant: "destructive",
         title: "Failed to Send",
@@ -274,153 +223,16 @@ export default function Home() {
         boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
       }}>
         <div className="flex-1 flex" style={{overflow: 'visible'}}>
-          {/* LEFT SIDEBAR - CHAT */}
-          <div className="flex-shrink-0 transition-all duration-300 relative glass-panel" style={{
-            width: isChatCollapsed ? '0px' : '345px',
-            paddingLeft: '0px',
-            paddingTop: isChatCollapsed ? '0px' : '24px',
-            paddingBottom: isChatCollapsed ? '0px' : '24px',
-            paddingRight: '0px',
-            overflow: 'visible',
-            zIndex: 50,
-            borderRadius: '0px',
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
-            {/* Collapse Button - Positioned on the outer right edge */}
-            <button
-              onClick={() => setIsChatCollapsed(!isChatCollapsed)}
-              className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center hover-elevate active-elevate-2 transition-all duration-300"
-              style={{
-                left: 'calc(100% - 20px)',
-                zIndex: 9999,
-                borderRadius: isChatCollapsed ? '8px' : '4px',
-                width: isChatCollapsed ? '89px' : '34px',
-                height: '79px',
-                background: 'rgba(20, 20, 20, 1)',
-                border: '1px solid rgba(60, 60, 60, 0.4)',
-                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
-              }}
-              data-testid="button-collapse-chat"
-            >
-              {isChatCollapsed ? (
-                <Flame className="w-8 h-8 text-white" fill="white" />
-              ) : (
-                <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              )}
-            </button>
-
-          {!isChatCollapsed && (
-            <div className="flex flex-col flex-1" style={{width: '297px', marginTop: '-85px', marginLeft: '23px'}}>
-              {/* Degen Chat Header */}
-              <div className="glass-panel p-3 flex items-center justify-between" style={{borderRadius: '18px 18px 0 0'}}>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded bg-muted flex items-center justify-center">
-                    <svg className="w-3 h-3 text-foreground" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/></svg>
-                  </div>
-                  <span className="text-sm font-semibold text-foreground">Degen Chat</span>
-                </div>
-                <Badge className="text-white text-xs font-bold px-2 border-0" style={{
-                  background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                  border: '2px solid rgba(234, 179, 8, 0.5)',
-                  boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-                }} data-testid="badge-chat-count">{onlineUsers}</Badge>
-              </div>
-
-              {/* Chat Box Container */}
-              <div className="glass-panel flex-1 flex flex-col relative" style={{borderRadius: '0 0 18px 18px', overflow: 'visible'}}>
-                  {/* LIVE AIRDROP Section - Overlaying at top */}
-                  <div className="absolute top-2 left-2 right-2 z-10">
-                    <div className="glass-panel neon-border p-2 relative">
-                      <img src={airdropPackage} alt="Gift Package" className="h-48 w-48 absolute right-[-10px] top-[-100px] z-[9999]" style={{filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'}} data-testid="img-gift-package" />
-                      <div className="flex items-center justify-start" style={{paddingLeft: '5px', marginTop: '0.25rem'}}>
-                        <div className="flex items-center gap-2 px-3 py-1.5" style={{
-                          background: 'rgba(15, 15, 15, 0.9)',
-                          border: '2px solid rgba(250, 204, 21, 0.85)',
-                          borderRadius: '12px',
-                          boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
-                        }}>
-                          <img src={bnbIcon} alt="BNB" style={{width: '1.5rem', height: '1.5rem'}} />
-                          <span className="font-bold font-mono no-text-shadow" style={{color: '#FFFFFF', fontSize: '1rem', lineHeight: '1', display: 'flex', alignItems: 'center', height: '1.5rem', paddingTop: '6px'}} data-testid="text-airdrop-amount">0.255</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-start" style={{marginTop: '0.25rem'}}>
-                        <div className="shine-image" style={{'--shine-mask': `url(${airdropLogo})`} as React.CSSProperties}>
-                          <img src={airdropLogo} alt="AIRDROP" style={{height: '3.125rem'}} data-testid="img-airdrop-logo" />
-                        </div>
-                      </div>
-                      <Badge className="text-primary font-bold px-2 py-0.5" style={{
-                        fontSize: '0.875rem',
-                        position: 'absolute',
-                        right: '-6px',
-                        bottom: '-6px',
-                        background: 'rgba(15, 15, 15, 0.9)',
-                        border: '2px solid rgba(250, 204, 21, 0.85)',
-                        borderRadius: '4px',
-                        boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
-                      }} data-testid="badge-airdrop-live">LIVE</Badge>
-                    </div>
-                  </div>
-
-                  {/* Chat Messages */}
-                  <div className="flex-1 overflow-y-auto px-3 pt-32" ref={chatMessagesRef}>
-                    {messages.length === 0 ? (
-                      <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                        <div className="text-center space-y-2">
-                          <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                          </svg>
-                          <p>No messages yet</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2 pb-3">
-                        {messages.map((msg) => (
-                          <div key={msg.id} className="flex gap-2">
-                            <Avatar className="w-7 h-7 flex-shrink-0">
-                              <AvatarFallback className="text-xs bg-muted">
-                                {msg.username.charAt(0).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-xs font-semibold text-foreground">{msg.username}</span>
-                                <span className="text-[10px] text-muted-foreground">
-                                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </span>
-                              </div>
-                              <p className="text-xs text-foreground break-words">{msg.message}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Chat Input */}
-                  <div className="p-3 border-t border-border/10">
-                    <Input 
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                      placeholder={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
-                      className="h-10 text-sm bg-muted/30 border-border/20" 
-                      data-testid="input-chat"
-                      disabled={!address || !username}
-                    />
-                    <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                      <button onClick={() => setShowChatRules(true)} className="flex items-center gap-1 hover-elevate" data-testid="link-chat-rules">
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
-                        <span>Chat Rules</span>
-                      </button>
-                    </div>
-                  </div>
-              </div>
-            </div>
-          )}
-        </div>
+          <ChatSidebar
+            isCollapsed={isChatCollapsed}
+            onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            canChat={!!address && !!username}
+            placeholderText={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
+            onlineUsers={onlineUsers}
+            onShowChatRules={() => setShowChatRules(true)}
+          />
 
         {/* CENTER - MAIN GAME AREA */}
         <div className="flex-1 flex flex-col overflow-hidden relative">
@@ -442,96 +254,11 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className="px-4 py-3" style={{
-                borderRadius: '18px',
-                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-                border: '2px solid rgba(60, 60, 60, 0.4)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
-              }}>
-                <div className="flex items-center justify-center gap-2">
-                  <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    minWidth: '160px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                  }}>
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="text"
-                        value={betAmount} 
-                        onChange={(e) => setBetAmount(e.target.value)} 
-                        placeholder="0.1" 
-                        className="w-16 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
-                        style={{lineHeight: '1.25rem', paddingTop: '1px'}}
-                        data-testid="input-bet" 
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5 pl-3 border-l border-border/20">
-                      <span className="text-sm font-semibold text-foreground">BNB</span>
-                      <img src={bnbIcon} alt="BNB" className="w-5 h-5" />
-                    </div>
-                  </div>
-                  
-                  <div className="px-5 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                  }}>
-                    <button 
-                      onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.1))} 
-                      className="text-sm font-semibold text-foreground hover-elevate"
-                      data-testid="button-plus-0.1"
-                    >
-                      +0.1
-                    </button>
-                  </div>
-                  
-                  <div className="px-5 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                  }}>
-                    <button 
-                      onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 0.5))} 
-                      className="text-sm font-semibold text-foreground hover-elevate"
-                      data-testid="button-plus-0.5"
-                    >
-                      +0.5
-                    </button>
-                  </div>
-                  
-                  <div className="px-5 py-2.5 rounded-lg" style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                  }}>
-                    <button 
-                      onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + 1))} 
-                      className="text-sm font-semibold text-foreground hover-elevate"
-                      data-testid="button-plus"
-                    >
-                      +1
-                    </button>
-                  </div>
-                  
-                  <div className="px-10 py-2.5 rounded-lg" style={{
-                    background: 'rgba(15, 15, 15, 0.9)',
-                    border: '2px solid transparent',
-                    backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)'
-                  }}>
-                    <button 
-                      onClick={handlePlaceBet}
-                      className="text-white font-bold text-base"
-                      data-testid="button-place-bet"
-                    >
-                      Place Bet
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <BetControls
+                betAmount={betAmount}
+                onBetAmountChange={setBetAmount}
+                onPlaceBet={handlePlaceBet}
+              />
             </div>
 
             {/* STATS BAR */}
@@ -1200,59 +927,7 @@ export default function Home() {
         </DialogContent>
       </Dialog>
 
-      {/* Chat Rules Dialog */}
-      <Dialog open={showChatRules} onOpenChange={setShowChatRules}>
-        <DialogContent className="max-w-md border-0 p-6" style={{
-          borderRadius: '18px',
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
-          border: '2px solid rgba(234, 179, 8, 0.5)',
-          boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
-        }}>
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold gradient-text uppercase tracking-wide">Chat Rules</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Please follow these rules to maintain a positive environment
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 text-sm mt-4">
-            <div className="space-y-1">
-              <h3 className="font-bold text-foreground">1. Be Respectful</h3>
-              <p className="text-muted-foreground">Treat all users with respect. No harassment, hate speech, or personal attacks.</p>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-bold text-foreground">2. No Spam</h3>
-              <p className="text-muted-foreground">Do not spam messages, links, or advertisements. Keep the chat clean and relevant.</p>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-bold text-foreground">3. No Begging</h3>
-              <p className="text-muted-foreground">Do not beg for coins, tips, or giveaways from other users.</p>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-bold text-foreground">4. Keep it Legal</h3>
-              <p className="text-muted-foreground">No discussion of illegal activities or sharing of illegal content.</p>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-bold text-foreground">5. Use English</h3>
-              <p className="text-muted-foreground">Please use English in the main chat for better communication.</p>
-            </div>
-          </div>
-          <button onClick={() => setShowChatRules(false)} className="w-full mt-6 text-white font-bold" style={{
-            borderRadius: '18px',
-            padding: '18px 28px',
-            background: 'rgba(15, 15, 15, 0.9)',
-            backdropFilter: 'blur(20px)',
-            border: '2px solid transparent',
-            backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
-            backgroundOrigin: 'border-box',
-            backgroundClip: 'padding-box, border-box',
-            boxShadow: 'inset 0 1px 2px rgba(234, 179, 8, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.6), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 16px rgba(0, 0, 0, 0.7)',
-            cursor: 'pointer',
-            fontSize: '16px'
-          }} data-testid="button-close-rules">
-            Got it!
-          </button>
-        </DialogContent>
-      </Dialog>
+      <ChatRulesModal open={showChatRules} onOpenChange={setShowChatRules} />
 
       <ProfileModal
         open={showProfileModal}
