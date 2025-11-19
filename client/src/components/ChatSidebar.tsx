@@ -129,15 +129,15 @@ export default function ChatSidebar({
                 <div className="absolute z-10" style={{
                   right: '45px',
                   top: '-25px',
-                  width: '4rem',
-                  height: '4rem',
+                  width: '5rem',
+                  height: '5rem',
                   animation: 'floatAirdrop 2s ease-in-out infinite'
                 }}>
                   <img
                     src={airdropPackage}
                     alt="Gift Package"
                     style={{
-                      width: '65px',
+                      width: '80px',
                       height: 'auto',
                       filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
                     }}
