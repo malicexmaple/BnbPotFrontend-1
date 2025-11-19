@@ -41,12 +41,6 @@ export default function ChatSidebar({
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [avatarUrls, setAvatarUrls] = useState<Record<string, string | null>>({});
 
-  useEffect(() => {
-    if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-    }
-  }, [messages]);
-
   // Load avatar URLs for all users in messages
   useEffect(() => {
     const newAvatarUrls: Record<string, string | null> = {};
@@ -261,7 +255,7 @@ export default function ChatSidebar({
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto px-3 pt-32" ref={chatMessagesRef}>
+            <div className="flex-1 overflow-y-auto px-3 flex flex-col-reverse pt-3" ref={chatMessagesRef}>
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
                   <div className="text-center space-y-2">
@@ -272,8 +266,8 @@ export default function ChatSidebar({
                   </div>
                 </div>
               ) : (
-                <div className="space-y-2 pb-3">
-                  {messages.map((msg) => (
+                <div className="space-y-2 pt-32">
+                  {messages.slice().reverse().map((msg) => (
                     <div key={msg.id} className="flex gap-2">
                       <Avatar className="w-7 h-7 flex-shrink-0 rounded-md">
                         <AvatarImage src={avatarUrls[msg.username] || undefined} alt={msg.username} />
