@@ -8,12 +8,30 @@ interface BetControlsProps {
   betAmount: string;
   onBetAmountChange: (amount: string) => void;
   onPlaceBet: () => void;
+  isWalletConnected?: boolean;
+  hasAccount?: boolean;
+  disabled?: boolean;
 }
 
-export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }: BetControlsProps) {
+export default function BetControls({ 
+  betAmount, 
+  onBetAmountChange, 
+  onPlaceBet,
+  isWalletConnected = false,
+  hasAccount = false,
+  disabled = false
+}: BetControlsProps) {
   const incrementBet = (increment: number) => {
     const currentAmount = parseFloat(betAmount) || 0;
     onBetAmountChange(String(currentAmount + increment));
+  };
+
+  const isDisabled = disabled || !isWalletConnected || !hasAccount;
+  
+  const getTooltipText = () => {
+    if (!isWalletConnected) return "Connect wallet to bet";
+    if (!hasAccount) return "Create account to bet";
+    return "";
   };
 
   return (
@@ -23,9 +41,17 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
       border: '2px solid rgba(60, 60, 60, 0.4)',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
     }}>
+      {/* Authentication requirement message */}
+      {isDisabled && (
+        <div className="text-xs text-muted-foreground text-center mb-2 px-2" data-testid="text-auth-required">
+          {getTooltipText()} 
+          {isWalletConnected && !hasAccount && " (click Connect → Create Account)"}
+        </div>
+      )}
+      
       <div className="flex items-center justify-center gap-2">
         {/* Bet Input */}
-        <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
+        <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg ${isDisabled ? 'opacity-50' : ''}`} style={{
           background: DARK_BG.MEDIUM,
           border: '1px solid rgba(60, 60, 60, 0.5)',
           minWidth: '160px',
@@ -37,8 +63,9 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
               value={betAmount}
               onChange={(e) => onBetAmountChange(e.target.value)}
               placeholder="0.1"
-              className="w-16 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
+              className="w-16 text-sm font-semibold bg-transparent border-0 outline-none text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
               style={{lineHeight: '1.25rem', paddingTop: '1px'}}
+              disabled={isDisabled}
               data-testid="input-bet"
             />
           </div>
@@ -50,14 +77,15 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
 
         {/* Increment Buttons */}
         {[0.1, 0.5, 1].map((increment) => (
-          <div key={increment} className="px-5 py-2.5 rounded-lg" style={{
+          <div key={increment} className={`px-5 py-2.5 rounded-lg ${isDisabled ? 'opacity-50' : ''}`} style={{
             background: DARK_BG.MEDIUM,
             border: '1px solid rgba(60, 60, 60, 0.5)',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
           }}>
             <button
               onClick={() => incrementBet(increment)}
-              className="text-sm font-semibold text-foreground hover-elevate"
+              className="text-sm font-semibold text-foreground hover-elevate disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isDisabled}
               data-testid={`button-plus-${increment}`}
             >
               +{increment}
@@ -66,8 +94,8 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
         ))}
 
         {/* Place Bet Button */}
-        <div className="glass-panel neon-border px-6 py-2.5 rounded-lg relative overflow-hidden" style={{
-          animation: 'floatAirdropBox 2s ease-in-out infinite'
+        <div className={`glass-panel neon-border px-6 py-2.5 rounded-lg relative overflow-hidden ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
+          animation: isDisabled ? 'none' : 'floatAirdropBox 2s ease-in-out infinite'
         }}>
           {/* Background coins image */}
           <div className="absolute inset-0 z-0" style={{
@@ -79,7 +107,8 @@ export default function BetControls({ betAmount, onBetAmountChange, onPlaceBet }
           }} />
           <button
             onClick={onPlaceBet}
-            className="relative z-10 hover-elevate active-elevate-2 transition-all"
+            className="relative z-10 hover-elevate active-elevate-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isDisabled}
             data-testid="button-place-bet"
           >
             <img 

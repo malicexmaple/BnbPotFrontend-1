@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 interface UserData {
   wallet: string;
   username: string;
+  agreedToTerms: boolean;
+  agreedAt: string; // ISO timestamp
 }
 
 /**
@@ -57,7 +59,7 @@ export function useSignupTracking(walletAddress: string | null) {
   }, [walletAddress]);
 
   /**
-   * Marks the current wallet as having completed signup with username
+   * Marks the current wallet as having completed signup with username and terms agreement
    */
   const markSignupComplete = (name: string) => {
     if (!walletAddress) return;
@@ -70,18 +72,26 @@ export function useSignupTracking(walletAddress: string | null) {
       // Check if user already exists
       const existingIndex = userData.findIndex(u => u.wallet === walletAddress);
       
+      const newUser: UserData = {
+        wallet: walletAddress,
+        username: name,
+        agreedToTerms: true,
+        agreedAt: new Date().toISOString()
+      };
+      
       if (existingIndex >= 0) {
         // Update existing user
-        userData[existingIndex].username = name;
+        userData[existingIndex] = newUser;
       } else {
         // Add new user
-        userData.push({ wallet: walletAddress, username: name });
+        userData.push(newUser);
       }
       
       localStorage.setItem('userData', JSON.stringify(userData));
       console.log('✅ Wallet Signup Completed:', {
         wallet: walletAddress,
         username: name,
+        agreedToTerms: true,
         totalRegisteredWallets: userData.length
       });
       
