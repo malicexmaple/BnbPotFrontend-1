@@ -2,9 +2,16 @@
 
 ## Overview
 
-BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where the winner takes all. The application provides a real-time, interactive gaming experience with blockchain integration for provably fair gameplay. The platform features a dark-themed, gaming-first interface optimized for rapid decision-making and extended viewing sessions.
+BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where the winner takes all. The application provides a real-time, interactive gaming experience currently running in **DEMO MODE** (simulated blockchain). The platform features a dark-themed, gaming-first interface optimized for rapid decision-making and extended viewing sessions.
 
 The application is built as a full-stack TypeScript monorepo with a React frontend, Express backend, and PostgreSQL database. It follows a modern web architecture with real-time capabilities for live game state updates and player interactions.
+
+**Current Status** (November 21, 2025):
+- ✅ Demo mode fully functional with simulated betting
+- ✅ Real-time WebSocket updates for all users
+- ✅ Authentication gates (wallet + account + terms required for betting)
+- ✅ Game viewing available to everyone (read-only for non-authenticated)
+- ⏸️ Blockchain integration documented but not implemented (see BLOCKCHAIN_INTEGRATION_ROADMAP.md)
 
 ## User Preferences
 
@@ -67,8 +74,13 @@ Preferred communication style: Simple, everyday language.
 - **Drizzle ORM**: Type-safe database queries and migrations
 - **Schema Definition**: Centralized schema in `shared/schema.ts` accessible to both client and server
 
-**Current Schema**
-- **Users Table**: Basic authentication with username/password (UUID primary keys)
+**Current Schema** (Updated November 2025)
+- **Users Table**: Wallet-based authentication with username, email, wallet address, terms agreement tracking
+- **Rounds Table**: Game rounds with status (waiting/active/completed), pot value, winner tracking
+- **Bets Table**: Individual bets linked to rounds and users, with transaction details
+- **User Stats Table**: Player statistics (wins, wagered amounts, levels)
+- **Daily Stats Table**: Daily winner tracking for leaderboards
+- **Chat Messages Table**: Live chat message history
 - **Database Connection**: Uses `@neondatabase/serverless` for edge-compatible PostgreSQL access
 
 **In-Memory Storage**
@@ -81,10 +93,18 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication & Authorization
 
-**Current Implementation**
-- **Placeholder System**: Basic user storage structure exists but no active authentication flow
-- **Session Support**: Infrastructure ready for session-based authentication
-- **Wallet Integration**: Frontend has wallet connection UI for crypto wallet integration (implementation pending)
+**Current Implementation** (Demo Mode - Updated November 2025)
+- **Wallet-Based Signup**: Users connect wallet, create account with username/email
+- **Terms Agreement Tracking**: Database stores terms agreement timestamp
+- **Server-Side Validation**: Backend validates user exists and has agreed to terms before accepting bets
+- **UI Gating**: Betting controls disabled for non-authenticated users
+- **Game Viewing**: Anyone can view games without authentication (read-only mode)
+
+**⚠️ Demo Mode Security Limitation**:
+- Current implementation trusts wallet addresses from client without signature verification
+- Acceptable for demo mode (no real money at risk)
+- **Production requires**: Wallet signature verification, session tokens, protected routes
+- See BLOCKCHAIN_INTEGRATION_ROADMAP.md for full security requirements
 
 ### External Dependencies
 
