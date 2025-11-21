@@ -1,14 +1,26 @@
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
+
+interface DailyStatsData {
+  round: number;
+  username: string;
+  userLevel: number;
+  wonAmount: number;
+  chance: number;
+  avatarUrl?: string;
+}
 
 interface DailyStatsProps {
   type: 'winner' | 'lucky';
+  data?: DailyStatsData;
 }
 
-export default function DailyStats({ type }: DailyStatsProps) {
+export default function DailyStats({ type, data }: DailyStatsProps) {
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+
   // TODO: Replace with actual data from backend/game logic
-  const mockData = type === 'winner' 
+  const defaultData: DailyStatsData = type === 'winner' 
     ? {
         round: 180202,
         username: 'ion_crypto',
@@ -24,15 +36,24 @@ export default function DailyStats({ type }: DailyStatsProps) {
         chance: 1.20
       };
 
+  const statsData = data || defaultData;
   const isWinner = type === 'winner';
+
+  // Load avatar from localStorage in effect to avoid SSR issues
+  useEffect(() => {
+    if (statsData.avatarUrl) {
+      setAvatarUrl(statsData.avatarUrl);
+    } else {
+      const storedAvatar = localStorage.getItem(`avatar_${statsData.username}`);
+      setAvatarUrl(storedAvatar || undefined);
+    }
+  }, [statsData.username, statsData.avatarUrl]);
 
   return (
     <div 
       className="glass-panel p-4" 
       style={{
-        borderRadius: '18px', 
-        width: '297px', 
-        marginTop: '10px',
+        borderRadius: '18px',
         background: 'rgba(20, 20, 20, 0.7)',
         border: '1px solid rgba(60, 60, 60, 0.4)',
         boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
@@ -42,7 +63,7 @@ export default function DailyStats({ type }: DailyStatsProps) {
       {/* Header with Round Number */}
       <div className="flex items-center justify-between mb-3">
         <div className="text-[10px] text-muted-foreground uppercase tracking-wider">ROUND</div>
-        <div className="text-xs text-muted-foreground font-mono">#{mockData.round}</div>
+        <div className="text-xs text-muted-foreground font-mono">#{statsData.round}</div>
       </div>
 
       {/* Avatar Section */}
@@ -66,15 +87,15 @@ export default function DailyStats({ type }: DailyStatsProps) {
                 : 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 20px rgba(234, 179, 8, 0.4)'
             }}
           >
-            <AvatarImage src={localStorage.getItem(`avatar_${mockData.username}`) || undefined} />
-            <AvatarFallback>{mockData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback>{statsData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         </div>
 
         {/* Username with Badge */}
         <div className="flex items-center gap-2 mb-2">
           <span className="font-semibold text-foreground text-sm" data-testid={`text-${type}-username`}>
-            {mockData.username}
+            {statsData.username}
           </span>
           <Badge 
             variant="secondary" 
@@ -89,7 +110,7 @@ export default function DailyStats({ type }: DailyStatsProps) {
                 : '1px solid rgba(234, 179, 8, 0.3)'
             }}
           >
-            {mockData.userLevel}
+            {statsData.userLevel}
           </Badge>
         </div>
 
@@ -142,17 +163,28 @@ export default function DailyStats({ type }: DailyStatsProps) {
 
       {/* Stats Section */}
       <div className="space-y-2 mt-4">
-        {/* Won Amount */}
+        {/* Won Amount with BNB icon */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground uppercase tracking-wider">Won</span>
-          <div className="flex items-center gap-1">
-            <span className="text-muted-foreground/60 font-mono">=</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground/60 font-mono text-sm">=</span>
+            <svg 
+              className="w-4 h-4 flex-shrink-0" 
+              viewBox="0 0 32 32" 
+              fill="none"
+              style={{
+                filter: 'drop-shadow(0 0 4px rgba(243, 186, 47, 0.6))'
+              }}
+            >
+              <circle cx="16" cy="16" r="16" fill="#F3BA2F"/>
+              <path d="M12.116 14.404L16 10.52l3.886 3.886 2.26-2.26L16 6l-6.144 6.144 2.26 2.26zM6 16l2.26-2.26L10.52 16l-2.26 2.26L6 16zm6.116 1.596L16 21.48l3.886-3.886 2.26 2.259L16 26l-6.144-6.144-.003-.003 2.263-2.257zM21.48 16l2.26-2.26L26 16l-2.26 2.26L21.48 16zm-3.188-.002h.002V16L16 18.294l-2.291-2.29-.004-.004.004-.003.401-.402.195-.195L16 13.706l2.293 2.293z" fill="#fff"/>
+            </svg>
             <span 
               className="font-mono font-bold no-text-shadow text-base" 
               style={{color: '#FFFFFF'}}
               data-testid={`text-${type}-won`}
             >
-              {mockData.wonAmount.toFixed(3)}
+              {statsData.wonAmount.toFixed(3)}
             </span>
           </div>
         </div>
@@ -167,7 +199,7 @@ export default function DailyStats({ type }: DailyStatsProps) {
             }}
             data-testid={`text-${type}-chance`}
           >
-            {mockData.chance.toFixed(2)}%
+            {statsData.chance.toFixed(2)}%
           </span>
         </div>
       </div>

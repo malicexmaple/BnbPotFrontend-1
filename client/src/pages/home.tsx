@@ -510,8 +510,12 @@ export default function Home() {
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
 
-          <DailyStats type="winner" />
-          <DailyStats type="lucky" />
+          <div style={{width: '297px', marginTop: '10px'}}>
+            <DailyStats type="winner" />
+          </div>
+          <div style={{width: '297px', marginTop: '10px'}}>
+            <DailyStats type="lucky" />
+          </div>
           </div>
           )}
         </div>
