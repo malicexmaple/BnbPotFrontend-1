@@ -12,7 +12,7 @@ interface DailyStatsData {
 }
 
 interface DailyStatsProps {
-  type: 'winner' | 'lucky';
+  type: 'winner' | 'lucky' | 'latest';
   data?: DailyStatsData;
 }
 
@@ -28,6 +28,14 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         wonAmount: 2.833,
         chance: 5.87
       }
+    : type === 'latest'
+    ? {
+        round: 190000,
+        username: 'crypto_king',
+        userLevel: 28,
+        wonAmount: 1.456,
+        chance: 3.42
+      }
     : {
         round: 189805,
         username: 'fendix',
@@ -38,6 +46,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
 
   const statsData = data || defaultData;
   const isWinner = type === 'winner';
+  const isLatest = type === 'latest';
 
   // Load avatar from localStorage in effect to avoid SSR issues
   useEffect(() => {
@@ -71,14 +80,20 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         <div 
           className="relative mb-2" 
           style={{
-            filter: 'drop-shadow(0 0 15px rgba(234, 179, 8, 0.6))'
+            filter: isLatest 
+              ? 'drop-shadow(0 0 15px rgba(147, 51, 234, 0.6))' 
+              : 'drop-shadow(0 0 15px rgba(234, 179, 8, 0.6))'
           }}
         >
           <Avatar 
             className="w-16 h-16"
             style={{
-              border: '2px solid rgba(234, 179, 8, 0.5)',
-              boxShadow: 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 15px rgba(234, 179, 8, 0.4)'
+              border: isLatest 
+                ? '2px solid rgba(147, 51, 234, 0.5)' 
+                : '2px solid rgba(234, 179, 8, 0.5)',
+              boxShadow: isLatest 
+                ? 'inset 0 0 10px rgba(147, 51, 234, 0.3), 0 0 15px rgba(147, 51, 234, 0.4)' 
+                : 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 15px rgba(234, 179, 8, 0.4)'
             }}
           >
             <AvatarImage src={avatarUrl} />
@@ -95,9 +110,13 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
             variant="secondary" 
             className="text-xs font-bold"
             style={{
-              background: 'rgba(234, 179, 8, 0.2)',
-              color: '#fcd34d',
-              border: '1px solid rgba(234, 179, 8, 0.3)'
+              background: isLatest 
+                ? 'rgba(147, 51, 234, 0.2)' 
+                : 'rgba(234, 179, 8, 0.2)',
+              color: isLatest ? '#c084fc' : '#fcd34d',
+              border: isLatest 
+                ? '1px solid rgba(147, 51, 234, 0.3)' 
+                : '1px solid rgba(234, 179, 8, 0.3)'
             }}
           >
             {statsData.userLevel}
@@ -108,21 +127,27 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         <div 
           className="px-3 py-1 rounded-full font-bold text-[11px] uppercase tracking-wider relative"
           style={{
-            background: isWinner 
+            background: isLatest
+              ? 'linear-gradient(135deg, rgba(147, 51, 234, 0.8), rgba(168, 85, 247, 0.8))'
+              : isWinner 
               ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(250, 204, 21, 0.9))' 
               : 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
             color: '#ffffff',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
-            boxShadow: isWinner
+            boxShadow: isLatest
+              ? '0 0 20px rgba(147, 51, 234, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              : isWinner
               ? '0 0 20px rgba(250, 204, 21, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
               : '0 0 15px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-            border: isWinner
+            border: isLatest
+              ? '1px solid rgba(147, 51, 234, 0.7)'
+              : isWinner
               ? '1px solid rgba(250, 204, 21, 0.8)'
               : '1px solid rgba(234, 179, 8, 0.6)'
           }}
           data-testid={`badge-${type}-label`}
         >
-          {isWinner ? 'WIN OF THE DAY' : 'LUCK OF THE DAY'}
+          {isLatest ? 'LATEST WINNER' : isWinner ? 'WIN OF THE DAY' : 'LUCK OF THE DAY'}
           {isWinner ? (
             <>
               {/* Lightning strikes for Win of the Day - Multiple bolts with electric yellow */}

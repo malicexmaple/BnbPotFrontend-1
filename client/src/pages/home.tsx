@@ -498,11 +498,8 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="glass-panel p-4" style={{borderRadius: '18px', width: '297px', marginTop: '5px'}}>
-            <Badge className="gradient-purple-pink text-black text-xs mb-3 uppercase tracking-wider font-bold no-text-shadow">LOOT OF THE DAY!</Badge>
-            <div className="h-24 bg-background/30 rounded flex items-center justify-center border border-border/50">
-              <div className="text-4xl">🎁</div>
-            </div>
+          <div style={{width: '297px', marginTop: '5px'}}>
+            <DailyStats type="latest" />
           </div>
 
           <div style={{width: '297px', marginTop: '10px'}}>
