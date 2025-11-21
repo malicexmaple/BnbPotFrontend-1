@@ -48,17 +48,38 @@ class GameService {
     const latestRoundNumber = await storage.getLatestRoundNumber();
     const nextRoundNumber = latestRoundNumber + 1;
 
-    const endTime = new Date(Date.now() + 90 * 1000); // 90 seconds (1 min 30 sec) from now
-
     const round = await storage.createRound({
       roundNumber: nextRoundNumber,
-      endTime,
+      endTime: null,
+      countdownStart: null,
       totalPot: "0",
-      status: "active",
+      status: "waiting",
     });
 
-    console.log(`🎲 Created new round #${round.roundNumber}, ends at ${endTime.toISOString()}`);
+    console.log(`⏳ Created new round #${round.roundNumber} - waiting for first bet`);
     return round;
+  }
+
+  /**
+   * Start countdown when first bet is placed
+   */
+  async activateRound(roundId: string) {
+    const round = await storage.getRound(roundId);
+    
+    if (!round || round.status !== "waiting") {
+      return; // Already active or doesn't exist
+    }
+
+    const now = new Date();
+    const endTime = new Date(now.getTime() + 90 * 1000); // 90 seconds from now
+
+    await storage.updateRound(roundId, {
+      status: "active",
+      countdownStart: now,
+      endTime,
+    });
+
+    console.log(`▶️ Round #${round.roundNumber} activated - countdown started, ends at ${endTime.toISOString()}`);
   }
 
   /**
@@ -74,6 +95,11 @@ class GameService {
       
       if (!currentRound) {
         await this.createNewRound();
+        return;
+      }
+
+      // Skip rounds that are waiting for first bet
+      if (currentRound.status === "waiting") {
         return;
       }
 

@@ -37,10 +37,11 @@ export const rounds = pgTable("rounds", {
   roundNumber: integer("round_number").notNull().unique(),
   startTime: timestamp("start_time").notNull().defaultNow(),
   endTime: timestamp("end_time"),
+  countdownStart: timestamp("countdown_start"),
   totalPot: numeric("total_pot", { precision: 20, scale: 8 }).notNull().default('0'),
   winnerAddress: text("winner_address"),
   winnerId: varchar("winner_id").references(() => users.id),
-  status: text("status").notNull().default('active'),
+  status: text("status").notNull().default('waiting'),
   txHash: text("tx_hash"),
 });
 

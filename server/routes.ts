@@ -26,15 +26,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all bets for this round
       const bets = await storage.getBetsByRound(round.id);
       
-      // Calculate time remaining
-      const now = new Date();
-      const endTime = new Date(round.endTime || now);
-      const timeRemaining = Math.max(0, Math.floor((endTime.getTime() - now.getTime()) / 1000));
+      // Calculate time remaining based on status
+      let timeRemaining = null;
+      let isCountdownActive = false;
+      
+      if (round.status === "active" && round.endTime) {
+        const now = new Date();
+        const endTime = new Date(round.endTime);
+        timeRemaining = Math.max(0, Math.floor((endTime.getTime() - now.getTime()) / 1000));
+        isCountdownActive = true;
+      }
       
       res.json({
         ...round,
         bets,
         timeRemaining,
+        isCountdownActive,
         totalBets: bets.length
       });
     } catch (error) {

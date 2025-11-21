@@ -253,8 +253,10 @@ export default function Home() {
   const totalPot = parseFloat(currentRound?.totalPot || "0");
   const userChance = totalPot > 0 ? (userWager / totalPot) * 100 : 0;
 
-  const minutes = Math.floor(timeRemaining / 60);
-  const seconds = timeRemaining % 60;
+  // Use API timeRemaining if countdown is active, otherwise use local timer
+  const actualTimeRemaining = currentRound?.isCountdownActive ? (currentRound.timeRemaining ?? 90) : timeRemaining;
+  const minutes = Math.floor(actualTimeRemaining / 60);
+  const seconds = actualTimeRemaining % 60;
 
   return (
     <div className="flex flex-col h-screen space-bg" style={{
@@ -347,8 +349,14 @@ export default function Home() {
                     <div className="stat-icon-wrapper-small">
                       <img src={clockIcon} alt="Clock" className="h-14 w-14" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Time Remaining</div>
+                    {currentRound?.status === "waiting" ? (
+                      <div className="text-xl font-bold font-mono no-text-shadow text-center px-2" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">Waiting...</div>
+                    ) : (
+                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    )}
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">
+                      {currentRound?.status === "waiting" ? "For First Bet" : "Time Remaining"}
+                    </div>
                   </div>
                 </div>
               </div>
