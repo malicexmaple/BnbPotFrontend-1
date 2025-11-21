@@ -44,8 +44,8 @@ class GameService {
    * Create a new round
    */
   async createNewRound() {
-    const lastRounds = await storage.getTopWinners(1); // Just to get count
-    const nextRoundNumber = (lastRounds.length || 0) + 1;
+    const latestRoundNumber = await storage.getLatestRoundNumber();
+    const nextRoundNumber = latestRoundNumber + 1;
 
     const endTime = new Date(Date.now() + 90 * 1000); // 90 seconds (1 min 30 sec) from now
 

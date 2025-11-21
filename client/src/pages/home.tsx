@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
 import ProfileModal from "@/components/ProfileModal";
@@ -39,6 +40,12 @@ export default function Home() {
   const { toast } = useToast();
   const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
   const { messages, isConnected, onlineUsers, sendMessage } = useChat(username || undefined);
+  
+  // Fetch current round data
+  const { data: currentRound, isLoading: isLoadingRound } = useQuery({
+    queryKey: ['/api/rounds/current'],
+    refetchInterval: 5000, // Refresh every 5 seconds
+  });
   
   const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
@@ -240,6 +247,12 @@ export default function Home() {
     });
   };
 
+  // Calculate user's stats from current round
+  const userBets = currentRound?.bets?.filter((bet: any) => bet.userAddress === address) || [];
+  const userWager = userBets.reduce((sum: number, bet: any) => sum + parseFloat(bet.amount || "0"), 0);
+  const totalPot = parseFloat(currentRound?.totalPot || "0");
+  const userChance = totalPot > 0 ? (userWager / totalPot) * 100 : 0;
+
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
 
@@ -301,7 +314,9 @@ export default function Home() {
                     <div className="stat-icon-wrapper-large">
                       <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}}>0.401</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-jackpot-value">
+                      {isLoadingRound ? '...' : totalPot.toFixed(3)}
+                    </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
                   </div>
                 </div>
@@ -310,7 +325,9 @@ export default function Home() {
                     <div className="stat-icon-wrapper">
                       <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">0.000</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">
+                      {isLoadingRound ? '...' : userWager.toFixed(3)}
+                    </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
                   </div>
                 </div>
@@ -319,7 +336,9 @@ export default function Home() {
                     <div className="stat-icon-wrapper-small">
                       <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-chance">0.00%</div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-chance">
+                      {isLoadingRound ? '...' : userChance.toFixed(2)}%
+                    </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
                   </div>
                 </div>
@@ -407,11 +426,11 @@ export default function Home() {
             </div>
 
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div><span className="text-foreground font-semibold">0</span> Players</div>
+              <div><span className="text-foreground font-semibold">{currentRound?.totalBets || 0}</span> Players</div>
               <div>•</div>
               <div>Payouts are settled in BNB</div>
               <div>•</div>
-              <div>Round: <span className="font-mono" data-testid="text-round">#1</span></div>
+              <div>Round: <span className="font-mono" data-testid="text-round">#{currentRound?.roundNumber || 1}</span></div>
             </div>
           </div>
 
