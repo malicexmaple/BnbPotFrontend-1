@@ -8,6 +8,13 @@ export function useChat(username: string | undefined) {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
+    // Only connect if user is logged in
+    if (!username) {
+      setIsConnected(false);
+      setOnlineUsers(0);
+      return;
+    }
+
     // Determine WebSocket URL based on environment
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws`;
@@ -62,7 +69,7 @@ export function useChat(username: string | undefined) {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [username]);
 
   const sendMessage = useCallback((message: string) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
