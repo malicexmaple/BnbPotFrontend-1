@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -19,7 +20,20 @@ interface DailyStatsProps {
 export default function DailyStats({ type, data }: DailyStatsProps) {
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
 
-  // TODO: Replace with actual data from backend/game logic
+  // Fetch data from API based on type
+  const endpoint = type === 'latest' 
+    ? '/api/stats/latest-winner'
+    : type === 'winner'
+    ? '/api/stats/win-of-day'
+    : '/api/stats/luck-of-day';
+
+  const { data: apiData } = useQuery<DailyStatsData | null>({
+    queryKey: [endpoint],
+    refetchInterval: 10000, // Refetch every 10 seconds
+    enabled: !data, // Only fetch if data prop is not provided
+  });
+
+  // Fallback data when no API data or prop data is available
   const defaultData: DailyStatsData = type === 'winner' 
     ? {
         round: 180202,
@@ -44,7 +58,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         chance: 1.20
       };
 
-  const statsData = data || defaultData;
+  const statsData = data || apiData || defaultData;
   const isWinner = type === 'winner';
   const isLatest = type === 'latest';
 

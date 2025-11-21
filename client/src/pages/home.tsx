@@ -6,6 +6,7 @@ import ChatSidebar from "@/components/ChatSidebar";
 import BetControls from "@/components/BetControls";
 import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
+import JackpotWheel from "@/components/JackpotWheel";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -324,75 +325,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* PLAYER CAROUSEL */}
-            <div className="flex justify-center">
-              <div className="carousel-container">
-                <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
-                  {/* Triangle indicator pointing to center card */}
-                  <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
-                    <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
-                      <defs>
-                        <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
-                          <stop offset="50%" style={{stopColor: '#FCD34D', stopOpacity: 1}} />
-                          <stop offset="100%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
-                        </linearGradient>
-                      </defs>
-                      <path d="M28 36 L4 4 L52 4 Z" fill="url(#triangleGradient)" stroke="url(#triangleGradient)" strokeWidth="2"/>
-                    </svg>
-                  </div>
-                  
-                  <div 
-                    className="carousel-track flex gap-3"
-                    style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible'}}
-                  >
-                    {[...Array(20)].map((_, i) => {
-                      // Calculate if this card is under the triangle (highlight when left edge reaches triangle)
-                      if (!carouselRef.current) return null;
-                      
-                      const containerWidth = carouselRef.current.offsetWidth;
-                      const gap = 12; // gap-3 = 0.75rem = 12px
-                      const cardWidth = 234; // 180 * 1.3 = 234px
-                      const cardPosition = i * (cardWidth + gap);
-                      const centerPosition = containerWidth / 2;
-                      const cardLeftEdge = cardPosition - scrollOffset;
-                      const cardRightEdge = cardLeftEdge + cardWidth;
-                      const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
-                      
-                      return (
-                        <div key={i} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px', zIndex: isCentered ? 10 : 1, position: 'relative'}}>
-                          <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
-                            borderRadius: '21px', 
-                            padding: '26px 21px',
-                            transform: isCentered ? 'scale(1.1)' : 'scale(1)',
-                            transformOrigin: 'center center',
-                            willChange: 'transform',
-                            boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
-                          }}>
-                            <div className="flex items-center justify-center relative" style={{
-                              width: '114px',
-                              height: '114px',
-                              borderRadius: '18px',
-                              background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
-                              border: '1px solid rgba(60, 60, 60, 0.4)',
-                              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
-                            }}>
-                              <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '55px', height: '55px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
-                                <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
-                              </svg>
-                            </div>
-                            <div className="font-medium text-muted-foreground" style={{fontSize: '17px', marginTop: '18px'}}>Waiting</div>
-                            <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
-                              <span className="text-muted-foreground/60">=</span>
-                              <span className="text-foreground font-bold">0.000</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+            {/* JACKPOT WHEEL - Shows players and their win chances */}
+            <div className="px-6">
+              <JackpotWheel />
             </div>
 
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
