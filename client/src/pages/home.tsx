@@ -356,7 +356,14 @@ export default function Home() {
 
             {/* PLAYER CAROUSEL */}
             <div className="flex justify-center">
-              <div className="carousel-container">
+              <div className="carousel-container relative">
+                {/* Mining Block Overlay */}
+                {showMiningBlock && (
+                  <MiningBlockOverlay
+                    blockNumber={miningBlockNumber}
+                    onComplete={() => setShowMiningBlock(false)}
+                  />
+                )}
                 <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
                   {/* Triangle indicator pointing to center card */}
                   <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
@@ -988,14 +995,6 @@ export default function Home() {
         walletAddress={address || undefined}
         onDisconnect={disconnect}
       />
-
-      {/* Mining Block Overlay - Shows when round ends */}
-      {showMiningBlock && (
-        <MiningBlockOverlay
-          blockNumber={miningBlockNumber}
-          onComplete={() => setShowMiningBlock(false)}
-        />
-      )}
     </div>
   );
 }

@@ -27,41 +27,42 @@ export default function MiningBlockOverlay({ onComplete, blockNumber }: MiningBl
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="absolute inset-0 z-50 flex items-center justify-center"
       style={{
-        background: 'rgba(0, 0, 0, 0.95)',
-        backdropFilter: 'blur(10px)'
+        background: 'rgba(0, 0, 0, 0.92)',
+        backdropFilter: 'blur(8px)',
+        borderRadius: '21px'
       }}
       data-testid="overlay-mining-block"
     >
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-4">
         {/* Animated Cube Icon */}
         <div className="relative">
           <div 
-            className="w-24 h-24 rounded-2xl flex items-center justify-center animate-pulse"
+            className="w-20 h-20 rounded-xl flex items-center justify-center animate-pulse"
             style={{
-              background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(168, 85, 247, 0.3))',
-              border: '2px solid rgba(147, 51, 234, 0.5)',
-              boxShadow: '0 0 40px rgba(147, 51, 234, 0.6), inset 0 0 20px rgba(147, 51, 234, 0.3)'
+              background: 'linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(250, 204, 21, 0.3))',
+              border: '2px solid rgba(234, 179, 8, 0.6)',
+              boxShadow: '0 0 30px rgba(234, 179, 8, 0.5), inset 0 0 15px rgba(234, 179, 8, 0.2)'
             }}
           >
             <svg 
-              className="w-16 h-16" 
+              className="w-14 h-14" 
               viewBox="0 0 24 24" 
               fill="none"
               style={{
-                filter: 'drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))'
+                filter: 'drop-shadow(0 0 8px rgba(250, 204, 21, 0.8))'
               }}
             >
               <path 
                 d="M12 2L4 6v12l8 4 8-4V6l-8-4z" 
-                fill="rgba(168, 85, 247, 0.4)" 
-                stroke="#a855f7" 
+                fill="rgba(250, 204, 21, 0.4)" 
+                stroke="#FACC15" 
                 strokeWidth="2"
               />
               <path 
                 d="M12 12L4 8m8 4l8-4m-8 4v8" 
-                stroke="#c084fc" 
+                stroke="#FCD34D" 
                 strokeWidth="2"
               />
             </svg>
@@ -69,25 +70,25 @@ export default function MiningBlockOverlay({ onComplete, blockNumber }: MiningBl
           
           {/* Rotating Ring */}
           <div 
-            className="absolute inset-0 rounded-2xl animate-spin"
+            className="absolute inset-0 rounded-xl animate-spin"
             style={{
               border: '3px solid transparent',
-              borderTopColor: '#a855f7',
-              borderRightColor: '#a855f7',
+              borderTopColor: '#FACC15',
+              borderRightColor: '#FACC15',
               animationDuration: '2s'
             }}
           />
         </div>
 
         {/* Mining Block Text */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-2">
           <h2 
-            className="text-5xl font-bold uppercase tracking-wider"
+            className="text-3xl font-bold uppercase tracking-wider"
             style={{
-              background: 'linear-gradient(135deg, #a855f7, #c084fc)',
+              background: 'linear-gradient(135deg, #FACC15, #FCD34D)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 0 30px rgba(168, 85, 247, 0.5)',
+              textShadow: '0 0 20px rgba(234, 179, 8, 0.4)',
               fontStyle: 'italic'
             }}
           >
@@ -95,44 +96,45 @@ export default function MiningBlockOverlay({ onComplete, blockNumber }: MiningBl
           </h2>
           
           <div 
-            className="text-lg font-mono"
+            className="text-sm font-mono"
             style={{
-              color: 'rgba(168, 85, 247, 0.9)'
+              color: 'rgba(250, 204, 21, 0.9)'
             }}
           >
-            Waiting for BSC Block: <span className="font-bold text-purple-400">#{blockNumber || '...'}</span>
+            Waiting for BSC Block: <span className="font-bold" style={{color: '#FCD34D'}}>#{blockNumber || '...'}</span>
           </div>
 
           {/* Loading Animation */}
-          <div className="flex items-center justify-center gap-2 pt-2">
+          <div className="flex items-center justify-center gap-2 pt-1">
             <div 
               className="w-2 h-2 rounded-full animate-bounce"
               style={{
-                background: '#a855f7',
-                boxShadow: '0 0 10px #a855f7',
+                background: '#FACC15',
+                boxShadow: '0 0 8px #FACC15',
                 animationDelay: '0s'
               }}
             />
             <div 
               className="w-2 h-2 rounded-full animate-bounce"
               style={{
-                background: '#a855f7',
-                boxShadow: '0 0 10px #a855f7',
+                background: '#FACC15',
+                boxShadow: '0 0 8px #FACC15',
                 animationDelay: '0.2s'
               }}
             />
             <div 
               className="w-2 h-2 rounded-full animate-bounce"
               style={{
-                background: '#a855f7',
-                boxShadow: '0 0 10px #a855f7',
+                background: '#FACC15',
+                boxShadow: '0 0 8px #FACC15',
                 animationDelay: '0.4s'
               }}
             />
           </div>
 
           <div 
-            className="text-sm text-muted-foreground font-mono"
+            className="text-xs font-mono"
+            style={{color: 'rgba(161, 161, 170, 0.8)'}}
             data-testid="text-mining-status"
           >
             Selecting winner{dots}

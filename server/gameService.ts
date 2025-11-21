@@ -7,6 +7,7 @@ import { web3Service } from "./web3Service";
 class GameService {
   private roundCheckInterval: NodeJS.Timeout | null = null;
   private eventCleanup: (() => void) | null = null;
+  private endingRounds: Set<string> = new Set(); // Track rounds currently being ended
 
   /**
    * Initialize the game service
@@ -90,22 +91,32 @@ class GameService {
    * End a round and select a winner
    */
   async endRound(roundId: string) {
-    console.log(`🏁 Ending round ${roundId}...`);
-
-    const round = await storage.getRound(roundId);
-    if (!round || round.status !== "active") {
-      console.log("⚠️ Round not active or not found");
+    // Prevent duplicate processing
+    if (this.endingRounds.has(roundId)) {
+      console.log(`⚠️ Round ${roundId} is already being processed`);
       return;
     }
+
+    this.endingRounds.add(roundId);
+    console.log(`🏁 Ending round ${roundId}...`);
+
+    try {
+      const round = await storage.getRound(roundId);
+      if (!round || round.status !== "active") {
+        console.log("⚠️ Round not active or not found");
+        this.endingRounds.delete(roundId);
+        return;
+      }
 
     const bets = await storage.getBetsByRound(roundId);
 
-    if (bets.length === 0) {
-      console.log("⚠️ No bets in round, creating new round");
-      await storage.updateRound(roundId, { status: "cancelled", endTime: new Date() });
-      await this.createNewRound();
-      return;
-    }
+      if (bets.length === 0) {
+        console.log("⚠️ No bets in round, creating new round");
+        await storage.updateRound(roundId, { status: "cancelled", endTime: new Date() });
+        await this.createNewRound();
+        this.endingRounds.delete(roundId);
+        return;
+      }
 
     // Select winner using weighted random selection
     const winner = this.selectWinner(bets, parseFloat(round.totalPot));
@@ -183,8 +194,11 @@ class GameService {
 
     console.log(`🎉 Round #${round.roundNumber} winner: ${winner.userAddress} - Prize: ${prize.toFixed(4)} BNB`);
 
-    // Create new round
-    await this.createNewRound();
+      // Create new round
+      await this.createNewRound();
+    } finally {
+      this.endingRounds.delete(roundId);
+    }
   }
 
   /**
