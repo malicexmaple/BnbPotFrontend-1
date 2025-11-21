@@ -12,10 +12,10 @@ export default function DemoModeBanner({ onLearnMore }: DemoModeBannerProps) {
       <div className="flex items-start gap-3">
         <AlertTriangle className="h-5 w-5 text-primary mt-0.5" />
         <div className="flex-1">
-          <div className="font-semibold text-foreground mb-1">Demo Mode - Not Real Blockchain</div>
+          <div className="font-semibold text-foreground mb-1">🧪 BNB Chain Testnet Mode - Real Blockchain, Fake Tokens</div>
           <AlertDescription className="text-sm text-muted-foreground">
-            This is a demonstration using simulated blockchain functionality. Bets use test tokens only and winners are determined by server-side algorithms (not provably fair on-chain VRF). 
-            <strong className="text-foreground"> No real cryptocurrency is at risk.</strong>
+            Connected to BNB Smart Chain Testnet. You can test all features with real wallet connections and blockchain transactions using <strong className="text-foreground">testnet tBNB (no real value)</strong>. 
+            Winners are currently determined by server algorithms. <strong className="text-foreground">No real cryptocurrency is at risk.</strong>
             {onLearnMore && (
               <Button 
                 variant="link" 
@@ -23,7 +23,7 @@ export default function DemoModeBanner({ onLearnMore }: DemoModeBannerProps) {
                 onClick={onLearnMore}
                 data-testid="button-learn-more"
               >
-                Learn about full blockchain integration →
+                Get testnet tokens →
               </Button>
             )}
           </AlertDescription>

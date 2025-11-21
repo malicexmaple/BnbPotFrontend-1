@@ -323,9 +323,9 @@ export default function Home() {
     }}>
       <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
 
-      {/* Demo Mode Banner */}
+      {/* Testnet Mode Banner */}
       <div className="px-6 pt-4">
-        <DemoModeBanner onLearnMore={() => window.open('/BLOCKCHAIN_INTEGRATION_ROADMAP.md', '_blank')} />
+        <DemoModeBanner onLearnMore={() => window.open('/TESTNET_SETUP_GUIDE.md', '_blank')} />
       </div>
 
       {/* Golden border wrapper around bottom nav + content */}

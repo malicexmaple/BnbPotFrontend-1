@@ -1,6 +1,18 @@
 import { useState, useCallback, useEffect } from 'react';
 import { BrowserProvider } from 'ethers';
 
+const BSC_TESTNET = {
+  chainId: '0x61', // 97 in hex
+  chainName: 'BNB Smart Chain Testnet',
+  nativeCurrency: {
+    name: 'tBNB',
+    symbol: 'tBNB',
+    decimals: 18,
+  },
+  rpcUrls: ['https://data-seed-prebsc-1-s1.bnbchain.org:8545'],
+  blockExplorerUrls: ['https://testnet.bscscan.com'],
+};
+
 const BSC_MAINNET = {
   chainId: '0x38',
   chainName: 'BNB Smart Chain',
@@ -12,6 +24,9 @@ const BSC_MAINNET = {
   rpcUrls: ['https://bsc-dataseed.binance.org/'],
   blockExplorerUrls: ['https://bscscan.com/'],
 };
+
+// Use testnet for demo/testing
+const ACTIVE_NETWORK = BSC_TESTNET;
 
 interface WalletState {
   address: string | null;
@@ -34,17 +49,17 @@ export function useWallet() {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: BSC_MAINNET.chainId }],
+        params: [{ chainId: ACTIVE_NETWORK.chainId }],
       });
     } catch (switchError: any) {
       if (switchError.code === 4902) {
         try {
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
-            params: [BSC_MAINNET],
+            params: [ACTIVE_NETWORK],
           });
         } catch (addError) {
-          throw new Error('Failed to add BNB Smart Chain network');
+          throw new Error(`Failed to add ${ACTIVE_NETWORK.chainName} network`);
         }
       } else {
         throw switchError;
@@ -81,7 +96,7 @@ export function useWallet() {
 
       if (accounts && accounts.length > 0) {
         const address = accounts[0];
-        const message = `Welcome to BNBPOT!\n\nPlease sign this message to verify your wallet ownership.\n\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}`;
+        const message = `Welcome to BNBPOT Testnet!\n\nPlease sign this message to verify your wallet ownership.\n\nNetwork: ${ACTIVE_NETWORK.chainName}\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}\n\nNote: This is a testnet - no real funds at risk!`;
         
         try {
           const signature = await window.ethereum.request({
