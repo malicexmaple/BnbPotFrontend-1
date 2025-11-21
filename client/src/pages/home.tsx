@@ -5,6 +5,7 @@ import ProfileModal from "@/components/ProfileModal";
 import ChatSidebar from "@/components/ChatSidebar";
 import BetControls from "@/components/BetControls";
 import ChatRulesModal from "@/components/ChatRulesModal";
+import DailyStats from "@/components/DailyStats";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -508,6 +509,9 @@ export default function Home() {
             <div className="flex justify-between text-xs text-muted-foreground mb-2 uppercase tracking-wider"><span>Wins</span><Badge variant="secondary" className="text-[10px] uppercase">Chances</Badge></div>
             <div className="flex justify-between"><div className="flex items-center gap-1"><img src={bnbLogo} className="h-[4rem] w-[4rem]" /><span className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>0.769</span></div><span className="font-semibold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.15rem'}}>2.00%</span></div>
           </div>
+
+          <DailyStats type="winner" />
+          <DailyStats type="lucky" />
           </div>
           )}
         </div>
