@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import { useChat } from "@/hooks/useChat";
+import { useGameSocket } from "@/hooks/useGameSocket";
 import { GAME, CAROUSEL, GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
@@ -41,6 +42,9 @@ export default function Home() {
   const { toast } = useToast();
   const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
   const { messages, isConnected, onlineUsers, sendMessage } = useChat(username || undefined);
+  
+  // Connect to game WebSocket for real-time bet updates (works for all users)
+  useGameSocket();
   
   // Fetch current round data
   const { data: currentRound, isLoading: isLoadingRound } = useQuery({

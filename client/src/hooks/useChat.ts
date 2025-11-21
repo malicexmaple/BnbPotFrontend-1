@@ -51,6 +51,7 @@ export function useChat(username: string | undefined) {
         } else if (data.type === 'error') {
           console.error('Chat error:', data.message);
         }
+        // Note: bet_placed events are handled by useGameSocket hook
       } catch (error) {
         console.error('Failed to parse WebSocket message:', error);
       }

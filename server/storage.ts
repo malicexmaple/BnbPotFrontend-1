@@ -33,7 +33,7 @@ export interface IStorage {
   // Bet methods
   getBetsByRound(roundId: string): Promise<Bet[]>;
   createBet(bet: InsertBet): Promise<Bet>;
-  placeBetTransaction(roundId: string, bet: InsertBet): Promise<{ bet: Bet; round: Round; roundActivated: boolean }>;
+  placeBetTransaction(roundId: string, bet: InsertBet): Promise<{ bet: Bet; round: Round; roundActivated: boolean; allBets: Bet[] }>;
   
   // User stats methods
   getUserStats(userAddress: string): Promise<UserStats | undefined>;
@@ -135,7 +135,7 @@ export class DbStorage implements IStorage {
     return result[0];
   }
 
-  async placeBetTransaction(roundId: string, betData: InsertBet): Promise<{ bet: Bet; round: Round; roundActivated: boolean }> {
+  async placeBetTransaction(roundId: string, betData: InsertBet): Promise<{ bet: Bet; round: Round; roundActivated: boolean; allBets: Bet[] }> {
     // Execute entire bet placement in a single atomic transaction
     // This prevents race conditions and ensures data consistency
     return await db.transaction(async (tx) => {
@@ -153,7 +153,7 @@ export class DbStorage implements IStorage {
         .where(eq(rounds.id, roundId))
         .returning();
 
-      // 3. Count total bets to determine if this was the first
+      // 3. Get all bets for this round (includes the bet we just placed)
       const allBets = await tx.select().from(bets).where(eq(bets.roundId, roundId));
       const isFirstBet = allBets.length === 1;
 
@@ -175,11 +175,11 @@ export class DbStorage implements IStorage {
 
         if (activatedRound) {
           roundActivated = true;
-          return { bet, round: activatedRound, roundActivated };
+          return { bet, round: activatedRound, roundActivated, allBets };
         }
       }
 
-      return { bet, round: updatedRound, roundActivated };
+      return { bet, round: updatedRound, roundActivated, allBets };
     });
   }
 

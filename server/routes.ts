@@ -5,6 +5,9 @@ import { storage } from "./storage";
 import { insertChatMessageSchema, insertBetSchema } from "@shared/schema";
 import { gameService } from "./gameService";
 
+// Module-level variable to hold broadcast function
+let broadcastBetUpdate: ((data: any) => void) | null = null;
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // API route to get chat messages
   app.get("/api/chat/messages", async (_req, res) => {
@@ -96,6 +99,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // If round was activated (first bet), log it
       if (result.roundActivated) {
         console.log(`🎲 First bet placed! Round #${currentRound.roundNumber} activated`);
+      }
+      
+      // Broadcast bet update to all WebSocket clients for real-time updates
+      // Use the transaction result to ensure we broadcast the exact state that was written
+      // This eliminates race conditions and ensures broadcast data matches the committed transaction
+      if (broadcastBetUpdate && result.round && (result.round.status === "waiting" || result.round.status === "active")) {
+        let timeRemaining = null;
+        let isCountdownActive = false;
+        
+        if (result.round.status === "active" && result.round.endTime) {
+          const now = new Date();
+          const endTime = new Date(result.round.endTime);
+          timeRemaining = Math.max(0, Math.floor((endTime.getTime() - now.getTime()) / 1000));
+          isCountdownActive = true;
+        }
+        
+        broadcastBetUpdate({
+          ...result.round,
+          bets: result.allBets, // Use bets from transaction, not a separate query
+          timeRemaining,
+          isCountdownActive,
+          totalBets: result.allBets.length
+        });
       }
       
       res.json({ 
@@ -268,6 +294,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         client.send(JSON.stringify({ type: updateType, data }));
       }
     });
+  };
+
+  // Set broadcast function for bet updates
+  broadcastBetUpdate = (data: any) => {
+    broadcastGameUpdate("bet_placed", data);
   };
 
   wss.on("connection", (ws: WebSocket) => {
