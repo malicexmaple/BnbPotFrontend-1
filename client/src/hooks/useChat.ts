@@ -4,6 +4,7 @@ import type { ChatMessage } from '@shared/schema';
 export function useChat(username: string | undefined) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -37,6 +38,9 @@ export function useChat(username: string | undefined) {
             timestamp: new Date(data.message.timestamp),
           };
           setMessages((prev) => [...prev, parsedMessage]);
+        } else if (data.type === 'online_count') {
+          // Update online users count
+          setOnlineUsers(data.count);
         } else if (data.type === 'error') {
           console.error('Chat error:', data.message);
         }
@@ -93,6 +97,7 @@ export function useChat(username: string | undefined) {
   return {
     messages,
     isConnected,
+    onlineUsers,
     sendMessage,
   };
 }

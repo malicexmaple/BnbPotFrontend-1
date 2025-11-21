@@ -20,6 +20,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up WebSocket server for real-time chat
   const wss = new WebSocketServer({ server: httpServer, path: "/ws" });
 
+  // Helper function to broadcast online user count to all clients
+  const broadcastOnlineCount = () => {
+    const onlineCount = wss.clients.size;
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ type: "online_count", count: onlineCount }));
+      }
+    });
+  };
+
   wss.on("connection", (ws: WebSocket) => {
     console.log("Client connected to chat");
 
@@ -27,6 +37,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     storage.getChatMessages(50).then((messages) => {
       ws.send(JSON.stringify({ type: "history", messages }));
     });
+
+    // Send current online count to new client and broadcast to all
+    broadcastOnlineCount();
 
     ws.on("message", async (data: Buffer) => {
       try {
@@ -58,6 +71,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     ws.on("close", () => {
       console.log("Client disconnected from chat");
+      // Broadcast updated count when client disconnects
+      broadcastOnlineCount();
     });
   });
 

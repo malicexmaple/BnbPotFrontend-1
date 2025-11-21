@@ -35,11 +35,10 @@ export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
   const { toast } = useToast();
   const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
-  const { messages, isConnected, sendMessage } = useChat(username || undefined);
+  const { messages, isConnected, onlineUsers, sendMessage } = useChat(username || undefined);
   
   const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
-  const [onlineUsers, setOnlineUsers] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
