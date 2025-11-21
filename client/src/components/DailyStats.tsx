@@ -51,7 +51,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
 
   return (
     <div 
-      className="glass-panel p-4" 
+      className="glass-panel p-3" 
       style={{
         borderRadius: '18px',
         background: 'rgba(20, 20, 20, 0.7)',
@@ -61,24 +61,24 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
       data-testid={`card-daily-${type}`}
     >
       {/* Header with Round Number */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2">
         <div className="text-[10px] text-muted-foreground uppercase tracking-wider">ROUND</div>
         <div className="text-xs text-muted-foreground font-mono">#{statsData.round}</div>
       </div>
 
       {/* Avatar Section */}
-      <div className="flex flex-col items-center mb-3">
+      <div className="flex flex-col items-center mb-2">
         <div 
-          className="relative mb-3" 
+          className="relative mb-2" 
           style={{
-            filter: 'drop-shadow(0 0 20px rgba(234, 179, 8, 0.6))'
+            filter: 'drop-shadow(0 0 15px rgba(234, 179, 8, 0.6))'
           }}
         >
           <Avatar 
-            className="w-20 h-20"
+            className="w-16 h-16"
             style={{
               border: '2px solid rgba(234, 179, 8, 0.5)',
-              boxShadow: 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 20px rgba(234, 179, 8, 0.4)'
+              boxShadow: 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 15px rgba(234, 179, 8, 0.4)'
             }}
           >
             <AvatarImage src={avatarUrl} />
@@ -87,7 +87,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         </div>
 
         {/* Username with Badge */}
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-1.5">
           <span className="font-semibold text-foreground text-sm" data-testid={`text-${type}-username`}>
             {statsData.username}
           </span>
@@ -106,7 +106,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
 
         {/* Label Badge */}
         <div 
-          className="px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider relative"
+          className="px-3 py-1 rounded-full font-bold text-[11px] uppercase tracking-wider relative"
           style={{
             background: isWinner 
               ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(250, 204, 21, 0.9))' 
@@ -196,7 +196,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
       </div>
 
       {/* Stats Section */}
-      <div className="space-y-2 mt-4">
+      <div className="space-y-1.5 mt-2">
         {/* Won Amount with BNB icon */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground uppercase tracking-wider">Won</span>
