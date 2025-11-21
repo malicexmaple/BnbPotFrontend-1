@@ -1,0 +1,54 @@
+How the Jackpot Game Works
+
+Each game runs in rounds. A new round begins when a player places the first bet. As soon as the first bet is submitted, a countdown timer starts (90 seconds by default). During this countdown, other players may join the round by placing their own bets.
+
+If no other players bet:
+The round ends when the timer reaches zero, and the single player automatically wins.
+
+If multiple players bet:
+All bets contribute to the jackpot pool. Each player’s chance of winning is proportional to the percentage of the total amount they contributed.
+
+Carousel Display System
+
+At the top of the screen, there is a rotating carousel that shows the participants in the round. Each player in the round is represented by a card in the carousel. Each card displays:
+
+Profile picture or avatar
+
+Username
+
+Amount wagered
+
+As more players enter the round, additional cards fill the carousel automatically.
+
+At the moment the round ends, the carousel animates to select the winning card, highlighting the winner in a clear, visually exciting way.
+
+Player List and Bet Information
+
+Below the carousel is a detailed list of all participants in the round. Each row shows:
+
+Player avatar and name
+
+Total wagered amount
+
+The corresponding value in USD
+
+The player’s win probability (percentage based on their share of the total pool)
+
+The total jackpot value is also displayed at the top of the screen and updates live as bets come in.
+
+Winner Selection
+
+When the countdown ends:
+
+The system calculates the winning wallet using a provably-fair algorithm and the weight of each bet.
+
+The carousel spins and lands on the winning player’s card.
+
+The jackpot amount is instantly paid to the winner.
+
+Round Reset
+After the winner is chosen:
+The new round begins immediately.
+The timer is inactive until a new first bet is placed.
+Once the first bet lands, the 90-second countdown starts again.
+here is a picture of how the other website displays it just like ours but there theme is purple, please dont change our theme.
