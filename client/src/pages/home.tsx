@@ -86,18 +86,27 @@ export default function Home() {
     };
   }, []);
 
-  // Track previous round data to detect when a round ends
+  // Track previous round to detect when a round actually completes
   const prevRoundRef = useRef<any>(null);
 
-  // Show mining block overlay when an active round ends
+  // Show mining block ONLY when an active round with bets actually completes
   useEffect(() => {
     if (currentRound && prevRoundRef.current) {
-      const wasActive = prevRoundRef.current.status === "active";
-      const hadTimeRemaining = prevRoundRef.current.timeRemaining > 0;
-      const nowEnded = currentRound.timeRemaining === 0 || currentRound.status === "completed";
+      const prevRound = prevRoundRef.current;
       
-      // Show mining block when active round transitions to ended
-      if (wasActive && hadTimeRemaining && nowEnded) {
+      // Detect round completion: round ID changed AND previous round was active with bets
+      const roundChanged = prevRound.id !== currentRound.id;
+      const prevWasActive = prevRound.status === "active";
+      const prevHadBets = prevRound.totalBets > 0;
+      const prevCompleted = prevRound.status === "completed";
+      
+      // Only show mining block if:
+      // 1. Previous round was active with actual bets, OR
+      // 2. Previous round just completed (status changed to completed)
+      const shouldShowMining = (roundChanged && prevWasActive && prevHadBets) || 
+                               (!prevCompleted && currentRound.status === "completed" && currentRound.totalBets > 0);
+      
+      if (shouldShowMining) {
         setShowMiningBlock(true);
         setMiningBlockNumber(Math.floor(Math.random() * 1000000) + 468940000); // Mock block number
       }
@@ -416,50 +425,82 @@ export default function Home() {
                     className="carousel-track flex gap-3"
                     style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible'}}
                   >
-                    {[...Array(20)].map((_, i) => {
-                      // Calculate if this card is under the triangle (highlight when left edge reaches triangle)
-                      if (!carouselRef.current) return null;
+                    {(() => {
+                      // Get real bets from current round
+                      const bets = currentRound?.bets || [];
+                      const MIN_CARDS = 20; // Always show at least 20 cards
+                      const cardsToShow = Math.max(MIN_CARDS, bets.length);
                       
-                      const containerWidth = carouselRef.current.offsetWidth;
-                      const gap = 12; // gap-3 = 0.75rem = 12px
-                      const cardWidth = 234; // 180 * 1.3 = 234px
-                      const cardPosition = i * (cardWidth + gap);
-                      const centerPosition = containerWidth / 2;
-                      const cardLeftEdge = cardPosition - scrollOffset;
-                      const cardRightEdge = cardLeftEdge + cardWidth;
-                      const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
-                      
-                      return (
-                        <div key={i} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px', zIndex: isCentered ? 10 : 1, position: 'relative'}}>
-                          <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
-                            borderRadius: '21px', 
-                            padding: '26px 21px',
-                            transform: isCentered ? 'scale(1.1)' : 'scale(1)',
-                            transformOrigin: 'center center',
-                            willChange: 'transform',
-                            boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
-                          }}>
-                            <div className="flex items-center justify-center relative" style={{
-                              width: '114px',
-                              height: '114px',
-                              borderRadius: '18px',
-                              background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
-                              border: '1px solid rgba(60, 60, 60, 0.4)',
-                              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
+                      return [...Array(cardsToShow)].map((_, i) => {
+                        if (!carouselRef.current) return null;
+                        
+                        // Check if this index has a real bet
+                        const bet = bets[i];
+                        const hasRealBet = !!bet;
+                        
+                        // Calculate centering
+                        const containerWidth = carouselRef.current.offsetWidth;
+                        const gap = 12;
+                        const cardWidth = 234;
+                        const cardPosition = i * (cardWidth + gap);
+                        const centerPosition = containerWidth / 2;
+                        const cardLeftEdge = cardPosition - scrollOffset;
+                        const cardRightEdge = cardLeftEdge + cardWidth;
+                        const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
+                        
+                        return (
+                          <div key={hasRealBet ? bet.id : `empty-${i}`} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px', zIndex: isCentered ? 10 : 1, position: 'relative'}}>
+                            <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
+                              borderRadius: '21px', 
+                              padding: '26px 21px',
+                              transform: isCentered ? 'scale(1.1)' : 'scale(1)',
+                              transformOrigin: 'center center',
+                              willChange: 'transform',
+                              boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
                             }}>
-                              <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '55px', height: '55px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
-                                <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
-                              </svg>
-                            </div>
-                            <div className="font-medium text-muted-foreground" style={{fontSize: '17px', marginTop: '18px'}}>Waiting</div>
-                            <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
-                              <span className="text-muted-foreground/60">=</span>
-                              <span className="text-foreground font-bold">0.000</span>
+                              {hasRealBet ? (
+                                <>
+                                  {/* Real Player Card */}
+                                  <Avatar className="w-28 h-28">
+                                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/20 to-primary/5">
+                                      {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="font-medium text-foreground" style={{fontSize: '17px', marginTop: '18px', textAlign: 'center'}}>
+                                    {bet.username || `${bet.userAddress.slice(0, 6)}...`}
+                                  </div>
+                                  <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
+                                    <span className="text-muted-foreground/60">=</span>
+                                    <span className="text-primary font-bold">{parseFloat(bet.amount).toFixed(3)}</span>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  {/* Waiting Placeholder */}
+                                  <div className="flex items-center justify-center relative" style={{
+                                    width: '114px',
+                                    height: '114px',
+                                    borderRadius: '18px',
+                                    background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
+                                    border: '1px solid rgba(60, 60, 60, 0.4)',
+                                    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
+                                  }}>
+                                    <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '55px', height: '55px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
+                                      <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                                    </svg>
+                                  </div>
+                                  <div className="font-medium text-muted-foreground" style={{fontSize: '17px', marginTop: '18px'}}>Waiting</div>
+                                  <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
+                                    <span className="text-muted-foreground/60">=</span>
+                                    <span className="text-foreground font-bold">0.000</span>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      });
+                    })()}
                   </div>
                 </div>
               </div>
@@ -477,14 +518,74 @@ export default function Home() {
           {/* PLAYER LIST */}
           <div className="flex-1 border-t border-border/30 overflow-hidden relative z-10">
             <ScrollArea className="h-full px-6 py-5">
-              <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                <div className="text-center space-y-2">
-                  <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <p>No players in this round</p>
+              {currentRound?.bets && currentRound.bets.length > 0 ? (
+                <div className="space-y-3">
+                  {currentRound.bets.map((bet: any) => {
+                    const betAmount = parseFloat(bet.amount);
+                    const winChance = totalPot > 0 ? (betAmount / totalPot) * 100 : 0;
+                    // Approximate BNB to USD conversion (example rate)
+                    const bnbToUsd = 300; // This should come from API in production
+                    const usdValue = betAmount * bnbToUsd;
+                    
+                    return (
+                      <div
+                        key={bet.id}
+                        className="glass-panel p-4 hover-elevate transition-all"
+                        style={{borderRadius: BORDER_RADIUS.MD}}
+                        data-testid={`player-row-${bet.id}`}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          {/* Player Info */}
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <Avatar className="w-10 h-10 flex-shrink-0">
+                              <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/20 to-primary/5">
+                                {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-foreground truncate">
+                                {bet.username || `${bet.userAddress.slice(0, 6)}...${bet.userAddress.slice(-4)}`}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {bet.userAddress.slice(0, 10)}...{bet.userAddress.slice(-8)}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Bet Amount */}
+                          <div className="text-right">
+                            <div className="font-bold text-primary font-mono">
+                              {betAmount.toFixed(4)} BNB
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              ${usdValue.toFixed(2)}
+                            </div>
+                          </div>
+                          
+                          {/* Win Chance */}
+                          <div className="text-right min-w-[80px]">
+                            <Badge variant="outline" className="font-mono">
+                              {winChance.toFixed(2)}%
+                            </Badge>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Chance
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                  <div className="text-center space-y-2">
+                    <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <p>No players in this round</p>
+                  </div>
+                </div>
+              )}
             </ScrollArea>
           </div>
         </div>
