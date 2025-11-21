@@ -86,20 +86,26 @@ export default function Home() {
     };
   }, []);
 
+  // Track previous round data to detect when a round ends
+  const prevRoundRef = useRef<any>(null);
+
+  // Show mining block overlay when an active round ends
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeRemaining(prev => {
-        if (prev <= 0) {
-          // Show mining block overlay when timer hits 0
-          setShowMiningBlock(true);
-          setMiningBlockNumber(Math.floor(Math.random() * 1000000) + 468940000); // Mock block number
-          return 90; // 90 seconds = 1 minute 30 seconds
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    if (currentRound && prevRoundRef.current) {
+      const wasActive = prevRoundRef.current.status === "active";
+      const hadTimeRemaining = prevRoundRef.current.timeRemaining > 0;
+      const nowEnded = currentRound.timeRemaining === 0 || currentRound.status === "completed";
+      
+      // Show mining block when active round transitions to ended
+      if (wasActive && hadTimeRemaining && nowEnded) {
+        setShowMiningBlock(true);
+        setMiningBlockNumber(Math.floor(Math.random() * 1000000) + 468940000); // Mock block number
+      }
+    }
+    
+    // Update ref for next comparison
+    prevRoundRef.current = currentRound;
+  }, [currentRound]);
 
   useEffect(() => {
     let animationFrame: number;
