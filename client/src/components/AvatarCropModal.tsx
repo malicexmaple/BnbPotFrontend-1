@@ -147,7 +147,7 @@ export default function AvatarCropModal({
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
-              cropShape="round"
+              cropShape="rect"
               showGrid={true}
               style={{
                 containerStyle: {
@@ -155,6 +155,7 @@ export default function AvatarCropModal({
                 },
                 cropAreaStyle: {
                   border: '2px dashed rgba(234, 179, 8, 0.6)',
+                  borderRadius: '8px',
                 },
               }}
             />
@@ -173,12 +174,11 @@ export default function AvatarCropModal({
             <div className="text-sm text-muted-foreground mb-3">Preview</div>
             <div className="flex items-center gap-3">
               <div
-                className="w-16 h-16 flex items-center justify-center glass-panel overflow-hidden flex-shrink-0"
+                className="w-16 h-16 flex items-center justify-center glass-panel overflow-hidden flex-shrink-0 rounded-lg"
                 style={{
                   background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                   border: '2px solid rgba(60, 60, 60, 0.4)',
-                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)',
-                  borderRadius: '50%'
+                  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
                 }}
               >
                 {croppedPreview ? (
