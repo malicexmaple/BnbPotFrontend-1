@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
 import ProfileModal from "@/components/ProfileModal";
@@ -210,7 +211,7 @@ export default function Home() {
    * Handles placing a bet.
    * Requires wallet connection and signup completion.
    */
-  const handlePlaceBet = () => {
+  const handlePlaceBet = async () => {
     if (!address) {
       toast({
         variant: "destructive",
@@ -238,13 +239,31 @@ export default function Home() {
       return;
     }
 
-    // TODO: Send bet to backend API
-    console.log('Placing bet:', { amount: betAmount, username, address });
+    try {
+      // Send bet to backend API
+      await apiRequest("POST", "/api/bets", {
+        userAddress: address,
+        username: username,
+        amount: betAmount,
+      });
 
-    toast({
-      title: "Bet Placed",
-      description: `You bet ${betAmount} BNB on this round!`,
-    });
+      // Invalidate cache to refresh round data
+      await queryClient.invalidateQueries({ queryKey: ['/api/rounds/current'] });
+
+      toast({
+        title: "Bet Placed",
+        description: `You bet ${betAmount} BNB on this round!`,
+      });
+
+      // Clear bet amount after successful bet
+      setBetAmount("");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Bet Failed",
+        description: error instanceof Error ? error.message : "Failed to place bet. Please try again.",
+      });
+    }
   };
 
   // Calculate user's stats from current round

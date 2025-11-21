@@ -62,24 +62,25 @@ class GameService {
 
   /**
    * Start countdown when first bet is placed
+   * Uses atomic database operation to prevent race conditions from concurrent first bets
    */
   async activateRound(roundId: string) {
-    const round = await storage.getRound(roundId);
-    
-    if (!round || round.status !== "waiting") {
-      return; // Already active or doesn't exist
-    }
-
     const now = new Date();
     const endTime = new Date(now.getTime() + 90 * 1000); // 90 seconds from now
 
-    await storage.updateRound(roundId, {
+    // Atomic update: only succeeds if round is still in 'waiting' status
+    // This prevents race conditions when multiple first bets arrive simultaneously
+    const updatedRound = await storage.activateRoundIfWaiting(roundId, {
       status: "active",
       countdownStart: now,
       endTime,
     });
 
-    console.log(`▶️ Round #${round.roundNumber} activated - countdown started, ends at ${endTime.toISOString()}`);
+    // If update succeeded, log activation
+    if (updatedRound) {
+      console.log(`▶️ Round #${updatedRound.roundNumber} activated - countdown started, ends at ${endTime.toISOString()}`);
+    }
+    // If no round was updated, another request already activated it (idempotent behavior)
   }
 
   /**
@@ -139,8 +140,8 @@ class GameService {
       if (bets.length === 0) {
         console.log("⚠️ No bets in round, creating new round");
         await storage.updateRound(roundId, { status: "cancelled", endTime: new Date() });
-        await this.createNewRound();
         this.endingRounds.delete(roundId);
+        await this.createNewRound();
         return;
       }
 

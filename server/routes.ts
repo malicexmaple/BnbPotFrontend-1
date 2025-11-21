@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertChatMessageSchema, insertBetSchema } from "@shared/schema";
+import { gameService } from "./gameService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API route to get chat messages
@@ -68,6 +69,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching round:", error);
       res.status(500).json({ message: "Failed to fetch round" });
+    }
+  });
+
+  // Place a bet
+  app.post("/api/bets", async (req, res) => {
+    try {
+      // Validate bet data
+      const validated = insertBetSchema.parse(req.body);
+      
+      // Get current round
+      const currentRound = await storage.getCurrentRound();
+      if (!currentRound) {
+        return res.status(404).json({ message: "No active round" });
+      }
+      
+      // Only allow bets on waiting or active rounds
+      if (currentRound.status !== "waiting" && currentRound.status !== "active") {
+        return res.status(400).json({ message: "Round is not accepting bets" });
+      }
+      
+      // Execute bet placement in a transaction for atomicity and consistency
+      // This ensures bet creation, pot increment, and round activation all succeed or fail together
+      const result = await storage.placeBetTransaction(currentRound.id, validated);
+      
+      // If round was activated (first bet), log it
+      if (result.roundActivated) {
+        console.log(`🎲 First bet placed! Round #${currentRound.roundNumber} activated`);
+      }
+      
+      res.json({ 
+        success: true, 
+        bet: result.bet,
+        round: result.round
+      });
+    } catch (error) {
+      console.error("Error placing bet:", error);
+      // Return 400 for validation errors, 500 for server errors
+      if (error instanceof Error && error.name === "ZodError") {
+        return res.status(400).json({ message: "Invalid bet data", error: error.message });
+      }
+      res.status(500).json({ message: "Failed to place bet" });
     }
   });
 
