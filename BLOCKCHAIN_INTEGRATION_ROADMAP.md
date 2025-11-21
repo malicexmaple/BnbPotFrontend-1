@@ -27,23 +27,44 @@
 
 ## Implementation Phases
 
-### Phase 1: Authentication & Access Control (IMMEDIATE - Can Do Now)
-**Status**: 🟡 IN PROGRESS
+### Phase 1: Authentication & Access Control (COMPLETE - Demo Mode)
+**Status**: ✅ COMPLETE (with documented limitations)
 
-**Tasks**:
-- [x] Add terms agreement tracking to user data
-- [x] Enhance bet placement validation (wallet + account + terms)
-- [ ] Add visual indicators showing authentication requirements
-- [ ] Disable bet controls for non-authenticated users
-- [ ] Show "Connect Wallet → Create Account → Agree to Terms" flow
-- [ ] Keep game viewing read-only for all users
+**Implemented**:
+- [x] Database schema with wallet address, email, terms agreement tracking
+- [x] Backend API endpoints for user signup and authentication
+- [x] Server-side validation of user existence and terms agreement
+- [x] Visual indicators showing authentication requirements
+- [x] Disabled bet controls for non-authenticated users
+- [x] "Connect Wallet → Create Account → Agree to Terms" flow
+- [x] Game viewing remains read-only for all users
+- [x] Demo Mode banner with clear warnings
 
 **Files Modified**:
-- `client/src/hooks/useSignupTracking.ts` - Added terms agreement tracking
-- `client/src/pages/home.tsx` - Enhanced validation
-- `client/src/components/BetControls.tsx` - Add disabled states
+- `shared/schema.ts` - Extended users table with wallet/terms fields
+- `server/storage.ts` - Added wallet-based user methods
+- `server/routes.ts` - Added user endpoints + bet validation
+- `client/src/hooks/useSignupTracking.ts` - Terms tracking
+- `client/src/pages/home.tsx` - Server-side signup + validation
+- `client/src/components/BetControls.tsx` - Auth-gated controls
+- `client/src/components/DemoModeBanner.tsx` - Demo warning
 
-**No User Action Required** - This is pure frontend logic
+**⚠️ DEMO MODE SECURITY LIMITATION**:
+Current implementation trusts wallet addresses from client requests without cryptographic signature verification. In demo mode, this is acceptable because:
+- No real cryptocurrency at risk
+- Backend validates user exists and has agreed to terms
+- UI provides good user experience
+- It's explicitly labeled as demo mode
+
+**🚨 REQUIRED FOR PRODUCTION**:
+Before mainnet launch, you MUST implement:
+1. **Wallet Signature Verification**: Users sign a nonce with private key, backend verifies signature
+2. **Session Tokens**: Issue JWT/session tokens after wallet verification
+3. **Protected Routes**: All bet endpoints require valid session token
+4. **Rate Limiting**: Prevent abuse of signup/betting endpoints
+5. **Unique Constraints**: Enforce unique usernames and emails
+
+**Estimated Cost**: $2k-$5k for proper authentication + audit
 
 ---
 

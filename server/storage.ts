@@ -15,7 +15,9 @@ export interface IStorage {
   // User methods
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByWalletAddress(walletAddress: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  createOrUpdateUserByWallet(walletAddress: string, username: string, email?: string): Promise<User>;
   
   // Chat methods
   getChatMessages(limit?: number): Promise<ChatMessage[]>;
@@ -59,9 +61,43 @@ export class DbStorage implements IStorage {
     return result[0];
   }
 
+  async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.walletAddress, walletAddress)).limit(1);
+    return result[0];
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const result = await db.insert(users).values(insertUser).returning();
     return result[0];
+  }
+
+  async createOrUpdateUserByWallet(walletAddress: string, username: string, email?: string): Promise<User> {
+    const existingUser = await this.getUserByWalletAddress(walletAddress);
+    
+    if (existingUser) {
+      // Update existing user
+      const result = await db.update(users)
+        .set({ 
+          username,
+          email: email || existingUser.email,
+          agreedToTerms: true,
+          agreedAt: new Date()
+        })
+        .where(eq(users.walletAddress, walletAddress))
+        .returning();
+      return result[0];
+    } else {
+      // Create new user
+      const result = await db.insert(users).values({
+        walletAddress,
+        username,
+        email,
+        password: 'N/A', // Required field, but not used for wallet-based auth
+        agreedToTerms: true,
+        agreedAt: new Date()
+      }).returning();
+      return result[0];
+    }
   }
 
   // Chat methods

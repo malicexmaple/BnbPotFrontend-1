@@ -17,6 +17,7 @@ interface UserData {
 export function useSignupTracking(walletAddress: string | null) {
   const [hasCompletedSignup, setHasCompletedSignup] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     if (!walletAddress) {
@@ -39,22 +40,26 @@ export function useSignupTracking(walletAddress: string | null) {
           wallet: walletAddress,
           hasCompletedSignup: hasCompleted,
           username: user?.username,
+          agreedToTerms: user?.agreedToTerms || false,
           totalRegisteredWallets: userData.length
         });
         
         setHasCompletedSignup(hasCompleted);
         setUsername(user?.username || null);
+        setAgreedToTerms(user?.agreedToTerms || false);
       } else {
         // Reset if data is malformed
         localStorage.setItem('userData', '[]');
         setHasCompletedSignup(false);
         setUsername(null);
+        setAgreedToTerms(false);
       }
     } catch (error) {
       console.error('Error reading signup data:', error);
       localStorage.setItem('userData', '[]');
       setHasCompletedSignup(false);
       setUsername(null);
+      setAgreedToTerms(false);
     }
   }, [walletAddress]);
 
@@ -97,6 +102,7 @@ export function useSignupTracking(walletAddress: string | null) {
       
       setHasCompletedSignup(true);
       setUsername(name);
+      setAgreedToTerms(true);
     } catch (error) {
       console.error('Error saving signup data:', error);
     }
@@ -105,6 +111,7 @@ export function useSignupTracking(walletAddress: string | null) {
   return {
     hasCompletedSignup,
     username,
+    agreedToTerms,
     markSignupComplete,
     shouldShowSignup: !hasCompletedSignup && !!walletAddress
   };

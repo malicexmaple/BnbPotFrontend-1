@@ -9,6 +9,7 @@ import BetControls from "@/components/BetControls";
 import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
 import MiningBlockOverlay from "@/components/MiningBlockOverlay";
+import DemoModeBanner from "@/components/DemoModeBanner";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
   const { toast } = useToast();
-  const { shouldShowSignup, username, markSignupComplete } = useSignupTracking(address);
+  const { shouldShowSignup, username, agreedToTerms, markSignupComplete } = useSignupTracking(address);
   const { messages, isConnected, onlineUsers, sendMessage } = useChat(username || undefined);
   
   // Connect to game WebSocket for real-time bet updates (works for all users)
@@ -199,10 +200,9 @@ export default function Home() {
 
   /**
    * Handles new user signup form submission.
-   * Validates required fields, marks wallet as registered, and resets form.
-   * In production, this would send data to backend API.
+   * Validates required fields, sends to backend API, and resets form.
    */
-  const handleSignupSubmit = () => {
+  const handleSignupSubmit = async () => {
     if (!signupData.name || !signupData.email || !signupData.agreedToTerms) {
       toast({
         variant: "destructive",
@@ -212,23 +212,35 @@ export default function Home() {
       return;
     }
 
-    // Mark signup as complete in localStorage with username
-    markSignupComplete(signupData.name);
+    try {
+      // Send signup data to backend API
+      await apiRequest("POST", "/api/users/signup", {
+        walletAddress: address,
+        username: signupData.name,
+        email: signupData.email
+      });
 
-    // TODO: Send signup data to backend API
-    console.log('Signup data:', { ...signupData, walletAddress: address });
+      // Also mark in localStorage for immediate UI update
+      markSignupComplete(signupData.name);
 
-    toast({
-      title: "Account Created",
-      description: `Welcome to BNBPOT, ${signupData.name}!`,
-    });
+      toast({
+        title: "Account Created",
+        description: `Welcome to BNBPOT, ${signupData.name}!`,
+      });
 
-    setSignupData({ name: "", email: "", referralCode: "", agreedToTerms: false });
+      setSignupData({ name: "", email: "", referralCode: "", agreedToTerms: false });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error instanceof Error ? error.message : "Failed to create account. Please try again.",
+      });
+    }
   };
 
   /**
    * Handles placing a bet.
-   * Requires wallet connection and signup completion.
+   * Requires wallet connection, signup completion, and terms agreement.
    */
   const handlePlaceBet = async () => {
     if (!address) {
@@ -245,6 +257,15 @@ export default function Home() {
         variant: "destructive",
         title: "Signup Required",
         description: "Please complete signup to place bets.",
+      });
+      return;
+    }
+
+    if (!agreedToTerms) {
+      toast({
+        variant: "destructive",
+        title: "Terms Agreement Required",
+        description: "You must agree to the terms and conditions during signup to place bets.",
       });
       return;
     }
@@ -302,6 +323,11 @@ export default function Home() {
     }}>
       <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
 
+      {/* Demo Mode Banner */}
+      <div className="px-6 pt-4">
+        <DemoModeBanner onLearnMore={() => window.open('/BLOCKCHAIN_INTEGRATION_ROADMAP.md', '_blank')} />
+      </div>
+
       {/* Golden border wrapper around bottom nav + content */}
       <div className="flex-1 flex flex-col overflow-hidden" style={{
         border: '1px solid rgba(250, 204, 21, 0.85)',
@@ -343,6 +369,8 @@ export default function Home() {
                 betAmount={betAmount}
                 onBetAmountChange={setBetAmount}
                 onPlaceBet={handlePlaceBet}
+                isWalletConnected={!!address}
+                hasAccount={!!username}
               />
             </div>
 
