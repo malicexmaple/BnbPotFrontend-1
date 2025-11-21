@@ -27,6 +27,10 @@ localPort = 33767
 externalPort = 4200
 
 [[ports]]
+localPort = 38781
+externalPort = 8080
+
+[[ports]]
 localPort = 38917
 externalPort = 3002
 
@@ -58,10 +62,6 @@ externalPort = 3000
 localPort = 45623
 externalPort = 6800
 
-[[ports]]
-localPort = 45939
-externalPort = 8080
-
 [env]
 PORT = "5000"
 
@@ -88,3 +88,9 @@ waitForPort = 5000
 
 [agent]
 integrations = ["javascript_websocket:1.0.0", "javascript_mem_db:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+VITE_CHAIN_ID = "56"
+VITE_BSC_RPC_URL = "https://bsc-dataseed1.binance.org"
