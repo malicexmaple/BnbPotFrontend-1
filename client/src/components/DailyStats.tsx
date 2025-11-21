@@ -71,20 +71,14 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         <div 
           className="relative mb-3" 
           style={{
-            filter: isWinner 
-              ? 'drop-shadow(0 0 20px rgba(147, 51, 234, 0.6))' 
-              : 'drop-shadow(0 0 20px rgba(234, 179, 8, 0.6))'
+            filter: 'drop-shadow(0 0 20px rgba(234, 179, 8, 0.6))'
           }}
         >
           <Avatar 
             className="w-20 h-20"
             style={{
-              border: isWinner 
-                ? '2px solid rgba(147, 51, 234, 0.5)' 
-                : '2px solid rgba(234, 179, 8, 0.5)',
-              boxShadow: isWinner 
-                ? 'inset 0 0 10px rgba(147, 51, 234, 0.3), 0 0 20px rgba(147, 51, 234, 0.4)' 
-                : 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 20px rgba(234, 179, 8, 0.4)'
+              border: '2px solid rgba(234, 179, 8, 0.5)',
+              boxShadow: 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 20px rgba(234, 179, 8, 0.4)'
             }}
           >
             <AvatarImage src={avatarUrl} />
@@ -101,13 +95,9 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
             variant="secondary" 
             className="text-xs font-bold"
             style={{
-              background: isWinner 
-                ? 'rgba(147, 51, 234, 0.2)' 
-                : 'rgba(234, 179, 8, 0.2)',
-              color: isWinner ? '#a78bfa' : '#fcd34d',
-              border: isWinner 
-                ? '1px solid rgba(147, 51, 234, 0.3)' 
-                : '1px solid rgba(234, 179, 8, 0.3)'
+              background: 'rgba(234, 179, 8, 0.2)',
+              color: '#fcd34d',
+              border: '1px solid rgba(234, 179, 8, 0.3)'
             }}
           >
             {statsData.userLevel}
@@ -118,22 +108,40 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         <div 
           className="px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider relative"
           style={{
-            background: isWinner 
-              ? 'linear-gradient(135deg, rgba(88, 28, 135, 0.8), rgba(147, 51, 234, 0.8))' 
-              : 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
+            background: 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
             color: '#ffffff',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
-            boxShadow: isWinner 
-              ? '0 0 15px rgba(147, 51, 234, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)' 
-              : '0 0 15px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-            border: isWinner 
-              ? '1px solid rgba(147, 51, 234, 0.6)' 
-              : '1px solid rgba(234, 179, 8, 0.6)'
+            boxShadow: '0 0 15px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(234, 179, 8, 0.6)'
           }}
           data-testid={`badge-${type}-label`}
         >
-          {isWinner ? 'LAST WINNER' : 'LUCK OF THE DAY'}
-          {!isWinner && (
+          {isWinner ? 'WIN OF THE DAY' : 'LUCK OF THE DAY'}
+          {isWinner ? (
+            <>
+              {/* Lightning strikes for Win of the Day */}
+              <svg 
+                className="absolute -top-1 -right-1 w-3 h-3 animate-ping" 
+                viewBox="0 0 24 24" 
+                style={{
+                  animationDelay: '0s', 
+                  filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'
+                }}
+              >
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FCD34D"/>
+              </svg>
+              <svg 
+                className="absolute -top-1 -left-1 w-2.5 h-2.5 animate-ping" 
+                viewBox="0 0 24 24" 
+                style={{
+                  animationDelay: '0.2s', 
+                  filter: 'drop-shadow(0 0 3px rgba(254, 240, 138, 0.8))'
+                }}
+              >
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FEF08A"/>
+              </svg>
+            </>
+          ) : (
             <>
               {/* Golden sparkles for Luck of the Day */}
               <svg 
@@ -195,7 +203,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
           <span 
             className="font-bold text-base no-text-shadow" 
             style={{
-              color: isWinner ? '#60a5fa' : '#fcd34d'
+              color: '#fcd34d'
             }}
             data-testid={`text-${type}-chance`}
           >
