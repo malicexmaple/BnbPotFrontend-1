@@ -36,9 +36,15 @@ export default function ProfileModal({
   const [streamerMode, setStreamerMode] = useState(false);
   const [timeRange, setTimeRange] = useState("7days");
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(() => {
-    return localStorage.getItem(`avatar_${username}`) || null;
-  });
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // Load avatar from localStorage whenever username or modal open state changes
+  useEffect(() => {
+    if (username && open) {
+      const storedAvatar = localStorage.getItem(`avatar_${username}`);
+      setAvatarUrl(storedAvatar);
+    }
+  }, [username, open]);
 
   const handleAvatarUpdate = (newAvatarUrl: string | null) => {
     setAvatarUrl(newAvatarUrl);
