@@ -108,37 +108,63 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
         <div 
           className="px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider relative"
           style={{
-            background: 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
+            background: isWinner 
+              ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(250, 204, 21, 0.9))' 
+              : 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
             color: '#ffffff',
             textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
-            boxShadow: '0 0 15px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-            border: '1px solid rgba(234, 179, 8, 0.6)'
+            boxShadow: isWinner
+              ? '0 0 20px rgba(250, 204, 21, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              : '0 0 15px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            border: isWinner
+              ? '1px solid rgba(250, 204, 21, 0.8)'
+              : '1px solid rgba(234, 179, 8, 0.6)'
           }}
           data-testid={`badge-${type}-label`}
         >
           {isWinner ? 'WIN OF THE DAY' : 'LUCK OF THE DAY'}
           {isWinner ? (
             <>
-              {/* Lightning strikes for Win of the Day */}
+              {/* Lightning strikes for Win of the Day - Multiple bolts with electric yellow */}
               <svg 
-                className="absolute -top-1 -right-1 w-3 h-3 animate-ping" 
+                className="absolute -top-1 -right-1 w-3.5 h-3.5 animate-ping" 
                 viewBox="0 0 24 24" 
                 style={{
                   animationDelay: '0s', 
-                  filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'
+                  filter: 'drop-shadow(0 0 8px rgba(250, 204, 21, 1)) drop-shadow(0 0 4px rgba(250, 204, 21, 0.8))'
                 }}
               >
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FCD34D"/>
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
               </svg>
               <svg 
-                className="absolute -top-1 -left-1 w-2.5 h-2.5 animate-ping" 
+                className="absolute -top-1 -left-1 w-3 h-3 animate-ping" 
                 viewBox="0 0 24 24" 
                 style={{
-                  animationDelay: '0.2s', 
-                  filter: 'drop-shadow(0 0 3px rgba(254, 240, 138, 0.8))'
+                  animationDelay: '0.15s', 
+                  filter: 'drop-shadow(0 0 6px rgba(250, 204, 21, 0.9)) drop-shadow(0 0 3px rgba(250, 204, 21, 0.7))'
                 }}
               >
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FEF08A"/>
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
+              </svg>
+              <svg 
+                className="absolute -bottom-1 -right-0.5 w-2.5 h-2.5 animate-ping" 
+                viewBox="0 0 24 24" 
+                style={{
+                  animationDelay: '0.3s', 
+                  filter: 'drop-shadow(0 0 5px rgba(250, 204, 21, 0.8))'
+                }}
+              >
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
+              </svg>
+              <svg 
+                className="absolute top-0 left-1/2 w-3 h-3 animate-ping" 
+                viewBox="0 0 24 24" 
+                style={{
+                  animationDelay: '0.1s', 
+                  filter: 'drop-shadow(0 0 7px rgba(250, 204, 21, 0.9))'
+                }}
+              >
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
               </svg>
             </>
           ) : (
