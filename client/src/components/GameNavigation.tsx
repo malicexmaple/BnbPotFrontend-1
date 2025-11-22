@@ -83,7 +83,7 @@ export default function GameNavigation({
       </div>
 
       {/* Right - Stacked header content */}
-      <div className="flex flex-col" style={{width: 'calc(1200px - 345px)'}}>
+      <div className="flex flex-col" style={{flex: '1 1 auto', minWidth: 'calc(1200px - 345px)'}}>
         {/* Top Header - 30px */}
         <nav className="flex items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',
