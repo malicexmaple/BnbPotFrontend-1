@@ -303,13 +303,12 @@ export default function ChatSidebar({
                     style={{
                       background: DARK_BG.SOLID,
                       border: GOLDEN.BORDER,
-                      borderRadius: '50%',
+                      borderRadius: BORDER_RADIUS.SMALL,
                       boxShadow: GOLDEN.SHADOW,
-                      width: '32px',
-                      height: '32px',
+                      padding: '6px 10px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      gap: '4px'
                     }}
                     data-testid="button-donate-airdrop"
                   >
