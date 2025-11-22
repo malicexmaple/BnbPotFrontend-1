@@ -81,10 +81,14 @@ app.use((_req, res, next) => {
   // Build environment-specific CSP directives
   const cspDirectives = [
     "default-src 'self'",
-    // Development: unsafe-eval needed for Vite HMR; Production: strict
-    `script-src 'self' ${isProduction ? '' : "'unsafe-eval'"}`,
+    // Development: unsafe-inline and unsafe-eval needed for Vite HMR; Production: strict
+    isProduction 
+      ? "script-src 'self'"
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
     // Development: unsafe-inline for Vite HMR styles; Production: no inline styles
-    `style-src 'self' ${isProduction ? '' : "'unsafe-inline'"} https://fonts.googleapis.com`,
+    isProduction
+      ? "style-src 'self' https://fonts.googleapis.com"
+      : "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
     // SECURITY: Restrict WebSocket connections to prevent data exfiltration
@@ -92,7 +96,7 @@ app.use((_req, res, next) => {
     // Production: Only allow same-origin WebSocket connections
     isProduction 
       ? "connect-src 'self'" // Production: only same-origin connections (includes wss: to same origin)
-      : "connect-src 'self' ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:*",
+      : "connect-src 'self' ws://localhost:* ws://127.0.0.1:* wss://localhost:* wss://127.0.0.1:* http://localhost:* http://127.0.0.1:*",
     // Modern clickjacking protection (X-Frame-Options fallback for legacy browsers)
     "frame-ancestors 'self'",
     "object-src 'none'",
