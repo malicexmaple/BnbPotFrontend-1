@@ -4,11 +4,125 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertChatMessageSchema, insertBetSchema } from "@shared/schema";
 import { gameService } from "./gameService";
+import { generateAuthMessage, verifyWalletSignature, requireAuth, requireTermsAgreement } from "./auth";
+import { randomBytes } from "crypto";
 
 // Module-level variable to hold broadcast function
 let broadcastBetUpdate: ((data: any) => void) | null = null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // ========================================
+  // AUTHENTICATION ENDPOINTS
+  // ========================================
+  
+  /**
+   * Step 1: Request a nonce for wallet authentication
+   * Generates a unique nonce to prevent replay attacks
+   */
+  app.post("/api/auth/nonce", async (req, res) => {
+    try {
+      const { walletAddress } = req.body;
+      
+      if (!walletAddress) {
+        return res.status(400).json({ message: "Wallet address required" });
+      }
+      
+      // Generate cryptographically secure nonce
+      const nonce = randomBytes(32).toString('hex');
+      const message = generateAuthMessage(walletAddress, nonce);
+      
+      // Store nonce in session (temporary, will be verified soon)
+      if (req.session) {
+        req.session.pendingNonce = nonce;
+        req.session.pendingWallet = walletAddress.toLowerCase();
+      }
+      
+      res.json({ message, nonce });
+    } catch (error) {
+      console.error("Error generating nonce:", error);
+      res.status(500).json({ message: "Failed to generate authentication challenge" });
+    }
+  });
+  
+  /**
+   * Step 2: Verify wallet signature and create authenticated session
+   * Verifies the signature matches the nonce and wallet address
+   */
+  app.post("/api/auth/verify", async (req, res) => {
+    try {
+      const { walletAddress, signature, message } = req.body;
+      
+      if (!walletAddress || !signature || !message) {
+        return res.status(400).json({ message: "Wallet address, signature, and message required" });
+      }
+      
+      // Verify the signature
+      const isValid = verifyWalletSignature(message, signature, walletAddress);
+      
+      if (!isValid) {
+        return res.status(401).json({ message: "Invalid signature" });
+      }
+      
+      // Check if user exists
+      const user = await storage.getUserByWalletAddress(walletAddress);
+      
+      if (req.session) {
+        // Create authenticated session
+        req.session.walletAddress = walletAddress.toLowerCase();
+        req.session.username = user?.username;
+        req.session.agreedToTerms = user?.agreedToTerms || false;
+        
+        // Clear pending nonce
+        delete req.session.pendingNonce;
+        delete req.session.pendingWallet;
+      }
+      
+      res.json({ 
+        success: true, 
+        walletAddress: walletAddress.toLowerCase(),
+        username: user?.username,
+        agreedToTerms: user?.agreedToTerms || false
+      });
+    } catch (error) {
+      console.error("Error verifying signature:", error);
+      res.status(500).json({ message: "Failed to verify signature" });
+    }
+  });
+  
+  /**
+   * Get current session info
+   */
+  app.get("/api/auth/session", async (req, res) => {
+    if (!req.session?.walletAddress) {
+      return res.status(401).json({ authenticated: false });
+    }
+    
+    const user = await storage.getUserByWalletAddress(req.session.walletAddress);
+    
+    res.json({
+      authenticated: true,
+      walletAddress: req.session.walletAddress,
+      username: user?.username,
+      agreedToTerms: user?.agreedToTerms || false
+    });
+  });
+  
+  /**
+   * Logout - destroy session
+   */
+  app.post("/api/auth/logout", async (req, res) => {
+    req.session?.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Failed to logout" });
+      }
+      res.json({ success: true });
+    });
+  });
+  
+  // ========================================
+  // USER ENDPOINTS
+  // ========================================
+  
   // Get user by wallet address
   app.get("/api/users/me", async (req, res) => {
     try {
