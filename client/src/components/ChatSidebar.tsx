@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Flame, Heart } from "lucide-react";
+import { Flame, DollarSign } from "lucide-react";
 import { SIDEBAR, AIRDROP, BORDER_RADIUS, GOLDEN, DARK_BG } from "@/constants/layout";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -303,16 +303,17 @@ export default function ChatSidebar({
                     style={{
                       background: DARK_BG.SOLID,
                       border: GOLDEN.BORDER,
-                      borderRadius: BORDER_RADIUS.SMALL,
+                      borderRadius: '50%',
                       boxShadow: GOLDEN.SHADOW,
-                      padding: '6px 10px',
+                      width: '32px',
+                      height: '32px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      justifyContent: 'center'
                     }}
                     data-testid="button-donate-airdrop"
                   >
-                    <Heart className="w-4 h-4" style={{ color: '#FF6B9D', fill: '#FF6B9D' }} />
+                    <DollarSign className="w-5 h-5" style={{ color: '#FCD34D', strokeWidth: 3 }} />
                   </button>
                 </div>
                 <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.125rem'}}>
@@ -432,7 +433,7 @@ export default function ChatSidebar({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Heart className="w-5 h-5" style={{ color: '#FF6B9D', fill: '#FF6B9D' }} />
+              <DollarSign className="w-5 h-5" style={{ color: '#FCD34D', strokeWidth: 3 }} />
               Donate to Airdrop Pool
             </DialogTitle>
             <DialogDescription>
