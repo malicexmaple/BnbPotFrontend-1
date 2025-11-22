@@ -182,9 +182,11 @@ class GameService {
       // Database-mode winner selection (simple weighted random)
       const winner = this.selectWinnerDatabaseMode(bets, parseFloat(round.totalPot));
 
-      // Calculate prize (after 5% house fee to match contract)
+      // Calculate prize (after fees: 4% house, 1% airdrop to match contract)
       const totalPot = parseFloat(round.totalPot);
-      const prize = totalPot * 0.95;
+      const houseFee = totalPot * 0.04;
+      const airdropFee = totalPot * 0.01;
+      const prize = totalPot - houseFee - airdropFee;
 
       // Update round
       await storage.updateRound(roundId, {
@@ -192,6 +194,10 @@ class GameService {
         winnerAddress: winner.userAddress,
         endTime: new Date(),
       });
+
+      // Add airdrop fee to pool
+      const { airdropService } = await import("./airdropService");
+      await airdropService.addToPool(airdropFee.toString(), `database round #${round.roundNumber}`);
 
       // Update winner stats
       const winnerStats = await storage.getUserStats(winner.userAddress);

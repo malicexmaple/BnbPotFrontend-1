@@ -176,11 +176,21 @@ app.use((req, res, next) => {
     
     // Initialize game service (round lifecycle, blockchain sync)
     await gameService.initialize();
+    
+    // Initialize airdrop service (daily distributions, pool management)
+    const { airdropService } = await import("./airdropService");
+    await airdropService.initialize();
   });
   
   // Graceful shutdown
   process.on('SIGTERM', () => {
     gameService.shutdown();
+    
+    // Shutdown airdrop service
+    import("./airdropService").then(({ airdropService }) => {
+      airdropService.shutdown();
+    });
+    
     server.close();
   });
 })();

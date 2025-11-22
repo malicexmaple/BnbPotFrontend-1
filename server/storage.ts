@@ -5,7 +5,12 @@ import {
   type Bet, type InsertBet,
   type UserStats, type InsertUserStats,
   type DailyStats, type InsertDailyStats,
-  users, chatMessages, rounds, bets, userStats, dailyStats
+  type AirdropPool, type InsertAirdropPool,
+  type AirdropDistribution, type InsertAirdropDistribution,
+  type AirdropRecipient, type InsertAirdropRecipient,
+  type AirdropTip, type InsertAirdropTip,
+  users, chatMessages, rounds, bets, userStats, dailyStats,
+  airdropPool, airdropDistributions, airdropRecipients, airdropTips
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -48,6 +53,19 @@ export interface IStorage {
   getDailyStats(date: string): Promise<DailyStats | undefined>;
   updateDailyStats(date: string, data: Partial<DailyStats>): Promise<DailyStats | undefined>;
   createDailyStats(stats: InsertDailyStats): Promise<DailyStats>;
+  
+  // Airdrop methods
+  getAirdropPool(): Promise<AirdropPool | undefined>;
+  updateAirdropPool(data: Partial<AirdropPool>): Promise<AirdropPool | undefined>;
+  createAirdropDistribution(distribution: InsertAirdropDistribution): Promise<AirdropDistribution>;
+  createAirdropRecipients(recipients: InsertAirdropRecipient[]): Promise<AirdropRecipient[]>;
+  createAirdropTip(tip: InsertAirdropTip): Promise<AirdropTip>;
+  getAirdropDistributions(limit?: number): Promise<AirdropDistribution[]>;
+  getAirdropRecipientsByDistribution(distributionId: string): Promise<AirdropRecipient[]>;
+  getUserAirdropEarnings(userAddress: string): Promise<AirdropRecipient[]>;
+  get24hBetVolume(userAddress: string, cutoffTime: Date): Promise<string>;
+  getAllUsers24hBets(cutoffTime: Date): Promise<Array<{userAddress: string; betVolume: string}>>;
+  distributeAirdropTransaction(): Promise<void>;
 }
 
 export class DbStorage implements IStorage {
@@ -259,6 +277,154 @@ export class DbStorage implements IStorage {
   async createDailyStats(insertStats: InsertDailyStats): Promise<DailyStats> {
     const result = await db.insert(dailyStats).values(insertStats).returning();
     return result[0];
+  }
+
+  // Airdrop methods
+  async getAirdropPool(): Promise<AirdropPool | undefined> {
+    const result = await db.select().from(airdropPool).limit(1);
+    return result[0];
+  }
+
+  async updateAirdropPool(data: Partial<AirdropPool>): Promise<AirdropPool | undefined> {
+    const pool = await this.getAirdropPool();
+    if (!pool) return undefined;
+    
+    const result = await db.update(airdropPool)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(airdropPool.id, pool.id))
+      .returning();
+    return result[0];
+  }
+
+  async distributeAirdropTransaction(): Promise<void> {
+    return await db.transaction(async (tx) => {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const result = await tx.execute<AirdropPool>(sql`
+        SELECT * FROM ${airdropPool} LIMIT 1 FOR UPDATE
+      `);
+      const pool = result.rows[0];
+      if (!pool) throw new Error("Airdrop pool not found");
+      
+      if (pool.lastDistributionDate === today) {
+        throw new Error("Distribution already completed today");
+      }
+      
+      const poolBalance = parseFloat(pool.balance);
+      if (poolBalance <= 0) {
+        throw new Error("No funds to distribute");
+      }
+      
+      const cutoffTime = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const eligibleUsers = await tx
+        .select({
+          userAddress: bets.userAddress,
+          betVolume: sql<string>`CAST(SUM(CAST(${bets.amount} AS NUMERIC)) AS TEXT)`
+        })
+        .from(bets)
+        .where(sql`${bets.timestamp} >= ${cutoffTime}`)
+        .groupBy(bets.userAddress);
+      
+      if (eligibleUsers.length === 0) {
+        throw new Error("No eligible users");
+      }
+      
+      const totalVolume = eligibleUsers.reduce((sum, u) => sum + parseFloat(u.betVolume), 0);
+      if (totalVolume <= 0) {
+        throw new Error("Total volume is zero");
+      }
+      
+      const recipients = eligibleUsers.map(user => {
+        const userVolume = parseFloat(user.betVolume);
+        const userShare = (poolBalance * userVolume) / totalVolume;
+        return {
+          userAddress: user.userAddress,
+          userId: null,
+          amount: userShare.toString(),
+          betVolume24h: user.betVolume,
+        };
+      });
+      
+      const [distribution] = await tx.insert(airdropDistributions).values({
+        date: today,
+        totalAmount: poolBalance.toString(),
+        recipientCount: recipients.length,
+      }).returning();
+      
+      const recipientRecords = recipients.map(r => ({
+        ...r,
+        distributionId: distribution.id,
+      }));
+      await tx.insert(airdropRecipients).values(recipientRecords);
+      
+      await tx.update(airdropPool)
+        .set({
+          balance: sql`CAST(CAST(${airdropPool.balance} AS NUMERIC) - ${poolBalance} AS TEXT)`,
+          lastDistributionDate: today,
+          totalDistributed: sql`CAST(CAST(${airdropPool.totalDistributed} AS NUMERIC) + ${poolBalance} AS TEXT)`,
+          updatedAt: new Date()
+        })
+        .where(eq(airdropPool.id, pool.id));
+      
+      console.log(`   Distributed ${poolBalance} BNB to ${recipients.length} users`);
+    });
+  }
+
+  async createAirdropDistribution(distribution: InsertAirdropDistribution): Promise<AirdropDistribution> {
+    const result = await db.insert(airdropDistributions).values(distribution).returning();
+    return result[0];
+  }
+
+  async createAirdropRecipients(recipients: InsertAirdropRecipient[]): Promise<AirdropRecipient[]> {
+    if (recipients.length === 0) return [];
+    const result = await db.insert(airdropRecipients).values(recipients).returning();
+    return result;
+  }
+
+  async createAirdropTip(tip: InsertAirdropTip): Promise<AirdropTip> {
+    const result = await db.insert(airdropTips).values(tip).returning();
+    return result[0];
+  }
+
+  async getAirdropDistributions(limit: number = 10): Promise<AirdropDistribution[]> {
+    return await db.select().from(airdropDistributions)
+      .orderBy(desc(airdropDistributions.timestamp))
+      .limit(limit);
+  }
+
+  async getAirdropRecipientsByDistribution(distributionId: string): Promise<AirdropRecipient[]> {
+    return await db.select().from(airdropRecipients)
+      .where(eq(airdropRecipients.distributionId, distributionId))
+      .orderBy(desc(airdropRecipients.amount));
+  }
+
+  async getUserAirdropEarnings(userAddress: string): Promise<AirdropRecipient[]> {
+    return await db.select().from(airdropRecipients)
+      .where(eq(airdropRecipients.userAddress, userAddress))
+      .orderBy(desc(airdropRecipients.timestamp));
+  }
+
+  async get24hBetVolume(userAddress: string, cutoffTime: Date): Promise<string> {
+    const result = await db
+      .select({ total: sql<string>`COALESCE(SUM(CAST(${bets.amount} AS NUMERIC)), 0)` })
+      .from(bets)
+      .where(and(
+        eq(bets.userAddress, userAddress),
+        sql`${bets.timestamp} >= ${cutoffTime}`
+      ));
+    return result[0]?.total || '0';
+  }
+
+  async getAllUsers24hBets(cutoffTime: Date): Promise<Array<{userAddress: string; betVolume: string}>> {
+    const result = await db
+      .select({
+        userAddress: bets.userAddress,
+        betVolume: sql<string>`CAST(SUM(CAST(${bets.amount} AS NUMERIC)) AS TEXT)`
+      })
+      .from(bets)
+      .where(sql`${bets.timestamp} >= ${cutoffTime}`)
+      .groupBy(bets.userAddress);
+    return result;
   }
 }
 

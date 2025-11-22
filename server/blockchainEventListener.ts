@@ -289,6 +289,28 @@ export class BlockchainEventListener {
       }
     });
     
+    // Listen to AirdropFeeCollected events
+    this.contract.on("AirdropFeeCollected", async (
+      roundId: bigint,
+      amount: bigint
+    ) => {
+      console.log("🎁 AirdropFeeCollected event:", {
+        roundId: roundId.toString(),
+        amount: ethers.formatEther(amount)
+      });
+      
+      try {
+        const { airdropService } = await import("./airdropService");
+        await airdropService.addToPool(
+          ethers.formatEther(amount),
+          `round #${roundId}`
+        );
+        console.log("✅ Airdrop fee synced to pool");
+      } catch (error) {
+        console.error("Failed to process AirdropFeeCollected event:", error);
+      }
+    });
+    
     this.isListening = true;
     console.log("✅ Blockchain event listeners active");
     console.log("   Database will auto-sync with blockchain events");
