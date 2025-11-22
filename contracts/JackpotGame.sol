@@ -274,18 +274,22 @@ contract JackpotGame {
      * Note: Old rounds remain in storage for historical queries (intentional)
      */
     function _startNewRound() private {
-        // Clean up previous round's player data to prevent any leakage
-        if (currentRoundId > 0) {
-            Round storage prevRound = rounds[currentRoundId];
+        // Save the ID of the round being completed
+        uint256 completedRoundId = currentRoundId;
+        
+        // Increment to new round FIRST
+        currentRoundId++;
+        
+        // Clean up the COMPLETED round (not the new one)
+        if (completedRoundId > 0) {
+            Round storage completedRound = rounds[completedRoundId];
             // Delete each player's bet data
-            for (uint256 i = 0; i < prevRound.players.length; i++) {
-                delete prevRound.playerBets[prevRound.players[i]];
+            for (uint256 i = 0; i < completedRound.players.length; i++) {
+                delete completedRound.playerBets[completedRound.players[i]];
             }
             // Clear the players array (important to prevent unbounded growth)
-            delete prevRound.players;
+            delete completedRound.players;
         }
-        
-        currentRoundId++;
         
         // Initialize new round (storage slot is fresh, arrays/mappings are empty)
         Round storage newRound = rounds[currentRoundId];
@@ -373,8 +377,12 @@ contract JackpotGame {
             require(success, "Emergency prize transfer failed");
             
             emit RoundEnded(currentRoundId, winner, prize);
+        } else if (round.totalPot > 0) {
+            // Edge case: pot exists but no players (shouldn't happen, but handle it)
+            // Send pot to house fee to prevent funds being locked
+            houseFeeCollected += round.totalPot;
         }
-        // else: No players or no pot, just start new round safely
+        // else: No players and no pot, just start new round safely
         
         _startNewRound();
     }
