@@ -235,7 +235,7 @@ export default function ChatSidebar({
                 }} />
                 {/* Gift package with air streams */}
                 <div className="absolute z-10" style={{
-                  right: '45px',
+                  right: '35px',
                   top: '-50px',
                   width: '5rem',
                   height: '5rem',
@@ -305,10 +305,12 @@ export default function ChatSidebar({
                       border: GOLDEN.BORDER,
                       borderRadius: BORDER_RADIUS.SMALL,
                       boxShadow: GOLDEN.SHADOW,
-                      padding: '6px 10px',
+                      padding: '4px 8px',
+                      height: '2.5rem',
+                      minWidth: '2.5rem',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      justifyContent: 'center'
                     }}
                     data-testid="button-donate-airdrop"
                   >
