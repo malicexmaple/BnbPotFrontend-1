@@ -53,6 +53,58 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: false }));
 
+// SECURITY: Add comprehensive security headers (2025 best practices)
+app.use((_req, res, next) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Prevent clickjacking attacks (legacy support + modern CSP frame-ancestors)
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  
+  // Prevent MIME type sniffing that could lead to XSS
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Control how much referrer information is sent
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Prevent information leakage about the server
+  res.setHeader('X-Powered-By', 'BNBPOT');
+  
+  // Permissions-Policy: Disable dangerous browser features
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+  
+  // Content Security Policy - Defense against XSS and injection attacks
+  // Build environment-specific CSP directives
+  const cspDirectives = [
+    "default-src 'self'",
+    // Development: unsafe-eval needed for Vite HMR; Production: strict
+    `script-src 'self' ${isProduction ? '' : "'unsafe-eval'"}`,
+    // Development: unsafe-inline for Vite HMR styles; Production: no inline styles
+    `style-src 'self' ${isProduction ? '' : "'unsafe-inline'"} https://fonts.googleapis.com`,
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: https:",
+    // SECURITY: Restrict WebSocket connections to prevent data exfiltration
+    // Development: Allow localhost WebSocket for Vite HMR
+    // Production: Only allow same-origin WebSocket connections
+    isProduction 
+      ? "connect-src 'self'" // Production: only same-origin connections (includes wss: to same origin)
+      : "connect-src 'self' ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:*",
+    // Modern clickjacking protection (X-Frame-Options fallback for legacy browsers)
+    "frame-ancestors 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].filter(Boolean); // Remove empty strings
+  
+  res.setHeader('Content-Security-Policy', cspDirectives.join('; '));
+  
+  // HSTS: Force HTTPS in production (31536000 = 1 year)
+  if (isProduction) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+  
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
