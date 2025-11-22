@@ -6,8 +6,8 @@ export default function GameFooter() {
   const [is3DMode, setIs3DMode] = useState(false);
 
   return (
-    <footer className="border-t border-border bg-card/50 backdrop-blur hidden md:block">
-      <div className="flex items-center justify-center gap-2 px-4 py-4">
+    <footer className="border-t border-border bg-card/50 backdrop-blur">
+      <div className="flex items-center justify-center gap-2 px-4 py-2">
         <Label htmlFor="3d-mode" className="text-sm text-muted-foreground cursor-pointer">
           3D
         </Label>

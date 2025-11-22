@@ -359,22 +359,24 @@ export default function Home() {
         <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
       </div>
 
-      {/* Golden border wrapper around bottom nav + content */}
-      <div className="flex-1 flex flex-col overflow-hidden" style={{
-        border: '1px solid rgba(250, 204, 21, 0.85)',
-        boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
-      }}>
-        <div className="flex-1 flex" style={{overflow: 'visible'}}>
-          <ChatSidebar
-            isCollapsed={isChatCollapsed}
-            onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            canChat={!!address && !!username}
-            placeholderText={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
-            onlineUsers={onlineUsers}
-            onShowChatRules={() => setShowChatRules(true)}
-          />
+      {/* Wrapper for content + footer */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Golden border wrapper around bottom nav + content */}
+        <div className="flex-1 flex flex-col overflow-hidden" style={{
+          border: '1px solid rgba(250, 204, 21, 0.85)',
+          boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
+        }}>
+          <div className="flex-1 flex" style={{overflow: 'visible'}}>
+            <ChatSidebar
+              isCollapsed={isChatCollapsed}
+              onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
+              messages={messages}
+              onSendMessage={handleSendMessage}
+              canChat={!!address && !!username}
+              placeholderText={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
+              onlineUsers={onlineUsers}
+              onShowChatRules={() => setShowChatRules(true)}
+            />
 
         {/* CENTER - MAIN GAME AREA */}
         <div className="flex-1 flex flex-col overflow-hidden relative">
@@ -750,9 +752,10 @@ export default function Home() {
           )}
         </div>
         </div>
-      </div>
+        </div>
 
-      <GameFooter />
+        <GameFooter />
+      </div>
 
       {/* Signup Dialog */}
       <Dialog open={shouldShowSignup} onOpenChange={() => {}}>
