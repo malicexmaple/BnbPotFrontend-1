@@ -352,7 +352,7 @@ export default function Home() {
   const seconds = actualTimeRemaining % 60;
 
   return (
-    <div className="app-shell flex flex-col min-h-screen space-bg" style={{
+    <div className="flex flex-col min-h-screen w-full space-bg" style={{
       backgroundImage: `url(${bnbpotBg})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center'
