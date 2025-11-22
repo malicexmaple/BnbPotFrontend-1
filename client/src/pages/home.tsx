@@ -360,13 +360,13 @@ export default function Home() {
       </div>
 
       {/* Wrapper for content + footer */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0">
         {/* Golden border wrapper around bottom nav + content */}
-        <div className="flex-1 flex flex-col overflow-hidden" style={{
+        <div className="flex-1 flex flex-col min-h-0 overflow-auto" style={{
           border: '1px solid rgba(250, 204, 21, 0.85)',
           boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
         }}>
-          <div className="flex-1 flex" style={{overflow: 'visible'}}>
+          <div className="flex-1 flex min-h-0" style={{overflow: 'visible'}}>
             <ChatSidebar
               isCollapsed={isChatCollapsed}
               onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
