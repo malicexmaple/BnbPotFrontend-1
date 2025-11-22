@@ -29,22 +29,40 @@ class GameService {
 
   /**
    * Ensure there's always an active round
+   * In blockchain mode, this relies on event listener to create rounds
+   * In database-only mode, server creates rounds manually
    */
   async ensureActiveRound() {
+    const contractAddress = process.env.CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS;
+    const isBlockchainMode = !!contractAddress;
+    
     const currentRound = await storage.getCurrentRound();
     
     if (!currentRound) {
-      console.log("📝 No active round found, creating one...");
-      await this.createNewRound();
+      if (isBlockchainMode) {
+        console.log("⛓️ No round in database yet - event listener will sync from blockchain");
+      } else {
+        console.log("📝 No active round found, creating one...");
+        await this.createNewRound();
+      }
     } else {
       console.log(`✅ Active round found: #${currentRound.roundNumber}`);
     }
   }
 
   /**
-   * Create a new round
+   * Create a new round (database-only mode)
+   * In blockchain mode, rounds are created by event listener when syncing from chain
    */
   async createNewRound() {
+    const contractAddress = process.env.CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS;
+    const isBlockchainMode = !!contractAddress;
+    
+    if (isBlockchainMode) {
+      console.log("⚠️ Cannot manually create rounds in blockchain mode - waiting for blockchain sync");
+      return null;
+    }
+
     const latestRoundNumber = await storage.getLatestRoundNumber();
     const nextRoundNumber = latestRoundNumber + 1;
 
@@ -56,7 +74,7 @@ class GameService {
       status: "waiting",
     });
 
-    console.log(`⏳ Created new round #${round.roundNumber} - waiting for first bet`);
+    console.log(`⏳ [DB MODE] Created new round #${round.roundNumber} - waiting for first bet`);
     return round;
   }
 
@@ -84,9 +102,23 @@ class GameService {
   }
 
   /**
-   * Monitor rounds and auto-end when time expires
+   * Monitor rounds - only for database-only mode
+   * In blockchain mode, smart contract handles winner selection via Chainlink VRF
    */
   startRoundMonitoring() {
+    // Check for blockchain mode using server-side env var (NOT VITE_ prefix!)
+    const contractAddress = process.env.CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS;
+    const isBlockchainMode = !!contractAddress;
+    
+    if (isBlockchainMode) {
+      console.log("⛓️ Blockchain mode detected - contract handles round settlement");
+      console.log("   Contract:", contractAddress);
+      console.log("   Server will not auto-end rounds (blockchain does this via VRF)");
+      return;
+    }
+
+    console.log("💾 Database-only mode - server will manage round lifecycle");
+    
     if (this.roundCheckInterval) {
       clearInterval(this.roundCheckInterval);
     }
@@ -109,15 +141,17 @@ class GameService {
       const endTime = new Date(currentRound.endTime || now);
 
       if (now >= endTime && currentRound.status === "active") {
-        await this.endRound(currentRound.id);
+        await this.endRoundDatabaseMode(currentRound.id);
       }
     }, 1000); // Check every second
   }
 
   /**
-   * End a round and select a winner
+   * End round in database-only mode (NO BLOCKCHAIN)
+   * NOTE: This is ONLY used when running without smart contract
+   * In production blockchain mode, winner selection happens on-chain via Chainlink VRF
    */
-  async endRound(roundId: string) {
+  private async endRoundDatabaseMode(roundId: string) {
     // Prevent duplicate processing
     if (this.endingRounds.has(roundId)) {
       console.log(`⚠️ Round ${roundId} is already being processed`);
@@ -125,7 +159,7 @@ class GameService {
     }
 
     this.endingRounds.add(roundId);
-    console.log(`🏁 Ending round ${roundId}...`);
+    console.log(`🏁 [DB MODE] Ending round ${roundId}...`);
 
     try {
       const round = await storage.getRound(roundId);
@@ -135,7 +169,7 @@ class GameService {
         return;
       }
 
-    const bets = await storage.getBetsByRound(roundId);
+      const bets = await storage.getBetsByRound(roundId);
 
       if (bets.length === 0) {
         console.log("⚠️ No bets in round, creating new round");
@@ -145,81 +179,72 @@ class GameService {
         return;
       }
 
-    // Select winner using weighted random selection
-    const winner = this.selectWinner(bets, parseFloat(round.totalPot));
+      // Database-mode winner selection (simple weighted random)
+      const winner = this.selectWinnerDatabaseMode(bets, parseFloat(round.totalPot));
 
-    // Calculate prize (after 2.5% house fee)
-    const totalPot = parseFloat(round.totalPot);
-    const prize = totalPot * 0.975;
+      // Calculate prize (after 5% house fee to match contract)
+      const totalPot = parseFloat(round.totalPot);
+      const prize = totalPot * 0.95;
 
-    // Update round
-    await storage.updateRound(roundId, {
-      status: "completed",
-      winnerAddress: winner.userAddress,
-      endTime: new Date(),
-    });
-
-    // Update winner stats
-    const winnerStats = await storage.getUserStats(winner.userAddress);
-    if (winnerStats) {
-      const winnerBetTotal = bets
-        .filter(b => b.userAddress === winner.userAddress)
-        .reduce((sum, b) => sum + parseFloat(b.amount), 0);
-
-      await storage.updateUserStats(winner.userAddress, {
-        totalWins: winnerStats.totalWins + 1,
-        totalWon: (parseFloat(winnerStats.totalWon) + prize).toString(),
-        gamesPlayed: winnerStats.gamesPlayed + 1,
-        biggestWin: Math.max(parseFloat(winnerStats.biggestWin), prize).toString(),
+      // Update round
+      await storage.updateRound(roundId, {
+        status: "completed",
+        winnerAddress: winner.userAddress,
+        endTime: new Date(),
       });
-    } else {
-      // Create stats for new winner
-      await storage.createUserStats({
-        userAddress: winner.userAddress,
-        username: winner.userAddress.slice(0, 8),
-        level: 1,
-        totalWins: 1,
-        totalWon: prize.toString(),
-        gamesPlayed: 1,
-        biggestWin: prize.toString(),
-      });
-    }
 
-    // Update daily stats
-    const today = new Date().toISOString().split('T')[0];
-    const dailyStats = await storage.getDailyStats(today);
-    
-    const winChance = totalPot > 0 ? (parseFloat(winner.amount) / totalPot) * 100 : 0;
-
-    if (dailyStats) {
-      const updates: any = { latestWinRoundId: roundId };
-      
-      // Check if biggest win of day
-      if (!dailyStats.biggestWinRoundId) {
-        updates.biggestWinRoundId = roundId;
+      // Update winner stats
+      const winnerStats = await storage.getUserStats(winner.userAddress);
+      if (winnerStats) {
+        await storage.updateUserStats(winner.userAddress, {
+          totalWins: winnerStats.totalWins + 1,
+          totalWon: (parseFloat(winnerStats.totalWon) + prize).toString(),
+          gamesPlayed: winnerStats.gamesPlayed + 1,
+          biggestWin: Math.max(parseFloat(winnerStats.biggestWin), prize).toString(),
+        });
       } else {
-        const currentBiggest = await storage.getRound(dailyStats.biggestWinRoundId);
-        if (currentBiggest && parseFloat(currentBiggest.totalPot) < totalPot) {
+        await storage.createUserStats({
+          userAddress: winner.userAddress,
+          username: winner.userAddress.slice(0, 8),
+          level: 1,
+          totalWins: 1,
+          totalWon: prize.toString(),
+          gamesPlayed: 1,
+          biggestWin: prize.toString(),
+        });
+      }
+
+      // Update daily stats
+      const today = new Date().toISOString().split('T')[0];
+      const dailyStats = await storage.getDailyStats(today);
+
+      if (dailyStats) {
+        const updates: any = { latestWinRoundId: roundId };
+        
+        if (!dailyStats.biggestWinRoundId) {
           updates.biggestWinRoundId = roundId;
+        } else {
+          const currentBiggest = await storage.getRound(dailyStats.biggestWinRoundId);
+          if (currentBiggest && parseFloat(currentBiggest.totalPot) < totalPot) {
+            updates.biggestWinRoundId = roundId;
+          }
         }
+
+        if (!dailyStats.luckiestWinRoundId) {
+          updates.luckiestWinRoundId = roundId;
+        }
+
+        await storage.updateDailyStats(today, updates);
+      } else {
+        await storage.createDailyStats({
+          date: today,
+          latestWinRoundId: roundId,
+          biggestWinRoundId: roundId,
+          luckiestWinRoundId: roundId,
+        });
       }
 
-      // Check if luckiest win of day (lowest win chance)
-      if (!dailyStats.luckiestWinRoundId) {
-        updates.luckiestWinRoundId = roundId;
-      }
-
-      await storage.updateDailyStats(today, updates);
-    } else {
-      await storage.createDailyStats({
-        date: today,
-        latestWinRoundId: roundId,
-        biggestWinRoundId: roundId,
-        luckiestWinRoundId: roundId,
-      });
-    }
-
-    console.log(`🎉 Round #${round.roundNumber} winner: ${winner.userAddress} - Prize: ${prize.toFixed(4)} BNB`);
+      console.log(`🎉 [DB MODE] Round #${round.roundNumber} winner: ${winner.userAddress} - Prize: ${prize.toFixed(4)} BNB`);
 
       // Create new round
       await this.createNewRound();
@@ -229,48 +254,23 @@ class GameService {
   }
 
   /**
-   * Select winner using provably fair block-based selection
-   * Similar to the system shown in the image: uses server seed + blockchain block hash
+   * Database-mode winner selection (simple weighted random)
+   * NOTE: Only used when running without blockchain
+   * Production uses Chainlink VRF on-chain for provably fair selection
    */
-  selectWinner(bets: any[], totalPot: number) {
-    // PROVABLY FAIR SYSTEM:
-    // 1. Server seed (generated at round start, hashed and revealed to players)
-    // 2. Future BSC block hash (unpredictable at time of betting)
-    // 3. Combine both to generate winning ticket
-    
-    // For now, use server-side cryptographic random
-    // When smart contract is deployed, this will use actual BSC block hash
-    const crypto = require('crypto');
-    
-    // Generate server seed (in production, this would be stored with round)
-    const serverSeed = crypto.randomBytes(32).toString('hex');
-    
-    // Simulate block hash (in production, fetch from BSC)
-    const blockHash = crypto.randomBytes(32).toString('hex');
-    
-    // Create combined hash for provable fairness
-    const combinedHash = crypto.createHash('sha256')
-      .update(serverSeed + blockHash)
-      .digest('hex');
-    
-    // Convert hash to number and get winning ticket
-    const hashValue = BigInt('0x' + combinedHash.substring(0, 16));
-    const maxValue = BigInt('0xFFFFFFFFFFFFFFFF');
-    const random = Number(hashValue) / Number(maxValue);
-    
+  private selectWinnerDatabaseMode(bets: any[], totalPot: number) {
+    const random = Math.random();
     const winningTicket = random * totalPot;
 
-    // Find winner based on ticket ranges
     let currentSum = 0;
     for (const bet of bets) {
       currentSum += parseFloat(bet.amount);
       if (currentSum >= winningTicket) {
-        console.log(`🎯 Provably fair selection: serverSeed=${serverSeed.substring(0, 8)}..., block=${blockHash.substring(0, 8)}..., ticket=${winningTicket.toFixed(8)}`);
+        console.log(`🎲 [DB MODE] Winner selected: ticket=${winningTicket.toFixed(8)}`);
         return bet;
       }
     }
 
-    // Fallback
     return bets[bets.length - 1];
   }
 
@@ -278,7 +278,7 @@ class GameService {
    * Set up blockchain event listeners (when contract is deployed)
    */
   async setupBlockchainListeners() {
-    const contractAddress = process.env.VITE_CONTRACT_ADDRESS;
+    const contractAddress = process.env.CONTRACT_ADDRESS || process.env.VITE_CONTRACT_ADDRESS;
     
     if (!contractAddress) {
       console.log("⚠️ No contract address configured, skipping blockchain listeners");

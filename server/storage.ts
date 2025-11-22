@@ -26,6 +26,7 @@ export interface IStorage {
   // Round methods
   getCurrentRound(): Promise<Round | undefined>;
   getRound(id: string): Promise<Round | undefined>;
+  getRoundByNumber(roundNumber: number): Promise<Round | undefined>;
   getLatestRoundNumber(): Promise<number>;
   createRound(round: InsertRound): Promise<Round>;
   updateRound(id: string, data: Partial<Round>): Promise<Round | undefined>;
@@ -121,6 +122,11 @@ export class DbStorage implements IStorage {
 
   async getRound(id: string): Promise<Round | undefined> {
     const result = await db.select().from(rounds).where(eq(rounds.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getRoundByNumber(roundNumber: number): Promise<Round | undefined> {
+    const result = await db.select().from(rounds).where(eq(rounds.roundNumber, roundNumber)).limit(1);
     return result[0];
   }
 
