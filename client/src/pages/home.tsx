@@ -43,7 +43,10 @@ export default function Home() {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
   const { toast } = useToast();
   const { shouldShowSignup, username, agreedToTerms, markSignupComplete } = useSignupTracking(address);
-  const { messages, isConnected, onlineUsers, sendMessage } = useChat(username || undefined);
+  const { messages, isConnected, isAuthenticated, onlineUsers, sendMessage } = useChat({ 
+    username: username || undefined, 
+    walletAddress: address || undefined 
+  });
   
   // Try to connect to smart contract (if deployed)
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || undefined;

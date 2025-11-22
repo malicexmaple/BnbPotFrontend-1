@@ -18,7 +18,7 @@ declare module 'http' {
 const PgSession = connectPgSimple(session);
 
 // Session configuration for production-ready authentication
-app.use(session({
+const sessionMiddleware = session({
   store: new PgSession({
     conObject: {
       connectionString: process.env.DATABASE_URL,
@@ -37,7 +37,9 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     sameSite: 'strict' // CSRF protection
   }
-}));
+});
+
+app.use(sessionMiddleware);
 
 app.use(express.json({
   verify: (req, _res, buf) => {
@@ -77,7 +79,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  const server = await registerRoutes(app, sessionMiddleware);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

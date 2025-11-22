@@ -6,7 +6,7 @@ interface UseChatProps {
   walletAddress: string | undefined;
 }
 
-export function useChat({ username, walletAddress }: UseChatProps) {
+export function useChat({ username, walletAddress }: UseChatProps = { username: undefined, walletAddress: undefined }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);

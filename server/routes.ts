@@ -6,11 +6,13 @@ import { insertChatMessageSchema, insertBetSchema } from "@shared/schema";
 import { gameService } from "./gameService";
 import { generateAuthMessage, verifyWalletSignature, requireAuth, requireTermsAgreement } from "./auth";
 import { randomBytes } from "crypto";
+import type { IncomingMessage } from "http";
+import type session from "express-session";
 
 // Module-level variable to hold broadcast function
 let broadcastBetUpdate: ((data: any) => void) | null = null;
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export async function registerRoutes(app: Express, sessionParser: any): Promise<Server> {
   // ========================================
   // AUTHENTICATION ENDPOINTS
   // ========================================
@@ -467,14 +469,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
 
-  // Set up WebSocket server for real-time chat
-  const wss = new WebSocketServer({ server: httpServer, path: "/ws" });
+  // Set up WebSocket server for real-time chat with session verification
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: "/ws",
+    verifyClient: (info, callback) => {
+      // Parse session from WebSocket upgrade request
+      sessionParser(info.req, {} as any, () => {
+        callback(true); // Allow connection, we'll auth on ws_auth message
+      });
+    }
+  });
 
   // Extended WebSocket type to store authentication data
   interface AuthenticatedWebSocket extends WebSocket {
     walletAddress?: string;
     username?: string;
     isAuthenticated?: boolean;
+    request?: IncomingMessage & { session?: session.Session & Partial<session.SessionData> };
   }
 
   // Helper function to broadcast online user count to all clients
@@ -501,8 +513,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     broadcastGameUpdate("bet_placed", data);
   };
 
-  wss.on("connection", (ws: AuthenticatedWebSocket) => {
+  wss.on("connection", (ws: AuthenticatedWebSocket, request: IncomingMessage) => {
     console.log("Client connected");
+    
+    // Store request for session access
+    ws.request = request as any;
 
     // Send existing messages to new client
     storage.getChatMessages(50).then((messages) => {
@@ -531,7 +546,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const parsed = JSON.parse(data.toString());
         
-        // Handle WebSocket authentication
+        // Handle WebSocket authentication - VERIFY AGAINST HTTP SESSION
         if (parsed.type === "ws_auth") {
           const { walletAddress } = parsed.data;
           
@@ -540,6 +555,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
               type: "auth_error", 
               message: "Wallet address required for authentication" 
             }));
+            return;
+          }
+          
+          // SECURITY: Verify wallet address matches authenticated HTTP session
+          const session = (ws.request as any)?.session;
+          
+          if (!session || !session.walletAddress) {
+            ws.send(JSON.stringify({ 
+              type: "auth_error", 
+              message: "No authenticated session. Please connect and verify your wallet first." 
+            }));
+            console.warn(`⚠️ WebSocket auth attempt without valid session: ${walletAddress}`);
+            return;
+          }
+          
+          // Verify the wallet address matches the session
+          if (session.walletAddress.toLowerCase() !== walletAddress.toLowerCase()) {
+            ws.send(JSON.stringify({ 
+              type: "auth_error", 
+              message: "Wallet address mismatch. Session tampering detected." 
+            }));
+            console.error(`🚨 WebSocket auth mismatch - Session: ${session.walletAddress}, Claimed: ${walletAddress}`);
+            ws.close(1008, "Authentication failed"); // Policy violation close code
             return;
           }
           
@@ -554,17 +592,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return;
           }
           
-          // Store authentication data on WebSocket connection
-          ws.walletAddress = user.walletAddress;
-          ws.username = user.username;
+          // Store authenticated data on WebSocket connection (from verified session)
+          ws.walletAddress = session.walletAddress;
+          ws.username = session.username || user.username || undefined;
           ws.isAuthenticated = true;
           
           ws.send(JSON.stringify({ 
             type: "auth_success", 
-            data: { username: user.username, walletAddress: user.walletAddress }
+            data: { username: ws.username, walletAddress: ws.walletAddress }
           }));
           
-          console.log(`🔐 WebSocket authenticated: ${user.username} (${user.walletAddress})`);
+          console.log(`🔐 WebSocket authenticated: ${ws.username} (${ws.walletAddress})`);
           return;
         }
         
