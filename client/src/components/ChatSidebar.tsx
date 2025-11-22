@@ -314,7 +314,7 @@ export default function ChatSidebar({
                     }}
                     data-testid="button-donate-airdrop"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       {/* Slot/Platform */}
                       <rect x="4" y="18" width="16" height="3" rx="1.5" fill="#FCD34D" opacity="0.8"/>
                       {/* Coin */}
