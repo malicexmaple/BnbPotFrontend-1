@@ -31,6 +31,7 @@ contract JackpotGame {
     event RoundStarted(uint256 indexed roundId, uint256 startTime);
     event BetPlaced(uint256 indexed roundId, address indexed player, uint256 amount, uint256 newTotal, uint256 totalPot);
     event RoundEnded(uint256 indexed roundId, address indexed winner, uint256 prize);
+    event RoundCancelledNoPlayers(uint256 indexed roundId, uint256 potSentToHouse);
     
     // Structs
     struct PlayerBet {
@@ -162,11 +163,15 @@ contract JackpotGame {
         if (round.players.length > 0 && round.totalPot > 0) {
             // Select winner using weighted random selection
             address winner = _selectWinner(round);
-            round.winner = winner;
             
-            // Calculate house fee and prize
-            uint256 houseFee = (round.totalPot * HOUSE_FEE_PERCENT) / 100;
-            uint256 prize = round.totalPot - houseFee;
+            // Snapshot round totals to locals before clearing
+            uint256 totalPot = round.totalPot;
+            uint256 houseFee = (totalPot * HOUSE_FEE_PERCENT) / 100;
+            uint256 prize = totalPot - houseFee;
+            
+            // Clear mutable live-control state (Phase 1)
+            round.totalPot = 0;
+            round.winner = winner; // Set winner for historical record
             
             // Update house fee collected
             houseFeeCollected += houseFee;
@@ -176,8 +181,11 @@ contract JackpotGame {
             require(success, "Prize transfer failed");
             
             emit RoundEnded(currentRoundId, winner, prize);
+        } else {
+            // No players or no pot - clear state for cancellation
+            round.totalPot = 0;
+            round.winner = address(0); // No winner for cancelled round
         }
-        // else: No players, just start new round (edge case but safe to handle)
         
         // Start new round
         _startNewRound();
@@ -280,15 +288,28 @@ contract JackpotGame {
         // Increment to new round FIRST
         currentRoundId++;
         
-        // Clean up the COMPLETED round (not the new one)
+        // Clean up the COMPLETED round (not the new one) - Phase 2
         if (completedRoundId > 0) {
             Round storage completedRound = rounds[completedRoundId];
-            // Delete each player's bet data
-            for (uint256 i = 0; i < completedRound.players.length; i++) {
-                delete completedRound.playerBets[completedRound.players[i]];
+            
+            // Capture players array into memory to avoid storage iteration issues
+            address[] memory playersToClean = completedRound.players;
+            
+            // Delete each player's bet data using memory array
+            for (uint256 i = 0; i < playersToClean.length; i++) {
+                delete completedRound.playerBets[playersToClean[i]];
             }
-            // Clear the players array (important to prevent unbounded growth)
+            
+            // Clear the players array (prevents unbounded growth)
             delete completedRound.players;
+            
+            // Reset all mutable live-control fields to make round inert
+            // Note: winner and totalPot were already set/cleared in Phase 1
+            completedRound.endTime = 0;
+            completedRound.isActive = false;
+            
+            // isCompleted remains true for historical queries
+            // startTime, id preserved for historical record
         }
         
         // Initialize new round (storage slot is fresh, arrays/mappings are empty)
@@ -320,6 +341,7 @@ contract JackpotGame {
      */
     function _selectWinner(Round storage round) private view returns (address) {
         require(round.players.length > 0, "No players");
+        require(round.totalPot > 0, "No pot to distribute");
         
         // ⚠️ INSECURE - validator can manipulate this value
         uint256 randomSeed = uint256(keccak256(abi.encodePacked(
@@ -367,10 +389,16 @@ contract JackpotGame {
         if (round.players.length > 0 && round.totalPot > 0) {
             // Select winner and pay out
             address winner = _selectWinner(round);
-            round.winner = winner;
             
-            uint256 houseFee = (round.totalPot * HOUSE_FEE_PERCENT) / 100;
-            uint256 prize = round.totalPot - houseFee;
+            // Snapshot round totals to locals before clearing
+            uint256 totalPot = round.totalPot;
+            uint256 houseFee = (totalPot * HOUSE_FEE_PERCENT) / 100;
+            uint256 prize = totalPot - houseFee;
+            
+            // Clear mutable live-control state (Phase 1)
+            round.totalPot = 0;
+            round.winner = winner; // Set winner for historical record
+            
             houseFeeCollected += houseFee;
             
             (bool success, ) = payable(winner).call{value: prize}("");
@@ -380,9 +408,16 @@ contract JackpotGame {
         } else if (round.totalPot > 0) {
             // Edge case: pot exists but no players (shouldn't happen, but handle it)
             // Send pot to house fee to prevent funds being locked
-            houseFeeCollected += round.totalPot;
+            uint256 potAmount = round.totalPot;
+            round.totalPot = 0;
+            round.winner = address(0); // No winner for cancelled round
+            houseFeeCollected += potAmount;
+            emit RoundCancelledNoPlayers(currentRoundId, potAmount);
+        } else {
+            // No pot - just clear state
+            round.totalPot = 0;
+            round.winner = address(0);
         }
-        // else: No players and no pot, just start new round safely
         
         _startNewRound();
     }
