@@ -313,7 +313,14 @@ export default function ChatSidebar({
                     }}
                     data-testid="button-donate-airdrop"
                   >
-                    <DollarSign className="w-5 h-5" style={{ color: '#FCD34D', strokeWidth: 3 }} />
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      {/* Slot/Platform */}
+                      <rect x="4" y="18" width="16" height="3" rx="1.5" fill="#FCD34D" opacity="0.8"/>
+                      {/* Coin */}
+                      <circle cx="12" cy="9" r="7" fill="#FCD34D" stroke="#EAB308" strokeWidth="1.5"/>
+                      {/* Dollar Sign */}
+                      <text x="12" y="13" fontFamily="Arial, sans-serif" fontSize="10" fontWeight="bold" fill="#1a1a1a" textAnchor="middle">$</text>
+                    </svg>
                   </button>
                 </div>
                 <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.125rem'}}>
