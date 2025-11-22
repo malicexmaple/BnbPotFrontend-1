@@ -792,9 +792,16 @@
 }
 
 /* ===== MOBILE: Force 1200px desktop layout on small screens ===== */
-/* This ensures mobile devices see the full desktop layout */
+/* Desktop stays untouched, mobile gets scaled 1200px layout */
 @media (max-width: 1024px) {
-  html {
-    min-width: 1200px;
+  #root {
+    width: 1200px;
+    transform: scale(calc(100vw / 1200));
+    transform-origin: top center;
+    overflow-x: visible;
+  }
+  
+  body {
+    overflow-x: auto;
   }
 }
