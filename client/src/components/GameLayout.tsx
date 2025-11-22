@@ -1,43 +1,25 @@
 import { ReactNode } from "react";
-import GameNavigation from "@/components/GameNavigation";
-import GameFooter from "@/components/GameFooter";
-import ChatSidebar from "@/components/ChatSidebar";
-import DailyStats from "@/components/DailyStats";
-import { useWallet } from "@/hooks/useWallet";
-import { useSignupTracking } from "@/hooks/useSignupTracking";
-import { useChat } from "@/hooks/useChat";
-import { useGameSocket } from "@/hooks/useGameSocket";
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 
 interface GameLayoutProps {
+  header: ReactNode;
+  leftSidebar: ReactNode;
+  rightSidebar: ReactNode;
+  footer: ReactNode;
   children: ReactNode;
-  onOpenProfile: () => void;
-  onShowChatRules: () => void;
-  isChatCollapsed: boolean;
-  onToggleChatCollapse: () => void;
-  isLeaderboardCollapsed: boolean;
-  onToggleLeaderboardCollapse: () => void;
 }
 
+/**
+ * Pure structural layout component for game pages
+ * Does NOT handle any state or logic - just layout structure
+ */
 export default function GameLayout({
+  header,
+  leftSidebar,
+  rightSidebar,
+  footer,
   children,
-  onOpenProfile,
-  onShowChatRules,
-  isChatCollapsed,
-  onToggleChatCollapse,
-  isLeaderboardCollapsed,
-  onToggleLeaderboardCollapse,
 }: GameLayoutProps) {
-  const { address, isConnecting, connect, disconnect } = useWallet();
-  const { username } = useSignupTracking(address);
-  const { messages, onlineUsers, sendMessage } = useChat({ 
-    username: username || undefined, 
-    walletAddress: address || undefined 
-  });
-  
-  // Connect to game WebSocket for real-time bet updates
-  useGameSocket();
-
   return (
     <>
       {/* Fixed background */}
@@ -52,15 +34,7 @@ export default function GameLayout({
       <div className="w-full">
         {/* Header - FIXED to top of viewport */}
         <div className="fixed top-0 left-0 right-0 w-full z-50">
-          <GameNavigation 
-            onConnect={connect} 
-            onDisconnect={disconnect} 
-            isConnected={!!address} 
-            isConnecting={isConnecting} 
-            walletAddress={address || undefined} 
-            username={username || undefined} 
-            onOpenProfile={onOpenProfile} 
-          />
+          {header}
         </div>
 
         {/* Content - with top padding to account for fixed header */}
@@ -70,37 +44,22 @@ export default function GameLayout({
             {/* Content wrapper */}
             <div className="flex-1 flex flex-col">
               <div className="flex-1 flex">
-                <ChatSidebar
-                  isCollapsed={isChatCollapsed}
-                  onToggleCollapse={onToggleChatCollapse}
-                  messages={messages}
-                  onSendMessage={(message: string) => {
-                    if (address && username) {
-                      sendMessage(message);
-                    }
-                  }}
-                  canChat={!!address && !!username}
-                  placeholderText={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
-                  onlineUsers={onlineUsers}
-                  onShowChatRules={onShowChatRules}
-                />
+                {/* Left sidebar */}
+                {leftSidebar}
 
-                {/* MAIN GAME AREA - passed as children */}
+                {/* Main game area */}
                 <div className="flex-1 flex flex-col relative">
                   {children}
                 </div>
 
-                {/* RIGHT - DAILY STATS SIDEBAR */}
-                <DailyStats 
-                  isCollapsed={isLeaderboardCollapsed}
-                  onToggleCollapse={onToggleLeaderboardCollapse}
-                />
+                {/* Right sidebar */}
+                {rightSidebar}
               </div>
             </div>
           </div>
 
-          {/* FOOTER */}
-          <GameFooter />
+          {/* Footer */}
+          {footer}
         </div>
       </div>
     </>
