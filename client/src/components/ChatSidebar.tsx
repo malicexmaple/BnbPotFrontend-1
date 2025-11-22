@@ -235,7 +235,7 @@ export default function ChatSidebar({
                 }} />
                 {/* Gift package with air streams */}
                 <div className="absolute z-10" style={{
-                  right: '20px',
+                  right: '60px',
                   top: '-50px',
                   width: '5rem',
                   height: '5rem',
