@@ -450,40 +450,38 @@ export default function Coinflip() {
             </div>
 
             {/* COINFLIP GAME AREA */}
-            <div className="flex justify-center">
-              <div className="glass-panel p-12 neon-border" style={{borderRadius: '18px', maxWidth: '600px', width: '100%'}}>
-                {showMiningBlock && (
+            <div className="glass-panel p-12 neon-border" style={{borderRadius: '18px'}}>
+              {showMiningBlock && (
                   <MiningBlockOverlay
                     blockNumber={miningBlockNumber}
                     onComplete={() => setShowMiningBlock(false)}
                   />
                 )}
                 
-                <div className="flex flex-col items-center gap-6">
-                  <h2 className="text-2xl font-bold text-foreground">Coinflip Game Area</h2>
-                  
-                  {/* Coin placeholder */}
-                  <div className="text-8xl" data-testid="coin-display">🪙</div>
-                  
-                  <p className="text-lg text-muted-foreground">Choose Heads or Tails</p>
-                  
-                  {/* Heads/Tails buttons */}
-                  <div className="flex gap-4">
-                    <Button 
-                      size="lg"
-                      className="text-lg px-8"
-                      data-testid="button-heads"
-                    >
-                      Heads
-                    </Button>
-                    <Button 
-                      size="lg"
-                      className="text-lg px-8"
-                      data-testid="button-tails"
-                    >
-                      Tails
-                    </Button>
-                  </div>
+              <div className="flex flex-col items-center gap-6">
+                <h2 className="text-2xl font-bold text-foreground">Coinflip Game Area</h2>
+                
+                {/* Coin placeholder */}
+                <div className="text-8xl" data-testid="coin-display">🪙</div>
+                
+                <p className="text-lg text-muted-foreground">Choose Heads or Tails</p>
+                
+                {/* Heads/Tails buttons */}
+                <div className="flex gap-4">
+                  <Button 
+                    size="lg"
+                    className="text-lg px-8"
+                    data-testid="button-heads"
+                  >
+                    Heads
+                  </Button>
+                  <Button 
+                    size="lg"
+                    className="text-lg px-8"
+                    data-testid="button-tails"
+                  >
+                    Tails
+                  </Button>
                 </div>
               </div>
             </div>

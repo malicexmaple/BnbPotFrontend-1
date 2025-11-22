@@ -436,15 +436,13 @@ export default function PredictionMarkets() {
             </div>
 
             {/* PREDICTION MARKETS AREA */}
-            <div className="flex justify-center">
-              <div className="w-full max-w-4xl">
-                <div className="glass-panel p-8 rounded-lg">
-                  <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold mb-2 shine-text">Prediction Markets</h2>
-                    <p className="text-muted-foreground uppercase tracking-wider text-sm">Active Markets</p>
-                  </div>
-                  
-                  <div className="space-y-4">
+            <div className="glass-panel p-8 rounded-lg">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-2 shine-text">Prediction Markets</h2>
+                <p className="text-muted-foreground uppercase tracking-wider text-sm">Active Markets</p>
+              </div>
+              
+              <div className="space-y-4">
                     {mockMarkets.map((market) => {
                       const total = market.yesVolume + market.noVolume;
                       const yesPercent = (market.yesVolume / total) * 100;
@@ -493,8 +491,6 @@ export default function PredictionMarkets() {
                         </div>
                       );
                     })}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
