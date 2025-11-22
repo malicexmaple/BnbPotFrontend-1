@@ -12,21 +12,27 @@ import MiningBlockOverlay from "@/components/MiningBlockOverlay";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
-import { GAME } from "@/constants/layout";
+import { GAME, CAROUSEL, BORDER_RADIUS } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
+import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
+import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
+import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
+import treasureChest from '@assets/3dgifmaker81317_1763413607076.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
+import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 
 export default function Coinflip() {
-  const { address, isConnecting, walletError, connect, disconnect, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage, contract } = useGameState();
+  const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage, contract } = useGameState();
   const { toast } = useToast();
   
   // Fetch current round data
@@ -37,6 +43,7 @@ export default function Coinflip() {
   
   const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
+  const [scrollOffset, setScrollOffset] = useState(0);
   const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -50,6 +57,7 @@ export default function Coinflip() {
     referralCode: "",
     agreedToTerms: false
   });
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   // Expose utility functions for testing
   useEffect(() => {
@@ -100,6 +108,35 @@ export default function Coinflip() {
     // Update ref for next comparison
     prevRoundRef.current = currentRound;
   }, [currentRound]);
+
+  useEffect(() => {
+    let animationFrame: number;
+    let lastTime = Date.now();
+    
+    const animate = () => {
+      const now = Date.now();
+      const delta = now - lastTime;
+      lastTime = now;
+      
+      setScrollOffset(prev => {
+        const newOffset = prev + (delta * CAROUSEL.ANIMATION_SPEED);
+        if (!carouselRef.current) return newOffset;
+        
+        const resetPoint = (CAROUSEL.CARD_WIDTH + CAROUSEL.GAP) * CAROUSEL.TOTAL_CARDS;
+        
+        if (newOffset >= resetPoint) {
+          return newOffset - resetPoint;
+        }
+        return newOffset;
+      });
+      
+      animationFrame = requestAnimationFrame(animate);
+    };
+    
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
+
 
   useEffect(() => {
     if (walletError) {
@@ -295,8 +332,6 @@ export default function Coinflip() {
   const minutes = Math.floor(actualTimeRemaining / 60);
   const seconds = actualTimeRemaining % 60;
 
-  const shouldShowSignup = address && !username;
-
   return (
     <>
       <GameLayout
@@ -449,48 +484,257 @@ export default function Coinflip() {
               />
             </div>
 
-            {/* COINFLIP GAME AREA */}
-            <div className="glass-panel p-12 neon-border" style={{borderRadius: '18px'}}>
-              {showMiningBlock && (
+            {/* STATS BAR */}
+            <div className="p-1">
+              <div className="max-sm:grid max-sm:grid-cols-2 sm:flex sm:flex-wrap gap-4 justify-center" style={{overflow: 'visible'}}>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper-large">
+                      <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
+                    </div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-jackpot-value">
+                      {isLoadingRound ? '...' : totalPot.toFixed(3)}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
+                  </div>
+                </div>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper">
+                      <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
+                    </div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">
+                      {isLoadingRound ? '...' : userWager.toFixed(3)}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
+                  </div>
+                </div>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper-small">
+                      <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
+                    </div>
+                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-chance">
+                      {isLoadingRound ? '...' : userChance.toFixed(2)}%
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
+                  </div>
+                </div>
+                <div className="stat-box">
+                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
+                    <div className="stat-icon-wrapper-small">
+                      <img src={clockIcon} alt="Clock" className="h-14 w-14" />
+                    </div>
+                    {currentRound?.status === "waiting" ? (
+                      <div className="text-xl font-bold font-mono no-text-shadow text-center px-2" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">Waiting...</div>
+                    ) : (
+                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
+                    )}
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">
+                      {currentRound?.status === "waiting" ? "For First Bet" : "Time Remaining"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PLAYER CAROUSEL */}
+            <div className="flex justify-center">
+              <div className="carousel-container relative">
+                {/* Mining Block Overlay */}
+                {showMiningBlock && (
                   <MiningBlockOverlay
                     blockNumber={miningBlockNumber}
                     onComplete={() => setShowMiningBlock(false)}
                   />
                 )}
-                
-              <div className="flex flex-col items-center gap-6">
-                <h2 className="text-2xl font-bold text-foreground">Coinflip Game Area</h2>
-                
-                {/* Coin placeholder */}
-                <div className="text-8xl" data-testid="coin-display">🪙</div>
-                
-                <p className="text-lg text-muted-foreground">Choose Heads or Tails</p>
-                
-                {/* Heads/Tails buttons */}
-                <div className="flex gap-4">
-                  <Button 
-                    size="lg"
-                    className="text-lg px-8"
-                    data-testid="button-heads"
+                <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
+                  {/* Triangle indicator pointing to center card */}
+                  <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
+                    <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
+                      <defs>
+                        <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
+                          <stop offset="50%" style={{stopColor: '#FCD34D', stopOpacity: 1}} />
+                          <stop offset="100%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
+                        </linearGradient>
+                      </defs>
+                      <path d="M28 36 L4 4 L52 4 Z" fill="url(#triangleGradient)" stroke="url(#triangleGradient)" strokeWidth="2"/>
+                    </svg>
+                  </div>
+                  
+                  <div 
+                    className="carousel-track flex gap-3"
+                    style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible'}}
                   >
-                    Heads
-                  </Button>
-                  <Button 
-                    size="lg"
-                    className="text-lg px-8"
-                    data-testid="button-tails"
-                  >
-                    Tails
-                  </Button>
+                    {(() => {
+                      // Get real bets from current round
+                      const bets = currentRound?.bets || [];
+                      const MIN_CARDS = 20; // Always show at least 20 cards
+                      const cardsToShow = Math.max(MIN_CARDS, bets.length);
+                      
+                      return [...Array(cardsToShow)].map((_, i) => {
+                        if (!carouselRef.current) return null;
+                        
+                        // Check if this index has a real bet
+                        const bet = bets[i];
+                        const hasRealBet = !!bet;
+                        
+                        // Calculate centering
+                        const containerWidth = carouselRef.current.offsetWidth;
+                        const gap = 12;
+                        const cardWidth = 234;
+                        const cardPosition = i * (cardWidth + gap);
+                        const centerPosition = containerWidth / 2;
+                        const cardLeftEdge = cardPosition - scrollOffset;
+                        const cardRightEdge = cardLeftEdge + cardWidth;
+                        const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
+                        
+                        return (
+                          <div key={hasRealBet ? bet.id : `empty-${i}`} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px', zIndex: isCentered ? 10 : 1, position: 'relative'}}>
+                            <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
+                              borderRadius: '21px', 
+                              padding: '26px 21px',
+                              transform: isCentered ? 'scale(1.1)' : 'scale(1)',
+                              transformOrigin: 'center center',
+                              willChange: 'transform',
+                              boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
+                            }}>
+                              {hasRealBet ? (
+                                <>
+                                  {/* Real Player Card */}
+                                  <Avatar className="w-28 h-28">
+                                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/20 to-primary/5">
+                                      {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="font-medium text-foreground" style={{fontSize: '17px', marginTop: '18px', textAlign: 'center'}}>
+                                    {bet.username || `${bet.userAddress.slice(0, 6)}...`}
+                                  </div>
+                                  <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
+                                    <span className="text-muted-foreground/60">=</span>
+                                    <span className="text-primary font-bold">{parseFloat(bet.amount).toFixed(3)}</span>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  {/* Waiting Placeholder */}
+                                  <div className="flex items-center justify-center relative" style={{
+                                    width: '114px',
+                                    height: '114px',
+                                    borderRadius: '18px',
+                                    background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
+                                    border: '1px solid rgba(60, 60, 60, 0.4)',
+                                    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
+                                  }}>
+                                    <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '55px', height: '55px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
+                                      <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                                    </svg>
+                                  </div>
+                                  <div className="font-medium text-muted-foreground" style={{fontSize: '17px', marginTop: '18px'}}>Waiting</div>
+                                  <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
+                                    <span className="text-muted-foreground/60">=</span>
+                                    <span className="text-foreground font-bold">0.000</span>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+              <div><span className="text-foreground font-semibold">{currentRound?.totalBets || 0}</span> Players</div>
+              <div>•</div>
+              <div>Payouts are settled in BNB</div>
+              <div>•</div>
+              <div>Round: <span className="font-mono" data-testid="text-round">#{currentRound?.roundNumber || 1}</span></div>
+            </div>
+          </div>
+
+          {/* PLAYER LIST */}
+          <div className="flex-1 border-t border-border/30 overflow-hidden relative z-10">
+            <ScrollArea className="h-full px-6 py-5">
+              {currentRound?.bets && currentRound.bets.length > 0 ? (
+                <div className="space-y-3">
+                  {currentRound.bets.map((bet: any) => {
+                    const betAmount = parseFloat(bet.amount);
+                    const winChance = totalPot > 0 ? (betAmount / totalPot) * 100 : 0;
+                    // Approximate BNB to USD conversion (example rate)
+                    const bnbToUsd = 300; // This should come from API in production
+                    const usdValue = betAmount * bnbToUsd;
+                    
+                    return (
+                      <div
+                        key={bet.id}
+                        className="glass-panel p-4 hover-elevate transition-all"
+                        style={{borderRadius: BORDER_RADIUS.MD}}
+                        data-testid={`player-row-${bet.id}`}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          {/* Player Info */}
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <Avatar className="w-10 h-10 flex-shrink-0">
+                              <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/20 to-primary/5">
+                                {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-foreground truncate">
+                                {bet.username || `${bet.userAddress.slice(0, 6)}...${bet.userAddress.slice(-4)}`}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {bet.userAddress.slice(0, 10)}...{bet.userAddress.slice(-8)}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Bet Amount */}
+                          <div className="text-right">
+                            <div className="font-bold text-primary font-mono">
+                              {betAmount.toFixed(4)} BNB
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              ${usdValue.toFixed(2)}
+                            </div>
+                          </div>
+                          
+                          {/* Win Chance */}
+                          <div className="text-right min-w-[80px]">
+                            <Badge variant="outline" className="font-mono">
+                              {winChance.toFixed(2)}%
+                            </Badge>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Chance
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                  <div className="text-center space-y-2">
+                    <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <p>No players in this round</p>
+                  </div>
+                </div>
+              )}
+            </ScrollArea>
           </div>
         </div>
       </GameLayout>
 
       {/* Signup Dialog */}
-      <Dialog open={!!shouldShowSignup} onOpenChange={() => {}}>
+      <Dialog open={shouldShowSignup} onOpenChange={() => {}}>
         <DialogContent className="max-w-md border-0 p-6 [&>button:first-child]:hidden signup-dialog">
           <DialogHeader>
             <DialogTitle className="flex justify-center mb-2">
@@ -559,36 +803,363 @@ export default function Coinflip() {
             onClick={handleSignupSubmit}
             className="w-full mt-6 text-white text-lg font-bold border-0 h-14" 
             style={{
-              background: 'linear-gradient(90deg, #8B5CF6 0%, #EC4899 100%)',
-              boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)'
-            }}
-            data-testid="button-signup"
+              background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8))',
+              border: '2px solid rgba(234, 179, 8, 0.5)',
+              boxShadow: '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+            }} 
+            data-testid="button-create-account"
           >
-            CREATE ACCOUNT
+            Create Account
           </Button>
         </DialogContent>
       </Dialog>
 
-      {/* Terms Modal */}
+      {/* Terms and Conditions Dialog */}
       <Dialog open={showTermsModal} onOpenChange={setShowTermsModal}>
-        <DialogContent className="max-w-3xl max-h-[80vh] border-0">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Terms and Conditions</DialogTitle>
-            <DialogDescription>
-              Please read these terms carefully before using our platform
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className="h-[60vh] pr-4">
-            <div className="space-y-6 text-sm">
-              {/* Same terms content as home.tsx... truncated for brevity */}
+        <DialogContent className="max-w-2xl max-h-[80vh] border-0 p-6 signup-dialog">
+          <ScrollArea className="h-96 pr-4">
+            <div className="space-y-4 text-sm">
               <div>
                 <h3 className="font-bold text-foreground mb-2">1. Acceptance of Terms</h3>
                 <p className="text-muted-foreground">
-                  By accessing and using BNBPOT ("the Platform"), you agree to be bound by these Terms and Conditions.
-                  If you do not agree, please do not use our services.
+                  By accessing and using BNBPOT ("the Platform"), you acknowledge that you have read, understood, and agree 
+                  to be bound by these Terms and Conditions. If you do not agree to these terms, you must immediately 
+                  discontinue use of the Platform.
                 </p>
               </div>
-              {/* Add all other terms sections from home.tsx */}
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">2. Licensing and Jurisdiction</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT operates under the jurisdiction and regulatory oversight of the Anjouan Gaming Authority. The Platform 
+                  is licensed and regulated in accordance with the laws of Anjouan. By using this Platform, you agree that any 
+                  legal matters, disputes, or regulatory issues shall be governed by and construed in accordance with the laws 
+                  of Anjouan. You acknowledge that you are accessing the Platform from a jurisdiction where online gambling is 
+                  legal and that you are solely responsible for ensuring compliance with your local laws and regulations.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">3. Eligibility Requirements</h3>
+                <p className="text-muted-foreground mb-2">
+                  You must meet ALL of the following requirements to use this Platform:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>You are at least 18 years of age (or the legal age of majority in your jurisdiction)</li>
+                  <li>You are legally permitted to participate in gambling activities in your jurisdiction</li>
+                  <li>You are not located in a jurisdiction where online gambling is prohibited</li>
+                  <li>You are acting on your own behalf and not on behalf of any third party</li>
+                  <li>All information provided during registration is accurate and truthful</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">4. Provably Fair Gaming</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT is committed to providing provably fair gaming experiences. Our platform utilizes cryptographic 
+                  algorithms and blockchain technology to ensure game outcomes are verifiable and cannot be manipulated. 
+                  Game results are generated using transparent, auditable mechanisms. However, we make no guarantees 
+                  regarding winning outcomes, as all games involve an element of chance.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">5. No Liability for Losses</h3>
+                <p className="text-muted-foreground mb-2">
+                  <span className="font-bold text-foreground">YOU ACKNOWLEDGE AND AGREE THAT:</span>
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>All gambling involves risk, and you may lose your entire wager</li>
+                  <li>BNBPOT is NOT responsible for any financial losses incurred through use of the Platform</li>
+                  <li>You are solely responsible for your gambling decisions and their consequences</li>
+                  <li>We do not guarantee any specific outcomes or returns on your wagers</li>
+                  <li>Cryptocurrency values are volatile and may result in additional financial risk</li>
+                  <li>Network fees, gas fees, and transaction costs are your responsibility</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">6. Limitation of Liability</h3>
+                <p className="text-muted-foreground">
+                  TO THE MAXIMUM EXTENT PERMITTED BY LAW, BNBPOT, ITS OPERATORS, AFFILIATES, AND SERVICE PROVIDERS SHALL 
+                  NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING 
+                  FROM OR RELATED TO YOUR USE OF THE PLATFORM. This includes but is not limited to: loss of funds, loss of 
+                  profits, loss of data, service interruptions, technical malfunctions, unauthorized access, or any other 
+                  losses or damages.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">7. Responsible Gaming</h3>
+                <p className="text-muted-foreground mb-2">
+                  We encourage responsible gaming practices. You agree to:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>Only wager amounts you can afford to lose</li>
+                  <li>Set personal limits on your gambling activities</li>
+                  <li>Seek help if you believe you may have a gambling problem</li>
+                  <li>Not use the Platform as a source of income or financial investment</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">8. Prohibited Activities</h3>
+                <p className="text-muted-foreground mb-2">
+                  You agree NOT to:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>Use the Platform for money laundering or other illegal activities</li>
+                  <li>Create multiple accounts or use the Platform fraudulently</li>
+                  <li>Attempt to manipulate, exploit, or hack the Platform</li>
+                  <li>Use bots, scripts, or automated systems</li>
+                  <li>Collude with other users to gain unfair advantages</li>
+                  <li>Provide false or misleading information</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">9. Account Security</h3>
+                <p className="text-muted-foreground">
+                  You are solely responsible for maintaining the security of your wallet and account credentials. BNBPOT 
+                  will NEVER ask for your private keys or seed phrases. Any losses due to compromised accounts, lost 
+                  private keys, or unauthorized access are your sole responsibility.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">10. Intellectual Property</h3>
+                <p className="text-muted-foreground">
+                  All content, trademarks, logos, and intellectual property on the Platform are owned by BNBPOT or its 
+                  licensors. You may not copy, reproduce, distribute, or create derivative works without explicit permission.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">11. Dispute Resolution and Arbitration</h3>
+                <p className="text-muted-foreground mb-2">
+                  In the event of a dispute arising from your use of the Platform or these Terms, you agree to follow the 
+                  dispute resolution process outlined below:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li><span className="font-bold text-foreground">Step 1 - Direct Resolution:</span> You must first attempt to resolve the dispute by contacting BNBPOT customer support directly. We will make reasonable efforts to resolve disputes within 30 days.</li>
+                  <li><span className="font-bold text-foreground">Step 2 - Anjouan eGaming Authority:</span> If the dispute cannot be resolved directly, you may submit a complaint to the Anjouan Gaming Control Board, which provides independent dispute resolution and mediation services for players. Contact details and procedures are available through the licensing authority.</li>
+                  <li><span className="font-bold text-foreground">Step 3 - Arbitration:</span> Any disputes not resolved through the above steps shall be settled by binding arbitration conducted in Anjouan under the laws of Anjouan. The arbitration shall be conducted in English, and the decision of the arbitrator shall be final and binding on all parties.</li>
+                  <li><span className="font-bold text-foreground">Class Action Waiver:</span> You agree to resolve disputes on an individual basis only and waive any right to participate in class action lawsuits or class-wide arbitration.</li>
+                  <li><span className="font-bold text-foreground">Governing Law:</span> These dispute resolution procedures shall be governed by and construed in accordance with the laws of Anjouan, without regard to conflict of law provisions.</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">12. Indemnification</h3>
+                <p className="text-muted-foreground">
+                  You agree to indemnify, defend, and hold harmless BNBPOT and its operators from any claims, damages, 
+                  losses, liabilities, and expenses (including legal fees) arising from your use of the Platform, violation 
+                  of these terms, or violation of any applicable laws.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">13. Changes to Terms</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT reserves the right to modify these terms at any time. Continued use of the Platform after changes 
+                  constitutes acceptance of the modified terms. You are responsible for regularly reviewing these terms.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">13. Termination</h3>
+                <p className="text-muted-foreground">
+                  We reserve the right to suspend or terminate your access to the Platform at any time, for any reason, 
+                  without notice. Upon termination, these terms shall remain in effect for any disputes or claims.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">14. Severability</h3>
+                <p className="text-muted-foreground">
+                  If any provision of these terms is found to be invalid or unenforceable, the remaining provisions shall 
+                  continue in full force and effect.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">15. Entire Agreement</h3>
+                <p className="text-muted-foreground">
+                  These terms constitute the entire agreement between you and BNBPOT regarding use of the Platform and 
+                  supersede all prior agreements or understandings.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">16. Jurisdiction and Governing Law</h3>
+                <p className="text-muted-foreground">
+                  These Terms shall be governed by and construed in accordance with the laws of Anjouan, 
+                  without regard to its conflict of law provisions. You agree to submit to the exclusive jurisdiction of courts 
+                  located in Anjouan for the resolution of any disputes. You waive any objection to venue in such courts.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">17. Licensing and Regulatory Compliance</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT operates under applicable gaming licenses and regulatory frameworks. Users are prohibited from accessing 
+                  the Platform from jurisdictions where online gambling is illegal. By using the Platform, you represent and 
+                  warrant that you are in compliance with all applicable laws and regulations in your jurisdiction. We reserve 
+                  the right to verify your location and block access from restricted territories.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">18. Anti-Money Laundering (AML) and Know Your Customer (KYC)</h3>
+                <p className="text-muted-foreground mb-2">
+                  BNBPOT maintains strict AML and KYC policies. You agree that:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>We may require identity verification documents at any time</li>
+                  <li>Failure to provide requested documentation may result in account suspension</li>
+                  <li>We reserve the right to report suspicious activities to relevant authorities</li>
+                  <li>Accounts may be frozen pending investigation of potential violations</li>
+                  <li>Source of funds verification may be required for large transactions</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">19. Cryptocurrency and Digital Asset Risks</h3>
+                <p className="text-muted-foreground mb-2">
+                  <span className="font-bold text-foreground">YOU ACKNOWLEDGE THE FOLLOWING RISKS:</span>
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-4">
+                  <li>Cryptocurrency values are extremely volatile and unpredictable</li>
+                  <li>Digital assets may lose all value without warning</li>
+                  <li>Blockchain transactions are irreversible once confirmed</li>
+                  <li>Network congestion may delay or prevent transactions</li>
+                  <li>Smart contract vulnerabilities could result in loss of funds</li>
+                  <li>Regulatory changes may impact the legality or value of digital assets</li>
+                  <li>We are not responsible for market fluctuations or technical blockchain issues</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">20. Wallet Security and Private Key Management</h3>
+                <p className="text-muted-foreground">
+                  <span className="font-bold text-foreground">CRITICAL:</span> You are solely and exclusively responsible for 
+                  the security of your cryptocurrency wallet and private keys. BNBPOT does not have access to, store, or manage 
+                  your private keys. Loss of private keys, seed phrases, or wallet credentials will result in permanent, 
+                  irreversible loss of funds. We cannot recover lost wallets or reverse transactions. Never share your private 
+                  keys with anyone, including individuals claiming to represent BNBPOT.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">21. Transaction Fees and Costs</h3>
+                <p className="text-muted-foreground">
+                  All blockchain transaction fees (gas fees), network fees, and associated costs are your sole responsibility. 
+                  These fees are determined by the blockchain network and are subject to change based on network conditions. 
+                  BNBPOT may charge platform fees, which will be clearly disclosed before transaction confirmation. All fees 
+                  are non-refundable.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">22. Platform Availability and Force Majeure</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT does not guarantee uninterrupted platform availability. We shall not be liable for service interruptions 
+                  caused by maintenance, technical issues, blockchain network problems, cyberattacks, natural disasters, government 
+                  actions, or any other circumstances beyond our reasonable control. We reserve the right to suspend operations 
+                  temporarily or permanently without prior notice.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">23. Audit Rights and Account Suspension</h3>
+                <p className="text-muted-foreground">
+                  BNBPOT reserves the right to audit any account, transaction, or activity at any time. We may temporarily suspend 
+                  accounts during investigations of suspected fraud, money laundering, terms violations, or illegal activities. 
+                  Funds may be held pending resolution of investigations. We are not obligated to provide detailed explanations 
+                  for account suspensions or terminations.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">24. Bonus Terms and Promotional Offers</h3>
+                <p className="text-muted-foreground">
+                  All bonuses, promotions, and special offers are subject to specific terms and conditions, which will be provided 
+                  separately. Bonuses may have wagering requirements, time limitations, and withdrawal restrictions. BNBPOT reserves 
+                  the right to void bonuses if fraud or abuse is detected. Promotional terms may be modified or cancelled at any time.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">25. Data Privacy and Protection</h3>
+                <p className="text-muted-foreground">
+                  Your use of the Platform is subject to our Privacy Policy. We collect, process, and store personal data in 
+                  accordance with applicable data protection laws. By using the Platform, you consent to data collection and 
+                  processing as described in our Privacy Policy. We may share information with regulators, law enforcement, and 
+                  service providers as required by law or necessary for platform operations.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">26. Third-Party Services and Links</h3>
+                <p className="text-muted-foreground">
+                  The Platform may contain links to third-party services, wallets, or websites. BNBPOT is not responsible for the 
+                  content, security, or practices of third-party services. Your interactions with third parties are solely between 
+                  you and such parties. We disclaim all liability for third-party services.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">27. Winnings and Withdrawals</h3>
+                <p className="text-muted-foreground">
+                  Winnings are subject to verification and compliance checks before withdrawal. We reserve the right to delay or 
+                  refuse withdrawals if fraud is suspected, terms are violated, or identity verification is incomplete. Withdrawal 
+                  limits and processing times may apply. All withdrawals are subject to applicable fees and blockchain confirmation 
+                  times. Tax reporting obligations for winnings are your sole responsibility.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">28. Class Action Waiver</h3>
+                <p className="text-muted-foreground">
+                  <span className="font-bold text-foreground">YOU EXPRESSLY WAIVE YOUR RIGHT TO PARTICIPATE IN CLASS ACTIONS, 
+                  CLASS ARBITRATIONS, OR REPRESENTATIVE ACTIONS AGAINST BNBPOT.</span> All disputes must be brought individually. 
+                  You may not consolidate your claim with claims of other users. This waiver is binding and enforceable to the 
+                  maximum extent permitted by law.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">29. Limitation Period for Claims</h3>
+                <p className="text-muted-foreground">
+                  Any claim or cause of action arising from or related to use of the Platform must be filed within ONE (1) YEAR 
+                  after the claim or cause of action arose. Failure to file within this period constitutes a permanent bar to such 
+                  claim.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">30. Assignment and Transfer</h3>
+                <p className="text-muted-foreground">
+                  You may not assign, transfer, or delegate these Terms or your account to any third party. BNBPOT may freely 
+                  assign these Terms and all rights hereunder to any third party without notice or consent.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-foreground mb-2">31. Complete Disclaimer of Warranties</h3>
+                <p className="text-muted-foreground">
+                  <span className="font-bold text-foreground">THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES 
+                  OF ANY KIND, EXPRESS OR IMPLIED.</span> We disclaim all warranties including merchantability, fitness for a 
+                  particular purpose, non-infringement, accuracy, and reliability. We do not warrant that the Platform will be 
+                  error-free, secure, or uninterrupted.
+                </p>
+              </div>
+
+              <div className="p-4 bg-muted/30 border border-border/50 rounded-lg mt-6">
+                <p className="text-xs text-muted-foreground italic">
+                  Last Updated: November 2024. These terms are subject to change. Continued use constitutes acceptance of modified terms.
+                </p>
+              </div>
             </div>
           </ScrollArea>
         </DialogContent>
