@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +34,13 @@ export default function GameNavigation({
   username,
   onOpenProfile
 }: GameNavigationProps) {
-  const [activeTab, setActiveTab] = useState("jackpot");
+  const [location] = useLocation();
+  
+  const activeTab = location === "/" ? "jackpot" 
+    : location === "/coinflip" ? "coinflip"
+    : location === "/prediction-markets" ? "prediction-markets"
+    : "jackpot";
+  
   const [avatarUrl, setAvatarUrl] = useState<string | null>(() => {
     return username ? localStorage.getItem(`avatar_${username}`) : null;
   });
@@ -126,40 +133,43 @@ export default function GameNavigation({
         }}>
           {/* Navigation tabs */}
           <div className="flex flex-nowrap items-center gap-1">
-          <Button
-            data-testid="button-jackpot-tab"
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("jackpot")}
-            className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '32px', fontSize: '14px'}}
-          >
-            <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#EAB308'}}>
-              <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-              <circle cx="10" cy="10" r="3" fill="currentColor"/>
-            </svg>
-            <img src={jackpotTabLogo} alt="Jackpot" style={{height: '34px', width: 'auto'}} />
-          </Button>
-          <Button
-            data-testid="button-coinflip-tab"
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("coinflip")}
-            className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '32px', fontSize: '14px'}}
-          >
-            <img src={coinflipLogo} alt="Coinflip" style={{height: '34px', width: 'auto'}} />
-          </Button>
-          <Button
-            data-testid="button-prediction-markets-tab"
-            variant="ghost"
-            size="sm"
-            onClick={() => setActiveTab("prediction-markets")}
-            className={`font-medium px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-            style={{height: '32px', fontSize: '14px'}}
-          >
-            <img src={predictionMarketsLogo} alt="Prediction Markets" style={{height: '34px', width: 'auto'}} />
-          </Button>
+          <Link href="/">
+            <Button
+              data-testid="button-jackpot-tab"
+              variant="ghost"
+              size="sm"
+              className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+              style={{height: '32px', fontSize: '14px'}}
+            >
+              <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#EAB308'}}>
+                <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                <circle cx="10" cy="10" r="3" fill="currentColor"/>
+              </svg>
+              <img src={jackpotTabLogo} alt="Jackpot" style={{height: '34px', width: 'auto'}} />
+            </Button>
+          </Link>
+          <Link href="/coinflip">
+            <Button
+              data-testid="button-coinflip-tab"
+              variant="ghost"
+              size="sm"
+              className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+              style={{height: '32px', fontSize: '14px'}}
+            >
+              <img src={coinflipLogo} alt="Coinflip" style={{height: '34px', width: 'auto'}} />
+            </Button>
+          </Link>
+          <Link href="/prediction-markets">
+            <Button
+              data-testid="button-prediction-markets-tab"
+              variant="ghost"
+              size="sm"
+              className={`font-medium px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+              style={{height: '32px', fontSize: '14px'}}
+            >
+              <img src={predictionMarketsLogo} alt="Prediction Markets" style={{height: '34px', width: 'auto'}} />
+            </Button>
+          </Link>
           </div>
 
           {/* Connect button on bottom right */}
