@@ -163,8 +163,7 @@ export default function ChatSidebar({
       borderRadius: '0px',
       display: 'flex',
       flexDirection: 'column',
-      height: '100%',
-      maxHeight: '100%'
+      alignSelf: 'stretch'
     }}>
       {/* Collapse Button */}
       <button
