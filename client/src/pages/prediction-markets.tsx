@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
 import { GAME } from "@/constants/layout";
+import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
@@ -29,7 +30,7 @@ export default function PredictionMarkets() {
   const { toast } = useToast();
   
   // Fetch current round data
-  const { data: currentRound, isLoading: isLoadingRound } = useQuery({
+  const { data: currentRound, isLoading: isLoadingRound } = useQuery<RoundWithBets>({
     queryKey: ['/api/rounds/current'],
     refetchInterval: 5000, // Refresh every 5 seconds
   });

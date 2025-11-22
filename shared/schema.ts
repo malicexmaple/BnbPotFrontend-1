@@ -127,6 +127,14 @@ export const insertBetSchema = createInsertSchema(bets).omit({
 export type InsertBet = z.infer<typeof insertBetSchema>;
 export type Bet = typeof bets.$inferSelect;
 
+// Extended Round type with bets and calculated properties (as returned by API)
+export type RoundWithBets = Round & {
+  bets: Bet[];
+  totalBets: number;
+  timeRemaining: number | null;
+  isCountdownActive: boolean;
+};
+
 export const userStats = pgTable("user_stats", {
   userAddress: text("user_address").primaryKey(),
   username: text("username").notNull(),

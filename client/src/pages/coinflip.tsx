@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
 import { GAME, CAROUSEL, BORDER_RADIUS } from "@/constants/layout";
+import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
@@ -35,7 +36,7 @@ export default function Coinflip() {
   const { toast } = useToast();
   
   // Fetch current round data
-  const { data: currentRound, isLoading: isLoadingRound } = useQuery({
+  const { data: currentRound, isLoading: isLoadingRound } = useQuery<RoundWithBets>({
     queryKey: ['/api/rounds/current'],
     refetchInterval: 5000, // Refresh every 5 seconds
   });
@@ -572,7 +573,7 @@ export default function Coinflip() {
                       <div
                         key={bet.id}
                         className="glass-panel p-4 hover-elevate transition-all"
-                        style={{borderRadius: BORDER_RADIUS.MD}}
+                        style={{borderRadius: BORDER_RADIUS.STANDARD}}
                         data-testid={`player-row-${bet.id}`}
                       >
                         <div className="flex items-center justify-between gap-4">
@@ -633,7 +634,7 @@ export default function Coinflip() {
       </GameLayout>
 
       {/* Signup Dialog */}
-      <Dialog open={shouldShowSignup} onOpenChange={() => {}}>
+      <Dialog open={!!shouldShowSignup} onOpenChange={() => {}}>
         <DialogContent className="max-w-md border-0 p-6 [&>button:first-child]:hidden signup-dialog">
           <DialogHeader>
             <DialogTitle className="flex justify-center mb-2">
