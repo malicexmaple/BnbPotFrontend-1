@@ -365,7 +365,7 @@ export default function Home() {
         minWidth: '1200px'
       }}>
         {/* Header (scrolls with content) */}
-        <div className="z-[100]" style={{ minWidth: '1200px' }}>
+        <div className="w-full z-[100]" style={{ minWidth: '1200px' }}>
           <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
         </div>
 
