@@ -154,3 +154,87 @@ export const insertDailyStatsSchema = createInsertSchema(dailyStats);
 
 export type InsertDailyStats = z.infer<typeof insertDailyStatsSchema>;
 export type DailyStats = typeof dailyStats.$inferSelect;
+
+export const airdropPool = pgTable("airdrop_pool", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  balance: numeric("balance", { precision: 20, scale: 8 }).notNull().default('0'),
+  lastDistributionDate: text("last_distribution_date"),
+  totalDistributed: numeric("total_distributed", { precision: 20, scale: 8 }).notNull().default('0'),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertAirdropPoolSchema = createInsertSchema(airdropPool).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type InsertAirdropPool = z.infer<typeof insertAirdropPoolSchema>;
+export type AirdropPool = typeof airdropPool.$inferSelect;
+
+export const airdropDistributions = pgTable("airdrop_distributions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  date: text("date").notNull(),
+  totalAmount: numeric("total_amount", { precision: 20, scale: 8 }).notNull(),
+  recipientCount: integer("recipient_count").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertAirdropDistributionSchema = createInsertSchema(airdropDistributions).omit({
+  id: true,
+  timestamp: true,
+});
+
+export type InsertAirdropDistribution = z.infer<typeof insertAirdropDistributionSchema>;
+export type AirdropDistribution = typeof airdropDistributions.$inferSelect;
+
+export const airdropRecipients = pgTable("airdrop_recipients", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  distributionId: varchar("distribution_id").notNull().references(() => airdropDistributions.id),
+  userAddress: text("user_address").notNull(),
+  userId: varchar("user_id").references(() => users.id),
+  amount: numeric("amount", { precision: 20, scale: 8 }).notNull(),
+  betVolume24h: numeric("bet_volume_24h", { precision: 20, scale: 8 }).notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertAirdropRecipientSchema = createInsertSchema(airdropRecipients).omit({
+  id: true,
+  timestamp: true,
+});
+
+export type InsertAirdropRecipient = z.infer<typeof insertAirdropRecipientSchema>;
+export type AirdropRecipient = typeof airdropRecipients.$inferSelect;
+
+export const airdropTips = pgTable("airdrop_tips", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userAddress: text("user_address").notNull(),
+  userId: varchar("user_id").references(() => users.id),
+  amount: numeric("amount", { precision: 20, scale: 8 }).notNull(),
+  txHash: text("tx_hash"),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertAirdropTipSchema = createInsertSchema(airdropTips).omit({
+  id: true,
+  timestamp: true,
+}).extend({
+  amount: z.string()
+    .refine((val) => {
+      const num = parseFloat(val);
+      return !isNaN(num) && num > 0;
+    }, "Tip amount must be a positive number")
+    .refine((val) => {
+      const num = parseFloat(val);
+      return num >= 0.001;
+    }, "Minimum tip is 0.001 BNB")
+    .refine((val) => {
+      const parts = val.split('.');
+      return parts.length === 1 || (parts[1] && parts[1].length <= 8);
+    }, "Amount can have at most 8 decimal places"),
+  userAddress: z.string()
+    .min(1, "User address is required")
+    .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address format"),
+});
+
+export type InsertAirdropTip = z.infer<typeof insertAirdropTipSchema>;
+export type AirdropTip = typeof airdropTips.$inferSelect;

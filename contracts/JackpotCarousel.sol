@@ -43,7 +43,9 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
     uint256 public constant MIN_BET = 0.001 ether;
     uint256 public constant MAX_BET = 100 ether;
     uint256 public constant MAX_PLAYERS_PER_ROUND = 100;
-    uint256 public constant HOUSE_FEE_BPS = 500; // 5% = 500 basis points
+    uint256 public constant HOUSE_FEE_BPS = 400; // 4% to house = 400 basis points
+    uint256 public constant AIRDROP_FEE_BPS = 100; // 1% to airdrop = 100 basis points
+    uint256 public constant TOTAL_FEE_BPS = 500; // 5% total = 500 basis points
     uint256 public constant EMERGENCY_REFUND_TIMEOUT = 72 hours;
     
     // ============ State Variables ============
@@ -51,11 +53,13 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
     address public owner;
     address public pendingOwner; // For two-step ownership transfer
     address public feeRecipient;
+    address public airdropRecipient; // Address to receive airdrop funds
     bool public paused;
     bool private locked; // Reentrancy guard
     
     uint256 public currentRoundId;
     uint256 public houseFeeCollected;
+    uint256 public airdropFeeCollected;
     
     // ============ Enums ============
     
@@ -126,6 +130,16 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
         uint256 amount
     );
     
+    event AirdropFeeCollected(
+        uint256 indexed roundId,
+        uint256 amount
+    );
+    
+    event AirdropRecipientUpdated(
+        address indexed oldRecipient,
+        address indexed newRecipient
+    );
+    
     event OwnershipTransferStarted(
         address indexed previousOwner,
         address indexed newOwner
@@ -180,6 +194,7 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
         
         owner = msg.sender;
         feeRecipient = msg.sender;
+        airdropRecipient = msg.sender; // Default to owner, can be changed later
         paused = false;
         locked = false;
         currentRoundId = 0;
@@ -296,12 +311,15 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
         
         // Calculate payout (BEFORE state changes for CEI pattern)
         uint256 houseFee = (round.totalPot * HOUSE_FEE_BPS) / 10000;
-        uint256 prize = round.totalPot - houseFee;
+        uint256 airdropFee = (round.totalPot * AIRDROP_FEE_BPS) / 10000;
+        uint256 totalFees = houseFee + airdropFee;
+        uint256 prize = round.totalPot - totalFees;
         
         // Update state BEFORE external call (CEI pattern)
         round.winner = winner;
         round.status = RoundStatus.Settled;
         houseFeeCollected += houseFee;
+        airdropFeeCollected += airdropFee;
         
         emit WinnerSelected(
             roundId,
@@ -312,6 +330,7 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
         );
         
         emit HouseFeeCollected(roundId, houseFee);
+        emit AirdropFeeCollected(roundId, airdropFee);
         
         // Transfer prize to winner (external call LAST)
         (bool success, ) = payable(winner).call{value: prize}("");
@@ -385,6 +404,31 @@ contract JackpotCarousel is VRFConsumerBaseV2 {
         
         (bool success, ) = payable(feeRecipient).call{value: amount}("");
         require(success, "Fee withdrawal failed");
+    }
+    
+    /**
+     * @notice Withdraw collected airdrop fees
+     * @dev Only owner, uses nonReentrant for safety
+     */
+    function withdrawAirdropFees() external onlyOwner nonReentrant {
+        uint256 amount = airdropFeeCollected;
+        require(amount > 0, "No airdrop fees to withdraw");
+        
+        airdropFeeCollected = 0;
+        
+        (bool success, ) = payable(airdropRecipient).call{value: amount}("");
+        require(success, "Airdrop fee withdrawal failed");
+    }
+    
+    /**
+     * @notice Update airdrop recipient address
+     * @param _airdropRecipient New airdrop recipient
+     */
+    function setAirdropRecipient(address _airdropRecipient) external onlyOwner {
+        require(_airdropRecipient != address(0), "Invalid address");
+        address oldRecipient = airdropRecipient;
+        airdropRecipient = _airdropRecipient;
+        emit AirdropRecipientUpdated(oldRecipient, _airdropRecipient);
     }
     
     /**
