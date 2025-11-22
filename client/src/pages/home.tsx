@@ -660,7 +660,11 @@ export default function Home() {
             paddingRight: '0px',
             overflow: 'visible',
             zIndex: 50,
-            borderRadius: '0px'
+            borderRadius: '0px',
+            height: '100%',
+            maxHeight: '100%',
+            display: 'flex',
+            flexDirection: 'column'
           }}>
             {/* Collapse Button - Positioned on the outer left edge */}
             <button
