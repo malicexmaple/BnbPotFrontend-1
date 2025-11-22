@@ -153,7 +153,7 @@ export default function ChatSidebar({
 
   return (
     <div className="flex-shrink-0 transition-all duration-300 relative glass-panel" style={{
-      width: isCollapsed ? '0px' : '100%',
+      width: isCollapsed ? '0px' : `${SIDEBAR.CHAT_WIDTH}px`,
       paddingLeft: '0px',
       paddingTop: isCollapsed ? '0px' : '24px',
       paddingBottom: isCollapsed ? '0px' : '24px',
