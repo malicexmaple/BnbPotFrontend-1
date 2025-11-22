@@ -360,16 +360,14 @@ export default function Home() {
         backgroundPosition: 'center',
         zIndex: -1
       }} />
-      
-      {/* Fixed header */}
-      <div className="fixed top-0 left-0 right-0 z-[100]" style={{ minWidth: '1200px' }}>
-        <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
-      </div>
 
       <div className="flex flex-col min-h-screen w-full" style={{
-        minWidth: '1200px',
-        paddingTop: '100px'
+        minWidth: '1200px'
       }}>
+        {/* Sticky header - scrolls horizontally with content */}
+        <div className="sticky top-0 z-[100] w-full">
+          <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
+        </div>
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
