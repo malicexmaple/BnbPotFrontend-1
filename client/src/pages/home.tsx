@@ -352,7 +352,7 @@ export default function Home() {
   const seconds = actualTimeRemaining % 60;
 
   return (
-    <div className="flex flex-col h-screen space-bg" style={{
+    <div className="flex flex-col min-h-screen space-bg" style={{
       backgroundImage: `url(${bnbpotBg})`
     }}>
       <div className="sticky top-0 z-50">
@@ -360,13 +360,13 @@ export default function Home() {
       </div>
 
       {/* Wrapper for content + footer */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col">
         {/* Golden border wrapper around bottom nav + content */}
-        <div className="flex-1 flex flex-col overflow-hidden" style={{
+        <div className="flex-1 flex flex-col" style={{
           border: '1px solid rgba(250, 204, 21, 0.85)',
           boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
         }}>
-          <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 flex">
             <ChatSidebar
               isCollapsed={isChatCollapsed}
               onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
@@ -379,7 +379,7 @@ export default function Home() {
             />
 
         {/* CENTER - MAIN GAME AREA */}
-        <div className="flex-1 flex flex-col overflow-hidden relative">
+        <div className="flex-1 flex flex-col relative">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
             <div className="flex items-start justify-between">
