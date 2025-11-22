@@ -8,6 +8,7 @@ import { generateAuthMessage, verifyWalletSignature, requireAuth, requireTermsAg
 import { randomBytes } from "crypto";
 import type { IncomingMessage } from "http";
 import type session from "express-session";
+import { rateLimiters } from "./rateLimit";
 
 // Module-level variable to hold broadcast function
 let broadcastBetUpdate: ((data: any) => void) | null = null;
@@ -20,8 +21,9 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
   /**
    * Step 1: Request a nonce for wallet authentication
    * Generates a unique nonce to prevent replay attacks
+   * RATE LIMITED: 10 requests per 15 minutes
    */
-  app.post("/api/auth/nonce", async (req, res) => {
+  app.post("/api/auth/nonce", rateLimiters.auth, async (req, res) => {
     try {
       const { walletAddress } = req.body;
       
@@ -50,8 +52,9 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
    * Step 2: Verify wallet signature and create authenticated session
    * Verifies the signature matches the nonce and wallet address
    * CRITICAL: Must verify the message contains the server-issued nonce
+   * RATE LIMITED: 10 requests per 15 minutes
    */
-  app.post("/api/auth/verify", async (req, res) => {
+  app.post("/api/auth/verify", rateLimiters.auth, async (req, res) => {
     try {
       const { walletAddress, signature, message } = req.body;
       

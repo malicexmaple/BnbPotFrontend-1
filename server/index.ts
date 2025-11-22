@@ -8,6 +8,11 @@ import { gameService } from "./gameService";
 
 const app = express();
 
+// SECURITY: Configure Express to trust first proxy for accurate IP detection
+// This enables req.ip to correctly parse X-Forwarded-For when behind Replit's proxy
+// Set to 1 to trust only the first proxy hop (most secure for single-proxy setups)
+app.set('trust proxy', 1);
+
 declare module 'http' {
   interface IncomingMessage {
     rawBody: unknown
