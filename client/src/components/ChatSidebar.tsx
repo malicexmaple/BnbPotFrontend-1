@@ -439,19 +439,24 @@ export default function ChatSidebar({
 
       {/* Donate Dialog */}
       <Dialog open={showDonateDialog} onOpenChange={setShowDonateDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md glass-panel" style={{
+          background: DARK_BG.SOLID,
+          border: GOLDEN.BORDER,
+          borderRadius: BORDER_RADIUS.SMALL,
+          boxShadow: GOLDEN.GLOW
+        }}>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-foreground">
               <DollarSign className="w-5 h-5" style={{ color: '#FCD34D', strokeWidth: 3 }} />
               Donate to Airdrop Pool
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-muted-foreground">
               Your donation will be distributed to all active players at midnight UTC. Thank you for supporting the community!
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Donation Amount (BNB)</label>
+              <label className="text-sm font-medium text-foreground">Donation Amount (BNB)</label>
               <Input
                 type="number"
                 step="0.001"
@@ -459,7 +464,7 @@ export default function ChatSidebar({
                 placeholder="0.000"
                 value={donateAmount}
                 onChange={(e) => setDonateAmount(e.target.value)}
-                className="font-mono"
+                className="font-mono bg-muted/30 border-border/20 text-foreground"
                 data-testid="input-donate-amount"
               />
             </div>
@@ -480,6 +485,10 @@ export default function ChatSidebar({
                 }}
                 disabled={!donateAmount || parseFloat(donateAmount) <= 0 || donateMutation.isPending}
                 className="flex-1"
+                style={{
+                  background: GOLDEN.GRADIENT,
+                  border: GOLDEN.BORDER_LIGHT
+                }}
                 data-testid="button-confirm-donate"
               >
                 {donateMutation.isPending ? "Processing..." : "Donate"}
