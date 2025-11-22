@@ -352,20 +352,17 @@ export default function Home() {
   const seconds = actualTimeRemaining % 60;
 
   return (
-    <div className="min-h-screen w-full flex justify-center space-bg" style={{
+    <div className="flex flex-col min-h-screen w-full space-bg" style={{
       backgroundImage: `url(${bnbpotBg})`,
-      backgroundAttachment: 'fixed',
       backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      overflowX: 'hidden'
+      backgroundPosition: 'center'
     }}>
-      <div className="flex flex-col" style={{ width: '1200px' }}>
-        <div className="sticky top-0 z-[100]" style={{ width: '1200px' }}>
-          <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
-        </div>
+      <div className="sticky top-0 z-[100] w-full">
+        <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
+      </div>
 
-        {/* Wrapper for content + footer */}
-        <div className="flex-1 flex flex-col">
+      {/* Wrapper for content + footer */}
+      <div className="flex-1 flex flex-col w-full">
         {/* Golden border wrapper around bottom nav + content */}
         <div className="flex-1 flex flex-col" style={{
           border: '1px solid rgba(250, 204, 21, 0.85)',
@@ -1204,6 +1201,5 @@ export default function Home() {
         onDisconnect={disconnect}
       />
     </div>
-  </div>
   );
 }
