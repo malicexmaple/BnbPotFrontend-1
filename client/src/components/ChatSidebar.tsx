@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,6 +41,47 @@ export default function ChatSidebar({
   const [chatInput, setChatInput] = useState("");
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [avatarUrls, setAvatarUrls] = useState<Record<string, string | null>>({});
+  const [timeUntilDrop, setTimeUntilDrop] = useState<number>(0);
+  const [isLive, setIsLive] = useState(false);
+
+  // Fetch airdrop pool data
+  const { data: pool } = useQuery<{balance: string; lastDistributionDate: string | null}>({
+    queryKey: ['/api/airdrop/pool'],
+    refetchInterval: 30000,
+  });
+
+  // Calculate countdown to midnight UTC
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const nowUTC = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds()
+      );
+
+      const midnightUTC = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() + 1,
+        0, 0, 0
+      );
+
+      const diff = midnightUTC - nowUTC;
+      const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
+      
+      setTimeUntilDrop(hoursLeft);
+      setIsLive(hoursLeft === 0 && diff < 60000);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Load avatar URLs for all users in messages
   useEffect(() => {
@@ -206,16 +248,24 @@ export default function ChatSidebar({
                     borderRadius: BORDER_RADIUS.SMALL,
                     boxShadow: GOLDEN.SHADOW
                   }}>
-                    <img src={bnbIcon} alt="BNB" style={{width: '1.5rem', height: '1.5rem'}} />
-                    <span className="font-bold font-mono no-text-shadow" style={{
-                      color: '#FFFFFF',
+                    <div className={`relative ${isLive ? 'animate-pulse' : ''}`}>
+                      <img src={bnbIcon} alt="BNB" style={{width: '1.5rem', height: '1.5rem'}} />
+                      {isLive && (
+                        <>
+                          <div className="absolute inset-0 rounded-full bg-yellow-400/50 animate-ping" />
+                          <div className="absolute inset-0 rounded-full bg-yellow-400/30 blur-md" />
+                        </>
+                      )}
+                    </div>
+                    <span className={`font-bold font-mono no-text-shadow ${isLive ? 'animate-pulse' : ''}`} style={{
+                      color: isLive ? '#FCD34D' : '#FFFFFF',
                       fontSize: '1rem',
                       lineHeight: '1',
                       display: 'flex',
                       alignItems: 'center',
                       height: '1.5rem',
                       paddingTop: `${AIRDROP.BALANCE_PADDING_TOP}px`
-                    }} data-testid="text-airdrop-amount">0.255</span>
+                    }} data-testid="text-airdrop-amount">{pool ? parseFloat(pool.balance).toFixed(4) : '0.0000'}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.125rem'}}>
@@ -252,7 +302,7 @@ export default function ChatSidebar({
                     ))}
                   </div>
                 </div>
-                <Badge className="text-primary font-bold px-2 py-0.5 relative z-20" style={{
+                <Badge className={`text-primary font-bold px-2 py-0.5 relative z-20 ${isLive ? 'animate-pulse' : ''}`} style={{
                   fontSize: '0.875rem',
                   position: 'absolute',
                   right: '-6px',
@@ -260,8 +310,13 @@ export default function ChatSidebar({
                   background: DARK_BG.SOLID,
                   border: GOLDEN.BORDER,
                   borderRadius: BORDER_RADIUS.TINY,
-                  boxShadow: GOLDEN.SHADOW
-                }} data-testid="badge-airdrop-live">LIVE</Badge>
+                  boxShadow: isLive ? '0 0 10px rgba(250, 204, 21, 0.6), 0 0 20px rgba(250, 204, 21, 0.4)' : GOLDEN.SHADOW
+                }} data-testid="badge-airdrop-live">
+                  {isLive ? 'LIVE' : `${timeUntilDrop}H`}
+                </Badge>
+                {isLive && (
+                  <div className="absolute -inset-1 bg-yellow-400/20 blur-lg rounded animate-pulse" style={{ zIndex: 0 }} />
+                )}
               </div>
             </div>
 

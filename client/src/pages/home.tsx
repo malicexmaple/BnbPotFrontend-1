@@ -10,7 +10,6 @@ import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
 import MiningBlockOverlay from "@/components/MiningBlockOverlay";
 import DemoModeBanner from "@/components/DemoModeBanner";
-import { AirdropBanner } from "@/components/AirdropBanner";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -358,11 +357,6 @@ export default function Home() {
       backgroundImage: `url(${bnbpotBg})`
     }}>
       <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
-
-      {/* Airdrop Banner */}
-      <div className="px-6 pt-4 flex justify-center">
-        <AirdropBanner />
-      </div>
 
       {/* Testnet Mode Banner */}
       <div className="px-6 pt-2">
