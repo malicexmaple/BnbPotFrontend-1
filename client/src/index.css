@@ -794,6 +794,3 @@
 /* ===== MOBILE FIX: Preserve desktop layout on mobile ===== */
 /* The viewport meta tag is set to width=1200 which automatically zooms out on mobile */
 /* This ensures the desktop layout is preserved and users can pinch to zoom */
-body {
-  min-width: 1200px;
-}
