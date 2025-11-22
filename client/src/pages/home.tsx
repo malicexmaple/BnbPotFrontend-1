@@ -369,7 +369,7 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col min-h-screen w-full">
+        <div className="flex flex-col min-h-screen" style={{ minWidth: '1200px', width: '100%', maxWidth: '100%' }}>
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
@@ -388,7 +388,7 @@ export default function Home() {
             />
 
         {/* CENTER - MAIN GAME AREA */}
-        <div className="flex-1 flex flex-col relative">
+        <div className="flex flex-col relative" style={{flex: '1 1 auto', minWidth: 'calc(1200px - 690px)'}}>
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
             <div className="flex items-start justify-between">
