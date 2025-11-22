@@ -791,6 +791,40 @@
   }
 }
 
-/* ===== MOBILE FIX: Preserve desktop layout on mobile ===== */
-/* The viewport meta tag is set to width=1200 which automatically zooms out on mobile */
-/* This ensures the desktop layout is preserved and users can pinch to zoom */
+/* ===== MOBILE LANDSCAPE/PORTRAIT: Force 1200px desktop layout ===== */
+/* Desktop: Normal responsive behavior (default) */
+.app-shell {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Mobile Landscape: Force 1200px width and scale to fit */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .app-shell {
+    width: 1200px !important;
+    min-width: 1200px !important;
+    max-width: 1200px !important;
+    transform-origin: top center;
+    overflow-x: auto;
+  }
+  
+  body {
+    overflow-x: auto;
+  }
+}
+
+/* Mobile Portrait: Force 1200px width and scale to fit */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .app-shell {
+    width: 1200px !important;
+    min-width: 1200px !important;
+    max-width: 1200px !important;
+    transform-origin: top center;
+    overflow-x: auto;
+  }
+  
+  body {
+    overflow-x: auto;
+  }
+}
