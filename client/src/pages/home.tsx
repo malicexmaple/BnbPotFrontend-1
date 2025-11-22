@@ -375,7 +375,7 @@ export default function Home() {
       <div className="flex-1 flex flex-col w-full">
         {/* Content wrapper */}
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 grid w-full gap-4 desktop:grid-cols-[minmax(260px,300px),1fr] lg:grid-cols-[minmax(260px,300px),1fr,minmax(260px,300px)] md:gap-6">
+          <div className="flex-1 flex">
             <ChatSidebar
               isCollapsed={isChatCollapsed}
               onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
@@ -388,7 +388,7 @@ export default function Home() {
             />
 
         {/* CENTER - MAIN GAME AREA */}
-        <div className="flex flex-col relative flex-1 min-w-0">
+        <div className="flex-1 flex flex-col relative">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
             <div className="flex flex-wrap items-start justify-between gap-4">
