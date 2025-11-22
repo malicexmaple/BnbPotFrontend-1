@@ -1,4 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { db } from "@shared/db";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { gameService } from "./gameService";
@@ -10,6 +13,32 @@ declare module 'http' {
     rawBody: unknown
   }
 }
+
+// Production-ready PostgreSQL session store
+const PgSession = connectPgSimple(session);
+
+// Session configuration for production-ready authentication
+app.use(session({
+  store: new PgSession({
+    conObject: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+    },
+    tableName: 'user_sessions', // Custom table name
+    createTableIfMissing: true, // Auto-create session table
+    pruneSessionInterval: 60 * 15 // Clean expired sessions every 15 minutes
+  }),
+  secret: process.env.SESSION_SECRET || 'bnbpot-dev-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    httpOnly: true, // Prevent XSS attacks
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'strict' // CSRF protection
+  }
+}));
+
 app.use(express.json({
   verify: (req, _res, buf) => {
     req.rawBody = buf;

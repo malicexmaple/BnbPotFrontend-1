@@ -96,36 +96,67 @@ export function useWallet() {
 
       if (accounts && accounts.length > 0) {
         const address = accounts[0];
-        const message = `Welcome to BNBPOT Testnet!\n\nPlease sign this message to verify your wallet ownership.\n\nNetwork: ${ACTIVE_NETWORK.chainName}\nWallet: ${address}\nTimestamp: ${new Date().toISOString()}\n\nNote: This is a testnet - no real funds at risk!`;
         
         try {
+          // Step 1: Request authentication nonce from server
+          const nonceResponse = await fetch('/api/auth/nonce', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress: address })
+          });
+          
+          if (!nonceResponse.ok) {
+            throw new Error('Failed to get authentication challenge');
+          }
+          
+          const { message, nonce } = await nonceResponse.json();
+          
+          // Step 2: Sign the challenge message
           const signature = await window.ethereum.request({
             method: 'personal_sign',
             params: [message, address],
           });
-
-          if (signature) {
-            console.log('🔐 Wallet Connected & Signed:', {
-              address: address,
-              signature: signature.slice(0, 20) + '...'
-            });
-            setHasManuallyConnected(true);
-            setState({
-              address: address,
-              isConnecting: false,
-              error: null,
-            });
-          } else {
-            setState({
-              address: null,
-              isConnecting: false,
-              error: 'Signature verification failed',
-            });
+          
+          if (!signature) {
+            throw new Error('Signature rejected');
           }
+          
+          // Step 3: Verify signature with backend
+          const verifyResponse = await fetch('/api/auth/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              walletAddress: address, 
+              signature, 
+              message 
+            })
+          });
+          
+          if (!verifyResponse.ok) {
+            const errorData = await verifyResponse.json();
+            throw new Error(errorData.message || 'Signature verification failed');
+          }
+          
+          const authData = await verifyResponse.json();
+          
+          console.log('🔐 Wallet Authenticated:', {
+            address: authData.walletAddress,
+            username: authData.username,
+            agreedToTerms: authData.agreedToTerms
+          });
+          
+          setHasManuallyConnected(true);
+          setState({
+            address: authData.walletAddress,
+            isConnecting: false,
+            error: null,
+          });
         } catch (signError: any) {
           let errorMessage = 'Signature rejected';
           if (signError.code === 4001) {
             errorMessage = 'You must sign the message to connect';
+          } else if (signError.message) {
+            errorMessage = signError.message;
           }
           setState({
             address: null,
@@ -157,7 +188,13 @@ export function useWallet() {
     }
   }, [switchToBSC]);
 
-  const disconnect = useCallback(() => {
+  const disconnect = useCallback(async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    
     setHasManuallyConnected(false);
     setState({
       address: null,

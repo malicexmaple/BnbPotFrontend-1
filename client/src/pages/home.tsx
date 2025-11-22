@@ -218,9 +218,8 @@ export default function Home() {
     }
 
     try {
-      // Send signup data to backend API
+      // Send signup data to backend API (wallet address is in authenticated session)
       await apiRequest("POST", "/api/users/signup", {
-        walletAddress: address,
         username: signupData.name,
         email: signupData.email
       });
@@ -313,11 +312,11 @@ export default function Home() {
 
   /**
    * Place bet using database (fallback mode)
+   * Wallet address comes from authenticated session on backend
    */
   const placeBetDatabase = async () => {
     try {
       await apiRequest("POST", "/api/bets", {
-        userAddress: address,
         username: username,
         amount: betAmount,
       });
@@ -325,7 +324,7 @@ export default function Home() {
       await queryClient.invalidateQueries({ queryKey: ['/api/rounds/current'] });
 
       toast({
-        title: "Bet Placed (Database Mode)",
+        title: "Bet Placed",
         description: `You bet ${betAmount} BNB on this round!`,
       });
 

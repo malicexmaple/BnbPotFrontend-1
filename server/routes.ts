@@ -47,6 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   /**
    * Step 2: Verify wallet signature and create authenticated session
    * Verifies the signature matches the nonce and wallet address
+   * CRITICAL: Must verify the message contains the server-issued nonce
    */
   app.post("/api/auth/verify", async (req, res) => {
     try {
@@ -56,7 +57,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Wallet address, signature, and message required" });
       }
       
-      // Verify the signature
+      // SECURITY: Verify the nonce matches the one we issued
+      const pendingNonce = req.session?.pendingNonce;
+      const pendingWallet = req.session?.pendingWallet;
+      
+      if (!pendingNonce || !pendingWallet) {
+        return res.status(401).json({ message: "No pending authentication. Please request a new challenge." });
+      }
+      
+      // Verify wallet matches the one that requested the nonce
+      if (pendingWallet.toLowerCase() !== walletAddress.toLowerCase()) {
+        return res.status(401).json({ message: "Wallet address mismatch" });
+      }
+      
+      // Verify the message contains the correct nonce (prevents replay attacks)
+      if (!message.includes(pendingNonce)) {
+        return res.status(401).json({ message: "Invalid authentication challenge" });
+      }
+      
+      // Verify the cryptographic signature
       const isValid = verifyWalletSignature(message, signature, walletAddress);
       
       if (!isValid) {
@@ -72,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.session.username = user?.username;
         req.session.agreedToTerms = user?.agreedToTerms || false;
         
-        // Clear pending nonce
+        // IMPORTANT: Clear and invalidate the used nonce (one-time use only)
         delete req.session.pendingNonce;
         delete req.session.pendingWallet;
       }
@@ -145,16 +164,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create or update user (signup)
-  app.post("/api/users/signup", async (req, res) => {
+  // Create or update user (signup) - REQUIRES AUTHENTICATION
+  app.post("/api/users/signup", requireAuth, async (req, res) => {
     try {
-      const { walletAddress, username, email } = req.body;
+      const { username, email } = req.body;
       
-      if (!walletAddress || !username) {
-        return res.status(400).json({ message: "Wallet address and username required" });
+      // Get wallet address from authenticated session
+      const walletAddress = req.session!.walletAddress!;
+      
+      if (!username) {
+        return res.status(400).json({ message: "Username required" });
       }
 
       const user = await storage.createOrUpdateUserByWallet(walletAddress, username, email);
+      
+      // Update session with user info
+      if (req.session) {
+        req.session.username = user.username;
+        req.session.agreedToTerms = user.agreedToTerms;
+      }
       
       // Return user data without password
       const { password, ...userData } = user;
@@ -231,21 +259,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Place a bet
-  app.post("/api/bets", async (req, res) => {
+  // Place a bet - REQUIRES AUTHENTICATION AND TERMS AGREEMENT
+  app.post("/api/bets", requireAuth, requireTermsAgreement, async (req, res) => {
     try {
+      const { amount, username } = req.body;
+      
+      // Get wallet address from authenticated session
+      const userAddress = req.session!.walletAddress!;
+      
       // Validate bet data
-      const validated = insertBetSchema.parse(req.body);
-      
-      // Verify user exists and has agreed to terms
-      const user = await storage.getUserByWalletAddress(validated.userAddress);
-      if (!user) {
-        return res.status(403).json({ message: "User not found. Please complete signup first." });
-      }
-      
-      if (!user.agreedToTerms) {
-        return res.status(403).json({ message: "You must agree to terms and conditions before placing bets." });
-      }
+      const validated = insertBetSchema.parse({
+        userAddress,
+        username: username || req.session!.username,
+        amount
+      });
       
       // Get current round
       const currentRound = await storage.getCurrentRound();

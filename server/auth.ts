@@ -65,6 +65,7 @@ declare module "express-session" {
     walletAddress?: string;
     username?: string;
     agreedToTerms?: boolean;
-    nonce?: string;
+    pendingNonce?: string;
+    pendingWallet?: string;
   }
 }
