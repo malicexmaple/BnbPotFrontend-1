@@ -5,6 +5,11 @@ import { db } from "@shared/db";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { gameService } from "./gameService";
+import { validateEnvironment } from "./env";
+import { handleError } from "./errors";
+
+// SECURITY: Validate all required environment variables before startup
+validateEnvironment();
 
 const app = express();
 
@@ -138,12 +143,10 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app, sessionMiddleware);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
+  // SECURITY: Centralized error handling with structured logging
+  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+    // Use centralized error handler for consistent logging and responses
+    handleError(err, res, `${req.method} ${req.path}`);
   });
 
   // importantly only setup vite in development and after
