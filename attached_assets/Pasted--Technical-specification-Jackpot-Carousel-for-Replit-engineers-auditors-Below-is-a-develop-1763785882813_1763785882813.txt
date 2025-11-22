@@ -1,0 +1,373 @@
+# Technical specification — Jackpot Carousel (for Replit engineers & auditors)
+
+Below is a developer-facing, audit-ready requirements and implementation specification describing **exactly** how the jackpot carousel game must function, what must be implemented on-chain vs off-chain, the interfaces, failure modes, monitoring, and an audit/test checklist. Treat this as the source-of-truth to implement, test, and audit the full product.
+
+> **Reference carousel mock / visual:** `/mnt/data/9eb02ba3-b680-440a-af70-3b252d3a0a75.png` (use this path as the image asset URL in your build pipeline).
+
+---
+
+# 1 — High-level behaviour (user-facing rules)
+
+1. A *round* begins when the **first bet** is successfully placed and confirmed on-chain.
+2. Once the first bet is confirmed, a **countdown** begins. Default length: **90 seconds**.
+3. Any subsequent successful bet during countdown joins the same round and increases the jackpot. Each bet increases the player’s weight and therefore win probability.
+4. If no other bets are placed during countdown, the single bettor wins when the timer ends.
+5. When the countdown reaches zero the round resolves deterministically using a **provably-fair on-chain algorithm** (see Section 4). The winner receives the entire jackpot minus a configurable house fee.
+6. After resolution, a new round becomes available immediately: the timer is **inactive** until the next first bet on-chain.
+7. UI must reflect bet status, pending transactions, confirmations, and final resolution animation (carousel spin → winner highlight).
+
+---
+
+# 2 — Partitioning: on-chain vs off-chain responsibilities
+
+## On-chain (must be audited as smart contract / program)
+
+* Escrow of bets (deposited by players).
+* Recording each bet: `roundId`, `playerAddress`, `amount`, `timestamp`, `optional clientSeed` and `betIndex`.
+* Round state machine (Inactive → Active → Settling → Settled).
+* Final determination of winner using a verifiable randomness / provably-fair method.
+* Emitting events/logs for all actions (BetPlaced, RoundStarted, RoundExtended, RoundEnded, WinnerPaid).
+* Holding and disbursing funds and fees (withdraw functions, fee address).
+* Admin controls: pause, set fee, emergencyWithdraw (restricted & timelocked).
+
+**Why on-chain:** custody and fairness-critical state must be verifiable and immutable.
+
+## Off-chain (Replit server + client)
+
+* UI/UX: carousel rendering, animations, countdown UI.
+* Wallet integration (Phantom / Solflare / WalletAdapter), sending signed transactions.
+* Listening to on-chain events and updating UI in near-real-time.
+* Optional: auxiliary indexing service (push events to DB for quick UI queries).
+* Orchestration for settlement transaction **only if** using commit-reveal or off-chain seeds (but prefer on-chain VRF to avoid trust).
+
+**Important:** off-chain components **must never** be relied on to determine winners or custody funds.
+
+---
+
+# 3 — Smart contract API (canonical)
+
+Design public functions with clear inputs and minimal trust:
+
+* `placeBet(roundId? , amount, clientSeed?) -> tx`
+
+  * If `roundId` omitted and there's no active round, create new round and set round start timestamp.
+  * Returns `betIndex` and emits `BetPlaced`.
+
+* `startRound(roundId, commitmentHash?)` *(optional if using commit-reveal)*
+
+* `settleRound(roundId, vrfProof?) -> tx`
+
+  * Can be called by anyone after countdown expired. This function computes winner from recorded bets and randomness source, pays out winner and fee, emits `RoundEnded(winner, payout)`.
+
+* `withdraw()` — withdraw contract owner fees (owner-only).
+
+* `pause()` / `unpause()` — emergency controls.
+
+* `emergencyWithdraw()` — funds safety (only callable under strict timelock / multi-sig).
+
+**Events (emit all):**
+
+* `BetPlaced(roundId, bettor, amount, cumulativePool, blockTimestamp)`
+* `RoundStarted(roundId, startBlock, deadlineBlock)`
+* `RoundExtended(roundId, newDeadlineBlock)` *(if we allow extension logic)*
+* `RoundSettling(roundId)`
+* `WinnerSelected(roundId, winnerAddress, winningAmount, randomnessSourceId)`
+* `PayoutCompleted(roundId, winner, amount)`
+* `AdminAction(action, by, timestamp)`
+
+---
+
+# 4 — Provably-fair randomness options (pick one; prefer on-chain VRF)
+
+You must **choose one** of the following and implement exactly as described. For auditability, prefer an on-chain VRF service (Chainlink VRF or Solana-native VRF like Switchboard) — it avoids trust in the server.
+
+### Option A — Recommended: On-chain VRF (preferred)
+
+**Flow**
+
+1. `settleRound()` requests a VRF proof from the on-chain VRF oracle (or reads a previously provided VRF).
+2. When VRF proof becomes available, `settleRound(roundId, vrfProof)` is called.
+3. Contract verifies VRF proof on-chain, converts the VRF output to a 256-bit integer `R`.
+4. Winner index = `R mod totalWeight` (weights are integer sums of bets scaled to avoid float errors).
+5. Emit `WinnerSelected` with VRF proof and payout.
+
+**Why:** cryptographically secure, publicly verifiable randomness, minimal trust.
+
+**Audit items:** VRF integration must verify proof on-chain and include gas limits and reentrancy protections.
+
+### Option B — Commit–reveal + blockhash (if VRF unavailable)
+
+**Flow**
+
+1. On `startRound()` contract stores a hash-commit `H = hash(serverSeed)` (server or operator commits). This commit must be on-chain before players place bets.
+2. After round ends, server calls `revealSeed(roundId, seed)`. Contract checks `hash(seed) == H`.
+3. Contract uses `hash(seed, recentBlockhash)` to compute randomness `R`.
+4. Winner = `R mod totalWeight`.
+
+**Warning:** commit–reveal requires server honesty in committing before bets; the commit must be atomic and logged. If server is compromised, clients lose fairness. Use only if VRF is not an option, and require third-party audit & transparent commits.
+
+**Audit items:** commit timing, front-running protections, blockhash selection, irreversible proof.
+
+---
+
+# 5 — Randomness & weighting — precise math
+
+* Represent all amounts in *smallest unit* (e.g., lamports on Solana or lamports-like). Use integers only.
+* Player weight = `betAmount` (no floating point).
+* Build a prefix-sum array of weights: `W[0..n-1]` and cumulative `C[i] = sum_{j<=i} W[j]`.
+* Random integer `R` in [0, C[n-1]-1]. Winner is first index `i` where `C[i] > R`.
+* Use `uint256` arithmetic; throw on overflow (or use BigInt libs if on-chain language supports).
+* Provide deterministic tie-handling (not needed because arithmetic yields unique index).
+
+---
+
+# 6 — UX/Front-end requirements (exact)
+
+**Timer & betting**
+
+* Timer is displayed prominently (90s default). Timer visible to every client and derived from on-chain `round.deadlineBlock` or `deadlineTimestamp`.
+* When the **first bet** in an inactive round is confirmed on-chain, UI must show RoundStarted with the deadline calculated from on-chain start timestamp. Do NOT start timer on local prediction (start only when tx confirmed).
+* When a bet transaction is submitted, show **pending** in the carousel with a temporary ghost card; update to confirmed entry only after the transaction is included and the on-chain `BetPlaced` event is observed.
+
+**Carousel**
+
+* The carousel shows up to X (configurable) cards; overflow should be scrollable.
+* Each card: avatar, displayName, wager (native token), USD equivalent (off-chain FX feed), chance% (calculated from on-chain cumulative).
+* Cards must be ordered (either chronological or by seat index). Keep ordering consistent with on-chain `betIndex`.
+* When round resolves: **carousel animation** must animate to winner index indicated by on-chain `WinnerSelected` event (do not use client-side randomness). The UI should show a short “spin” using the exact on-chain winner index.
+
+**Player list (below)**
+
+* Live-updating list from event indexer showing wagers, USD, chance, escrowed flag.
+* Must include links to on-chain transaction(s) and wallet.
+
+**Transaction feedback**
+
+* Show transaction hash and confirmations for bets. If transaction fails (insufficient funds, user rejects, network error), remove ghost and show error.
+
+**Failure modes**
+
+* If `settleRound` fails due to VRF or oracle pending, UI should show `Settling – awaiting VRF` and a transparent countdown for retry attempts. Do not show a winner until `WinnerSelected` event emitted.
+
+---
+
+# 7 — Wallet integration & on-chain UX
+
+* Use Solana Wallet Adapter / Phantom or relevant wallet toolkit.
+* Bets must be signed by wallet owner; only the on-chain account can place or withdraw.
+* Show gas/fee estimate before final user confirmation. Provide warnings if fee is high or if token balance insufficient.
+* Prevent double-bets from duplicate clicks by disabling bet button while transaction pending and by checking mempool/pending status.
+
+---
+
+# 8 — Security & design constraints (must include in audit)
+
+**Smart contract**
+
+* Use checks-effects-interactions pattern. No external call before state changes.
+* Prevent re-entrancy (use reentrancy guard or Solana equivalent).
+* Limit max bet per user and per round to avoid integer overflows and extreme concentration (configurable).
+* Pausable contract and multi-sig owner controls for admin actions. Admin withdrawal requires time-lock and off-chain governance signoff.
+* Strict validation on `settleRound()` (only callable after deadline + required proofs).
+* Prevent rounding loss — distribute exactly: winner receives `totalPool - fee`. Store fee separately.
+* Include explicit fallback to refund players if settlement cannot occur within a safe timelock (e.g., 72 hours) — requires admin-initiated refund with multi-sig and audit logging.
+
+**Oracles / randomness**
+
+* If VRF: validate proofs on-chain. If commit-reveal: ensure commit recorded before bets and include observers to confirm commit time.
+* Document trust assumptions for whichever method chosen.
+
+**Off-chain**
+
+* Indexer server keys stored in HSM or secrets manager. No private keys that can authorize contract actions stored in code.
+* Enforce TLS, CSP, rate limits, rate-limiting endpoints for tx submission to avoid DoS.
+* UI must never accept arbitrary HTML from user profiles (XSS prevention).
+
+---
+
+# 9 — Audit & testing checklist (deliverable items)
+
+## Required before mainnet launch
+
+1. **Smart-contract audits:** Two independent third-party audits (one standard audit + one follow-up re-audit after fixes). Each audit must include an attack-scenario analysis and gas-cost review.
+2. **Formal randomness verification:** For chosen randomness method, include a cryptographic proof doc showing how winners are derived and reproducible.
+3. **Unit tests:** 100% coverage for core logic — bet placement, pooling, weight math, payout calculation, edge cases (single bettor, max players, max bet, zero bet).
+4. **Integration tests:** end-to-end tests against a local devnet/testnet that simulate many concurrent bettors and network reorgs.
+5. **Fuzz tests:** random sequences of bets & cancellations to find state errors.
+6. **Property-based tests:** invariants: total escrowed == sum(bets) + uncollectedFees; winners always a participant; no double-payouts.
+7. **Security tests:** reentrancy, integer overflow, admin role tests, multi-sig timelock enforcement.
+8. **Penetration testing:** off-chain infrastructure & wallet flows.
+9. **Load testing:** simulate expected peak concurrency + 3x buffer (concurrent placeBet txs, event indexing load).
+10. **Monitoring & alerting:** set alert thresholds for failed settlements, fund imbalance, large single-user bets, and abnormal tx failure rates.
+
+## Audit deliverables
+
+* Threat model & mitigation table.
+* Complete ABI/IDL and event spec.
+* Seed & randomness proofs example vectors (for auditors to test).
+* Migration plan & emergency procedures.
+* Post-audit plan: timeline to patch and re-deploy; communication to users.
+
+---
+
+# 10 — Developer implementation guidance & pseudocode
+
+### Smart contract pseudocode (high level)
+
+```
+struct Round {
+  uint256 id;
+  uint64 startTimestamp;
+  uint64 deadlineTimestamp;
+  address[] players;
+  uint256[] amounts;
+  uint256 totalPool;
+  bool settled;
+  bytes randomnessProofId; // e.g., VRF request id
+}
+
+function placeBet(roundId, amount, clientSeed) payable {
+  require(amount > 0);
+  if (no active round) {
+    round = new Round();
+    round.startTimestamp = now;
+    round.deadlineTimestamp = now + ROUND_DURATION; // 90s
+    emit RoundStarted(round.id, round.startTimestamp, round.deadlineTimestamp);
+  }
+  // accept funds to escrow
+  round.players.push(msg.sender);
+  round.amounts.push(amount);
+  round.totalPool += amount;
+  emit BetPlaced(round.id, msg.sender, amount, round.totalPool);
+}
+
+function settleRound(roundId, vrfProof) {
+  require(now >= round.deadlineTimestamp);
+  require(!round.settled);
+
+  bytes randomness = verifyAndExtractRandomness(vrfProof);
+  uint256 R = toUint256(randomness);
+  winnerIndex = pickWinnerByWeight(R, round.amounts);
+  payout = round.totalPool - calculateFee(round.totalPool);
+  transfer(round.players[winnerIndex], payout);
+  emit WinnerSelected(round.id, round.players[winnerIndex], payout, vrfProof.id);
+  round.settled = true;
+}
+```
+
+### Off-chain indexer & UI pipeline
+
+* Subscribe to `BetPlaced` and `RoundStarted` events.
+* Persist into DB with schema: `roundId`, `bets[]`, `totalPool`, `deadline`.
+* Client connects via websocket to indexer to receive updates.
+* When `WinnerSelected` arrives, client: stop timer, play animation, show tx link, update balances.
+
+---
+
+# 11 — Data schemas
+
+**Round table**
+
+* `roundId` (uint64)
+* `startTimestamp` (ISO)
+* `deadlineTimestamp` (ISO)
+* `totalPool` (integer smallest unit)
+* `settled` (bool)
+* `winner` (address|null)
+
+**Bet table**
+
+* `betId`
+* `roundId`
+* `playerAddress`
+* `amount`
+* `clientSeed` (optional)
+* `txHash`
+* `confirmed` (bool)
+* `index` (seat number)
+
+---
+
+# 12 — Edge cases & exact handling (must be implemented)
+
+1. **Network reorg / tx reverts:** If a confirmed bet is later reverted, the indexer must update state, remove ghost entry, and if necessary, re-run settlement logic. Contracts should lock settlement until N confirmations (configurable) if network instability is expected.
+2. **Tx fails after UI shows pending:** UI must listen for failure and show refund notice / retry.
+3. **Wallet signs but network drops:** treat as pending until tx rejected or confirmed on-chain. Provide user action to re-submit.
+4. **VRF unavailable / oracle lag:** `settleRound()` should allow anyone to call a fallback `settleWithCommitment` if VRF doesn't deliver after a timelock; fallback must be auditable and require multisig to prevent abuse.
+5. **Very large single bet (whale):** system should accept it but flag and optionally require additional confirmation (anti-money-laundering & fairness notice).
+6. **Zero-sum rounding:** always pay exactly `totalPool - fee`, never leave dust in contract except gas-minimal amounts; log any dust and auto-withdraw to fee address (with caution).
+
+---
+
+# 13 — Metrics & monitoring (must ship)
+
+* Number of active rounds per minute.
+* Average round size (SOL equivalent) and distribution.
+* Pending transactions & tx failure rate.
+* Time between round deadline and settlement (should be minimal).
+* Indexer lag (time to reflect on-chain events).
+* Alert: if `totalPool` > X threshold or a single account contributes > Y% of pool.
+
+---
+
+# 14 — Deployment & CI/CD
+
+* Deploy contracts to testnet first. Use deterministic contract addresses for easier testing.
+* CI: run unit tests, integration tests, static analysis, and linter on every PR.
+* Release gating: merge to main only after passing tests + audit remediation branch.
+* Use time-locked multisig for admin actions in mainnet. Store multisig config in repository with off-chain signatures logs.
+
+---
+
+# 15 — Acceptance criteria (for Replit engineers & QA)
+
+Before declaring feature complete and moving to audit:
+
+* All unit and integration tests pass.
+* Load tests simulate expected concurrent bets, no critical failures.
+* Indexer reflecting on-chain events within target latency (< 2s on average).
+* UI shows accurate chance% matching on-chain calculations for every connected client, including after reorgs.
+* VRF integration verified with sample proofs on testnet and proof verification unit tests.
+* All endpoints secured, secrets behind a vault.
+* Third-party audit scheduled / contract audit report obtained.
+
+---
+
+# 16 — Minimal implementation roadmap (milestones)
+
+1. Design contract ABI + events + randomness method selection.
+2. Implement contracts on testnet with basic bet & payout.
+3. Build indexer to ingest events, persist DB rows.
+4. Build wallet-integrated UI showing carousel and list with pending behavior.
+5. Integrate VRF oracle and settlement flow.
+6. End-to-end tests & load tests.
+7. Security audit + fixes.
+8. Mainnet deploy + monitoring + launch.
+
+---
+
+# 17 — Deliverables I will provide (if you want me to)
+
+* Fully detailed API specification (OpenAPI-style) for indexer & UI.
+* Example Solidity / Rust (Solana) smart contract skeleton implementing above API.
+* Test vectors showing how to compute winner from example rounds and randomness.
+* Acceptance test checklist in CI-friendly format.
+
+---
+
+# 18 — Final notes & mandatory audit reminders
+
+* **Do not** rely on any off-chain server for final winners. Use VRF or a properly audited commit–reveal.
+* All admin/owner functions must be multi-sig and timelocked; internal secrets must be auditable.
+* Provide the auditor with a reproducible testnet environment and sample seeds/VRF outputs.
+* Keep funding flows transparent: show audit trails for fee withdrawals.
+
+---
+
+If you’d like, I can now:
+
+* generate an **OpenAPI** for the indexer and websocket events,
+* produce a **contract skeleton** (Solana program in Rust or EVM Solidity) implementing the ABI above, or
+* write a **QA & audit checklist** as a formatted PDF for auditors.
+
+Tell me which of those to produce and I’ll output the next artifact right away (I won’t delay).
