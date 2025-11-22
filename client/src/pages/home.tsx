@@ -9,7 +9,6 @@ import BetControls from "@/components/BetControls";
 import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
 import MiningBlockOverlay from "@/components/MiningBlockOverlay";
-import DemoModeBanner from "@/components/DemoModeBanner";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -357,11 +356,6 @@ export default function Home() {
       backgroundImage: `url(${bnbpotBg})`
     }}>
       <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
-
-      {/* Testnet Mode Banner */}
-      <div className="px-6 pt-2">
-        <DemoModeBanner onLearnMore={() => window.open('/TESTNET_SETUP_GUIDE.md', '_blank')} />
-      </div>
 
       {/* Golden border wrapper around bottom nav + content */}
       <div className="flex-1 flex flex-col overflow-hidden" style={{
