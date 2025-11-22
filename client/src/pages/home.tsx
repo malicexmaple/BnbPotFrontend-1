@@ -360,13 +360,13 @@ export default function Home() {
       </div>
 
       {/* Wrapper for content + footer */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Golden border wrapper around bottom nav + content */}
-        <div className="flex-1 flex flex-col min-h-0 overflow-auto" style={{
+        <div className="flex-1 flex flex-col overflow-hidden" style={{
           border: '1px solid rgba(250, 204, 21, 0.85)',
           boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)'
         }}>
-          <div className="flex-1 flex min-h-0">
+          <div className="flex-1 flex overflow-hidden">
             <ChatSidebar
               isCollapsed={isChatCollapsed}
               onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
@@ -379,7 +379,7 @@ export default function Home() {
             />
 
         {/* CENTER - MAIN GAME AREA */}
-        <div className="flex-1 flex flex-col min-h-0 overflow-auto relative">
+        <div className="flex-1 flex flex-col overflow-hidden relative">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
             <div className="flex items-start justify-between">
