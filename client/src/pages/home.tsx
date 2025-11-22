@@ -355,7 +355,9 @@ export default function Home() {
     <div className="flex flex-col min-h-screen w-full space-bg" style={{
       backgroundImage: `url(${bnbpotBg})`,
       backgroundSize: 'cover',
-      backgroundPosition: 'center'
+      backgroundPosition: 'center',
+      overflowX: 'hidden',
+      maxWidth: '100vw'
     }}>
       <div className="sticky top-0 z-[100] w-full">
         <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
