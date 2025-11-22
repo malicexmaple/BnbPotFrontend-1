@@ -373,8 +373,12 @@ export default function Home() {
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
-        {/* Content wrapper */}
-        <div className="flex-1 flex flex-col">
+        {/* Golden border wrapper around content */}
+        <div className="flex-1 flex flex-col" style={{
+          border: '1px solid rgba(250, 204, 21, 0.85)',
+          boxShadow: '0 0 8px rgba(250, 204, 21, 0.22)',
+          minWidth: '1200px'
+        }}>
           <div className="flex-1 flex">
             <ChatSidebar
               isCollapsed={isChatCollapsed}
