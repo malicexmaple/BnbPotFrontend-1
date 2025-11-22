@@ -363,13 +363,13 @@ export default function Home() {
       
       {/* ONE scrollable container with header + content */}
       <div className="w-full">
-        {/* Header - in normal flow, scrolls away */}
-        <div className="w-full">
+        {/* Header - FIXED to top of viewport */}
+        <div className="fixed top-0 left-0 right-0 w-full z-50">
           <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col min-h-screen w-full">
+        {/* Content - with top padding to account for fixed header */}
+        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: '100px'}}>
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
