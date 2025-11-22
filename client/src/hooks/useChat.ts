@@ -1,16 +1,23 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChatMessage } from '@shared/schema';
 
-export function useChat(username: string | undefined) {
+interface UseChatProps {
+  username: string | undefined;
+  walletAddress: string | undefined;
+}
+
+export function useChat({ username, walletAddress }: UseChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     // Only connect if user is logged in
-    if (!username) {
+    if (!username || !walletAddress) {
       setIsConnected(false);
+      setIsAuthenticated(false);
       setOnlineUsers(0);
       return;
     }
@@ -25,13 +32,25 @@ export function useChat(username: string | undefined) {
     ws.onopen = () => {
       console.log('Connected to chat WebSocket');
       setIsConnected(true);
+      
+      // Authenticate WebSocket connection
+      ws.send(JSON.stringify({
+        type: 'ws_auth',
+        data: { walletAddress }
+      }));
     };
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         
-        if (data.type === 'history') {
+        if (data.type === 'auth_success') {
+          console.log('✅ WebSocket authenticated:', data.data.username);
+          setIsAuthenticated(true);
+        } else if (data.type === 'auth_error') {
+          console.error('❌ WebSocket authentication failed:', data.message);
+          setIsAuthenticated(false);
+        } else if (data.type === 'history') {
           // Parse timestamps from ISO strings to Date objects
           const parsedMessages = data.messages.map((msg: any) => ({
             ...msg,
@@ -65,12 +84,13 @@ export function useChat(username: string | undefined) {
     ws.onclose = () => {
       console.log('Disconnected from chat WebSocket');
       setIsConnected(false);
+      setIsAuthenticated(false);
     };
 
     return () => {
       ws.close();
     };
-  }, [username]);
+  }, [username, walletAddress]);
 
   const sendMessage = useCallback((message: string) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
@@ -78,8 +98,8 @@ export function useChat(username: string | undefined) {
       return false;
     }
 
-    if (!username) {
-      console.error('Username is required to send messages');
+    if (!isAuthenticated) {
+      console.error('WebSocket is not authenticated');
       return false;
     }
 
@@ -88,10 +108,11 @@ export function useChat(username: string | undefined) {
     }
 
     try {
+      // Server uses authenticated username from WebSocket connection
+      // Only send the message content
       wsRef.current.send(JSON.stringify({
         type: 'chat',
         data: {
-          username,
           message: message.trim(),
         },
       }));
@@ -100,11 +121,12 @@ export function useChat(username: string | undefined) {
       console.error('Failed to send message:', error);
       return false;
     }
-  }, [username]);
+  }, [isAuthenticated]);
 
   return {
     messages,
     isConnected,
+    isAuthenticated,
     onlineUsers,
     sendMessage,
   };

@@ -470,6 +470,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up WebSocket server for real-time chat
   const wss = new WebSocketServer({ server: httpServer, path: "/ws" });
 
+  // Extended WebSocket type to store authentication data
+  interface AuthenticatedWebSocket extends WebSocket {
+    walletAddress?: string;
+    username?: string;
+    isAuthenticated?: boolean;
+  }
+
   // Helper function to broadcast online user count to all clients
   const broadcastOnlineCount = () => {
     const onlineCount = wss.clients.size;
@@ -494,7 +501,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     broadcastGameUpdate("bet_placed", data);
   };
 
-  wss.on("connection", (ws: WebSocket) => {
+  wss.on("connection", (ws: AuthenticatedWebSocket) => {
     console.log("Client connected");
 
     // Send existing messages to new client
@@ -524,13 +531,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const parsed = JSON.parse(data.toString());
         
+        // Handle WebSocket authentication
+        if (parsed.type === "ws_auth") {
+          const { walletAddress } = parsed.data;
+          
+          if (!walletAddress) {
+            ws.send(JSON.stringify({ 
+              type: "auth_error", 
+              message: "Wallet address required for authentication" 
+            }));
+            return;
+          }
+          
+          // Verify user exists in database
+          const user = await storage.getUserByWalletAddress(walletAddress);
+          
+          if (!user) {
+            ws.send(JSON.stringify({ 
+              type: "auth_error", 
+              message: "User not found. Please sign up first." 
+            }));
+            return;
+          }
+          
+          // Store authentication data on WebSocket connection
+          ws.walletAddress = user.walletAddress;
+          ws.username = user.username;
+          ws.isAuthenticated = true;
+          
+          ws.send(JSON.stringify({ 
+            type: "auth_success", 
+            data: { username: user.username, walletAddress: user.walletAddress }
+          }));
+          
+          console.log(`🔐 WebSocket authenticated: ${user.username} (${user.walletAddress})`);
+          return;
+        }
+        
+        // Handle chat messages - REQUIRES AUTHENTICATION
         if (parsed.type === "chat") {
-          // TODO: SECURITY - Validate username against authenticated session/wallet
-          // Currently trusts client-supplied username which allows impersonation
-          // In production, validate username against session store or JWT token
+          // SECURITY: Reject messages from unauthenticated connections
+          if (!ws.isAuthenticated || !ws.username || !ws.walletAddress) {
+            ws.send(JSON.stringify({ 
+              type: "error", 
+              message: "Authentication required to send messages. Please connect your wallet." 
+            }));
+            return;
+          }
+          
+          // Use server-side authenticated username, NOT client-provided data
+          const messageData = {
+            username: ws.username, // From authenticated WebSocket
+            walletAddress: ws.walletAddress, // From authenticated WebSocket
+            message: parsed.data.message, // Only trust message content
+            timestamp: new Date()
+          };
           
           // Validate message format
-          const validated = insertChatMessageSchema.parse(parsed.data);
+          const validated = insertChatMessageSchema.parse(messageData);
           
           // Save to storage
           const message = await storage.createChatMessage(validated);
