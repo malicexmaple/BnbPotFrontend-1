@@ -791,21 +791,6 @@
   }
 }
 
-/* ===== MOBILE ONLY: Force 1200px desktop layout on touch devices ===== */
-/* Uses pointer: coarse to detect mobile touch devices and exclude desktop */
-/* Desktop windows (even when resized) stay responsive - no transform applied */
-@media (max-width: 1024px) and (pointer: coarse) {
-  #root {
-    width: 1200px;
-    min-width: 1200px;
-    transform: scale(calc(min(100vw, 100vh * 16 / 9) / 1200));
-    transform-origin: top center;
-    margin: 0 auto;
-    overflow: visible;
-  }
-  
-  body, html {
-    min-width: 100%;
-    overflow-x: hidden;
-  }
-}
+/* ===== FIXED 1200PX LAYOUT: Forces desktop layout on all devices ===== */
+/* Viewport meta tag set to width=1200 handles all scaling automatically */
+/* Browser zooms to fit 1200px on mobile, PC always shows 1200px minimum */
