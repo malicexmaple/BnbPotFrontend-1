@@ -151,7 +151,6 @@ contract JackpotGame {
     function endRound() external onlyKeeper noReentrant {
         Round storage round = rounds[currentRoundId];
         require(round.isActive, "Round not active");
-        require(round.players.length > 0, "No players");
         require(round.endTime > 0, "Round not started");
         require(block.timestamp >= round.endTime, "Timer not expired");
         
@@ -159,22 +158,26 @@ contract JackpotGame {
         round.isActive = false;
         round.isCompleted = true;
         
-        // Select winner using weighted random selection
-        address winner = _selectWinner(round);
-        round.winner = winner;
-        
-        // Calculate house fee and prize
-        uint256 houseFee = (round.totalPot * HOUSE_FEE_PERCENT) / 100;
-        uint256 prize = round.totalPot - houseFee;
-        
-        // Update house fee collected
-        houseFeeCollected += houseFee;
-        
-        // Send prize to winner (after state changes - CEI pattern)
-        (bool success, ) = payable(winner).call{value: prize}("");
-        require(success, "Prize transfer failed");
-        
-        emit RoundEnded(currentRoundId, winner, prize);
+        // Only process payout if there are players and funds
+        if (round.players.length > 0 && round.totalPot > 0) {
+            // Select winner using weighted random selection
+            address winner = _selectWinner(round);
+            round.winner = winner;
+            
+            // Calculate house fee and prize
+            uint256 houseFee = (round.totalPot * HOUSE_FEE_PERCENT) / 100;
+            uint256 prize = round.totalPot - houseFee;
+            
+            // Update house fee collected
+            houseFeeCollected += houseFee;
+            
+            // Send prize to winner (after state changes - CEI pattern)
+            (bool success, ) = payable(winner).call{value: prize}("");
+            require(success, "Prize transfer failed");
+            
+            emit RoundEnded(currentRoundId, winner, prize);
+        }
+        // else: No players, just start new round (edge case but safe to handle)
         
         // Start new round
         _startNewRound();
@@ -268,18 +271,23 @@ contract JackpotGame {
     /**
      * @notice Internal function to start a new round
      * @dev Clears old round data to prevent leakage into new round
+     * Note: Old rounds remain in storage for historical queries (intentional)
      */
     function _startNewRound() private {
-        // Clean up previous round's player data to prevent leakage
+        // Clean up previous round's player data to prevent any leakage
         if (currentRoundId > 0) {
             Round storage prevRound = rounds[currentRoundId];
+            // Delete each player's bet data
             for (uint256 i = 0; i < prevRound.players.length; i++) {
                 delete prevRound.playerBets[prevRound.players[i]];
             }
+            // Clear the players array (important to prevent unbounded growth)
+            delete prevRound.players;
         }
         
         currentRoundId++;
         
+        // Initialize new round (storage slot is fresh, arrays/mappings are empty)
         Round storage newRound = rounds[currentRoundId];
         newRound.id = currentRoundId;
         newRound.startTime = block.timestamp;
@@ -287,7 +295,7 @@ contract JackpotGame {
         newRound.totalPot = 0;
         newRound.isActive = true;
         newRound.isCompleted = false;
-        // players array automatically empty for new mapping entry
+        // players array is automatically empty for new mapping entry
         
         emit RoundStarted(currentRoundId, block.timestamp);
     }
@@ -351,7 +359,8 @@ contract JackpotGame {
         round.isActive = false;
         round.isCompleted = true;
         
-        if (round.players.length > 0) {
+        // Only process payout if there are players and funds
+        if (round.players.length > 0 && round.totalPot > 0) {
             // Select winner and pay out
             address winner = _selectWinner(round);
             round.winner = winner;
@@ -365,6 +374,7 @@ contract JackpotGame {
             
             emit RoundEnded(currentRoundId, winner, prize);
         }
+        // else: No players or no pot, just start new round safely
         
         _startNewRound();
     }

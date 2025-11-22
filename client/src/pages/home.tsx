@@ -23,6 +23,7 @@ import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import { useChat } from "@/hooks/useChat";
 import { useGameSocket } from "@/hooks/useGameSocket";
+import { useJackpotContract } from "@/hooks/useJackpotContract";
 import { GAME, CAROUSEL, GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
@@ -43,6 +44,10 @@ export default function Home() {
   const { toast } = useToast();
   const { shouldShowSignup, username, agreedToTerms, markSignupComplete } = useSignupTracking(address);
   const { messages, isConnected, onlineUsers, sendMessage } = useChat(username || undefined);
+  
+  // Try to connect to smart contract (if deployed)
+  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || undefined;
+  const contract = useJackpotContract(address, contractAddress);
   
   // Connect to game WebSocket for real-time bet updates (works for all users)
   useGameSocket();
@@ -240,7 +245,7 @@ export default function Home() {
 
   /**
    * Handles placing a bet.
-   * Requires wallet connection, signup completion, and terms agreement.
+   * Uses blockchain if contract available, otherwise falls back to database.
    */
   const handlePlaceBet = async () => {
     if (!address) {
@@ -279,23 +284,51 @@ export default function Home() {
       return;
     }
 
+    // Try blockchain first if contract is available
+    if (contract.isContractAvailable && contract.placeBet) {
+      try {
+        const result = await contract.placeBet(betAmount);
+        
+        if (result.success) {
+          toast({
+            title: "Bet Placed on Blockchain! 🎲",
+            description: `Transaction: ${result.txHash?.slice(0, 10)}... View on BSCScan`,
+          });
+          setBetAmount("");
+        } else {
+          // Blockchain bet failed, fall back to database
+          console.log("Blockchain bet failed, using database:", result.error);
+          await placeBetDatabase();
+        }
+      } catch (error) {
+        // Blockchain bet failed, fall back to database
+        console.error("Blockchain error, using database:", error);
+        await placeBetDatabase();
+      }
+    } else {
+      // No contract, use database
+      await placeBetDatabase();
+    }
+  };
+
+  /**
+   * Place bet using database (fallback mode)
+   */
+  const placeBetDatabase = async () => {
     try {
-      // Send bet to backend API
       await apiRequest("POST", "/api/bets", {
         userAddress: address,
         username: username,
         amount: betAmount,
       });
 
-      // Invalidate cache to refresh round data
       await queryClient.invalidateQueries({ queryKey: ['/api/rounds/current'] });
 
       toast({
-        title: "Bet Placed",
+        title: "Bet Placed (Database Mode)",
         description: `You bet ${betAmount} BNB on this round!`,
       });
 
-      // Clear bet amount after successful bet
       setBetAmount("");
     } catch (error) {
       toast({
