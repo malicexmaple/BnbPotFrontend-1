@@ -44,5 +44,5 @@ VITE_CHAIN_ID = "56"
 VITE_BSC_RPC_URL = "https://bsc-dataseed1.binance.org"
 
 [[ports]]
-localPort = 45307
+localPort = 5000
 externalPort = 80
