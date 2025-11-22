@@ -853,27 +853,17 @@
     min-width: 150px !important;
     max-width: 150px !important;
   }
-  
-  .stat-box {
-    flex: 1 1 100%;
-    margin-bottom: 0.5rem;
-  }
-  
-  /* Smaller text on very small screens */
-  body {
-    font-size: 14px;
-  }
 }
 
-/* Allow horizontal scrolling on very small screens to preserve desktop layout */
-@media (max-width: 576px) {
-  body {
-    min-width: 100vw;
+/* ===== MOBILE FIX: Preserve desktop layout on mobile ===== */
+body {
+  min-width: 1200px; /* Minimum width to prevent layout breaking */
+}
+
+@media (max-width: 1200px) {
+  /* Allow users to scroll horizontally on smaller screens */
+  html, body {
     overflow-x: auto;
-  }
-  
-  /* Ensure desktop layout is preserved but scrollable */
-  #root {
-    min-width: 100%;
+    -webkit-overflow-scrolling: touch;
   }
 }
