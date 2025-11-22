@@ -407,9 +407,8 @@ export default function PredictionMarkets() {
         footer={<GameFooter />}
       >
         {/* Main game area content */}
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="flex flex-col gap-6 flex-1 px-6 w-full">
-            <div className="w-full max-w-[980px] mx-auto flex flex-col gap-6">
+        <div className="flex-1 flex flex-col relative">
+          <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
@@ -497,7 +496,6 @@ export default function PredictionMarkets() {
                   </div>
                 </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
