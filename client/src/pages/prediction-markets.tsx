@@ -16,13 +16,8 @@ import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
 import { GAME } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
-import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
-import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
-import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
-import treasureChest from '@assets/3dgifmaker81317_1763413607076.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import predictionMarketsLogo from '@assets/predictionmarketsnew_1763488010364.png';
-import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 
 export default function PredictionMarkets() {
@@ -412,8 +407,9 @@ export default function PredictionMarkets() {
         footer={<GameFooter />}
       >
         {/* Main game area content */}
-        <div className="flex-1 flex flex-col relative">
-          <div className="p-6 space-y-5 relative z-10">
+        <div className="flex flex-col flex-1 min-w-0">
+          <div className="flex flex-col gap-6 flex-1 px-6 w-full">
+            <div className="w-full max-w-[980px] mx-auto flex flex-col gap-6">
             {/* HEADER */}
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
@@ -438,60 +434,6 @@ export default function PredictionMarkets() {
                 isWalletConnected={!!address}
                 hasAccount={!!username}
               />
-            </div>
-
-            {/* STATS BAR */}
-            <div className="p-1">
-              <div className="max-sm:grid max-sm:grid-cols-2 sm:flex sm:flex-wrap gap-4 justify-center" style={{overflow: 'visible'}}>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-large">
-                      <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-total-volume">
-                      {isLoadingRound ? '...' : totalPot.toFixed(3)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Total Volume</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper">
-                      <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-positions">
-                      {isLoadingRound ? '...' : userWager.toFixed(3)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Positions</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-small">
-                      <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-active-markets">
-                      {mockMarkets.length}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Active Markets</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-small">
-                      <img src={clockIcon} alt="Clock" className="h-14 w-14" />
-                    </div>
-                    {currentRound?.status === "waiting" ? (
-                      <div className="text-xl font-bold font-mono no-text-shadow text-center px-2" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">Waiting...</div>
-                    ) : (
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                    )}
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">
-                      {currentRound?.status === "waiting" ? "For First Bet" : "Next Settlement"}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* PREDICTION MARKETS AREA */}
@@ -555,6 +497,7 @@ export default function PredictionMarkets() {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </div>

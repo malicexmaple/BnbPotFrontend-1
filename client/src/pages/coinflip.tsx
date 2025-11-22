@@ -12,21 +12,15 @@ import MiningBlockOverlay from "@/components/MiningBlockOverlay";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
-import { GAME, CAROUSEL, BORDER_RADIUS } from "@/constants/layout";
+import { GAME } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
-import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
-import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
-import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
-import treasureChest from '@assets/3dgifmaker81317_1763413607076.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
-import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
@@ -427,8 +421,9 @@ export default function Coinflip() {
         footer={<GameFooter />}
       >
         {/* Main game area content */}
-        <div className="flex-1 flex flex-col relative">
-          <div className="p-6 space-y-5 relative z-10">
+        <div className="flex flex-col flex-1 min-w-0">
+          <div className="flex flex-col gap-6 flex-1 px-6 w-full">
+            <div className="w-full max-w-[980px] mx-auto flex flex-col gap-6">
             {/* HEADER */}
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
@@ -453,60 +448,6 @@ export default function Coinflip() {
                 isWalletConnected={!!address}
                 hasAccount={!!username}
               />
-            </div>
-
-            {/* STATS BAR */}
-            <div className="p-1">
-              <div className="max-sm:grid max-sm:grid-cols-2 sm:flex sm:flex-wrap gap-4 justify-center" style={{overflow: 'visible'}}>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-large">
-                      <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-pot-value">
-                      {isLoadingRound ? '...' : totalPot.toFixed(3)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Total Pot</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper">
-                      <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">
-                      {isLoadingRound ? '...' : userWager.toFixed(3)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-small">
-                      <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-win-multiplier">
-                      2x
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Win Multiplier</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-small">
-                      <img src={clockIcon} alt="Clock" className="h-14 w-14" />
-                    </div>
-                    {currentRound?.status === "waiting" ? (
-                      <div className="text-xl font-bold font-mono no-text-shadow text-center px-2" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">Waiting...</div>
-                    ) : (
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                    )}
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">
-                      {currentRound?.status === "waiting" ? "For First Bet" : "Time Remaining"}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* COINFLIP GAME AREA */}
@@ -547,88 +488,7 @@ export default function Coinflip() {
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div><span className="text-foreground font-semibold">{currentRound?.totalBets || 0}</span> Players</div>
-              <div>•</div>
-              <div>Payouts are settled in BNB</div>
-              <div>•</div>
-              <div>Round: <span className="font-mono" data-testid="text-round">#{currentRound?.roundNumber || 1}</span></div>
             </div>
-          </div>
-
-          {/* PLAYER LIST */}
-          <div className="flex-1 border-t border-border/30 overflow-hidden relative z-10">
-            <ScrollArea className="h-full px-6 py-5">
-              {currentRound?.bets && currentRound.bets.length > 0 ? (
-                <div className="space-y-3">
-                  {currentRound.bets.map((bet: any) => {
-                    const betAmount = parseFloat(bet.amount);
-                    const winChance = totalPot > 0 ? (betAmount / totalPot) * 100 : 0;
-                    // Approximate BNB to USD conversion (example rate)
-                    const bnbToUsd = 300; // This should come from API in production
-                    const usdValue = betAmount * bnbToUsd;
-                    
-                    return (
-                      <div
-                        key={bet.id}
-                        className="glass-panel p-4 hover-elevate transition-all"
-                        style={{borderRadius: BORDER_RADIUS.STANDARD}}
-                        data-testid={`player-row-${bet.id}`}
-                      >
-                        <div className="flex items-center justify-between gap-4">
-                          {/* Player Info */}
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <Avatar className="w-10 h-10 flex-shrink-0">
-                              <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/20 to-primary/5">
-                                {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium text-foreground truncate">
-                                {bet.username || `${bet.userAddress.slice(0, 6)}...${bet.userAddress.slice(-4)}`}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {bet.userAddress.slice(0, 10)}...{bet.userAddress.slice(-8)}
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Bet Amount */}
-                          <div className="text-right">
-                            <div className="font-bold text-primary font-mono">
-                              {betAmount.toFixed(4)} BNB
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              ${usdValue.toFixed(2)}
-                            </div>
-                          </div>
-                          
-                          {/* Win Chance */}
-                          <div className="text-right min-w-[80px]">
-                            <Badge variant="outline" className="font-mono">
-                              {winChance.toFixed(2)}%
-                            </Badge>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              Chance
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                  <div className="text-center space-y-2">
-                    <svg className="w-12 h-12 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <p>No players in this round</p>
-                  </div>
-                </div>
-              )}
-            </ScrollArea>
           </div>
         </div>
       </GameLayout>
