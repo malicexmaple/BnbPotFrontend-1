@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Flame } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Flame, Heart } from "lucide-react";
 import { SIDEBAR, AIRDROP, BORDER_RADIUS, GOLDEN, DARK_BG } from "@/constants/layout";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
 import airdropPackage from '@assets/airdrop-pachage_1763543740528.png';
@@ -43,11 +47,37 @@ export default function ChatSidebar({
   const [avatarUrls, setAvatarUrls] = useState<Record<string, string | null>>({});
   const [timeUntilDrop, setTimeUntilDrop] = useState<number>(0);
   const [isLive, setIsLive] = useState(false);
+  const [showDonateDialog, setShowDonateDialog] = useState(false);
+  const [donateAmount, setDonateAmount] = useState("");
+  const { toast } = useToast();
 
   // Fetch airdrop pool data
   const { data: pool } = useQuery<{balance: string; lastDistributionDate: string | null}>({
     queryKey: ['/api/airdrop/pool'],
     refetchInterval: 30000,
+  });
+
+  // Donate mutation
+  const donateMutation = useMutation({
+    mutationFn: async (amount: string) => {
+      return await apiRequest("POST", "/api/airdrop/tip", { amount });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/airdrop/pool'] });
+      toast({
+        title: "Thank You! ❤️",
+        description: `Your ${donateAmount} BNB donation will be distributed to active players!`,
+      });
+      setDonateAmount("");
+      setShowDonateDialog(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Donation Failed",
+        description: error.message || "Failed to process donation. Please try again.",
+      });
+    },
   });
 
   // Calculate countdown to midnight UTC
@@ -241,7 +271,7 @@ export default function ChatSidebar({
                     />
                   ))}
                 </div>
-                <div className="flex items-center justify-start relative z-10" style={{paddingLeft: '5px', marginTop: '0.125rem'}}>
+                <div className="flex items-center justify-between relative z-10" style={{paddingLeft: '5px', paddingRight: '5px', marginTop: '0.125rem'}}>
                   <div className="flex items-center gap-2 px-2.5 py-1" style={{
                     background: DARK_BG.SOLID,
                     border: GOLDEN.BORDER,
@@ -267,6 +297,23 @@ export default function ChatSidebar({
                       paddingTop: `${AIRDROP.BALANCE_PADDING_TOP}px`
                     }} data-testid="text-airdrop-amount">{pool ? parseFloat(pool.balance).toFixed(4) : '0.0000'}</span>
                   </div>
+                  <button
+                    onClick={() => setShowDonateDialog(true)}
+                    className="hover-elevate active-elevate-2 transition-all"
+                    style={{
+                      background: DARK_BG.SOLID,
+                      border: GOLDEN.BORDER,
+                      borderRadius: BORDER_RADIUS.SMALL,
+                      boxShadow: GOLDEN.SHADOW,
+                      padding: '6px 10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    data-testid="button-donate-airdrop"
+                  >
+                    <Heart className="w-4 h-4" style={{ color: '#FF6B9D', fill: '#FF6B9D' }} />
+                  </button>
                 </div>
                 <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.125rem'}}>
                   <div className="shine-image relative" style={{
@@ -379,6 +426,58 @@ export default function ChatSidebar({
           </div>
         </div>
       )}
+
+      {/* Donate Dialog */}
+      <Dialog open={showDonateDialog} onOpenChange={setShowDonateDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Heart className="w-5 h-5" style={{ color: '#FF6B9D', fill: '#FF6B9D' }} />
+              Donate to Airdrop Pool
+            </DialogTitle>
+            <DialogDescription>
+              Your donation will be distributed to all active players at midnight UTC. Thank you for supporting the community!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Donation Amount (BNB)</label>
+              <Input
+                type="number"
+                step="0.001"
+                min="0.001"
+                placeholder="0.000"
+                value={donateAmount}
+                onChange={(e) => setDonateAmount(e.target.value)}
+                className="font-mono"
+                data-testid="input-donate-amount"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setShowDonateDialog(false)}
+                variant="outline"
+                className="flex-1"
+                data-testid="button-cancel-donate"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (donateAmount && parseFloat(donateAmount) > 0) {
+                    donateMutation.mutate(donateAmount);
+                  }
+                }}
+                disabled={!donateAmount || parseFloat(donateAmount) <= 0 || donateMutation.isPending}
+                className="flex-1"
+                data-testid="button-confirm-donate"
+              >
+                {donateMutation.isPending ? "Processing..." : "Donate"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
