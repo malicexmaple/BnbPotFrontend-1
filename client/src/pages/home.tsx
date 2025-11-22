@@ -361,15 +361,15 @@ export default function Home() {
         zIndex: -1
       }} />
       
-      {/* Fixed header */}
-      <div className="fixed top-0 left-0 right-0 z-[100]" style={{ minWidth: '1200px' }}>
-        <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
-      </div>
+      {/* ONE scrollable container with header + content */}
+      <div className="w-full" style={{ minWidth: '1200px' }}>
+        {/* Header - in normal flow, scrolls away */}
+        <div className="w-full">
+          <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
+        </div>
 
-      <div className="flex flex-col min-h-screen w-full" style={{
-        minWidth: '1200px',
-        paddingTop: '100px'
-      }}>
+        {/* Content */}
+        <div className="flex flex-col min-h-screen w-full">
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
@@ -1207,6 +1207,7 @@ export default function Home() {
         walletAddress={address || undefined}
         onDisconnect={disconnect}
       />
+      </div>
     </div>
     </>
   );

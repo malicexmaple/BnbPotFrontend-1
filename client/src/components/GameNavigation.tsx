@@ -66,7 +66,7 @@ export default function GameNavigation({
   }, [username]);
 
   return (
-    <div className="sticky top-0 z-50 flex w-full" style={{height: '100px'}}>
+    <div className="flex w-full" style={{height: '100px'}}>
       {/* Left - Logo section (345px, full height) */}
       <div className="flex items-start justify-center flex-shrink-0" style={{
         width: '345px',
