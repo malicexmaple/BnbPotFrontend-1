@@ -305,9 +305,10 @@ export default function ChatSidebar({
                       border: GOLDEN.BORDER,
                       borderRadius: BORDER_RADIUS.SMALL,
                       boxShadow: GOLDEN.SHADOW,
-                      padding: '4px 8px',
-                      height: '2.5rem',
-                      minWidth: '2.5rem',
+                      padding: '0.25rem 0.625rem',
+                      height: 'auto',
+                      width: 'auto',
+                      aspectRatio: '1',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
