@@ -15,6 +15,23 @@ export const users = pgTable("users", {
 
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
+}).extend({
+  username: z.string()
+    .min(3, "Username must be at least 3 characters")
+    .max(30, "Username must be 30 characters or less")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Username can only contain letters, numbers, underscores, and hyphens")
+    .trim(),
+  email: z.string()
+    .email("Invalid email address")
+    .max(255, "Email must be 255 characters or less")
+    .optional()
+    .or(z.literal('')),
+  walletAddress: z.string()
+    .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address format")
+    .optional(),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password must be 128 characters or less"),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -30,6 +47,15 @@ export const chatMessages = pgTable("chat_messages", {
 export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({
   id: true,
   timestamp: true,
+}).extend({
+  username: z.string()
+    .min(1, "Username is required")
+    .max(50, "Username must be 50 characters or less")
+    .trim(),
+  message: z.string()
+    .min(1, "Message cannot be empty")
+    .max(500, "Message must be 500 characters or less")
+    .trim(),
 });
 
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
@@ -69,6 +95,33 @@ export const bets = pgTable("bets", {
 export const insertBetSchema = createInsertSchema(bets).omit({
   id: true,
   timestamp: true,
+}).extend({
+  // SECURITY: Validate bet amount is numeric and within acceptable range
+  // Using z.string() to match database numeric type, but validate numeric properties
+  amount: z.string()
+    .refine((val) => {
+      const num = parseFloat(val);
+      return !isNaN(num) && num > 0;
+    }, "Bet amount must be a positive number")
+    .refine((val) => {
+      const num = parseFloat(val);
+      return num >= 0.001;
+    }, "Minimum bet is 0.001 BNB")
+    .refine((val) => {
+      const num = parseFloat(val);
+      return num <= 100;
+    }, "Maximum bet is 100 BNB")
+    .refine((val) => {
+      // Ensure amount has at most 8 decimal places (matches database precision)
+      const parts = val.split('.');
+      return parts.length === 1 || (parts[1] && parts[1].length <= 8);
+    }, "Amount can have at most 8 decimal places"),
+  userAddress: z.string()
+    .min(1, "User address is required")
+    .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address format"),
+  txHash: z.string()
+    .min(1, "Transaction hash is required")
+    .regex(/^0x[a-fA-F0-9]{64}$/, "Invalid transaction hash format"),
 });
 
 export type InsertBet = z.infer<typeof insertBetSchema>;

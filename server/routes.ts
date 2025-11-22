@@ -620,15 +620,19 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
             return;
           }
           
-          // Use server-side authenticated username, NOT client-provided data
+          // Build message data from authenticated session
+          // SECURITY: Username comes from authenticated session (server-verified)
+          // Message content is validated by schema (length, format)
+          // Frontend MUST escape HTML when rendering to prevent XSS
           const messageData = {
             username: ws.username, // From authenticated WebSocket
             walletAddress: ws.walletAddress, // From authenticated WebSocket
-            message: parsed.data.message, // Only trust message content
+            message: parsed.data.message, // Raw message content (frontend escapes on render)
             timestamp: new Date()
           };
           
-          // Validate message format
+          // SECURITY: Validate message format and length (Zod schema enforces constraints)
+          // This ensures message meets length/format requirements before storage
           const validated = insertChatMessageSchema.parse(messageData);
           
           // Save to storage
