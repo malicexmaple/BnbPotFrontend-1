@@ -70,9 +70,19 @@ BSC_MAINNET_RPC=https://bsc-dataseed1.binance.org
 # BSCScan API key for contract verification (optional)
 BSCSCAN_API_KEY=your_bscscan_api_key_here
 
-# Frontend environment variables
+# Server-side environment variables (REQUIRED for blockchain mode)
+CONTRACT_ADDRESS=will_be_set_after_deployment
+VITE_BSC_RPC_URL=https://data-seed-prebsc-1-s1.binance.org:8545
+
+# Frontend environment variables (for wallet interaction)
 VITE_CONTRACT_ADDRESS=will_be_set_after_deployment
 ```
+
+**⚠️ Important Environment Variable Notes:**
+- `CONTRACT_ADDRESS` - Server-side variable used by event listener to sync blockchain events to database
+- `VITE_CONTRACT_ADDRESS` - Frontend variable used by browser wallet to interact with contract
+- `VITE_BSC_RPC_URL` - RPC endpoint for blockchain reads (both server and frontend)
+- Both must be set to the same contract address after deployment
 
 **⚠️ Security Warning:**
 - NEVER share your private key

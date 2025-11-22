@@ -207,12 +207,14 @@ export class BlockchainEventListener {
       });
       
       try {
-        const dbRoundId = Number(roundId);
-        const currentRound = await this.storage.getCurrentRound();
+        const onChainRoundId = Number(roundId);
         
-        if (currentRound && currentRound.roundNumber === dbRoundId) {
+        // Get or create round by on-chain round ID (consistent with other handlers)
+        let dbRound = await this.storage.getRoundByNumber(onChainRoundId);
+        
+        if (dbRound) {
           // Update existing round to active
-          await this.storage.updateRound(currentRound.id, {
+          await this.storage.updateRound(dbRound.id, {
             status: "active",
             countdownStart: new Date(Number(startTimestamp) * 1000),
             endTime: null, // End time set when round completes
@@ -220,8 +222,8 @@ export class BlockchainEventListener {
           console.log("✅ Round activated in database");
         } else {
           // Create new round
-          await this.storage.createRound({
-            roundNumber: dbRoundId,
+          dbRound = await this.storage.createRound({
+            roundNumber: onChainRoundId,
             status: "active",
             totalPot: "0",
             countdownStart: new Date(Number(startTimestamp) * 1000),

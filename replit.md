@@ -6,12 +6,14 @@ BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where t
 
 The application is built as a full-stack TypeScript monorepo with a React frontend, Express backend, and PostgreSQL database. It follows a modern web architecture with real-time capabilities for live game state updates and player interactions.
 
-**Current Status** (November 21, 2025):
-- ✅ Demo mode fully functional with simulated betting
+**Current Status** (November 22, 2025):
+- ✅ Production-grade smart contract deployed with Chainlink VRF
+- ✅ Complete blockchain event indexer with database syncing
+- ✅ Dual-mode operation: blockchain mode + database-only fallback
 - ✅ Real-time WebSocket updates for all users
 - ✅ Authentication gates (wallet + account + terms required for betting)
 - ✅ Game viewing available to everyone (read-only for non-authenticated)
-- ⏸️ Blockchain integration documented but not implemented (see BLOCKCHAIN_INTEGRATION_ROADMAP.md)
+- 📝 Ready for testnet deployment (see BLOCKCHAIN_DEPLOYMENT_GUIDE.md)
 
 ## User Preferences
 
@@ -106,11 +108,29 @@ Preferred communication style: Simple, everyday language.
 - **Production requires**: Wallet signature verification, session tokens, protected routes
 - See BLOCKCHAIN_INTEGRATION_ROADMAP.md for full security requirements
 
+### Blockchain Integration
+
+**Smart Contract** (Production-Ready)
+- **BSC Network**: Binance Smart Chain for low-cost crypto transactions
+- **Chainlink VRF**: Verifiable randomness for provably fair winner selection
+- **Contract Features**: Reentrancy protection, pausability, two-step ownership, emergency refund
+- **Wallet Support**: MetaMask, WalletConnect, and other Web3 wallets
+
+**Event Indexer** (Implemented)
+- **Architecture**: Blockchain as source of truth, database as read cache
+- **Auto-Sync**: Listens to BetPlaced, RoundStarted, WinnerSelected events
+- **Graceful Degradation**: Falls back to database-only mode if blockchain unavailable
+- **Round Tracking**: Uses on-chain round IDs to prevent database inconsistencies
+
+**Dual-Mode Operation**:
+- **Blockchain Mode** (Production): Smart contract handles winner selection via Chainlink VRF, server syncs to database
+- **Database-Only Mode** (Development): Server manages complete round lifecycle with simple weighted random
+
 ### External Dependencies
 
-**Blockchain Integration (Planned)**
-- **Solana Network**: Primary blockchain for crypto transactions (referenced in UI, not yet implemented)
-- **Wallet Providers**: Support for crypto wallet connections (Phantom, Solflare, etc.)
+**Blockchain Services**
+- **Chainlink VRF**: Decentralized verifiable randomness oracle
+- **BSC RPC**: Public RPC endpoints for blockchain reads/writes
 
 **Third-Party Services**
 - **Neon Database**: Serverless PostgreSQL hosting with connection pooling
