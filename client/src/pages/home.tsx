@@ -418,7 +418,7 @@ export default function Home() {
 
             {/* STATS BAR */}
             <div className="p-1">
-              <div className="grid grid-cols-2 desktop:grid-cols-4 gap-4 justify-items-center" style={{overflow: 'visible'}}>
+              <div className="max-sm:grid max-sm:grid-cols-2 sm:flex sm:flex-wrap gap-4 justify-center" style={{overflow: 'visible'}}>
                 <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper-large">
