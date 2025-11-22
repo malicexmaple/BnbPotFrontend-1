@@ -82,12 +82,12 @@ export default function GameNavigation({
       {/* Right - Stacked header content */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Top Header - 30px */}
-        <nav className="flex items-center justify-between px-4 border-b border-border/20" style={{
+        <nav className="flex flex-nowrap items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
           backdropFilter: 'blur(4px)'
         }}>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-nowrap items-center gap-3">
             {/* Social Icons */}
             <button className="w-7 h-7 rounded bg-muted/30 flex items-center justify-center hover-elevate" data-testid="button-social-x">
               <svg className="w-3.5 h-3.5 text-foreground" fill="currentColor" viewBox="0 0 24 24">
@@ -113,19 +113,19 @@ export default function GameNavigation({
           </div>
 
           {/* Total Bets on top right */}
-          <div className="text-foreground font-bold" style={{fontSize: '11px'}} data-testid="text-total-bets">
+          <div className="text-foreground font-bold flex-shrink-0" style={{fontSize: '11px'}} data-testid="text-total-bets">
             11304455 <span className="text-muted-foreground font-normal">Total Bets</span>
           </div>
         </nav>
 
         {/* Bottom Header - 70px */}
-        <nav className="flex items-center justify-between px-4" style={{
+        <nav className="flex flex-nowrap items-center justify-between px-4" style={{
           height: '70px',
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
           backdropFilter: 'blur(4px)'
         }}>
           {/* Navigation tabs */}
-          <div className="flex items-center gap-1">
+          <div className="flex flex-nowrap items-center gap-1">
           <Button
             data-testid="button-jackpot-tab"
             variant="ghost"
@@ -163,7 +163,7 @@ export default function GameNavigation({
           </div>
 
           {/* Connect button on bottom right */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-nowrap flex-shrink-0 items-center gap-3">
             {isConnected && username ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
