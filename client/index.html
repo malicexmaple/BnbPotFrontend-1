@@ -2,46 +2,7 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes" id="viewport-meta" />
-    <script>
-      // Dynamic viewport adjustment for mobile devices
-      // This ensures the desktop layout (1200px) fits perfectly on any screen size
-      (function() {
-        function adjustViewport() {
-          const desktopWidth = 1200; // Target desktop width
-          const screenWidth = window.screen.width;
-          const screenHeight = window.screen.height;
-          
-          // Get the current orientation
-          const isPortrait = screenHeight > screenWidth;
-          const currentWidth = isPortrait ? screenWidth : screenHeight;
-          
-          // Calculate initial scale to fit desktop layout on screen
-          const scale = currentWidth / desktopWidth;
-          
-          // Update viewport meta tag
-          const viewport = document.getElementById('viewport-meta');
-          if (viewport) {
-            viewport.setAttribute('content', 
-              `width=${desktopWidth}, initial-scale=${scale}, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes`
-            );
-          }
-        }
-        
-        // Adjust on load
-        adjustViewport();
-        
-        // Adjust on orientation change
-        window.addEventListener('orientationchange', function() {
-          setTimeout(adjustViewport, 100);
-        });
-        
-        // Also listen for resize (some devices don't fire orientationchange)
-        window.addEventListener('resize', function() {
-          setTimeout(adjustViewport, 100);
-        });
-      })();
-    </script>
+    <meta name="viewport" content="width=1200, user-scalable=yes" />
     <title>BNBPOT.COM - Crypto Jackpot Gaming</title>
     <meta name="description" content="BNBPOT.COM - Winner takes all crypto jackpot gaming platform. Play, bet, and win big with provably fair blockchain gaming." />
     <link rel="icon" type="image/png" href="/favicon.png" />
