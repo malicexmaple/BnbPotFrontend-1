@@ -352,15 +352,24 @@ export default function Home() {
   const seconds = actualTimeRemaining % 60;
 
   return (
-    <div className="flex flex-col min-h-screen w-full space-bg" style={{
-      minWidth: '1200px',
-      backgroundImage: `url(${bnbpotBg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
-    }}>
-      <div className="sticky top-0 z-[100] w-full">
+    <>
+      {/* Fixed background */}
+      <div className="fixed inset-0 space-bg" style={{
+        backgroundImage: `url(${bnbpotBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: -1
+      }} />
+      
+      {/* Fixed header */}
+      <div className="fixed top-0 left-0 right-0 z-[100]" style={{ minWidth: '1200px' }}>
         <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
       </div>
+
+      <div className="flex flex-col min-h-screen w-full" style={{
+        minWidth: '1200px',
+        paddingTop: '100px'
+      }}>
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
@@ -1202,5 +1211,6 @@ export default function Home() {
         onDisconnect={disconnect}
       />
     </div>
+    </>
   );
 }
