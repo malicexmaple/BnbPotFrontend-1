@@ -66,12 +66,9 @@ export default function GameNavigation({
   }, [username]);
 
   return (
-    <div className="flex w-full" style={{height: '100px', minWidth: '1200px'}}>
+    <div className="flex w-full" style={{height: '100px'}}>
       {/* Left - Logo section (345px, full height) */}
-      <div className="flex items-start justify-center flex-shrink-0" style={{
-        width: '345px',
-        height: '100px'
-      }}>
+      <div className="flex items-start justify-center flex-shrink-0 w-full max-w-[345px]" style={{ height: '100px' }}>
         <div className="flex items-center justify-center" style={{height: '100px'}}>
           <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
             <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
@@ -83,7 +80,7 @@ export default function GameNavigation({
       </div>
 
       {/* Right - Stacked header content */}
-      <div className="flex flex-col" style={{flex: '1 1 auto', minWidth: 'calc(1200px - 345px)'}}>
+      <div className="flex flex-col flex-1 min-w-0">
         {/* Top Header - 30px */}
         <nav className="flex items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',

@@ -153,7 +153,7 @@ export default function ChatSidebar({
 
   return (
     <div className="flex-shrink-0 transition-all duration-300 relative glass-panel" style={{
-      width: isCollapsed ? '0px' : `${SIDEBAR.CHAT_WIDTH}px`,
+      width: isCollapsed ? '0px' : '100%',
       paddingLeft: '0px',
       paddingTop: isCollapsed ? '0px' : '24px',
       paddingBottom: isCollapsed ? '0px' : '24px',
@@ -192,7 +192,8 @@ export default function ChatSidebar({
 
       {!isCollapsed && (
         <div className="flex flex-col flex-1" style={{
-          width: `${SIDEBAR.CHAT_INNER_WIDTH}px`,
+          width: '100%',
+          maxWidth: '300px',
           marginTop: `${SIDEBAR.CHAT_MARGIN_TOP}px`,
           marginLeft: `${SIDEBAR.CHAT_MARGIN_LEFT}px`
         }}>
@@ -487,7 +488,7 @@ export default function ChatSidebar({
                 disabled={!donateAmount || parseFloat(donateAmount) <= 0 || donateMutation.isPending}
                 className="flex-1"
                 style={{
-                  background: GOLDEN.GRADIENT,
+                  background: DARK_BG.GRADIENT,
                   border: GOLDEN.BORDER_LIGHT
                 }}
                 data-testid="button-confirm-donate"

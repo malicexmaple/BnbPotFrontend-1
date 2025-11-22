@@ -362,20 +362,20 @@ export default function Home() {
       }} />
       
       {/* ONE scrollable container with header + content */}
-      <div className="w-full" style={{ minWidth: '1200px' }}>
+      <div className="w-full">
         {/* Header - in normal flow, scrolls away */}
         <div className="w-full">
           <GameNavigation onConnect={connect} onDisconnect={disconnect} isConnected={!!address} isConnecting={isConnecting} walletAddress={address || undefined} username={username || undefined} onOpenProfile={() => setShowProfileModal(true)} />
         </div>
 
         {/* Content */}
-        <div className="flex flex-col min-h-screen" style={{ minWidth: '1200px', width: '100%', maxWidth: '100%' }}>
+        <div className="flex flex-col min-h-screen w-full">
 
       {/* Wrapper for content + footer */}
       <div className="flex-1 flex flex-col w-full">
         {/* Content wrapper */}
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 flex">
+          <div className="flex-1 grid w-full gap-4 desktop:grid-cols-[minmax(260px,300px),1fr] lg:grid-cols-[minmax(260px,300px),1fr,minmax(260px,300px)] md:gap-6">
             <ChatSidebar
               isCollapsed={isChatCollapsed}
               onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
@@ -388,13 +388,13 @@ export default function Home() {
             />
 
         {/* CENTER - MAIN GAME AREA */}
-        <div className="flex flex-col relative" style={{flex: '1 1 auto', minWidth: 'calc(1200px - 690px)'}}>
+        <div className="flex flex-col relative flex-1 min-w-0">
           <div className="p-6 space-y-5 relative z-10">
             {/* HEADER */}
-            <div className="flex items-start justify-between">
+            <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${jackpotLogo})`} as React.CSSProperties}>
-                  <img src={jackpotLogo} alt="JACKPOT" style={{height: 'auto', width: '450px'}} />
+                  <img src={jackpotLogo} alt="JACKPOT" className="w-full max-w-[450px]" style={{height: 'auto'}} />
                 </div>
                 <div className="flex justify-end pr-4" style={{marginTop: '-15px'}}>
                   <div className="text-sm uppercase tracking-widest shine-text font-semibold italic" style={{
@@ -418,7 +418,7 @@ export default function Home() {
 
             {/* STATS BAR */}
             <div className="p-1">
-              <div className="flex flex-wrap gap-4 justify-center" style={{overflow: 'visible'}}>
+              <div className="grid grid-cols-2 desktop:grid-cols-4 gap-4 justify-items-center" style={{overflow: 'visible'}}>
                 <div className="stat-box">
                   <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
                     <div className="stat-icon-wrapper-large">
@@ -665,7 +665,7 @@ export default function Home() {
         </div>
 
           {/* RIGHT SIDEBAR - LEADERBOARD */}
-          <div className="flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
+          <div className="hidden lg:block flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
             paddingLeft: '0px',
             paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
@@ -747,14 +747,14 @@ export default function Home() {
             </div>
           </div>
           
-          <div style={{width: '297px', marginTop: '5px'}}>
+          <div style={{width: '100%', maxWidth: '297px', marginTop: '5px'}}>
             <DailyStats type="latest" />
           </div>
 
-          <div style={{width: '297px', marginTop: '10px'}}>
+          <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
             <DailyStats type="winner" />
           </div>
-          <div style={{width: '297px', marginTop: '10px'}}>
+          <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
             <DailyStats type="lucky" />
           </div>
           </div>
