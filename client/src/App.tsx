@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GameStateProvider } from "@/contexts/GameStateContext";
 import PersistentHeader from "@/components/PersistentHeader";
+import GlobalLayout from "@/components/GlobalLayout";
 import Home from "@/pages/home";
 import Coinflip from "@/pages/coinflip";
 import PredictionMarkets from "@/pages/prediction-markets";
@@ -28,7 +29,9 @@ function App() {
         <GameStateProvider>
           <Toaster />
           <PersistentHeader />
-          <Router />
+          <GlobalLayout>
+            <Router />
+          </GlobalLayout>
         </GameStateProvider>
       </TooltipProvider>
     </QueryClientProvider>
