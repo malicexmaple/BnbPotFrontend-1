@@ -439,8 +439,8 @@ export default function Coinflip() {
         footer={<GameFooter />}
       >
         {/* Main game area content */}
-        <div className="flex-1 flex flex-col relative">
-          <div className="p-6 space-y-5 relative z-10">
+        <div className="flex-1 flex flex-col relative overflow-hidden">
+          <div className="p-6 space-y-5 relative z-10 flex-shrink-0">
             {/* HEADER */}
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
