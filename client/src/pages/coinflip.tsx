@@ -501,10 +501,10 @@ export default function Coinflip() {
 
                   {/* Bet Input */}
                   <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
-                    background: 'rgba(15, 15, 15, 0.8)',
-                    border: '1px solid rgba(60, 60, 60, 0.5)',
-                    minWidth: '140px',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                    background: 'rgba(20, 20, 20, 0.9)',
+                    border: '2px solid rgba(250, 204, 21, 0.85)',
+                    minWidth: '160px',
+                    boxShadow: '0 0 8px rgba(250, 204, 21, 0.22), 0 2px 8px rgba(0, 0, 0, 0.6)'
                   }}>
                     <div className="flex items-center gap-2">
                       <input
@@ -512,7 +512,7 @@ export default function Coinflip() {
                         value={betAmount}
                         onChange={(e) => setBetAmount(e.target.value)}
                         placeholder="0.1"
-                        className="w-14 text-sm font-semibold bg-transparent border-0 outline-none text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-16 text-sm font-semibold bg-transparent border-0 outline-none text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{lineHeight: '1.25rem', paddingTop: '1px'}}
                         disabled={!address || !username}
                         data-testid="input-coinflip-bet"
