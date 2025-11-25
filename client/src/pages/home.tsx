@@ -109,8 +109,10 @@ export default function Home() {
   useEffect(() => {
     let animationFrame: number;
     let lastTime = Date.now();
+    let mounted = true;
     
     const animate = () => {
+      if (!mounted) return;
       const now = Date.now();
       const delta = now - lastTime;
       lastTime = now;
@@ -130,8 +132,18 @@ export default function Home() {
       animationFrame = requestAnimationFrame(animate);
     };
     
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
+    // Delay animation start to prevent layout shift on navigation
+    const timeout = setTimeout(() => {
+      if (mounted) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    }, 100);
+    
+    return () => {
+      mounted = false;
+      clearTimeout(timeout);
+      cancelAnimationFrame(animationFrame);
+    };
   }, []);
 
 

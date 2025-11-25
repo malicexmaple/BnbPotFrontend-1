@@ -140,7 +140,7 @@ export default function GameNavigation({
         }}>
           {/* Navigation tabs */}
           <div className="flex flex-nowrap items-center gap-0.5 sm:gap-1">
-          <Link href="/">
+          <Link href="/" onClick={(e) => { if (activeTab === "jackpot") e.preventDefault(); }}>
             <Button
               data-testid="button-jackpot-tab"
               variant="ghost"
@@ -151,7 +151,7 @@ export default function GameNavigation({
               <img src={jackpotTabLogo} alt="Jackpot" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
-          <Link href="/coinflip">
+          <Link href="/coinflip" onClick={(e) => { if (activeTab === "coinflip") e.preventDefault(); }}>
             <Button
               data-testid="button-coinflip-tab"
               variant="ghost"
@@ -162,7 +162,7 @@ export default function GameNavigation({
               <img src={coinflipLogo} alt="Coinflip" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
-          <Link href="/prediction-markets">
+          <Link href="/prediction-markets" onClick={(e) => { if (activeTab === "prediction-markets") e.preventDefault(); }}>
             <Button
               data-testid="button-prediction-markets-tab"
               variant="ghost"
