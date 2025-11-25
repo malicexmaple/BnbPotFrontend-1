@@ -76,15 +76,15 @@ export default function BetControls({
         </div>
 
         {/* Increment Buttons */}
-        {[0.1, 0.5, 1].map((increment) => (
-          <div key={increment} className={`px-5 py-2.5 rounded-lg ${isDisabled ? 'opacity-50' : ''}`} style={{
+        {[0.001, 0.01, 0.1, 0.5, 1].map((increment) => (
+          <div key={increment} className={`px-3 py-2.5 rounded-lg ${isDisabled ? 'opacity-50' : ''}`} style={{
             background: DARK_BG.MEDIUM,
             border: '1px solid rgba(60, 60, 60, 0.5)',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
           }}>
             <button
               onClick={() => incrementBet(increment)}
-              className="text-sm font-semibold text-foreground hover-elevate disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-xs font-semibold text-foreground hover-elevate disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               disabled={isDisabled}
               data-testid={`button-plus-${increment}`}
             >
@@ -94,7 +94,7 @@ export default function BetControls({
         ))}
 
         {/* Place Bet Button */}
-        <div className={`glass-panel neon-border px-5 py-2.5 rounded-lg relative overflow-hidden ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
+        <div className={`glass-panel neon-border px-4 py-2.5 rounded-lg relative overflow-hidden ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
           animation: isDisabled ? 'none' : 'floatAirdropBox 2s ease-in-out infinite'
         }}>
           {/* Background coins image */}
