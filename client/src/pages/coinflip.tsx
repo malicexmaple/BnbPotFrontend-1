@@ -528,7 +528,7 @@ export default function Coinflip() {
                   {/* Increment Buttons - Same as Jackpot */}
                   {[0.001, 0.01, 0.1, 0.5, 1].map((increment) => (
                     <div key={increment} className={`px-3 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
-                      background: 'rgba(15, 15, 15, 0.8)',
+                      background: 'rgba(20, 20, 20, 0.9)',
                       border: '1px solid rgba(60, 60, 60, 0.5)',
                       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
                     }}>
