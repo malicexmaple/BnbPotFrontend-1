@@ -469,6 +469,36 @@ export default function Coinflip() {
                   </div>
                 )}
                 <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {/* Coin side selection - Heads */}
+                  <button
+                    className={`w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    style={{
+                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
+                      border: '2px solid rgba(234, 179, 8, 0.8)',
+                      boxShadow: '0 0 10px rgba(234, 179, 8, 0.4)'
+                    }}
+                    disabled={!address || !username}
+                    data-testid="button-coinflip-heads"
+                  >
+                    <img src={bnbLogo} alt="Heads" className="w-5 h-5" />
+                  </button>
+                  
+                  {/* Coin side selection - Tails */}
+                  <button
+                    className={`w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    style={{
+                      background: 'rgba(15, 15, 15, 0.8)',
+                      border: '2px solid rgba(60, 60, 60, 0.5)'
+                    }}
+                    disabled={!address || !username}
+                    data-testid="button-coinflip-tails"
+                  >
+                    <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                      <text x="12" y="16" textAnchor="middle" fontSize="10" fill="currentColor">T</text>
+                    </svg>
+                  </button>
+
                   {/* Bet Input */}
                   <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
                     background: 'rgba(15, 15, 15, 0.8)',
@@ -511,36 +541,6 @@ export default function Coinflip() {
                       </button>
                     </div>
                   ))}
-                  
-                  {/* Coin side selection - Heads */}
-                  <button
-                    className={`w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    style={{
-                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
-                      border: '2px solid rgba(234, 179, 8, 0.8)',
-                      boxShadow: '0 0 10px rgba(234, 179, 8, 0.4)'
-                    }}
-                    disabled={!address || !username}
-                    data-testid="button-coinflip-heads"
-                  >
-                    <img src={bnbLogo} alt="Heads" className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Coin side selection - Tails */}
-                  <button
-                    className={`w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    style={{
-                      background: 'rgba(15, 15, 15, 0.8)',
-                      border: '2px solid rgba(60, 60, 60, 0.5)'
-                    }}
-                    disabled={!address || !username}
-                    data-testid="button-coinflip-tails"
-                  >
-                    <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
-                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                      <text x="12" y="16" textAnchor="middle" fontSize="10" fill="currentColor">T</text>
-                    </svg>
-                  </button>
 
                   {/* Create Game Button */}
                   <div className={`glass-panel neon-border px-4 py-2.5 rounded-lg relative overflow-hidden ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
