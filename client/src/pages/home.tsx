@@ -1162,6 +1162,8 @@ export default function Home() {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      <ChatRulesModal open={showChatRules} onOpenChange={setShowChatRules} />
     </>
   );
 }
