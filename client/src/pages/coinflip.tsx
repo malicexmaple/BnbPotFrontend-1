@@ -21,6 +21,7 @@ import GameLayout from "@/components/GameLayout";
 import { GAME, BORDER_RADIUS } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
+import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
@@ -502,9 +503,9 @@ export default function Coinflip() {
                   {/* Bet Input */}
                   <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
                     background: 'rgba(20, 20, 20, 0.9)',
-                    border: '2px solid rgba(250, 204, 21, 0.85)',
+                    border: '1px solid rgba(60, 60, 60, 0.5)',
                     minWidth: '160px',
-                    boxShadow: '0 0 8px rgba(250, 204, 21, 0.22), 0 2px 8px rgba(0, 0, 0, 0.6)'
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
                   }}>
                     <div className="flex items-center gap-2">
                       <input
@@ -520,7 +521,7 @@ export default function Coinflip() {
                     </div>
                     <div className="flex items-center gap-1.5 pl-3 border-l border-border/20">
                       <span className="text-sm font-semibold text-foreground">BNB</span>
-                      <img src={bnbLogo} alt="BNB" className="w-5 h-5" />
+                      <img src={bnbIcon} alt="BNB" className="w-5 h-5" />
                     </div>
                   </div>
 
