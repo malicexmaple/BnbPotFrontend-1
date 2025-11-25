@@ -458,7 +458,7 @@ export default function Coinflip() {
               {/* COINFLIP BETTING PANEL - Same theme as Jackpot BetControls */}
               <div className="px-4 py-3" style={{
                 borderRadius: BORDER_RADIUS.STANDARD,
-                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
+                background: DARK_BG.GRADIENT,
                 border: '2px solid rgba(60, 60, 60, 0.4)',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
               }}>
