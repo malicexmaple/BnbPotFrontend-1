@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 
 interface GameLayoutProps {
-  header: ReactNode;
+  header?: ReactNode;
   leftSidebar: ReactNode;
   rightSidebar: ReactNode;
   footer: ReactNode;
@@ -32,10 +32,12 @@ export default function GameLayout({
       
       {/* ONE scrollable container with header + content */}
       <div className="w-full">
-        {/* Header - FIXED to top of viewport */}
-        <div className="fixed top-0 left-0 right-0 w-full z-50">
-          {header}
-        </div>
+        {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
+        {header && (
+          <div className="fixed top-0 left-0 right-0 w-full z-50">
+            {header}
+          </div>
+        )}
 
         {/* Content - with top padding to account for fixed header */}
         <div className="flex flex-col min-h-screen w-full" style={{paddingTop: '100px'}}>

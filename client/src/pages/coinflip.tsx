@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
-import ProfileModal from "@/components/ProfileModal";
 import ChatSidebar from "@/components/ChatSidebar";
 import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
@@ -42,7 +40,6 @@ export default function Coinflip() {
   const [betAmount, setBetAmount] = useState("");
   const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
   const [showMiningBlock, setShowMiningBlock] = useState(false);
@@ -315,17 +312,6 @@ export default function Coinflip() {
   return (
     <>
       <GameLayout
-        header={
-          <GameNavigation 
-            onConnect={connect} 
-            onDisconnect={disconnect} 
-            isConnected={!!address} 
-            isConnecting={isConnecting} 
-            walletAddress={address || undefined} 
-            username={username || undefined} 
-            onOpenProfile={() => setShowProfileModal(true)} 
-          />
-        }
         leftSidebar={
           <ChatSidebar
             isCollapsed={isChatCollapsed}
@@ -1197,14 +1183,6 @@ export default function Coinflip() {
       </Dialog>
 
       <ChatRulesModal open={showChatRules} onOpenChange={setShowChatRules} />
-
-      <ProfileModal
-        open={showProfileModal}
-        onOpenChange={setShowProfileModal}
-        username={username || "User"}
-        walletAddress={address || undefined}
-        onDisconnect={disconnect}
-      />
     </>
   );
 }

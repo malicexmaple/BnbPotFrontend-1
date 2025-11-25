@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
-import ProfileModal from "@/components/ProfileModal";
 import ChatSidebar from "@/components/ChatSidebar";
 import BetControls from "@/components/BetControls";
 import ChatRulesModal from "@/components/ChatRulesModal";
@@ -46,7 +44,6 @@ export default function Home() {
   const [scrollOffset, setScrollOffset] = useState(0);
   const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
   const [showMiningBlock, setShowMiningBlock] = useState(false);
@@ -335,17 +332,6 @@ export default function Home() {
   return (
     <>
       <GameLayout
-        header={
-          <GameNavigation 
-            onConnect={connect} 
-            onDisconnect={disconnect} 
-            isConnected={!!address} 
-            isConnecting={isConnecting} 
-            walletAddress={address || undefined} 
-            username={username || undefined} 
-            onOpenProfile={() => setShowProfileModal(true)} 
-          />
-        }
         leftSidebar={
           <ChatSidebar
             isCollapsed={isChatCollapsed}
@@ -1166,14 +1152,6 @@ export default function Home() {
       </Dialog>
 
       <ChatRulesModal open={showChatRules} onOpenChange={setShowChatRules} />
-
-      <ProfileModal
-        open={showProfileModal}
-        onOpenChange={setShowProfileModal}
-        username={username || "User"}
-        walletAddress={address || undefined}
-        onDisconnect={disconnect}
-      />
     </>
   );
 }
