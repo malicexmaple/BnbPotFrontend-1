@@ -5,14 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Flame, DollarSign } from "lucide-react";
+import { Flame } from "lucide-react";
 import { SIDEBAR, AIRDROP, BORDER_RADIUS, GOLDEN, DARK_BG } from "@/constants/layout";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
 import airdropPackage from '@assets/airdrop-pachage_1763543740528.png';
-import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
 
 interface Message {
   id: string;
@@ -226,14 +225,13 @@ export default function ChatSidebar({
               <div className="glass-panel neon-border p-1 relative" style={{
                 animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
-                {/* Background coins image */}
-                <div className="absolute inset-0 z-0 overflow-hidden" style={{
-                  backgroundImage: `url(${coinsBackground})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  opacity: 0.3,
+                {/* Background BNB icon */}
+                <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-end pr-2" style={{
+                  opacity: 0.15,
                   borderRadius: 'inherit'
-                }} />
+                }}>
+                  <img src={bnbIcon} alt="" style={{width: '1.5rem', height: '1.5rem'}} />
+                </div>
                 {/* Gift package with air streams */}
                 <div className="absolute z-10" style={{
                   right: '60px',
@@ -440,15 +438,14 @@ export default function ChatSidebar({
 
       {/* Donate Dialog */}
       <Dialog open={showDonateDialog} onOpenChange={setShowDonateDialog}>
-        <DialogContent className="sm:max-w-md glass-panel" style={{
-          background: DARK_BG.SOLID,
-          border: GOLDEN.BORDER,
-          borderRadius: BORDER_RADIUS.SMALL,
-          boxShadow: GOLDEN.GLOW
+        <DialogContent className="sm:max-w-md glass-panel neon-border" style={{
+          background: DARK_BG.GRADIENT,
+          borderRadius: BORDER_RADIUS.STANDARD,
+          boxShadow: '0 0 30px rgba(234, 179, 8, 0.15), 0 8px 32px rgba(0, 0, 0, 0.4)'
         }}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-foreground">
-              <DollarSign className="w-5 h-5" style={{ color: '#FCD34D', strokeWidth: 3 }} />
+              <img src={bnbIcon} alt="BNB" style={{width: '1.5rem', height: '1.5rem'}} />
               Donate to Airdrop Pool
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
