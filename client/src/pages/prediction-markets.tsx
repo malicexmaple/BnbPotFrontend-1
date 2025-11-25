@@ -7,36 +7,41 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
-import { Settings, ChevronRight, ChevronDown } from "lucide-react";
+import { 
+  Settings, ChevronRight, ChevronDown, 
+  Tv, Calendar, Target, Gamepad2, CircleDot, 
+  Dribbble, Trophy, Sword
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
 import { BORDER_RADIUS } from "@/constants/layout";
 
-// Sport icons as simple components
+// Sport icons using lucide-react
 const SportIcon = ({ sport }: { sport: string }) => {
-  const icons: Record<string, string> = {
-    'NFL': '🏈',
-    'CFB': '🏈',
-    'NBA': '🏀',
-    'NHL': '🏒',
-    'CS2': '🎮',
-    'Dota 2': '🎮',
-    'Valorant': '🎮',
-    'Football': '⚽',
-    'Cricket': '🏏',
-    'American Football': '🏈',
-    'Basketball': '🏀',
-    'Hockey': '🏒',
-    'Tennis': '🎾',
-    'Esports': '🎮',
-    'Baseball': '⚾',
-    'Golf': '⛳',
-    'UFC': '🥊',
-    'Live': '📺',
-    'Futures': '📅',
+  const iconClass = "w-4 h-4";
+  const iconMap: Record<string, JSX.Element> = {
+    'NFL': <Trophy className={iconClass} />,
+    'CFB': <Trophy className={iconClass} />,
+    'NBA': <Dribbble className={iconClass} />,
+    'NHL': <Target className={iconClass} />,
+    'CS2': <Gamepad2 className={iconClass} />,
+    'Dota 2': <Gamepad2 className={iconClass} />,
+    'Valorant': <Gamepad2 className={iconClass} />,
+    'Football': <CircleDot className={iconClass} />,
+    'Cricket': <Target className={iconClass} />,
+    'American Football': <Trophy className={iconClass} />,
+    'Basketball': <Dribbble className={iconClass} />,
+    'Hockey': <Target className={iconClass} />,
+    'Tennis': <CircleDot className={iconClass} />,
+    'Esports': <Gamepad2 className={iconClass} />,
+    'Baseball': <CircleDot className={iconClass} />,
+    'Golf': <Target className={iconClass} />,
+    'UFC': <Sword className={iconClass} />,
+    'Live': <Tv className={iconClass} />,
+    'Futures': <Calendar className={iconClass} />,
   };
-  return <span className="text-base">{icons[sport] || '🎯'}</span>;
+  return iconMap[sport] || <Target className={iconClass} />;
 };
 
 // Demo data for games
@@ -48,8 +53,8 @@ const demoGames = {
       time: 'LIVE',
       volume: '$313.37k Vol.',
       teams: [
-        { code: '9', name: 'IND India', flag: '🇮🇳', moneyline: 'IND 0.6¢', moneylineColor: '#22C55E' },
-        { code: '489', name: 'SOU South Africa', flag: '🇿🇦', moneyline: 'SOU 63¢', moneylineColor: '#6366F1' },
+        { code: '9', name: 'IND India', moneyline: 'IND 0.6¢', moneylineColor: '#22C55E' },
+        { code: '489', name: 'SOU South Africa', moneyline: 'SOU 63¢', moneylineColor: '#6366F1' },
       ],
       draw: 'DRAW 37.2¢',
     }
@@ -463,8 +468,12 @@ export default function PredictionMarkets() {
                     {game.teams.map((team, idx) => (
                       <div key={idx} className="flex items-center justify-between py-2">
                         <div className="flex items-center gap-3">
-                          <span className="text-lg">{team.flag}</span>
-                          <span className="font-mono text-sm text-muted-foreground">{team.code}</span>
+                          <Badge 
+                            className="font-bold text-xs px-2"
+                            style={{ background: team.moneylineColor, color: 'white' }}
+                          >
+                            {team.code}
+                          </Badge>
                           <span className="text-sm text-foreground">{team.name}</span>
                         </div>
                         <button
