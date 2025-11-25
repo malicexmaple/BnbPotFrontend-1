@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +50,16 @@ export default function ChatSidebar({
   const [showDonateDialog, setShowDonateDialog] = useState(false);
   const [donateAmount, setDonateAmount] = useState("");
   const { toast } = useToast();
+
+  // Calculate animation offset to sync animations across page navigations
+  // This ensures animations stay in sync with a global clock rather than restarting on mount
+  const animationOffset = useMemo(() => {
+    const now = Date.now();
+    return {
+      float2s: `-${now % 2000}ms`,
+      airStream: (index: number) => `-${(now + index * 80) % ((0.8 + index * 0.1) * 1000)}ms`
+    };
+  }, []);
 
   // Fetch airdrop pool data
   const { data: pool } = useQuery<{balance: string; lastDistributionDate: string | null}>({
@@ -224,7 +234,8 @@ export default function ChatSidebar({
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
               <div className="neon-border p-1 relative" style={{
-                animation: 'floatAirdropBox 2s ease-in-out infinite'
+                animation: 'floatAirdropBox 2s ease-in-out infinite',
+                animationDelay: animationOffset.float2s
               }}>
                 {/* Background coins image */}
                 <div className="absolute inset-0 z-0" style={{
@@ -251,7 +262,8 @@ export default function ChatSidebar({
                   top: '-50px',
                   width: '5rem',
                   height: '5rem',
-                  animation: 'floatAirdrop 2s ease-in-out infinite'
+                  animation: 'floatAirdrop 2s ease-in-out infinite',
+                  animationDelay: animationOffset.float2s
                 }}>
                   <img
                     src={airdropPackage}
@@ -277,7 +289,7 @@ export default function ChatSidebar({
                         background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0))',
                         borderRadius: '50%',
                         animation: `airStream${i % 8} ${0.8 + (i * 0.1)}s ease-out infinite`,
-                        animationDelay: `${i * 0.08}s`,
+                        animationDelay: animationOffset.airStream(i),
                         filter: 'blur(0.5px)'
                       }}
                     />
@@ -340,7 +352,8 @@ export default function ChatSidebar({
                 <div className="flex items-center justify-start relative z-10" style={{marginTop: '0.125rem'}}>
                   <div className="shine-image relative" style={{
                     '--shine-mask': `url(${airdropLogo})`,
-                    animation: 'floatAirdrop 2s ease-in-out infinite'
+                    animation: 'floatAirdrop 2s ease-in-out infinite',
+                    animationDelay: animationOffset.float2s
                   } as React.CSSProperties}>
                     <img 
                       src={airdropLogo} 
@@ -364,7 +377,7 @@ export default function ChatSidebar({
                           background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0))',
                           borderRadius: '50%',
                           animation: `airStreamLogo${i % 6} ${0.7 + (i * 0.08)}s ease-out infinite`,
-                          animationDelay: `${i * 0.05}s`,
+                          animationDelay: animationOffset.airStream(i),
                           filter: 'blur(0.5px)'
                         }}
                       />
