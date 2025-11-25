@@ -437,14 +437,14 @@ export default function Coinflip() {
             </ScrollArea>
           </div>
         </div>
+        
+        {/* Mining Block Overlay - inside game area so it doesn't cover sidebars */}
+        <MiningBlockOverlay 
+          isVisible={showMiningBlock}
+          onComplete={() => setShowMiningBlock(false)}
+          blockNumber={miningBlockNumber}
+        />
       </div>
-
-      {/* Mining Block Overlay */}
-      <MiningBlockOverlay 
-        isVisible={showMiningBlock}
-        onComplete={() => setShowMiningBlock(false)}
-        blockNumber={miningBlockNumber}
-      />
 
       {/* Signup Modal */}
       <Dialog open={shouldShowSignup} onOpenChange={() => {}}>

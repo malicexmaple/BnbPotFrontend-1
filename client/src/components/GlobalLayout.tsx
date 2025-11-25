@@ -71,14 +71,14 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
       }} />
       
       {/* Main layout container */}
-      <div className="w-full">
+      <div className="w-full max-w-full overflow-x-hidden">
         {/* Content - with top padding to account for fixed header */}
-        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
+        <div className="flex flex-col min-h-screen w-full max-w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
           {/* Wrapper for content + footer */}
-          <div className="flex-1 flex flex-col w-full">
+          <div className="flex-1 flex flex-col w-full max-w-full overflow-x-hidden">
             {/* Content wrapper */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex-1 flex">
+            <div className="flex-1 flex flex-col max-w-full">
+              <div className="flex-1 flex max-w-full">
                 {/* Left sidebar - Chat (Global/Persistent) */}
                 <ChatSidebar
                   isCollapsed={isChatCollapsed}
@@ -92,7 +92,7 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
                 />
 
                 {/* Main content area */}
-                <div className="flex-1 flex flex-col relative">
+                <div className="flex-1 flex flex-col relative min-w-0">
                   {children}
                 </div>
 
