@@ -526,7 +526,7 @@ export default function PredictionMarkets() {
                       <img src={clockIcon} alt="Clock" className="h-14 w-14" />
                     </div>
                     {currentRound?.status === "waiting" ? (
-                      <div className="text-xl font-bold font-mono no-text-shadow text-center px-2" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">Waiting...</div>
+                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">--:--</div>
                     ) : (
                       <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
                     )}
