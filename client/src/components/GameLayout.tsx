@@ -40,7 +40,7 @@ export default function GameLayout({
         )}
 
         {/* Content - with top padding to account for fixed header */}
-        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: '100px'}}>
+        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
           {/* Wrapper for content + footer */}
           <div className="flex-1 flex flex-col w-full">
             {/* Content wrapper */}

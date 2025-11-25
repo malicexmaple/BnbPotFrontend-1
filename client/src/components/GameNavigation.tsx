@@ -73,9 +73,9 @@ export default function GameNavigation({
   }, [username]);
 
   return (
-    <div className="flex w-full" style={{height: '100px'}}>
-      {/* Left - Logo section (345px, full height) */}
-      <div className="flex items-start justify-center flex-shrink-0 w-full max-w-[345px]" style={{ height: '100px' }}>
+    <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
+      {/* Left - Logo section (345px on desktop, smaller on mobile) */}
+      <div className="hidden lg:flex items-start justify-center flex-shrink-0 w-full max-w-[345px]" style={{ height: '100px' }}>
         <div className="flex items-center justify-center" style={{height: '100px'}}>
           <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
             <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
@@ -85,11 +85,17 @@ export default function GameNavigation({
           </div>
         </div>
       </div>
+      {/* Mobile logo - smaller version */}
+      <div className="flex lg:hidden items-center justify-center flex-shrink-0 px-2" style={{ height: '100px', width: '80px' }}>
+        <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`} as React.CSSProperties}>
+          <img src={crownLogo} alt="Crown" style={{height: '60px', width: 'auto', display: 'block'}} />
+        </div>
+      </div>
 
       {/* Right - Stacked header content */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Top Header - 30px */}
-        <nav className="flex flex-nowrap items-center justify-between px-4 border-b border-border/20" style={{
+        {/* Top Header - 30px (hidden on mobile) */}
+        <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
           backdropFilter: 'blur(4px)'
@@ -125,27 +131,28 @@ export default function GameNavigation({
           </div>
         </nav>
 
-        {/* Bottom Header - 70px */}
-        <nav className="flex flex-nowrap items-center justify-between px-4" style={{
+        {/* Bottom Header - 70px on desktop, 100px on mobile */}
+        <nav className="flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
           height: '70px',
           background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
-          backdropFilter: 'blur(4px)'
+          backdropFilter: 'blur(4px)',
+          flex: 1
         }}>
           {/* Navigation tabs */}
-          <div className="flex flex-nowrap items-center gap-1">
+          <div className="flex flex-nowrap items-center gap-0.5 sm:gap-1">
           <Link href="/">
             <Button
               data-testid="button-jackpot-tab"
               variant="ghost"
               size="sm"
-              className={`font-medium px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+              className={`font-medium px-1.5 sm:px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
               style={{height: '32px', fontSize: '14px'}}
             >
-              <svg className="mr-1.5" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#EAB308'}}>
+              <svg className="mr-1 sm:mr-1.5 hidden sm:block" fill="currentColor" viewBox="0 0 20 20" style={{width: '16px', height: '16px', color: '#EAB308'}}>
                 <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
                 <circle cx="10" cy="10" r="3" fill="currentColor"/>
               </svg>
-              <img src={jackpotTabLogo} alt="Jackpot" style={{height: '34px', width: 'auto'}} />
+              <img src={jackpotTabLogo} alt="Jackpot" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
           <Link href="/coinflip">
@@ -153,10 +160,10 @@ export default function GameNavigation({
               data-testid="button-coinflip-tab"
               variant="ghost"
               size="sm"
-              className={`font-medium px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+              className={`font-medium px-1.5 sm:px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
               style={{height: '32px', fontSize: '14px'}}
             >
-              <img src={coinflipLogo} alt="Coinflip" style={{height: '34px', width: 'auto'}} />
+              <img src={coinflipLogo} alt="Coinflip" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
           <Link href="/prediction-markets">
@@ -164,27 +171,27 @@ export default function GameNavigation({
               data-testid="button-prediction-markets-tab"
               variant="ghost"
               size="sm"
-              className={`font-medium px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
+              className={`font-medium px-1.5 sm:px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
               style={{height: '32px', fontSize: '14px'}}
             >
-              <img src={predictionMarketsLogo} alt="Prediction Markets" style={{height: '34px', width: 'auto'}} />
+              <img src={predictionMarketsLogo} alt="Prediction Markets" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
           </div>
 
           {/* Connect button on bottom right */}
-          <div className="flex flex-nowrap flex-shrink-0 items-center gap-3">
+          <div className="flex flex-nowrap flex-shrink-0 items-center gap-1 sm:gap-3">
             {isConnected && username ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     data-testid="button-user-menu"
                     size="sm"
-                    className="font-bold pl-2 pr-5 text-white border-0 glass-panel"
+                    className="font-bold pl-1.5 pr-2 sm:pl-2 sm:pr-5 text-white border-0 glass-panel"
                     style={{
-                      height: '60px',
-                      fontSize: '14px',
-                      borderRadius: '12px',
+                      height: '44px',
+                      fontSize: '12px',
+                      borderRadius: '10px',
                       border: '2px solid transparent',
                       backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
                       backgroundOrigin: 'border-box',
@@ -193,7 +200,7 @@ export default function GameNavigation({
                     }}
                   >
                     <div 
-                      className="w-12 h-12 rounded-md flex items-center justify-center mr-2 text-base font-bold overflow-hidden"
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-md flex items-center justify-center mr-1 sm:mr-2 text-sm font-bold overflow-hidden"
                       style={{
                         background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
                         border: '2px solid rgba(60, 60, 60, 0.6)',
@@ -203,13 +210,13 @@ export default function GameNavigation({
                       {avatarUrl ? (
                         <img src={avatarUrl} alt={username} className="w-full h-full object-cover" />
                       ) : (
-                        <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '24px', height: '24px'}}>
+                        <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '20px', height: '20px'}}>
                           <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
                         </svg>
                       )}
                     </div>
-                    {username}
-                    <ChevronRight className="ml-2" style={{width: '14px', height: '14px'}} />
+                    <span className="hidden sm:inline">{username}</span>
+                    <ChevronRight className="ml-1 sm:ml-2" style={{width: '12px', height: '12px'}} />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border/40">
@@ -280,11 +287,11 @@ export default function GameNavigation({
                 onClick={onConnect}
                 disabled={isConnecting}
                 size="sm"
-                className="font-bold px-5 text-white border-0 glass-panel no-default-hover-elevate"
+                className="font-bold px-3 sm:px-5 text-white border-0 glass-panel no-default-hover-elevate"
                 style={{
-                  height: '60px',
-                  fontSize: '14px',
-                  borderRadius: '12px',
+                  height: '44px',
+                  fontSize: '12px',
+                  borderRadius: '10px',
                   border: '2px solid transparent',
                   backgroundImage: 'linear-gradient(rgba(15, 15, 15, 0.9), rgba(15, 15, 15, 0.9)), linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%)',
                   backgroundOrigin: 'border-box',
@@ -292,7 +299,7 @@ export default function GameNavigation({
                   boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 0 24px rgba(234, 179, 8, 0.4), 0 4px 12px rgba(0, 0, 0, 0.7)'
                 }}
               >
-                <svg className="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="mr-1.5 sm:mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
                 </svg>
                 {isConnecting ? 'Connecting...' : 'Connect'}
