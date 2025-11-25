@@ -94,7 +94,7 @@ export default function BetControls({
         ))}
 
         {/* Place Bet Button */}
-        <div className={`glass-panel neon-border px-6 py-2.5 rounded-lg relative overflow-hidden ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
+        <div className={`glass-panel neon-border px-5 py-2.5 rounded-lg relative overflow-hidden ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
           animation: isDisabled ? 'none' : 'floatAirdropBox 2s ease-in-out infinite'
         }}>
           {/* Background coins image */}
