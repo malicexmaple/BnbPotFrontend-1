@@ -461,9 +461,16 @@ export default function Coinflip() {
                 border: '2px solid rgba(60, 60, 60, 0.4)',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
               }}>
+                {/* Authentication requirement message */}
+                {(!address || !username) && (
+                  <div className="text-xs text-muted-foreground text-center mb-2 px-2" data-testid="text-coinflip-auth-required">
+                    {!address ? "Connect wallet to bet" : "Create account to bet"} 
+                    {address && !username && " (click Connect → Create Account)"}
+                  </div>
+                )}
                 <div className="flex items-center justify-center gap-2 flex-wrap">
                   {/* Bet Input */}
-                  <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
+                  <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
                     background: 'rgba(15, 15, 15, 0.8)',
                     border: '1px solid rgba(60, 60, 60, 0.5)',
                     minWidth: '140px',
@@ -475,8 +482,9 @@ export default function Coinflip() {
                         value={betAmount}
                         onChange={(e) => setBetAmount(e.target.value)}
                         placeholder="0.1"
-                        className="w-14 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
+                        className="w-14 text-sm font-semibold bg-transparent border-0 outline-none text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{lineHeight: '1.25rem', paddingTop: '1px'}}
+                        disabled={!address || !username}
                         data-testid="input-coinflip-bet"
                       />
                     </div>
@@ -488,14 +496,15 @@ export default function Coinflip() {
 
                   {/* Increment Buttons - Same as Jackpot */}
                   {[0.001, 0.01, 0.1, 0.5, 1].map((increment) => (
-                    <div key={increment} className="px-3 py-2.5 rounded-lg" style={{
+                    <div key={increment} className={`px-3 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
                       background: 'rgba(15, 15, 15, 0.8)',
                       border: '1px solid rgba(60, 60, 60, 0.5)',
                       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
                     }}>
                       <button
                         onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + increment))}
-                        className="text-xs font-semibold text-foreground hover-elevate whitespace-nowrap"
+                        className="text-xs font-semibold text-foreground hover-elevate whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={!address || !username}
                         data-testid={`button-coinflip-plus-${increment}`}
                       >
                         +{increment}
@@ -505,12 +514,13 @@ export default function Coinflip() {
                   
                   {/* Coin side selection - Heads */}
                   <button
-                    className="w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all"
+                    className={`w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`}
                     style={{
                       background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
                       border: '2px solid rgba(234, 179, 8, 0.8)',
                       boxShadow: '0 0 10px rgba(234, 179, 8, 0.4)'
                     }}
+                    disabled={!address || !username}
                     data-testid="button-coinflip-heads"
                   >
                     <img src={bnbLogo} alt="Heads" className="w-5 h-5" />
@@ -518,11 +528,12 @@ export default function Coinflip() {
                   
                   {/* Coin side selection - Tails */}
                   <button
-                    className="w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all"
+                    className={`w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`}
                     style={{
                       background: 'rgba(15, 15, 15, 0.8)',
                       border: '2px solid rgba(60, 60, 60, 0.5)'
                     }}
+                    disabled={!address || !username}
                     data-testid="button-coinflip-tails"
                   >
                     <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
