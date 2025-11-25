@@ -25,6 +25,7 @@ import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurre
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
+import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
 
 export default function Coinflip() {
   const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage, contract } = useGameState();
@@ -531,14 +532,33 @@ export default function Coinflip() {
                   </button>
 
                   {/* Create Game Button */}
-                  <div className="glass-panel neon-border px-4 py-2.5 rounded-lg relative overflow-hidden">
+                  <div className={`glass-panel neon-border px-4 py-2.5 rounded-lg relative overflow-hidden ${(!address || !username) ? 'opacity-50 cursor-not-allowed' : ''}`} style={{
+                    animation: (!address || !username) ? 'none' : 'floatAirdropBox 2s ease-in-out infinite'
+                  }}>
+                    {/* Background coins image */}
+                    <div className="absolute inset-0 z-0" style={{
+                      backgroundImage: `url(${coinsBackground})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      opacity: 0.3,
+                      borderRadius: 'inherit'
+                    }} />
                     <button
                       onClick={handlePlaceBet}
-                      className="relative z-10 hover-elevate active-elevate-2 transition-all text-xs font-bold text-primary uppercase tracking-wide"
+                      className="relative z-10 hover-elevate active-elevate-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={!address || !username}
                       data-testid="button-create-game"
                     >
-                      Create Game
+                      <span className="text-xs font-bold uppercase tracking-wide" style={{
+                        background: 'linear-gradient(180deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))',
+                        textShadow: '0 0 10px rgba(255, 215, 0, 0.5)'
+                      }}>
+                        CREATE GAME
+                      </span>
                     </button>
                   </div>
                 </div>
