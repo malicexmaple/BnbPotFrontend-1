@@ -523,8 +523,8 @@ export default function Coinflip() {
 
             {/* COINFLIP GAMES LIST */}
             <div className="flex justify-center">
-              <div className="carousel-container relative" style={{padding: '20px 16px'}}>
-              {/* Header Bar */}
+              <div className="carousel-container relative" style={{padding: '30px 24px'}}>
+                {/* Header Bar */}
               <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-muted-foreground uppercase tracking-wider">All Games</span>
