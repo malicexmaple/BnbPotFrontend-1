@@ -506,21 +506,21 @@ export default function Coinflip() {
                     minWidth: '140px',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
                   }}>
-                    <div className="flex items-center gap-1.5 pr-3 border-r border-border/20">
-                      <img src={bnbLogo} alt="BNB" className="w-5 h-5" />
-                      <span className="text-sm font-semibold text-foreground">BNB</span>
-                    </div>
-                    <div className="flex items-center gap-2 pl-2">
+                    <div className="flex items-center gap-2">
                       <input
                         type="text"
                         value={betAmount}
                         onChange={(e) => setBetAmount(e.target.value)}
                         placeholder="0.1"
-                        className="w-14 text-sm font-semibold bg-transparent border-0 outline-none text-foreground disabled:opacity-50 disabled:cursor-not-allowed text-right"
+                        className="w-14 text-sm font-semibold bg-transparent border-0 outline-none text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{lineHeight: '1.25rem', paddingTop: '1px'}}
                         disabled={!address || !username}
                         data-testid="input-coinflip-bet"
                       />
+                    </div>
+                    <div className="flex items-center gap-1.5 pl-3 border-l border-border/20">
+                      <span className="text-sm font-semibold text-foreground">BNB</span>
+                      <img src={bnbLogo} alt="BNB" className="w-5 h-5" />
                     </div>
                   </div>
 
