@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import airdropLogo from '@assets/airdropnew_1763414250628.png';
 import airdropPackage from '@assets/airdrop-pachage_1763543740528.png';
+import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
 
 interface Message {
   id: string;
@@ -222,9 +223,17 @@ export default function ChatSidebar({
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
-              <div className="glass-panel neon-border p-1 relative" style={{
+              <div className="glass-panel neon-border p-1 relative overflow-hidden" style={{
                 animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
+                {/* Background coins image */}
+                <div className="absolute inset-0 z-0" style={{
+                  backgroundImage: `url(${coinsBackground})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  opacity: 0.3,
+                  borderRadius: 'inherit'
+                }} />
                 {/* Background BNB icon */}
                 <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-end pr-2" style={{
                   opacity: 0.15,
