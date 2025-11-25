@@ -5,7 +5,6 @@ import GameNavigation from "@/components/GameNavigation";
 import GameFooter from "@/components/GameFooter";
 import ProfileModal from "@/components/ProfileModal";
 import ChatSidebar from "@/components/ChatSidebar";
-import BetControls from "@/components/BetControls";
 import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
 import MiningBlockOverlay from "@/components/MiningBlockOverlay";
@@ -22,11 +21,7 @@ import GameLayout from "@/components/GameLayout";
 import { GAME, BORDER_RADIUS } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
-import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
-import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
-import treasureChest from '@assets/3dgifmaker81317_1763413607076.gif';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
-import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
@@ -442,12 +437,12 @@ export default function Coinflip() {
         <div className="flex-1 flex flex-col relative overflow-hidden">
           <div className="p-6 space-y-5 relative z-10 flex-shrink-0">
             {/* HEADER */}
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="flex flex-col">
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center">
                 <div className="shine-image" style={{'--shine-mask': `url(${coinflipLogo})`} as React.CSSProperties}>
                   <img src={coinflipLogo} alt="COINFLIP" className="w-full max-w-[450px]" style={{height: 'auto'}} />
                 </div>
-                <div className="flex justify-end pr-4" style={{marginTop: '-15px'}}>
+                <div className="flex justify-center" style={{marginTop: '-15px'}}>
                   <div className="text-sm uppercase tracking-widest shine-text font-semibold italic" style={{
                     color: 'rgb(161, 161, 170)',
                     textShadow: '0 0 10px rgba(234, 179, 8, 0.3)',
@@ -457,65 +452,106 @@ export default function Coinflip() {
                   </div>
                 </div>
               </div>
-              
-              <BetControls
-                betAmount={betAmount}
-                onBetAmountChange={setBetAmount}
-                onPlaceBet={handlePlaceBet}
-                isWalletConnected={!!address}
-                hasAccount={!!username}
-              />
             </div>
 
-            {/* STATS BAR */}
-            <div className="p-1">
-              <div className="max-sm:grid max-sm:grid-cols-2 sm:flex sm:flex-wrap gap-4 justify-center" style={{overflow: 'visible'}}>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-large">
-                      <img src={treasureChest} alt="Treasure Chest" className="h-16 w-16" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-jackpot-value">
-                      {isLoadingRound ? '...' : totalPot.toFixed(3)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Jackpot Value</div>
+            {/* COINFLIP BETTING PANEL */}
+            <div className="flex justify-center">
+              <div className="glass-panel neon-border p-4 w-full" style={{maxWidth: '1008px', borderRadius: BORDER_RADIUS.STANDARD}}>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  {/* Left side - Bet Amount label */}
+                  <div className="text-sm text-muted-foreground">
+                    Bet Amount <span className="text-foreground font-semibold">~${(parseFloat(betAmount) * 650 || 0).toFixed(0)}</span>
                   </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper">
-                      <img src={bnbLogo} alt="BNB" className="h-16 w-16" />
+                  
+                  {/* Center - Input and controls */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* BNB Icon + Input */}
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{
+                      background: 'rgba(30, 30, 30, 0.8)',
+                      border: '1px solid rgba(60, 60, 60, 0.5)'
+                    }}>
+                      <img src={bnbLogo} alt="BNB" className="w-5 h-5" />
+                      <input
+                        type="text"
+                        value={betAmount}
+                        onChange={(e) => setBetAmount(e.target.value)}
+                        placeholder="0"
+                        className="w-20 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
+                        data-testid="input-coinflip-bet"
+                      />
                     </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-wager">
-                      {isLoadingRound ? '...' : userWager.toFixed(3)}
+                    
+                    {/* Currency selector */}
+                    <div className="flex items-center gap-1 px-3 py-2 rounded-lg" style={{
+                      background: 'rgba(30, 30, 30, 0.8)',
+                      border: '1px solid rgba(60, 60, 60, 0.5)'
+                    }}>
+                      <span className="text-sm font-semibold text-foreground">BNB</span>
+                      <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
                     </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Wager</div>
+                    
+                    {/* Increment buttons */}
+                    {[0.1, 1].map((increment) => (
+                      <button
+                        key={increment}
+                        onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + increment))}
+                        className="px-3 py-2 rounded-lg text-sm font-semibold text-foreground hover-elevate"
+                        style={{
+                          background: 'rgba(30, 30, 30, 0.8)',
+                          border: '1px solid rgba(60, 60, 60, 0.5)'
+                        }}
+                        data-testid={`button-coinflip-plus-${increment}`}
+                      >
+                        +{increment}
+                      </button>
+                    ))}
+                    
+                    {/* Coin side selection - Heads */}
+                    <button
+                      className="w-10 h-10 rounded-full flex items-center justify-center hover-elevate transition-all"
+                      style={{
+                        background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
+                        border: '2px solid rgba(234, 179, 8, 0.8)',
+                        boxShadow: '0 0 10px rgba(234, 179, 8, 0.4)'
+                      }}
+                      data-testid="button-coinflip-heads"
+                    >
+                      <img src={bnbLogo} alt="Heads" className="w-6 h-6" />
+                    </button>
+                    
+                    {/* Coin side selection - Tails */}
+                    <button
+                      className="w-10 h-10 rounded-full flex items-center justify-center hover-elevate transition-all"
+                      style={{
+                        background: 'rgba(30, 30, 30, 0.8)',
+                        border: '2px solid rgba(60, 60, 60, 0.5)'
+                      }}
+                      data-testid="button-coinflip-tails"
+                    >
+                      <svg className="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                        <text x="12" y="16" textAnchor="middle" fontSize="10" fill="currentColor">T</text>
+                      </svg>
+                    </button>
+                    
+                    {/* Create Game button */}
+                    <Button 
+                      onClick={handlePlaceBet}
+                      className="px-6"
+                      disabled={!address || !username}
+                      data-testid="button-create-game"
+                    >
+                      Create Game
+                    </Button>
                   </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-small">
-                      <img src={cloverIcon} alt="Clover" className="h-14 w-14" />
-                    </div>
-                    <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-your-chance">
-                      {isLoadingRound ? '...' : userChance.toFixed(2)}%
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">Your Chance</div>
-                  </div>
-                </div>
-                <div className="stat-box">
-                  <div className="flex flex-col items-center gap-2" style={{overflow: 'visible'}}>
-                    <div className="stat-icon-wrapper-small">
-                      <img src={clockIcon} alt="Clock" className="h-14 w-14" />
-                    </div>
-                    {currentRound?.status === "waiting" ? (
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">--:--</div>
-                    ) : (
-                      <div className="text-4xl font-bold font-mono no-text-shadow" style={{color: '#FCD34D', marginBottom: '-1rem'}} data-testid="text-timer">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</div>
-                    )}
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider text-center">
-                      {currentRound?.status === "waiting" ? "For First Bet" : "Time Remaining"}
-                    </div>
+                  
+                  {/* Right side - Balance */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">Balance:</span>
+                    <img src={bnbLogo} alt="BNB" className="w-4 h-4" />
+                    <span className="text-foreground font-mono font-semibold">0.00000000</span>
                   </div>
                 </div>
               </div>
