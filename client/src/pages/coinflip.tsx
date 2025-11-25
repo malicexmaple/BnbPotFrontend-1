@@ -574,12 +574,6 @@ export default function Coinflip() {
                   </div>
                 </div>
                 
-                {/* Balance row */}
-                <div className="flex items-center justify-center gap-2 mt-2 text-xs">
-                  <span className="text-muted-foreground">Balance:</span>
-                  <img src={bnbLogo} alt="BNB" className="w-3 h-3" />
-                  <span className="text-foreground font-mono">0.000</span>
-                </div>
               </div>
             </div>
 
