@@ -665,7 +665,7 @@ export default function PredictionMarkets() {
                       <div
                         key={bet.id}
                         className="glass-panel p-4 hover-elevate transition-all"
-                        style={{borderRadius: BORDER_RADIUS.MD}}
+                        style={{borderRadius: BORDER_RADIUS.STANDARD}}
                         data-testid={`player-row-${bet.id}`}
                       >
                         <div className="flex items-center justify-between gap-4">

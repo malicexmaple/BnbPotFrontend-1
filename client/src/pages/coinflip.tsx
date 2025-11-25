@@ -522,7 +522,8 @@ export default function Coinflip() {
             </div>
 
             {/* COINFLIP GAMES LIST */}
-            <div className="w-full">
+            <div className="flex justify-center">
+              <div className="carousel-container relative" style={{padding: '20px 16px'}}>
               {/* Header Bar */}
               <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
@@ -547,7 +548,7 @@ export default function Coinflip() {
                   <div 
                     key={`game-${i}`}
                     className="glass-panel p-3 hover-elevate transition-all"
-                    style={{borderRadius: BORDER_RADIUS.MD}}
+                    style={{borderRadius: BORDER_RADIUS.STANDARD}}
                     data-testid={`coinflip-game-${i}`}
                   >
                     <div className="flex items-center justify-between gap-3">
@@ -614,6 +615,15 @@ export default function Coinflip() {
                   </div>
                 ))}
               </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+              <div><span className="text-foreground font-semibold">{currentRound?.totalBets || 0}</span> Players</div>
+              <div>•</div>
+              <div>Payouts are settled in BNB</div>
+              <div>•</div>
+              <div>Round: <span className="font-mono" data-testid="text-round">#{currentRound?.roundNumber || 1}</span></div>
             </div>
           </div>
 
@@ -633,7 +643,7 @@ export default function Coinflip() {
                       <div
                         key={bet.id}
                         className="glass-panel p-4 hover-elevate transition-all"
-                        style={{borderRadius: BORDER_RADIUS.MD}}
+                        style={{borderRadius: BORDER_RADIUS.STANDARD}}
                         data-testid={`player-row-${bet.id}`}
                       >
                         <div className="flex items-center justify-between gap-4">
