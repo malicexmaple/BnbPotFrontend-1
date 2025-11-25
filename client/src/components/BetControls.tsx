@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
 import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
-import placeBetImage from '@assets/placebet_1763568453332.png';
 
 interface BetControlsProps {
   betAmount: string;
@@ -111,15 +110,16 @@ export default function BetControls({
             disabled={isDisabled}
             data-testid="button-place-bet"
           >
-            <img 
-              src={placeBetImage} 
-              alt="PLACE BET" 
-              style={{
-                height: '1rem',
-                width: 'auto',
-                filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))'
-              }}
-            />
+            <span className="text-xs font-bold uppercase tracking-wide" style={{
+              background: 'linear-gradient(180deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7))',
+              textShadow: '0 0 10px rgba(255, 215, 0, 0.5)'
+            }}>
+              PLACE BET
+            </span>
           </button>
         </div>
       </div>
