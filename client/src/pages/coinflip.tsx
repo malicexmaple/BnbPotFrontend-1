@@ -19,7 +19,7 @@ import { Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
-import { GAME, CAROUSEL, BORDER_RADIUS } from "@/constants/layout";
+import { GAME, BORDER_RADIUS } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
@@ -43,7 +43,6 @@ export default function Coinflip() {
   
   const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
-  const [scrollOffset, setScrollOffset] = useState(0);
   const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -57,7 +56,18 @@ export default function Coinflip() {
     referralCode: "",
     agreedToTerms: false
   });
-  const carouselRef = useRef<HTMLDivElement>(null);
+  
+  // Static demo data for coinflip games (no random values to prevent re-render jitter)
+  const demoGames = [
+    { username: '999BW', level: 69, amount: 1.666 },
+    { username: 'L3on', level: 25, amount: 0.002 },
+    { username: 'Franciso', level: 20, amount: 0.002 },
+    { username: 'AreWeUp', level: 19, amount: 0.002 },
+    { username: 'CryptoKing', level: 45, amount: 0.125 },
+    { username: 'BNBWhale', level: 38, amount: 0.500 },
+    { username: 'MoonBoy', level: 22, amount: 0.050 },
+    { username: 'DiamondHands', level: 31, amount: 0.200 },
+  ];
 
   // Expose utility functions for testing
   useEffect(() => {
@@ -109,33 +119,6 @@ export default function Coinflip() {
     prevRoundRef.current = currentRound;
   }, [currentRound]);
 
-  useEffect(() => {
-    let animationFrame: number;
-    let lastTime = Date.now();
-    
-    const animate = () => {
-      const now = Date.now();
-      const delta = now - lastTime;
-      lastTime = now;
-      
-      setScrollOffset(prev => {
-        const newOffset = prev + (delta * CAROUSEL.ANIMATION_SPEED);
-        if (!carouselRef.current) return newOffset;
-        
-        const resetPoint = (CAROUSEL.CARD_WIDTH + CAROUSEL.GAP) * CAROUSEL.TOTAL_CARDS;
-        
-        if (newOffset >= resetPoint) {
-          return newOffset - resetPoint;
-        }
-        return newOffset;
-      });
-      
-      animationFrame = requestAnimationFrame(animate);
-    };
-    
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
 
 
   useEffect(() => {
@@ -560,90 +543,76 @@ export default function Coinflip() {
 
               {/* Games List */}
               <div className="space-y-2">
-                {(() => {
-                  const bets = currentRound?.bets || [];
-                  const MIN_GAMES = 8;
-                  const gamesToShow = Math.max(MIN_GAMES, bets.length);
-                  
-                  return [...Array(gamesToShow)].map((_, i) => {
-                    const bet = bets[i];
-                    const hasRealBet = !!bet;
-                    const amount = hasRealBet ? parseFloat(bet.amount) : (Math.random() * 0.5 + 0.002);
-                    const level = hasRealBet ? Math.floor(Math.random() * 50) + 10 : Math.floor(Math.random() * 50) + 10;
-                    const username = hasRealBet ? (bet.username || `${bet.userAddress.slice(0, 6)}...`) : ['999BW', 'L3on', 'Franciso', 'AreWeUp', 'CryptoKing', 'BNBWhale', 'MoonBoy', 'DiamondHands'][i % 8];
-                    
-                    return (
-                      <div 
-                        key={hasRealBet ? bet.id : `game-${i}`}
-                        className="glass-panel p-3 hover-elevate transition-all"
-                        style={{borderRadius: BORDER_RADIUS.MD}}
-                        data-testid={`coinflip-game-${i}`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          {/* Player 1 */}
-                          <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <div className="relative flex-shrink-0">
-                              <Avatar className="w-10 h-10">
-                                <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/20 to-primary/5">
-                                  {username.slice(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold px-1 rounded" style={{minWidth: '18px', textAlign: 'center'}}>
-                                {level}
-                              </div>
-                            </div>
-                            <span className="font-medium text-foreground truncate text-sm">{username}</span>
+                {demoGames.map((game, i) => (
+                  <div 
+                    key={`game-${i}`}
+                    className="glass-panel p-3 hover-elevate transition-all"
+                    style={{borderRadius: BORDER_RADIUS.MD}}
+                    data-testid={`coinflip-game-${i}`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Player 1 */}
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div className="relative flex-shrink-0">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/20 to-primary/5">
+                              {game.username.slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold px-1 rounded" style={{minWidth: '18px', textAlign: 'center'}}>
+                            {game.level}
                           </div>
-
-                          {/* VS Icon */}
-                          <div className="flex-shrink-0 px-2">
-                            <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round"/>
-                            </svg>
-                          </div>
-
-                          {/* Player 2 (Waiting) */}
-                          <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <div className="relative flex-shrink-0">
-                              <div className="w-10 h-10 rounded-full bg-muted/30 border border-border/30 flex items-center justify-center">
-                                <svg className="w-5 h-5 text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
-                                </svg>
-                              </div>
-                              <div className="absolute -bottom-1 -right-1 bg-muted text-muted-foreground text-[10px] font-bold px-1 rounded" style={{minWidth: '18px', textAlign: 'center'}}>
-                                1
-                              </div>
-                            </div>
-                            <span className="text-muted-foreground text-sm">Waiting...</span>
-                          </div>
-
-                          {/* Amount */}
-                          <div className="flex items-center gap-1.5 flex-shrink-0">
-                            <img src={bnbLogo} alt="BNB" className="w-4 h-4" />
-                            <span className="font-mono font-bold text-foreground">{amount.toFixed(3)}</span>
-                          </div>
-
-                          {/* Join Button */}
-                          <Button 
-                            size="sm" 
-                            className="flex-shrink-0"
-                            data-testid={`button-join-${i}`}
-                          >
-                            Join
-                          </Button>
-
-                          {/* View Icon */}
-                          <button className="flex-shrink-0 p-2 text-muted-foreground hover:text-foreground transition-colors" data-testid={`button-view-${i}`}>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          </button>
                         </div>
+                        <span className="font-medium text-foreground truncate text-sm">{game.username}</span>
                       </div>
-                    );
-                  });
-                })()}
+
+                      {/* VS Icon */}
+                      <div className="flex-shrink-0 px-2">
+                        <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round"/>
+                        </svg>
+                      </div>
+
+                      {/* Player 2 (Waiting) */}
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div className="relative flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-muted/30 border border-border/30 flex items-center justify-center">
+                            <svg className="w-5 h-5 text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                            </svg>
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 bg-muted text-muted-foreground text-[10px] font-bold px-1 rounded" style={{minWidth: '18px', textAlign: 'center'}}>
+                            1
+                          </div>
+                        </div>
+                        <span className="text-muted-foreground text-sm">Waiting...</span>
+                      </div>
+
+                      {/* Amount */}
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <img src={bnbLogo} alt="BNB" className="w-4 h-4" />
+                        <span className="font-mono font-bold text-foreground">{game.amount.toFixed(3)}</span>
+                      </div>
+
+                      {/* Join Button */}
+                      <Button 
+                        size="sm" 
+                        className="flex-shrink-0"
+                        data-testid={`button-join-${i}`}
+                      >
+                        Join
+                      </Button>
+
+                      {/* View Icon */}
+                      <button className="flex-shrink-0 p-2 text-muted-foreground hover:text-foreground transition-colors" data-testid={`button-view-${i}`}>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
