@@ -474,14 +474,6 @@ export default function PredictionMarkets() {
                   </div>
                 </div>
               </div>
-              
-              <BetControls
-                betAmount={betAmount}
-                onBetAmountChange={setBetAmount}
-                onPlaceBet={handlePlaceBet}
-                isWalletConnected={!!address}
-                hasAccount={!!username}
-              />
             </div>
 
             {/* STATS BAR */}
