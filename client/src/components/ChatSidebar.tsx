@@ -223,15 +223,20 @@ export default function ChatSidebar({
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
-              <div className="glass-panel neon-border p-1 relative overflow-hidden" style={{
-                animation: 'floatAirdropBox 2s ease-in-out infinite'
+              <div className="neon-border p-1 relative overflow-hidden" style={{
+                animation: 'floatAirdropBox 2s ease-in-out infinite',
+                borderRadius: '12px'
               }}>
                 {/* Background coins image */}
                 <div className="absolute inset-0 z-0" style={{
                   backgroundImage: `url(${coinsBackground})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  opacity: 0.3,
+                  borderRadius: 'inherit'
+                }} />
+                {/* Dark overlay for readability */}
+                <div className="absolute inset-0 z-0" style={{
+                  background: 'rgba(20, 20, 20, 0.6)',
                   borderRadius: 'inherit'
                 }} />
                 {/* Background BNB icon */}
