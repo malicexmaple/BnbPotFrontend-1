@@ -18,7 +18,7 @@ import { Flame } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
-import { GAME, BORDER_RADIUS } from "@/constants/layout";
+import { GAME, BORDER_RADIUS, DARK_BG } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
@@ -502,7 +502,7 @@ export default function Coinflip() {
 
                   {/* Bet Input */}
                   <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
-                    background: 'rgba(20, 20, 20, 0.9)',
+                    background: DARK_BG.MEDIUM,
                     border: '1px solid rgba(60, 60, 60, 0.5)',
                     minWidth: '160px',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
@@ -528,7 +528,7 @@ export default function Coinflip() {
                   {/* Increment Buttons - Same as Jackpot */}
                   {[0.001, 0.01, 0.1, 0.5, 1].map((increment) => (
                     <div key={increment} className={`px-3 py-2.5 rounded-lg ${(!address || !username) ? 'opacity-50' : ''}`} style={{
-                      background: 'rgba(20, 20, 20, 0.9)',
+                      background: DARK_BG.MEDIUM,
                       border: '1px solid rgba(60, 60, 60, 0.5)',
                       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
                     }}>
