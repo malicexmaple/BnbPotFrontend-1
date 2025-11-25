@@ -524,6 +524,8 @@ export default function Coinflip() {
             {/* COINFLIP GAMES LIST */}
             <div className="flex justify-center">
               <div className="carousel-container relative">
+                {/* Width anchor to match Jackpot carousel width and prevent mobile zoom differences */}
+                <div aria-hidden="true" style={{ width: '1008px', height: 0, visibility: 'hidden' }} />
                 <div className="px-6">
                 {/* Header Bar */}
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
