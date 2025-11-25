@@ -437,12 +437,12 @@ export default function Coinflip() {
         <div className="flex-1 flex flex-col relative overflow-hidden">
           <div className="p-6 space-y-5 relative z-10 flex-shrink-0">
             {/* HEADER */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex flex-col items-center">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${coinflipLogo})`} as React.CSSProperties}>
                   <img src={coinflipLogo} alt="COINFLIP" className="w-full max-w-[450px]" style={{height: 'auto'}} />
                 </div>
-                <div className="flex justify-center" style={{marginTop: '-15px'}}>
+                <div className="flex justify-end pr-4" style={{marginTop: '-15px'}}>
                   <div className="text-sm uppercase tracking-widest shine-text font-semibold italic" style={{
                     color: 'rgb(161, 161, 170)',
                     textShadow: '0 0 10px rgba(234, 179, 8, 0.3)',
@@ -452,107 +452,102 @@ export default function Coinflip() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* COINFLIP BETTING PANEL */}
-            <div className="flex justify-center">
-              <div className="glass-panel neon-border p-4 w-full" style={{maxWidth: '1008px', borderRadius: BORDER_RADIUS.STANDARD}}>
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  {/* Left side - Bet Amount label */}
-                  <div className="text-sm text-muted-foreground">
-                    Bet Amount <span className="text-foreground font-semibold">~${(parseFloat(betAmount) * 650 || 0).toFixed(0)}</span>
-                  </div>
-                  
-                  {/* Center - Input and controls */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {/* BNB Icon + Input */}
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{
-                      background: 'rgba(30, 30, 30, 0.8)',
-                      border: '1px solid rgba(60, 60, 60, 0.5)'
-                    }}>
-                      <img src={bnbLogo} alt="BNB" className="w-5 h-5" />
+              
+              {/* COINFLIP BETTING PANEL - Same theme as Jackpot BetControls */}
+              <div className="px-4 py-3" style={{
+                borderRadius: BORDER_RADIUS.STANDARD,
+                background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.9))',
+                border: '2px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
+              }}>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {/* Bet Input */}
+                  <div className="flex items-center justify-between px-4 py-2.5 rounded-lg" style={{
+                    background: 'rgba(15, 15, 15, 0.8)',
+                    border: '1px solid rgba(60, 60, 60, 0.5)',
+                    minWidth: '140px',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                  }}>
+                    <div className="flex items-center gap-2">
                       <input
                         type="text"
                         value={betAmount}
                         onChange={(e) => setBetAmount(e.target.value)}
-                        placeholder="0"
-                        className="w-20 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
+                        placeholder="0.1"
+                        className="w-14 text-sm font-semibold bg-transparent border-0 outline-none text-foreground"
+                        style={{lineHeight: '1.25rem', paddingTop: '1px'}}
                         data-testid="input-coinflip-bet"
                       />
                     </div>
-                    
-                    {/* Currency selector */}
-                    <div className="flex items-center gap-1 px-3 py-2 rounded-lg" style={{
-                      background: 'rgba(30, 30, 30, 0.8)',
-                      border: '1px solid rgba(60, 60, 60, 0.5)'
-                    }}>
+                    <div className="flex items-center gap-1.5 pl-3 border-l border-border/20">
                       <span className="text-sm font-semibold text-foreground">BNB</span>
-                      <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
+                      <img src={bnbLogo} alt="BNB" className="w-5 h-5" />
                     </div>
-                    
-                    {/* Increment buttons */}
-                    {[0.1, 1].map((increment) => (
+                  </div>
+
+                  {/* Increment Buttons - Same as Jackpot */}
+                  {[0.001, 0.01, 0.1, 0.5, 1].map((increment) => (
+                    <div key={increment} className="px-3 py-2.5 rounded-lg" style={{
+                      background: 'rgba(15, 15, 15, 0.8)',
+                      border: '1px solid rgba(60, 60, 60, 0.5)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                    }}>
                       <button
-                        key={increment}
                         onClick={() => setBetAmount(String((parseFloat(betAmount) || 0) + increment))}
-                        className="px-3 py-2 rounded-lg text-sm font-semibold text-foreground hover-elevate"
-                        style={{
-                          background: 'rgba(30, 30, 30, 0.8)',
-                          border: '1px solid rgba(60, 60, 60, 0.5)'
-                        }}
+                        className="text-xs font-semibold text-foreground hover-elevate whitespace-nowrap"
                         data-testid={`button-coinflip-plus-${increment}`}
                       >
                         +{increment}
                       </button>
-                    ))}
-                    
-                    {/* Coin side selection - Heads */}
+                    </div>
+                  ))}
+                  
+                  {/* Coin side selection - Heads */}
+                  <button
+                    className="w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all"
+                    style={{
+                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
+                      border: '2px solid rgba(234, 179, 8, 0.8)',
+                      boxShadow: '0 0 10px rgba(234, 179, 8, 0.4)'
+                    }}
+                    data-testid="button-coinflip-heads"
+                  >
+                    <img src={bnbLogo} alt="Heads" className="w-5 h-5" />
+                  </button>
+                  
+                  {/* Coin side selection - Tails */}
+                  <button
+                    className="w-9 h-9 rounded-full flex items-center justify-center hover-elevate transition-all"
+                    style={{
+                      background: 'rgba(15, 15, 15, 0.8)',
+                      border: '2px solid rgba(60, 60, 60, 0.5)'
+                    }}
+                    data-testid="button-coinflip-tails"
+                  >
+                    <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                      <text x="12" y="16" textAnchor="middle" fontSize="10" fill="currentColor">T</text>
+                    </svg>
+                  </button>
+
+                  {/* Create Game Button */}
+                  <div className="glass-panel neon-border px-4 py-2.5 rounded-lg relative overflow-hidden">
                     <button
-                      className="w-10 h-10 rounded-full flex items-center justify-center hover-elevate transition-all"
-                      style={{
-                        background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
-                        border: '2px solid rgba(234, 179, 8, 0.8)',
-                        boxShadow: '0 0 10px rgba(234, 179, 8, 0.4)'
-                      }}
-                      data-testid="button-coinflip-heads"
-                    >
-                      <img src={bnbLogo} alt="Heads" className="w-6 h-6" />
-                    </button>
-                    
-                    {/* Coin side selection - Tails */}
-                    <button
-                      className="w-10 h-10 rounded-full flex items-center justify-center hover-elevate transition-all"
-                      style={{
-                        background: 'rgba(30, 30, 30, 0.8)',
-                        border: '2px solid rgba(60, 60, 60, 0.5)'
-                      }}
-                      data-testid="button-coinflip-tails"
-                    >
-                      <svg className="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                        <text x="12" y="16" textAnchor="middle" fontSize="10" fill="currentColor">T</text>
-                      </svg>
-                    </button>
-                    
-                    {/* Create Game button */}
-                    <Button 
                       onClick={handlePlaceBet}
-                      className="px-6"
+                      className="relative z-10 hover-elevate active-elevate-2 transition-all text-xs font-bold text-primary uppercase tracking-wide"
                       disabled={!address || !username}
                       data-testid="button-create-game"
                     >
                       Create Game
-                    </Button>
+                    </button>
                   </div>
-                  
-                  {/* Right side - Balance */}
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Balance:</span>
-                    <img src={bnbLogo} alt="BNB" className="w-4 h-4" />
-                    <span className="text-foreground font-mono font-semibold">0.00000000</span>
-                  </div>
+                </div>
+                
+                {/* Balance row */}
+                <div className="flex items-center justify-center gap-2 mt-2 text-xs">
+                  <span className="text-muted-foreground">Balance:</span>
+                  <img src={bnbLogo} alt="BNB" className="w-3 h-3" />
+                  <span className="text-foreground font-mono">0.000</span>
                 </div>
               </div>
             </div>
