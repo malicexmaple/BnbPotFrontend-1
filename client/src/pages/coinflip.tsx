@@ -538,122 +538,113 @@ export default function Coinflip() {
               </div>
             </div>
 
-            {/* PLAYER CAROUSEL */}
-            <div className="flex justify-center">
-              <div className="carousel-container relative">
-                {/* Mining Block Overlay */}
-                {showMiningBlock && (
-                  <MiningBlockOverlay
-                    blockNumber={miningBlockNumber}
-                    onComplete={() => setShowMiningBlock(false)}
-                  />
-                )}
-                <div className="relative" style={{overflow: 'visible'}} ref={carouselRef}>
-                  {/* Triangle indicator pointing to center card */}
-                  <div className="absolute left-1/2 z-20 flex flex-col items-center pointer-events-none bounce-arrow" style={{top: '-46px'}}>
-                    <svg width="56" height="40" viewBox="0 0 56 40" fill="none" style={{filter: 'drop-shadow(0 0 12px rgba(234, 179, 8, 0.8))'}}>
-                      <defs>
-                        <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
-                          <stop offset="50%" style={{stopColor: '#FCD34D', stopOpacity: 1}} />
-                          <stop offset="100%" style={{stopColor: '#EAB308', stopOpacity: 1}} />
-                        </linearGradient>
-                      </defs>
-                      <path d="M28 36 L4 4 L52 4 Z" fill="url(#triangleGradient)" stroke="url(#triangleGradient)" strokeWidth="2"/>
-                    </svg>
-                  </div>
-                  
-                  <div 
-                    className="carousel-track flex gap-3"
-                    style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible'}}
-                  >
-                    {(() => {
-                      // Get real bets from current round
-                      const bets = currentRound?.bets || [];
-                      const MIN_CARDS = 20; // Always show at least 20 cards
-                      const cardsToShow = Math.max(MIN_CARDS, bets.length);
-                      
-                      return [...Array(cardsToShow)].map((_, i) => {
-                        if (!carouselRef.current) return null;
-                        
-                        // Check if this index has a real bet
-                        const bet = bets[i];
-                        const hasRealBet = !!bet;
-                        
-                        // Calculate centering
-                        const containerWidth = carouselRef.current.offsetWidth;
-                        const gap = 12;
-                        const cardWidth = 234;
-                        const cardPosition = i * (cardWidth + gap);
-                        const centerPosition = containerWidth / 2;
-                        const cardLeftEdge = cardPosition - scrollOffset;
-                        const cardRightEdge = cardLeftEdge + cardWidth;
-                        const isCentered = cardLeftEdge <= centerPosition && cardRightEdge >= centerPosition;
-                        
-                        return (
-                          <div key={hasRealBet ? bet.id : `empty-${i}`} className="carousel-card flex-shrink-0 transition-all duration-300" style={{width: '234px', zIndex: isCentered ? 10 : 1, position: 'relative'}}>
-                            <div className={`glass-panel flex flex-col items-center transition-all duration-300 ${isCentered ? 'carousel-center-card' : ''}`} style={{
-                              borderRadius: '21px', 
-                              padding: '26px 21px',
-                              transform: isCentered ? 'scale(1.1)' : 'scale(1)',
-                              transformOrigin: 'center center',
-                              willChange: 'transform',
-                              boxShadow: isCentered ? '0 0 30px rgba(234, 179, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)' : undefined
-                            }}>
-                              {hasRealBet ? (
-                                <>
-                                  {/* Real Player Card */}
-                                  <Avatar className="w-28 h-28">
-                                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/20 to-primary/5">
-                                      {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div className="font-medium text-foreground" style={{fontSize: '17px', marginTop: '18px', textAlign: 'center'}}>
-                                    {bet.username || `${bet.userAddress.slice(0, 6)}...`}
-                                  </div>
-                                  <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
-                                    <span className="text-muted-foreground/60">=</span>
-                                    <span className="text-primary font-bold">{parseFloat(bet.amount).toFixed(3)}</span>
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  {/* Waiting Placeholder */}
-                                  <div className="flex items-center justify-center relative" style={{
-                                    width: '114px',
-                                    height: '114px',
-                                    borderRadius: '18px',
-                                    background: 'linear-gradient(145deg, rgba(40, 40, 40, 0.6), rgba(20, 20, 20, 0.9))',
-                                    border: '1px solid rgba(60, 60, 60, 0.4)',
-                                    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -2px 4px rgba(0, 0, 0, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5)'
-                                  }}>
-                                    <svg className="text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24" style={{width: '55px', height: '55px', filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))'}}>
-                                      <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
-                                    </svg>
-                                  </div>
-                                  <div className="font-medium text-muted-foreground" style={{fontSize: '17px', marginTop: '18px'}}>Waiting</div>
-                                  <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
-                                    <span className="text-muted-foreground/60">=</span>
-                                    <span className="text-foreground font-bold">0.000</span>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
+            {/* COINFLIP GAMES LIST */}
+            <div className="w-full">
+              {/* Header Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-muted-foreground uppercase tracking-wider">All Games</span>
+                  <span className="text-foreground font-bold">{currentRound?.totalBets || 0}</span>
+                  <Badge variant="outline" className="text-xs">
+                    <img src={bnbLogo} alt="BNB" className="w-3 h-3 mr-1" />
+                    Payouts are settled in BNB
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="text-muted-foreground">Sort By</span>
+                  <span className="text-foreground">High to Low</span>
+                  <span className="text-muted-foreground ml-2">Amount</span>
+                  <span className="text-foreground">All</span>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div><span className="text-foreground font-semibold">{currentRound?.totalBets || 0}</span> Players</div>
-              <div>•</div>
-              <div>Payouts are settled in BNB</div>
-              <div>•</div>
-              <div>Round: <span className="font-mono" data-testid="text-round">#{currentRound?.roundNumber || 1}</span></div>
+              {/* Games List */}
+              <div className="space-y-2">
+                {(() => {
+                  const bets = currentRound?.bets || [];
+                  const MIN_GAMES = 8;
+                  const gamesToShow = Math.max(MIN_GAMES, bets.length);
+                  
+                  return [...Array(gamesToShow)].map((_, i) => {
+                    const bet = bets[i];
+                    const hasRealBet = !!bet;
+                    const amount = hasRealBet ? parseFloat(bet.amount) : (Math.random() * 0.5 + 0.002);
+                    const level = hasRealBet ? Math.floor(Math.random() * 50) + 10 : Math.floor(Math.random() * 50) + 10;
+                    const username = hasRealBet ? (bet.username || `${bet.userAddress.slice(0, 6)}...`) : ['999BW', 'L3on', 'Franciso', 'AreWeUp', 'CryptoKing', 'BNBWhale', 'MoonBoy', 'DiamondHands'][i % 8];
+                    
+                    return (
+                      <div 
+                        key={hasRealBet ? bet.id : `game-${i}`}
+                        className="glass-panel p-3 hover-elevate transition-all"
+                        style={{borderRadius: BORDER_RADIUS.MD}}
+                        data-testid={`coinflip-game-${i}`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          {/* Player 1 */}
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <div className="relative flex-shrink-0">
+                              <Avatar className="w-10 h-10">
+                                <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/20 to-primary/5">
+                                  {username.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold px-1 rounded" style={{minWidth: '18px', textAlign: 'center'}}>
+                                {level}
+                              </div>
+                            </div>
+                            <span className="font-medium text-foreground truncate text-sm">{username}</span>
+                          </div>
+
+                          {/* VS Icon */}
+                          <div className="flex-shrink-0 px-2">
+                            <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round"/>
+                            </svg>
+                          </div>
+
+                          {/* Player 2 (Waiting) */}
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <div className="relative flex-shrink-0">
+                              <div className="w-10 h-10 rounded-full bg-muted/30 border border-border/30 flex items-center justify-center">
+                                <svg className="w-5 h-5 text-muted-foreground/50" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z"/>
+                                </svg>
+                              </div>
+                              <div className="absolute -bottom-1 -right-1 bg-muted text-muted-foreground text-[10px] font-bold px-1 rounded" style={{minWidth: '18px', textAlign: 'center'}}>
+                                1
+                              </div>
+                            </div>
+                            <span className="text-muted-foreground text-sm">Waiting...</span>
+                          </div>
+
+                          {/* Amount */}
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <img src={bnbLogo} alt="BNB" className="w-4 h-4" />
+                            <span className="font-mono font-bold text-foreground">{amount.toFixed(3)}</span>
+                          </div>
+
+                          {/* Join Button */}
+                          <Button 
+                            size="sm" 
+                            className="flex-shrink-0"
+                            data-testid={`button-join-${i}`}
+                          >
+                            Join
+                          </Button>
+
+                          {/* View Icon */}
+                          <button className="flex-shrink-0 p-2 text-muted-foreground hover:text-foreground transition-colors" data-testid={`button-view-${i}`}>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </div>
           </div>
 
