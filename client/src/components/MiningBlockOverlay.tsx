@@ -1,41 +1,33 @@
 import { useEffect, useState } from "react";
 
 interface MiningBlockOverlayProps {
-  isVisible: boolean;
   onComplete?: () => void;
   blockNumber?: number;
 }
 
-export default function MiningBlockOverlay({ isVisible, onComplete, blockNumber }: MiningBlockOverlayProps) {
+export default function MiningBlockOverlay({ onComplete, blockNumber }: MiningBlockOverlayProps) {
   const [dots, setDots] = useState("");
 
   useEffect(() => {
-    if (!isVisible) return;
-    
     const interval = setInterval(() => {
       setDots(prev => prev.length >= 3 ? "" : prev + ".");
     }, 500);
 
     return () => clearInterval(interval);
-  }, [isVisible]);
+  }, []);
 
   useEffect(() => {
-    if (!isVisible) return;
-    
     // Auto-complete after 3 seconds
     const timer = setTimeout(() => {
       if (onComplete) onComplete();
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [isVisible, onComplete]);
-
-  // Don't render anything if not visible
-  if (!isVisible) return null;
+  }, [onComplete]);
 
   return (
     <div 
-      className="absolute inset-0 z-40 flex items-center justify-center"
+      className="absolute inset-0 z-50 flex items-center justify-center"
       style={{
         background: 'rgba(0, 0, 0, 0.92)',
         backdropFilter: 'blur(8px)',

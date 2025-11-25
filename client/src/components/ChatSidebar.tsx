@@ -222,9 +222,8 @@ export default function ChatSidebar({
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">
-              <div className="neon-border p-1 relative" style={{
-                animation: 'floatAirdropBox 2s ease-in-out infinite',
-                borderRadius: BORDER_RADIUS.STANDARD
+              <div className="glass-panel neon-border p-1 relative" style={{
+                animation: 'floatAirdropBox 2s ease-in-out infinite'
               }}>
                 {/* Background BNB icon */}
                 <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-end pr-2" style={{

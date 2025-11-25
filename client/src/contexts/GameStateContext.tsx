@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import { useChat } from "@/hooks/useChat";
@@ -27,12 +27,6 @@ interface GameStateContextType {
     getPlayerCount?: () => Promise<number>;
     getRoundId?: () => Promise<number>;
   };
-  isChatCollapsed: boolean;
-  setIsChatCollapsed: (collapsed: boolean) => void;
-  isLeaderboardCollapsed: boolean;
-  setIsLeaderboardCollapsed: (collapsed: boolean) => void;
-  showChatRules: boolean;
-  setShowChatRules: (show: boolean) => void;
 }
 
 const GameStateContext = createContext<GameStateContextType | null>(null);
@@ -47,10 +41,6 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
   
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || undefined;
   const contract = useJackpotContract(address || undefined, contractAddress);
-  
-  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
-  const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
-  const [showChatRules, setShowChatRules] = useState(false);
   
   const wsRef = useRef<WebSocket | null>(null);
   
@@ -108,12 +98,6 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
       onlineUsers,
       sendMessage,
       contract,
-      isChatCollapsed,
-      setIsChatCollapsed,
-      isLeaderboardCollapsed,
-      setIsLeaderboardCollapsed,
-      showChatRules,
-      setShowChatRules,
     }}>
       {children}
     </GameStateContext.Provider>
