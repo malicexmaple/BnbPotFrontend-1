@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import GameFooter from "@/components/GameFooter";
+import ChatSidebar from "@/components/ChatSidebar";
+import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -106,7 +108,7 @@ const popularSports = [
 ];
 
 export default function PredictionMarkets() {
-  const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, isConnected, isAuthenticated } = useGameState();
+  const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage } = useGameState();
   const { toast } = useToast();
   
   const [activeTab, setActiveTab] = useState<'live' | 'futures'>('live');
@@ -115,6 +117,8 @@ export default function PredictionMarkets() {
   const [selectedGame, setSelectedGame] = useState<any>(demoGames.live[0]);
   const [tradeAmount, setTradeAmount] = useState('');
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy');
+  const [showChatRules, setShowChatRules] = useState(false);
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
   const [signupData, setSignupData] = useState({
     name: "",
@@ -132,6 +136,35 @@ export default function PredictionMarkets() {
       });
     }
   }, [walletError, toast]);
+
+  const handleSendMessage = (message: string) => {
+    if (!address) {
+      toast({
+        variant: "destructive",
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to chat.",
+      });
+      return;
+    }
+
+    if (!username) {
+      toast({
+        variant: "destructive",
+        title: "Username Required",
+        description: "Please complete signup to use chat.",
+      });
+      return;
+    }
+
+    const success = sendMessage(message);
+    if (!success) {
+      toast({
+        variant: "destructive",
+        title: "Failed to Send",
+        description: "Could not send message. Please try again.",
+      });
+    }
+  };
 
   const isDisabled = !address || !username;
 
@@ -197,7 +230,18 @@ export default function PredictionMarkets() {
   return (
     <>
       <GameLayout
-        leftSidebar={null}
+        leftSidebar={
+          <ChatSidebar
+            isCollapsed={isChatCollapsed}
+            onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            canChat={!!address && !!username}
+            placeholderText={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
+            onlineUsers={onlineUsers}
+            onShowChatRules={() => setShowChatRules(true)}
+          />
+        }
         rightSidebar={
           <div className="hidden lg:block flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
@@ -697,6 +741,7 @@ export default function PredictionMarkets() {
           </div>
         </DialogContent>
       </Dialog>
+      <ChatRulesModal open={showChatRules} onOpenChange={setShowChatRules} />
     </>
   );
 }

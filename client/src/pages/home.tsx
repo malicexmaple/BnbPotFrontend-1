@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import GameFooter from "@/components/GameFooter";
+import ChatSidebar from "@/components/ChatSidebar";
 import BetControls from "@/components/BetControls";
+import ChatRulesModal from "@/components/ChatRulesModal";
 import DailyStats from "@/components/DailyStats";
 import MiningBlockOverlay from "@/components/MiningBlockOverlay";
 import { Input } from "@/components/ui/input";
@@ -28,7 +30,7 @@ import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 
 export default function Home() {
-  const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, isConnected, isAuthenticated, contract } = useGameState();
+  const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage, contract } = useGameState();
   const { toast } = useToast();
   
   // Fetch current round data
@@ -40,7 +42,9 @@ export default function Home() {
   const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
   const [showMiningBlock, setShowMiningBlock] = useState(false);
   const [miningBlockNumber, setMiningBlockNumber] = useState<number | undefined>(undefined);
@@ -161,6 +165,35 @@ export default function Home() {
       });
     }
   }, [address, walletError, toast]);
+
+  const handleSendMessage = (message: string) => {
+    if (!address) {
+      toast({
+        variant: "destructive",
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to chat.",
+      });
+      return;
+    }
+
+    if (!username) {
+      toast({
+        variant: "destructive",
+        title: "Username Required",
+        description: "Please complete signup to use chat.",
+      });
+      return;
+    }
+
+    const success = sendMessage(message);
+    if (!success) {
+      toast({
+        variant: "destructive",
+        title: "Failed to Send",
+        description: "Could not send message. Please try again.",
+      });
+    }
+  };
 
   /**
    * Handles new user signup form submission.
@@ -311,7 +344,18 @@ export default function Home() {
   return (
     <>
       <GameLayout
-        leftSidebar={null}
+        leftSidebar={
+          <ChatSidebar
+            isCollapsed={isChatCollapsed}
+            onToggleCollapse={() => setIsChatCollapsed(!isChatCollapsed)}
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            canChat={!!address && !!username}
+            placeholderText={!address ? "Connect wallet to chat..." : !username ? "Complete signup to chat..." : "Type Message Here..."}
+            onlineUsers={onlineUsers}
+            onShowChatRules={() => setShowChatRules(true)}
+          />
+        }
         rightSidebar={
           <div className="hidden lg:block flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
