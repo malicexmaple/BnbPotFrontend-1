@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import GameFooter from "@/components/GameFooter";
 import ChatSidebar from "@/components/ChatSidebar";
@@ -8,23 +7,26 @@ import DailyStats from "@/components/DailyStats";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
-  Settings, ChevronRight, ChevronDown, Flame,
-  Tv, Calendar, Target, Gamepad2, CircleDot, 
-  Dribbble, Trophy, Sword
+  ChevronDown, Flame, Tv, Calendar, LayoutGrid, List, Trophy
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
-import { BORDER_RADIUS } from "@/constants/layout";
+import { NetworkBackground } from "@/components/NetworkBackground";
+import { PredictionMarketCard, type PredictionMarket } from "@/components/PredictionMarketCard";
+import { PredictionMarketPane } from "@/components/PredictionMarketPane";
+import { BetSlipDialog } from "@/components/BetSlipDialog";
 import predictionMarketsLogo from '@assets/predictionmarketsnew_1763488010364.png';
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import { sportsData, type Sport } from "@shared/sports-leagues";
-import { getLeagueBadge, getSportIcon } from "@/lib/leagueUtils";
+import { getSportIcon } from "@/lib/leagueUtils";
 
 const SportIconImage = ({ sport, className = "w-4 h-4" }: { sport: Sport; className?: string }) => {
   const iconPath = getSportIcon(sport.id);
@@ -32,7 +34,7 @@ const SportIconImage = ({ sport, className = "w-4 h-4" }: { sport: Sport; classN
     <img 
       src={iconPath} 
       alt={sport.name} 
-      className={`${className} object-contain`}
+      className={`${className} object-contain brightness-0 invert opacity-70`}
       onError={(e) => {
         (e.target as HTMLImageElement).style.display = 'none';
       }}
@@ -41,7 +43,7 @@ const SportIconImage = ({ sport, className = "w-4 h-4" }: { sport: Sport; classN
 };
 
 const SportIcon = ({ sport }: { sport: string }) => {
-  const iconClass = "w-4 h-4";
+  const iconClass = "w-5 h-5";
   const sportData = sportsData.find(s => s.name === sport || s.id === sport);
   
   if (sportData) {
@@ -51,89 +53,143 @@ const SportIcon = ({ sport }: { sport: string }) => {
   const iconMap: Record<string, JSX.Element> = {
     'Live': <Tv className={iconClass} />,
     'Futures': <Calendar className={iconClass} />,
+    'Featured': <Trophy className={iconClass} />,
   };
-  return iconMap[sport] || <Target className={iconClass} />;
+  return iconMap[sport] || <Trophy className={iconClass} />;
 };
 
-// Demo data for games with proper league names matching sportsData
-const demoGames = {
-  live: [
-    {
-      id: 1,
-      league: 'Indian Premier League',
-      time: 'LIVE',
-      volume: '$313.37k Vol.',
-      teams: [
-        { code: 'IND', name: 'India', moneyline: 'IND 0.6¢', moneylineColor: '#22C55E' },
-        { code: 'SOU', name: 'South Africa', moneyline: 'SOU 63¢', moneylineColor: '#6366F1' },
-      ],
-      draw: 'DRAW 37.2¢',
-    }
-  ],
-  upcoming: [
-    {
-      id: 2,
-      league: 'NBA',
-      time: '11:00 AM',
-      volume: '$278.37k Vol.',
-      gameViews: 9,
-      teams: [
-        { code: 'ATL', name: 'Hawks', record: '11-7', moneyline: 'ATL 82¢', moneylineColor: '#E11D48', spread: 'ATL -8.5', spreadPrice: '59¢', total: 'O 236.5', totalPrice: '54¢' },
-        { code: 'WAS', name: 'Wizards', record: '1-15', moneyline: 'WAS 19¢', moneylineColor: '#3B82F6', spread: 'WAS +8.5', spreadPrice: '42¢', total: 'U 236.5', totalPrice: '47¢' },
-      ],
-    },
-    {
-      id: 3,
-      league: 'English Premier League',
-      time: '12:00 PM',
-      volume: '$605.55k Vol.',
-      gameViews: 9,
-      teams: [
-        { code: 'LIV', name: 'Liverpool', record: '10-2', moneyline: 'LIV 55¢', moneylineColor: '#C8102E', spread: 'LIV -1.5', spreadPrice: '51¢', total: 'O 2.5', totalPrice: '50¢' },
-        { code: 'MAN', name: 'Man United', record: '7-5', moneyline: 'MUN 46¢', moneylineColor: '#DA291C', spread: 'MUN +1.5', spreadPrice: '50¢', total: 'U 2.5', totalPrice: '51¢' },
-      ],
-    },
-    {
-      id: 4,
-      league: 'UEFA Champions League',
-      time: '3:00 PM',
-      volume: '$564.90k Vol.',
-      gameViews: 14,
-      teams: [
-        { code: 'BAR', name: 'Barcelona', record: '5-1', moneyline: 'BAR 34¢', moneylineColor: '#A50044', spread: 'BAR +0.5', spreadPrice: '52¢', total: 'O 3.5', totalPrice: '52¢' },
-        { code: 'BAY', name: 'Bayern Munich', record: '6-0', moneyline: 'BAY 67¢', moneylineColor: '#DC052D', spread: 'BAY -0.5', spreadPrice: '49¢', total: 'U 3.5', totalPrice: '50¢' },
-      ],
-    },
-  ]
-};
-
-const popularSportsFromData = sportsData.slice(0, 12).map(sport => ({
-  id: sport.id,
-  name: sport.name,
-  leagueCount: sport.leagues.length,
-}));
+const demoMarkets: PredictionMarket[] = [
+  {
+    id: 'market-1',
+    sport: 'Basketball',
+    league: 'NBA',
+    leagueId: '4387',
+    teamA: 'Lakers',
+    teamB: 'Celtics',
+    description: 'Regular Season - Who will win?',
+    gameTime: new Date(Date.now() + 2 * 60 * 60 * 1000),
+    status: 'active',
+    poolATotal: '0.523',
+    poolBTotal: '0.481',
+    bonusPool: '0.05',
+    teamAColor: '#552583',
+    teamBColor: '#007A33',
+  },
+  {
+    id: 'market-2',
+    sport: 'Football',
+    league: 'English Premier League',
+    leagueId: '4328',
+    teamA: 'Liverpool',
+    teamB: 'Manchester United',
+    description: 'Premier League Match - Winner',
+    gameTime: new Date(Date.now() + 4 * 60 * 60 * 1000),
+    status: 'active',
+    poolATotal: '0.892',
+    poolBTotal: '0.654',
+    bonusPool: '0.1',
+    teamAColor: '#C8102E',
+    teamBColor: '#DA291C',
+  },
+  {
+    id: 'market-3',
+    sport: 'Football',
+    league: 'UEFA Champions League',
+    leagueId: '4480',
+    teamA: 'Barcelona',
+    teamB: 'Bayern Munich',
+    description: 'Champions League Quarterfinal',
+    gameTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    status: 'active',
+    poolATotal: '1.234',
+    poolBTotal: '1.456',
+    bonusPool: '0.2',
+    teamAColor: '#A50044',
+    teamBColor: '#DC052D',
+  },
+  {
+    id: 'market-4',
+    sport: 'Cricket',
+    league: 'Indian Premier League',
+    leagueId: '4707',
+    teamA: 'Mumbai Indians',
+    teamB: 'Chennai Super Kings',
+    description: 'IPL Match - Winner Takes All',
+    gameTime: new Date(Date.now() - 30 * 60 * 1000),
+    status: 'active',
+    poolATotal: '0.765',
+    poolBTotal: '0.823',
+    bonusPool: '0.15',
+    teamAColor: '#004BA0',
+    teamBColor: '#FFCB05',
+  },
+  {
+    id: 'market-5',
+    sport: 'Basketball',
+    league: 'NBA',
+    leagueId: '4387',
+    teamA: 'Warriors',
+    teamB: 'Suns',
+    description: 'Western Conference Showdown',
+    gameTime: new Date(Date.now() + 6 * 60 * 60 * 1000),
+    status: 'active',
+    poolATotal: '0.445',
+    poolBTotal: '0.512',
+    bonusPool: '0.08',
+    teamAColor: '#1D428A',
+    teamBColor: '#E56020',
+  },
+  {
+    id: 'market-6',
+    sport: 'Tennis',
+    league: 'ATP Tour',
+    leagueId: '4464',
+    teamA: 'Djokovic',
+    teamB: 'Alcaraz',
+    description: 'Grand Slam Final',
+    gameTime: new Date(Date.now() + 48 * 60 * 60 * 1000),
+    status: 'active',
+    poolATotal: '0.678',
+    poolBTotal: '0.721',
+    bonusPool: '0.12',
+  },
+];
 
 export default function PredictionMarkets() {
-  const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage } = useGameState();
+  const { address, walletError, shouldShowSignup, username, markSignupComplete, messages, onlineUsers, sendMessage } = useGameState();
   const { toast } = useToast();
   
-  const [activeTab, setActiveTab] = useState<'live' | 'futures'>('live');
+  const [activeTab, setActiveTab] = useState<'featured' | 'live' | 'upcoming'>('featured');
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [expandedSport, setExpandedSport] = useState<string | null>(null);
   const [selectedLeague, setSelectedLeague] = useState<string | null>(null);
-  const [showSpreadsAndTotals, setShowSpreadsAndTotals] = useState(true);
-  const [selectedGame, setSelectedGame] = useState<any>(demoGames.live[0]);
-  const [tradeAmount, setTradeAmount] = useState('');
-  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy');
+  const [viewMode, setViewMode] = useState<'grid' | 'pane'>(() => {
+    const saved = localStorage.getItem('pm-view-mode');
+    return (saved === 'pane' || saved === 'grid') ? saved : 'grid';
+  });
   const [showChatRules, setShowChatRules] = useState(false);
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const [betSlipOpen, setBetSlipOpen] = useState(false);
+  const [selectedBet, setSelectedBet] = useState<{
+    id: string;
+    outcome: 'A' | 'B';
+    teamName: string;
+    odds: number;
+  } | null>(null);
+  
   const [signupData, setSignupData] = useState({
     name: "",
     email: "",
     referralCode: "",
     agreedToTerms: false
   });
+
+  useEffect(() => {
+    localStorage.setItem('pm-view-mode', viewMode);
+  }, [viewMode]);
 
   useEffect(() => {
     if (walletError) {
@@ -176,6 +232,33 @@ export default function PredictionMarkets() {
 
   const isDisabled = !address || !username;
 
+  const handlePlaceBet = (marketId: string, outcome: 'A' | 'B', odds: number) => {
+    if (isDisabled) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Required",
+        description: !address ? "Please connect your wallet to place bets." : "Please create an account to place bets.",
+      });
+      return;
+    }
+
+    const market = demoMarkets.find(m => m.id === marketId);
+    if (!market) return;
+
+    const teamName = outcome === 'A' ? market.teamA : market.teamB;
+    setSelectedBet({ id: marketId, outcome, teamName, odds });
+    setBetSlipOpen(true);
+  };
+
+  const handleConfirmBet = async (amount: string) => {
+    if (!selectedBet) return;
+
+    toast({
+      title: "Bet Placed!",
+      description: `Successfully bet ${amount} BNB on ${selectedBet.teamName} at ${selectedBet.odds.toFixed(2)}x odds`,
+    });
+  };
+
   const handleSignupSubmit = async () => {
     if (!signupData.name || !signupData.email || !signupData.agreedToTerms) {
       toast({
@@ -209,31 +292,24 @@ export default function PredictionMarkets() {
     }
   };
 
-  const handleTrade = () => {
-    if (isDisabled) {
-      toast({
-        variant: "destructive",
-        title: "Authentication Required",
-        description: !address ? "Please connect your wallet to trade." : "Please create an account to trade.",
-      });
-      return;
+  const filteredMarkets = demoMarkets.filter(market => {
+    if (selectedSport && market.sport.toLowerCase() !== sportsData.find(s => s.id === selectedSport)?.name.toLowerCase()) {
+      return false;
     }
+    if (selectedLeague) {
+      if (market.leagueId && market.leagueId !== selectedLeague) {
+        return false;
+      }
+    }
+    const gameTime = new Date(market.gameTime);
+    const now = new Date();
+    const isLive = gameTime <= now && market.status === 'active';
+    const isUpcoming = gameTime > now;
     
-    if (!tradeAmount || parseFloat(tradeAmount) <= 0) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Amount",
-        description: "Please enter a valid trade amount.",
-      });
-      return;
-    }
-
-    toast({
-      title: "Trade Placed!",
-      description: `${tradeType === 'buy' ? 'Bought' : 'Sold'} $${tradeAmount} on ${selectedGame?.teams?.[0]?.name || 'selection'}`,
-    });
-    setTradeAmount('');
-  };
+    if (activeTab === 'live') return isLive;
+    if (activeTab === 'upcoming') return isUpcoming;
+    return true;
+  });
 
   return (
     <>
@@ -288,49 +364,51 @@ export default function PredictionMarkets() {
               )}
             </button>
           
-          {!isLeaderboardCollapsed && (
-            <div style={{marginTop: '-85px', marginLeft: '23px'}}>
-          <div className="p-1" style={{width: '297px'}}>
-            <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
-            <div className="absolute -top-2 -right-2 w-20 h-20 z-10 group cursor-pointer">
-              <img src={coinStack} alt="Coins" className="w-20 h-20 wiggle-on-hover" />
-            </div>
-            <div className="flex items-center justify-start mb-3">
-              <img src={jackpotLegendsLogo} alt="Jackpot Legends" className="h-auto" style={{maxWidth: '200px', width: '200px'}} />
-            </div>
-            <div className="text-xs text-muted-foreground mb-4 uppercase tracking-wider text-center">TOP 3 BIGGEST WINNERS</div>
-            <div className="space-y-2">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="flex items-center gap-2 p-2 bg-background/50 rounded hover-elevate">
-                  <Badge className="gradient-purple-pink text-black font-bold">{i}</Badge>
-                  <div className="flex-1 text-sm font-medium">Player{i}</div>
-                  <div className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.01rem'}}>0.188</div>
+            {!isLeaderboardCollapsed && (
+              <div style={{marginTop: '-85px', marginLeft: '23px'}}>
+                <div className="p-1" style={{width: '297px'}}>
+                  <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
+                    <div className="absolute -top-2 -right-2 w-20 h-20 z-10 group cursor-pointer">
+                      <img src={coinStack} alt="Coins" className="w-20 h-20 wiggle-on-hover" />
+                    </div>
+                    <div className="flex items-center justify-start mb-3">
+                      <img src={jackpotLegendsLogo} alt="Jackpot Legends" className="h-auto" style={{maxWidth: '200px', width: '200px'}} />
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-4 uppercase tracking-wider text-center">TOP 3 BIGGEST WINNERS</div>
+                    <div className="space-y-2">
+                      {[1, 2, 3].map(i => (
+                        <div key={i} className="flex items-center gap-2 p-2 bg-background/50 rounded hover-elevate">
+                          <Badge className="gradient-purple-pink text-black font-bold">{i}</Badge>
+                          <div className="flex-1 text-sm font-medium">Player{i}</div>
+                          <div className="font-mono font-bold no-text-shadow" style={{color: '#FFFFFF', fontSize: '1.01rem'}}>0.188</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-            </div>
-          </div>
-          
-          <div style={{width: '100%', maxWidth: '297px', marginTop: '5px'}}>
-            <DailyStats type="latest" />
-          </div>
+                
+                <div style={{width: '100%', maxWidth: '297px', marginTop: '5px'}}>
+                  <DailyStats type="latest" />
+                </div>
 
-          <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
-            <DailyStats type="winner" />
+                <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
+                  <DailyStats type="winner" />
+                </div>
+                <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
+                  <DailyStats type="lucky" />
+                </div>
+              </div>
+            )}
           </div>
-          <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
-            <DailyStats type="lucky" />
-          </div>
-          </div>
-          )}
-        </div>
         }
         footer={<GameFooter />}
       >
-        {/* Main game area content */}
         <div className="flex-1 flex flex-col relative overflow-hidden">
+          <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+            <NetworkBackground color="gold" className="w-full h-full opacity-20" sizeMultiplier={1.25} />
+          </div>
+          
           <div className="p-6 space-y-4 relative z-10 flex-shrink-0">
-            {/* HEADER with Logo */}
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${predictionMarketsLogo})`} as React.CSSProperties}>
@@ -347,56 +425,82 @@ export default function PredictionMarkets() {
                 </div>
               </div>
               
-              {/* Toggle for Spreads + Totals */}
-              <div className="flex items-center gap-4">
-                <Settings className="w-5 h-5 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" />
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={showSpreadsAndTotals}
-                    onCheckedChange={setShowSpreadsAndTotals}
-                    data-testid="switch-pm-spreads"
-                  />
-                  <span className="text-xs text-muted-foreground">Spreads + Totals</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="icon"
+                  onClick={() => setViewMode('grid')}
+                  data-testid="button-view-grid"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'pane' ? 'default' : 'outline'}
+                  size="icon"
+                  onClick={() => setViewMode('pane')}
+                  data-testid="button-view-pane"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
 
-          {/* Scrollable content area */}
-          <ScrollArea className="flex-1 px-6">
-            <div className="flex gap-4" style={{minWidth: '1008px'}}>
-              {/* Left: Sports Navigation */}
-              <div className="flex-shrink-0" style={{width: '160px'}}>
-                <div className="space-y-1">
-                  {/* Live / Futures Tabs */}
+          <ScrollArea className="flex-1 px-6 relative z-10">
+            <div className="flex gap-6">
+              <div className="flex-shrink-0" style={{width: '200px'}}>
+                <div className="space-y-1 sticky top-0">
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-2 font-bold">
+                    <span className="text-foreground">LIVE</span> <span className="text-primary">MARKETS</span>
+                  </div>
+                  
+                  <button
+                    onClick={() => { setActiveTab('featured'); setSelectedSport(null); setSelectedLeague(null); }}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      activeTab === 'featured' && !selectedSport
+                        ? 'bg-primary/20 text-primary border border-primary/30' 
+                        : 'text-muted-foreground hover-elevate'
+                    }`}
+                    data-testid="button-pm-featured"
+                  >
+                    <SportIcon sport="Featured" />
+                    <span className="flex-1 text-left">Featured</span>
+                    <span className="font-mono text-xs text-primary">{demoMarkets.length}</span>
+                  </button>
+                  
                   <button
                     onClick={() => setActiveTab('live')}
-                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === 'live' 
-                        ? 'bg-primary/20 text-primary border border-primary/30' 
+                        ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
                         : 'text-muted-foreground hover-elevate'
                     }`}
                     data-testid="button-pm-live"
                   >
-                    <SportIcon sport="Live" />
-                    <span>Live</span>
+                    <Tv className="w-5 h-5" />
+                    <span className="flex-1 text-left">Live</span>
+                    <span className="font-mono text-xs">{demoMarkets.filter(m => new Date(m.gameTime) <= new Date()).length}</span>
                   </button>
+                  
                   <button
-                    onClick={() => setActiveTab('futures')}
-                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      activeTab === 'futures' 
+                    onClick={() => setActiveTab('upcoming')}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      activeTab === 'upcoming' 
                         ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' 
                         : 'text-muted-foreground hover-elevate'
                     }`}
-                    data-testid="button-pm-futures"
+                    data-testid="button-pm-upcoming"
                   >
-                    <SportIcon sport="Futures" />
-                    <span>Futures</span>
+                    <Calendar className="w-5 h-5" />
+                    <span className="flex-1 text-left">Upcoming</span>
+                    <span className="font-mono text-xs">{demoMarkets.filter(m => new Date(m.gameTime) > new Date()).length}</span>
                   </button>
 
-                  {/* Sports Section */}
-                  <div className="pt-3 mt-3 border-t border-border/30">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-1">Sports</div>
+                  <div className="pt-4 mt-4 border-t border-border/30">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-2 font-bold">
+                      <span className="text-foreground">SPORTS</span> <span className="text-primary">MARKETS</span>
+                    </div>
+                    
                     {sportsData.slice(0, 12).map((sport) => (
                       <div key={sport.id}>
                         <button
@@ -405,32 +509,37 @@ export default function PredictionMarkets() {
                               setExpandedSport(null);
                             } else {
                               setExpandedSport(sport.id);
-                              setSelectedSport(sport.id);
                             }
+                            setSelectedSport(sport.id);
+                            setSelectedLeague(null);
+                            setActiveTab('featured');
                           }}
-                          className={`w-full flex items-center justify-between gap-1 px-3 py-1.5 rounded text-xs transition-all ${
+                          className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
                             selectedSport === sport.id 
                               ? 'bg-white/10 text-foreground' 
                               : 'text-muted-foreground hover-elevate'
                           }`}
                           data-testid={`button-pm-sport-${sport.id}`}
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <SportIcon sport={sport.id} />
                             <span>{sport.name}</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-xs text-muted-foreground">{sport.leagues.length}</span>
-                            <ChevronDown className={`w-3 h-3 transition-transform ${expandedSport === sport.id ? 'rotate-180' : ''}`} />
+                          <div className="flex items-center gap-2">
+                            <ChevronDown className={`w-4 h-4 transition-transform ${expandedSport === sport.id ? 'rotate-180' : ''}`} />
                           </div>
                         </button>
+                        
                         {expandedSport === sport.id && (
-                          <div className="ml-4 mt-1 mb-2 space-y-0.5 max-h-48 overflow-y-auto">
-                            {sport.leagues.slice(0, 20).map((league) => (
+                          <div className="ml-6 mt-1 mb-2 space-y-0.5 max-h-64 overflow-y-auto">
+                            {sport.leagues.slice(0, 15).map((league) => (
                               <button
                                 key={league.id}
-                                onClick={() => setSelectedLeague(league.id)}
-                                className={`w-full flex items-center gap-2 px-2 py-1 rounded text-xs transition-all ${
+                                onClick={() => {
+                                  setSelectedLeague(league.id);
+                                  setActiveTab('featured');
+                                }}
+                                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-all ${
                                   selectedLeague === league.id 
                                     ? 'bg-primary/20 text-primary' 
                                     : 'text-muted-foreground hover:bg-white/5'
@@ -441,20 +550,20 @@ export default function PredictionMarkets() {
                                   <img 
                                     src={league.badge} 
                                     alt={league.displayName}
-                                    className="w-4 h-4 object-contain flex-shrink-0"
+                                    className="w-5 h-5 object-contain flex-shrink-0"
                                     onError={(e) => {
                                       (e.target as HTMLImageElement).style.display = 'none';
                                     }}
                                   />
                                 ) : (
-                                  <div className="w-4 h-4 rounded-full bg-muted flex-shrink-0" />
+                                  <div className="w-5 h-5 rounded-full bg-muted flex-shrink-0" />
                                 )}
                                 <span className="truncate">{league.displayName}</span>
                               </button>
                             ))}
-                            {sport.leagues.length > 20 && (
-                              <div className="text-xs text-muted-foreground px-2 py-1">
-                                +{sport.leagues.length - 20} more leagues
+                            {sport.leagues.length > 15 && (
+                              <div className="text-xs text-muted-foreground px-3 py-1">
+                                +{sport.leagues.length - 15} more
                               </div>
                             )}
                           </div>
@@ -465,354 +574,140 @@ export default function PredictionMarkets() {
                 </div>
               </div>
 
-              {/* Center: Games List */}
-              <div className="flex-1 space-y-4">
-                {/* Live Section Header */}
-                <h2 className="text-2xl font-bold text-foreground italic">Live</h2>
-
-                {/* Live Games */}
-                {demoGames.live.map((game) => {
-                  const leagueBadge = getLeagueBadge(game.league);
-                  return (
-                  <div key={game.id} className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm font-bold text-foreground">
-                      {leagueBadge && (
-                        <img 
-                          src={leagueBadge} 
-                          alt={game.league}
-                          className="w-5 h-5 object-contain"
-                        />
-                      )}
-                      {game.league}
-                    </div>
-                    <div 
-                      className="p-3 rounded-lg cursor-pointer hover-elevate transition-all"
-                      style={{ background: 'rgba(30, 30, 35, 0.8)', border: '1px solid rgba(60, 60, 60, 0.3)' }}
-                      onClick={() => setSelectedGame(game)}
-                      data-testid={`card-pm-game-${game.id}`}
+              <div className="flex-1 pb-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold">
+                    <span className="text-foreground">
+                      {activeTab === 'featured' ? 'FEATURED' : activeTab === 'live' ? 'LIVE' : 'UPCOMING'}
+                    </span>
+                    <span className="text-primary ml-2">MARKETS</span>
+                  </h2>
+                  
+                  {selectedSport && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => { setSelectedSport(null); setSelectedLeague(null); }}
+                      className="text-muted-foreground"
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Badge className="bg-red-500 text-white text-xs px-1.5 py-0.5">LIVE</Badge>
-                          <span className="text-xs text-muted-foreground">{game.volume}</span>
-                        </div>
-                        <button className="text-xs text-primary hover:underline">Game view</button>
-                      </div>
-                      
-                      {game.teams.map((team, idx) => (
-                        <div key={idx} className="flex items-center justify-between py-1.5">
-                          <div className="flex items-center gap-2">
-                            <Badge 
-                              className="font-bold text-xs px-1.5"
-                              style={{ background: team.moneylineColor, color: 'white' }}
-                            >
-                              {team.code}
-                            </Badge>
-                            <span className="text-sm text-foreground">{team.name}</span>
-                          </div>
-                          <button
-                            className={`px-3 py-1 rounded font-bold text-xs text-white transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate'}`}
-                            style={{ background: team.moneylineColor }}
-                            disabled={isDisabled}
-                            data-testid={`button-pm-bet-${game.id}-${idx}`}
-                          >
-                            {team.moneyline}
-                          </button>
-                        </div>
-                      ))}
-                      {game.draw && (
-                        <div className="flex justify-center mt-1">
-                          <span className="text-xs text-muted-foreground">{game.draw}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )})}
-
-                {/* Starting Soon Section */}
-                <div className="pt-4">
-                  <h2 className="text-xl font-bold text-foreground">Starting Soon</h2>
-                  <div className="text-xs text-muted-foreground mb-3">Tue, November 25</div>
-
-                  {/* Column Headers */}
-                  <div className="flex items-center text-xs text-muted-foreground uppercase tracking-wider mb-2 px-3">
-                    <div className="flex-1">NBA</div>
-                    <div className="w-20 text-center">Moneyline</div>
-                    {showSpreadsAndTotals && (
-                      <>
-                        <div className="w-24 text-center">Spread</div>
-                        <div className="w-24 text-center">Total</div>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Upcoming Games */}
-                  {demoGames.upcoming.map((game) => {
-                    const upcomingLeagueBadge = getLeagueBadge(game.league);
-                    return (
-                    <div 
-                      key={game.id}
-                      className="p-3 rounded-lg cursor-pointer hover-elevate transition-all mb-2"
-                      style={{ background: 'rgba(30, 30, 35, 0.8)', border: '1px solid rgba(60, 60, 60, 0.3)' }}
-                      onClick={() => setSelectedGame(game)}
-                      data-testid={`card-pm-game-${game.id}`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          {upcomingLeagueBadge && (
-                            <img 
-                              src={upcomingLeagueBadge} 
-                              alt={game.league}
-                              className="w-5 h-5 object-contain"
-                            />
-                          )}
-                          <span className="text-xs font-medium text-foreground">{game.time}</span>
-                          <span className="text-xs text-muted-foreground">{game.volume}</span>
-                        </div>
-                        <button className="text-xs text-muted-foreground hover:text-primary">
-                          {game.gameViews} Game View
-                        </button>
-                      </div>
-
-                      {game.teams.map((team, idx) => (
-                        <div key={idx} className="flex items-center py-1">
-                          <div className="flex-1 flex items-center gap-2">
-                            <Badge 
-                              className="font-bold text-xs px-1.5"
-                              style={{ background: team.moneylineColor, color: 'white' }}
-                            >
-                              {team.code}
-                            </Badge>
-                            <span className="text-xs text-foreground">{team.name}</span>
-                            <span className="text-xs text-muted-foreground">{team.record}</span>
-                          </div>
-                          
-                          {/* Moneyline */}
-                          <div className="w-20 flex justify-center">
-                            <button
-                              className={`px-2 py-1 rounded font-bold text-xs text-white transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate'}`}
-                              style={{ background: team.moneylineColor }}
-                              disabled={isDisabled}
-                            >
-                              {team.moneyline}
-                            </button>
-                          </div>
-
-                          {/* Spread */}
-                          {showSpreadsAndTotals && (
-                            <div className="w-24 flex justify-center gap-1">
-                              <span className="text-xs text-muted-foreground">{team.spread}</span>
-                              <span className="text-xs font-bold text-foreground">{team.spreadPrice}</span>
-                            </div>
-                          )}
-
-                          {/* Total */}
-                          {showSpreadsAndTotals && (
-                            <div className="w-24 flex justify-center gap-1">
-                              <span className="text-xs text-muted-foreground">{team.total}</span>
-                              <span className="text-xs font-bold text-foreground">{team.totalPrice}</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )})}
-                </div>
-              </div>
-
-              {/* Right: Trading Panel */}
-              <div className="flex-shrink-0" style={{width: '220px'}}>
-                <div className="p-3 rounded-lg space-y-3" style={{ 
-                  background: 'rgba(30, 30, 35, 0.8)', 
-                  border: '1px solid rgba(60, 60, 60, 0.3)' 
-                }}>
-                  {/* Selected Game Header */}
-                  {selectedGame && (
-                    <div className="text-center">
-                      <div className="text-sm font-bold text-foreground">
-                        {selectedGame.teams?.[0]?.name || 'Team 1'} vs {selectedGame.teams?.[1]?.name || 'Team 2'}
-                      </div>
-                      <div className="text-xs text-primary">{selectedGame.teams?.[0]?.code || 'T1'}</div>
-                    </div>
+                      Clear Filter
+                    </Button>
                   )}
+                </div>
 
-                  {/* Buy / Sell Tabs */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setTradeType('buy')}
-                        className={`px-3 py-1 text-xs font-medium transition-all ${
-                          tradeType === 'buy' 
-                            ? 'text-foreground border-b border-foreground' 
-                            : 'text-muted-foreground'
-                        }`}
-                        data-testid="button-pm-buy"
-                      >
-                        Buy
-                      </button>
-                      <button
-                        onClick={() => setTradeType('sell')}
-                        className={`px-3 py-1 text-xs font-medium transition-all ${
-                          tradeType === 'sell' 
-                            ? 'text-foreground border-b border-foreground' 
-                            : 'text-muted-foreground'
-                        }`}
-                        data-testid="button-pm-sell"
-                      >
-                        Sell
-                      </button>
-                    </div>
-                    <span className="text-xs text-muted-foreground">Market</span>
+                {isLoading ? (
+                  <div className={viewMode === 'grid' ? "grid md:grid-cols-2 xl:grid-cols-3 gap-4" : "space-y-3"}>
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <Skeleton key={i} className={viewMode === 'grid' ? "h-64 bg-card" : "h-24 bg-card"} />
+                    ))}
                   </div>
-
-                  {/* Yes / No Price Buttons */}
-                  <div className="flex gap-2">
-                    <button
-                      className={`flex-1 py-2 rounded font-bold text-xs transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate'}`}
-                      style={{ background: '#22C55E', color: 'white' }}
-                      disabled={isDisabled}
-                      data-testid="button-pm-yes"
-                    >
-                      Yes 0.6¢
-                    </button>
-                    <button
-                      className={`flex-1 py-2 rounded font-bold text-xs transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate'}`}
-                      style={{ background: 'rgba(60, 60, 60, 0.8)', color: 'white' }}
-                      disabled={isDisabled}
-                      data-testid="button-pm-no"
-                    >
-                      No 99.8¢
-                    </button>
-                  </div>
-
-                  {/* Amount Input */}
-                  <div className="space-y-2">
-                    <div className="text-xs text-muted-foreground">Amount</div>
-                    <div className={`flex items-center justify-between px-3 py-2 rounded ${isDisabled ? 'opacity-50' : ''}`} style={{
-                      background: 'rgba(15, 15, 15, 0.8)',
-                      border: '1px solid rgba(60, 60, 60, 0.5)'
-                    }}>
-                      <span className="text-lg font-bold text-foreground">$</span>
-                      <input
-                        type="text"
-                        value={tradeAmount}
-                        onChange={(e) => setTradeAmount(e.target.value)}
-                        placeholder="0"
-                        className="w-full text-right text-lg font-bold bg-transparent border-0 outline-none text-foreground"
-                        disabled={isDisabled}
-                        data-testid="input-pm-amount"
-                      />
-                    </div>
-                    
-                    {/* Quick Amount Buttons */}
-                    <div className="flex gap-1">
-                      {[1, 20, 100].map((amt) => (
-                        <button
-                          key={amt}
-                          onClick={() => setTradeAmount(String((parseFloat(tradeAmount) || 0) + amt))}
-                          className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate'}`}
-                          style={{ background: 'rgba(60, 60, 60, 0.5)' }}
+                ) : filteredMarkets.length > 0 ? (
+                  viewMode === 'grid' ? (
+                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {filteredMarkets.map((market) => (
+                        <PredictionMarketCard
+                          key={market.id}
+                          market={market}
+                          onPlaceBet={handlePlaceBet}
                           disabled={isDisabled}
-                        >
-                          +${amt}
-                        </button>
+                        />
                       ))}
-                      <button
-                        onClick={() => setTradeAmount('1000')}
-                        className={`flex-1 py-1.5 rounded text-xs font-medium transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate'}`}
-                        style={{ background: 'rgba(60, 60, 60, 0.5)' }}
-                        disabled={isDisabled}
-                      >
-                        Max
-                      </button>
                     </div>
-                  </div>
-
-                  {/* Trade Button */}
-                  <button
-                    onClick={handleTrade}
-                    className={`w-full py-2 rounded font-bold text-xs transition-all ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover-elevate active-elevate-2'}`}
-                    style={{ background: '#22C55E', color: 'white' }}
-                    disabled={isDisabled}
-                    data-testid="button-pm-trade"
-                  >
-                    Trade
-                  </button>
-
-                  {/* Auth Message */}
-                  {isDisabled && (
-                    <div className="text-xs text-muted-foreground text-center" data-testid="text-pm-auth-required">
-                      {!address ? "Connect wallet to trade" : "Create account to trade"}
+                  ) : (
+                    <div className="space-y-3">
+                      {filteredMarkets.map((market) => (
+                        <PredictionMarketPane
+                          key={market.id}
+                          market={market}
+                          onPlaceBet={handlePlaceBet}
+                          disabled={isDisabled}
+                        />
+                      ))}
                     </div>
-                  )}
-
-                  {/* Terms */}
-                  <div className="text-xs text-muted-foreground text-center">
-                    By trading, you agree to the <span className="text-primary underline cursor-pointer">Terms of Use</span>
+                  )
+                ) : (
+                  <div className="text-center py-12 bg-card rounded-lg border border-border">
+                    <p className="text-muted-foreground text-lg">No active markets</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Check back soon for new betting opportunities!
+                    </p>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </ScrollArea>
         </div>
       </GameLayout>
 
-      {/* Signup Modal */}
+      <BetSlipDialog
+        open={betSlipOpen}
+        onClose={() => setBetSlipOpen(false)}
+        marketId={selectedBet?.id || null}
+        outcome={selectedBet?.outcome || null}
+        teamName={selectedBet?.teamName || ''}
+        currentOdds={selectedBet?.odds || 2.0}
+        onConfirm={handleConfirmBet}
+      />
+
       <Dialog open={shouldShowSignup} onOpenChange={() => {}}>
         <DialogContent className="sm:max-w-md glass-panel neon-border" style={{borderRadius: '18px'}}>
           <DialogHeader>
             <DialogTitle className="text-center">
               <img src={signupLogo} alt="Sign Up" className="h-16 mx-auto mb-2" />
             </DialogTitle>
-            <DialogDescription className="text-center text-muted-foreground">
-              Create your account to start trading
-            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm text-muted-foreground">Username</label>
-              <input
-                type="text"
+              <label className="text-sm font-medium">Username</label>
+              <Input
+                placeholder="Enter your username"
                 value={signupData.name}
-                onChange={(e) => setSignupData({...signupData, name: e.target.value})}
-                className="w-full px-3 py-2 rounded-lg bg-background/50 border border-border/50 text-foreground"
-                placeholder="Enter username"
-                data-testid="input-pm-signup-name"
+                onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
+                data-testid="input-signup-username"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-muted-foreground">Email</label>
-              <input
+              <label className="text-sm font-medium">Email</label>
+              <Input
                 type="email"
+                placeholder="Enter your email"
                 value={signupData.email}
-                onChange={(e) => setSignupData({...signupData, email: e.target.value})}
-                className="w-full px-3 py-2 rounded-lg bg-background/50 border border-border/50 text-foreground"
-                placeholder="Enter email"
-                data-testid="input-pm-signup-email"
+                onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+                data-testid="input-signup-email"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Referral Code (Optional)</label>
+              <Input
+                placeholder="Enter referral code"
+                value={signupData.referralCode}
+                onChange={(e) => setSignupData({ ...signupData, referralCode: e.target.value })}
+                data-testid="input-signup-referral"
               />
             </div>
             <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
+              <Checkbox
+                id="terms"
                 checked={signupData.agreedToTerms}
-                onChange={(e) => setSignupData({...signupData, agreedToTerms: e.target.checked})}
-                className="w-4 h-4"
-                data-testid="checkbox-pm-terms"
+                onCheckedChange={(checked) => setSignupData({ ...signupData, agreedToTerms: !!checked })}
+                data-testid="checkbox-signup-terms"
               />
-              <span className="text-xs text-muted-foreground">
-                I agree to the <span className="text-primary">Terms & Conditions</span>
-              </span>
+              <label htmlFor="terms" className="text-sm text-muted-foreground">
+                I agree to the <span className="text-primary underline cursor-pointer">Terms of Service</span>
+              </label>
             </div>
             <Button 
+              className="w-full" 
               onClick={handleSignupSubmit}
-              className="w-full"
-              data-testid="button-pm-signup-submit"
+              disabled={!signupData.name || !signupData.email || !signupData.agreedToTerms}
+              data-testid="button-signup-submit"
             >
               Create Account
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
       <ChatRulesModal open={showChatRules} onOpenChange={setShowChatRules} />
     </>
   );

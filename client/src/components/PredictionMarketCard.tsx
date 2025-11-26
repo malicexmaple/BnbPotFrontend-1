@@ -11,6 +11,7 @@ export interface PredictionMarket {
   id: string;
   sport: string;
   league: string;
+  leagueId?: string;
   teamA: string;
   teamB: string;
   description: string;
