@@ -132,16 +132,11 @@ export default function Home() {
       animationFrame = requestAnimationFrame(animate);
     };
     
-    // Delay animation start to prevent layout shift on navigation
-    const timeout = setTimeout(() => {
-      if (mounted) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    }, 100);
+    // Start animation immediately to prevent visible jump on navigation
+    animationFrame = requestAnimationFrame(animate);
     
     return () => {
       mounted = false;
-      clearTimeout(timeout);
       cancelAnimationFrame(animationFrame);
     };
   }, []);
@@ -563,7 +558,7 @@ export default function Home() {
                   
                   <div 
                     className="carousel-track flex gap-3"
-                    style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible'}}
+                    style={{transform: `translateX(-${scrollOffset}px)`, overflow: 'visible', willChange: 'transform'}}
                   >
                     {(() => {
                       // Get real bets from current round
