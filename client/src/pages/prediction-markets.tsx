@@ -55,12 +55,12 @@ const SportIcon = ({ sport }: { sport: string }) => {
   return iconMap[sport] || <Target className={iconClass} />;
 };
 
-// Demo data for games
+// Demo data for games with proper league names matching sportsData
 const demoGames = {
   live: [
     {
       id: 1,
-      league: 'TEST (CRICKET)',
+      league: 'Indian Premier League',
       time: 'LIVE',
       volume: '$313.37k Vol.',
       teams: [
@@ -84,24 +84,24 @@ const demoGames = {
     },
     {
       id: 3,
-      league: 'NBA',
+      league: 'English Premier League',
       time: '12:00 PM',
       volume: '$605.55k Vol.',
       gameViews: 9,
       teams: [
-        { code: 'ORL', name: 'Magic', record: '10-8', moneyline: 'ORL 55¢', moneylineColor: '#3B82F6', spread: 'ORL -1.5', spreadPrice: '51¢', total: 'O 228.5', totalPrice: '50¢' },
-        { code: 'PHI', name: '76ers', record: '9-7', moneyline: 'PHI 46¢', moneylineColor: '#3B82F6', spread: 'PHI +1.5', spreadPrice: '50¢', total: 'U 228.5', totalPrice: '51¢' },
+        { code: 'LIV', name: 'Liverpool', record: '10-2', moneyline: 'LIV 55¢', moneylineColor: '#C8102E', spread: 'LIV -1.5', spreadPrice: '51¢', total: 'O 2.5', totalPrice: '50¢' },
+        { code: 'MAN', name: 'Man United', record: '7-5', moneyline: 'MUN 46¢', moneylineColor: '#DA291C', spread: 'MUN +1.5', spreadPrice: '50¢', total: 'U 2.5', totalPrice: '51¢' },
       ],
     },
     {
       id: 4,
-      league: 'NBA',
+      league: 'UEFA Champions League',
       time: '3:00 PM',
       volume: '$564.90k Vol.',
       gameViews: 14,
       teams: [
-        { code: 'LAC', name: 'Clippers', record: '5-12', moneyline: 'LAC 34¢', moneylineColor: '#6366F1', spread: 'LAC +5.5', spreadPrice: '52¢', total: 'O 228.5', totalPrice: '52¢' },
-        { code: 'LAL', name: 'Lakers', record: '12-4', moneyline: 'LAL 67¢', moneylineColor: '#A855F7', spread: 'LAL -5.5', spreadPrice: '49¢', total: 'U 228.5', totalPrice: '50¢' },
+        { code: 'BAR', name: 'Barcelona', record: '5-1', moneyline: 'BAR 34¢', moneylineColor: '#A50044', spread: 'BAR +0.5', spreadPrice: '52¢', total: 'O 3.5', totalPrice: '52¢' },
+        { code: 'BAY', name: 'Bayern Munich', record: '6-0', moneyline: 'BAY 67¢', moneylineColor: '#DC052D', spread: 'BAY -0.5', spreadPrice: '49¢', total: 'U 3.5', totalPrice: '50¢' },
       ],
     },
   ]
