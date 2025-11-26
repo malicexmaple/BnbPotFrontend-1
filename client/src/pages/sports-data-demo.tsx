@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { TheSportsDBDemo } from "@/components/TheSportsDBDemo";
 import { NetworkBackground } from "@/components/NetworkBackground";
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Gamepad2 } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 function getSportIcon(sport: typeof sportsData[0]) {
   if (sport.iconType === 'svg') {
@@ -48,9 +50,47 @@ function getSportIcon(sport: typeof sportsData[0]) {
 
 export default function SportsDataDemo() {
   const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading, isAdmin } = useAuth();
+  const { toast } = useToast();
   const [selectedLeagues, setSelectedLeagues] = useState<Record<string, string>>(
     Object.fromEntries(sportsData.map(sport => [sport.id, sport.leagues[0]?.id || ""]))
   );
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        toast({
+          title: "Unauthorized",
+          description: "Please connect your wallet and sign in first.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation('/');
+        }, 500);
+      } else if (!isAdmin) {
+        toast({
+          title: "Access Denied",
+          description: "Admin access required to view this page",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation('/');
+        }, 500);
+      }
+    }
+  }, [isAuthenticated, isLoading, isAdmin, toast, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-full">

@@ -1,11 +1,14 @@
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { NetworkBackground } from "@/components/NetworkBackground";
 import { LiveBettingFeed } from "@/components/LiveBettingFeed";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { predictionCategories, type PredictionCategory } from "@shared/prediction-markets";
+import { predictionCategories } from "@shared/prediction-markets";
 import { ArrowLeft, DollarSign, Globe, TrendingUp, Cpu, Star, MapPin, LineChart, Vote, MessageSquare, Bitcoin } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 function getCategoryIcon(iconName: string) {
   const icons: Record<string, React.ReactNode> = {
@@ -25,6 +28,44 @@ function getCategoryIcon(iconName: string) {
 
 export default function PredictionDataDemo() {
   const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading, isAdmin } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        toast({
+          title: "Unauthorized",
+          description: "Please connect your wallet and sign in first.",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation('/');
+        }, 500);
+      } else if (!isAdmin) {
+        toast({
+          title: "Access Denied",
+          description: "Admin access required to view this page",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation('/');
+        }, 500);
+      }
+    }
+  }, [isAuthenticated, isLoading, isAdmin, toast, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-full">

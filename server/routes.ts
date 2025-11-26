@@ -797,13 +797,13 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
   /**
    * Search teams by name
    */
-  app.get("/api/sports/teams/search", async (req, res) => {
+  app.get("/api/sports/teams/search/:query", async (req, res) => {
     try {
-      const { q } = req.query;
-      if (!q || typeof q !== 'string') {
+      const query = req.params.query;
+      if (!query) {
         return res.status(400).json({ message: "Search query required" });
       }
-      const teams = await theSportsDB.searchTeams(q);
+      const teams = await theSportsDB.searchTeams(query);
       res.json(teams);
     } catch (error) {
       console.error("Error searching teams:", error);
@@ -856,13 +856,13 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
   /**
    * Search leagues by name
    */
-  app.get("/api/sports/leagues/search", async (req, res) => {
+  app.get("/api/sports/leagues/search/:query", async (req, res) => {
     try {
-      const { q } = req.query;
-      if (!q || typeof q !== 'string') {
+      const query = req.params.query;
+      if (!query) {
         return res.status(400).json({ message: "Search query required" });
       }
-      const leagues = await theSportsDB.searchLeagues(q);
+      const leagues = await theSportsDB.searchLeagues(query);
       res.json(leagues);
     } catch (error) {
       console.error("Error searching leagues:", error);
