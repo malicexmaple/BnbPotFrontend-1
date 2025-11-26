@@ -75,7 +75,7 @@ export default function GameNavigation({
   }, [username]);
 
   return (
-    <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
+    <div className="flex w-full glass-panel border-b border-accent/30" style={{height: '100px', display: 'flex', borderRadius: 0}}>
       {/* Left - Logo section (345px on desktop, smaller on mobile) */}
       <div className="hidden lg:flex items-start justify-center flex-shrink-0 w-full max-w-[345px]" style={{ height: '100px' }}>
         <div className="flex items-center justify-center" style={{height: '100px'}}>
