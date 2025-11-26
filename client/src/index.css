@@ -663,6 +663,36 @@
   .wiggle-on-hover:hover {
     animation: wiggle 0.3s ease-in-out infinite;
   }
+
+  /* Air stream animations for parachute airdrop effect */
+  @keyframes airStream0 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-80px) translateX(3px); opacity: 0; } }
+  @keyframes airStream1 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-90px) translateX(-2px); opacity: 0; } }
+  @keyframes airStream2 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-95px) translateX(4px); opacity: 0; } }
+  @keyframes airStream3 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-75px) translateX(-3px); opacity: 0; } }
+  @keyframes airStream4 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-100px) translateX(2px); opacity: 0; } }
+  @keyframes airStream5 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-85px) translateX(-4px); opacity: 0; } }
+  @keyframes airStream6 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-92px) translateX(3px); opacity: 0; } }
+  @keyframes airStream7 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-88px) translateX(-2px); opacity: 0; } }
+
+  /* Air stream animations for airdrop logo */
+  @keyframes airStreamLogo0 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-55px) translateX(2px); opacity: 0; } }
+  @keyframes airStreamLogo1 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-60px) translateX(-2px); opacity: 0; } }
+  @keyframes airStreamLogo2 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-50px) translateX(3px); opacity: 0; } }
+  @keyframes airStreamLogo3 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-58px) translateX(-3px); opacity: 0; } }
+  @keyframes airStreamLogo4 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-65px) translateX(2px); opacity: 0; } }
+  @keyframes airStreamLogo5 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-62px) translateX(-2px); opacity: 0; } }
+
+  /* Floating animation for airdrop logo */
+  @keyframes floatAirdrop {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* Gentle floating animation for airdrop box */
+  @keyframes floatAirdropBox {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+  }
 }
 
 /* Infinite scrolling animation for live betting feed */
