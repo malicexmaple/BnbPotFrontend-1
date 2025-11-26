@@ -341,3 +341,49 @@ export const insertTeamBadgeCacheSchema = createInsertSchema(teamBadgeCache).omi
 
 export type InsertTeamBadgeCache = z.infer<typeof insertTeamBadgeCacheSchema>;
 export type TeamBadgeCache = typeof teamBadgeCache.$inferSelect;
+
+// Sports and Leagues Visibility Control
+export const sportsVisibility = pgTable("sports_visibility", {
+  sportId: text("sport_id").primaryKey(),
+  isHidden: boolean("is_hidden").notNull().default(false),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertSportsVisibilitySchema = createInsertSchema(sportsVisibility);
+export type InsertSportsVisibility = z.infer<typeof insertSportsVisibilitySchema>;
+export type SportsVisibility = typeof sportsVisibility.$inferSelect;
+
+export const leaguesVisibility = pgTable("leagues_visibility", {
+  leagueId: text("league_id").primaryKey(),
+  sportId: text("sport_id").notNull(),
+  isHidden: boolean("is_hidden").notNull().default(false),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertLeaguesVisibilitySchema = createInsertSchema(leaguesVisibility);
+export type InsertLeaguesVisibility = z.infer<typeof insertLeaguesVisibilitySchema>;
+export type LeaguesVisibility = typeof leaguesVisibility.$inferSelect;
+
+// Custom Media Overrides for Teams and Players
+export const customMedia = pgTable("custom_media", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  entityType: text("entity_type").notNull(), // 'team', 'player', 'league'
+  entityId: text("entity_id").notNull(), // Team ID, player ID, or league ID
+  entityName: text("entity_name").notNull(), // Display name
+  logoUrl: text("logo_url"), // Custom logo/badge URL
+  photoUrl: text("photo_url"), // Photo URL (for players)
+  thumbnailUrl: text("thumbnail_url"), // Thumbnail version
+  sportId: text("sport_id"), // Associated sport
+  leagueId: text("league_id"), // Associated league
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertCustomMediaSchema = createInsertSchema(customMedia).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertCustomMedia = z.infer<typeof insertCustomMediaSchema>;
+export type CustomMedia = typeof customMedia.$inferSelect;

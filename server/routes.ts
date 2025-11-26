@@ -159,6 +159,49 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
     });
   });
   
+  /**
+   * Check if dev admin login is available (development mode only)
+   */
+  app.get("/api/auth/dev-enabled", async (_req, res) => {
+    const isDev = process.env.NODE_ENV !== 'production';
+    res.json({ enabled: isDev });
+  });
+  
+  /**
+   * Dev admin login - DEVELOPMENT MODE ONLY
+   * Allows quick admin access during development without wallet
+   */
+  app.post("/api/auth/dev-admin", async (req, res) => {
+    try {
+      // Only allow in development mode
+      if (process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ message: "Dev admin not available in production" });
+      }
+      
+      // Create a dev admin session with a placeholder wallet
+      const devWallet = "0x0000000000000000000000000000000000000001";
+      
+      if (req.session) {
+        req.session.walletAddress = devWallet;
+        req.session.username = "DevAdmin";
+        req.session.agreedToTerms = true;
+        req.session.isAdmin = true;
+      }
+      
+      console.log("🔧 Dev admin login activated");
+      res.json({ 
+        success: true, 
+        walletAddress: devWallet,
+        username: "DevAdmin",
+        agreedToTerms: true,
+        isAdmin: true
+      });
+    } catch (error) {
+      console.error("Error with dev admin login:", error);
+      res.status(500).json({ message: "Failed to activate dev admin" });
+    }
+  });
+  
   // ========================================
   // USER ENDPOINTS
   // ========================================
@@ -883,6 +926,141 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
     } catch (error) {
       console.error("Error fetching league details:", error);
       res.status(500).json({ message: "Failed to fetch league details" });
+    }
+  });
+
+  // ========================================
+  // SPORTS VISIBILITY ENDPOINTS
+  // ========================================
+
+  /**
+   * Get all visibility settings (sports and leagues)
+   */
+  app.get("/api/sports/visibility", async (_req, res) => {
+    try {
+      const sports = await storage.getSportsVisibility();
+      const leagues = await storage.getLeaguesVisibility();
+      res.json({ sports, leagues });
+    } catch (error) {
+      console.error("Error fetching visibility settings:", error);
+      res.status(500).json({ message: "Failed to fetch visibility settings" });
+    }
+  });
+
+  /**
+   * Toggle sport visibility (admin only)
+   */
+  app.patch("/api/sports/visibility/sport/:sportId", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const { sportId } = req.params;
+      const { isHidden } = req.body;
+      
+      if (typeof isHidden !== 'boolean') {
+        return res.status(400).json({ message: "isHidden must be a boolean" });
+      }
+      
+      const result = await storage.setSportVisibility(sportId, isHidden);
+      res.json(result);
+    } catch (error) {
+      console.error("Error setting sport visibility:", error);
+      res.status(500).json({ message: "Failed to update sport visibility" });
+    }
+  });
+
+  /**
+   * Toggle league visibility (admin only)
+   */
+  app.patch("/api/sports/visibility/league/:leagueId", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const { leagueId } = req.params;
+      const { sportId, isHidden } = req.body;
+      
+      if (!sportId) {
+        return res.status(400).json({ message: "sportId is required" });
+      }
+      
+      if (typeof isHidden !== 'boolean') {
+        return res.status(400).json({ message: "isHidden must be a boolean" });
+      }
+      
+      const result = await storage.setLeagueVisibility(leagueId, sportId, isHidden);
+      res.json(result);
+    } catch (error) {
+      console.error("Error setting league visibility:", error);
+      res.status(500).json({ message: "Failed to update league visibility" });
+    }
+  });
+
+  // ========================================
+  // CUSTOM MEDIA ENDPOINTS
+  // ========================================
+
+  /**
+   * Get custom media (optionally filtered by entity type)
+   */
+  app.get("/api/sports/custom-media", async (req, res) => {
+    try {
+      const entityType = req.query.entityType as string | undefined;
+      const media = await storage.getCustomMedia(entityType);
+      res.json(media);
+    } catch (error) {
+      console.error("Error fetching custom media:", error);
+      res.status(500).json({ message: "Failed to fetch custom media" });
+    }
+  });
+
+  /**
+   * Get custom media by entity type and ID
+   */
+  app.get("/api/sports/custom-media/:entityType/:entityId", async (req, res) => {
+    try {
+      const { entityType, entityId } = req.params;
+      const media = await storage.getCustomMediaByEntity(entityType, entityId);
+      res.json(media || null);
+    } catch (error) {
+      console.error("Error fetching custom media by entity:", error);
+      res.status(500).json({ message: "Failed to fetch custom media" });
+    }
+  });
+
+  /**
+   * Add or update custom media (admin only)
+   */
+  app.post("/api/sports/custom-media", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const { entityType, entityId, entityName, logoUrl, photoUrl, thumbnailUrl, sportId, leagueId } = req.body;
+      
+      if (!entityType || !entityId || !entityName) {
+        return res.status(400).json({ message: "entityType, entityId, and entityName are required" });
+      }
+      
+      const media = await storage.upsertCustomMedia({
+        entityType,
+        entityId,
+        entityName,
+        logoUrl: logoUrl || null,
+        photoUrl: photoUrl || null,
+        thumbnailUrl: thumbnailUrl || null,
+        sportId: sportId || null,
+        leagueId: leagueId || null
+      });
+      res.json(media);
+    } catch (error) {
+      console.error("Error upserting custom media:", error);
+      res.status(500).json({ message: "Failed to save custom media" });
+    }
+  });
+
+  /**
+   * Delete custom media (admin only)
+   */
+  app.delete("/api/sports/custom-media/:id", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      await storage.deleteCustomMedia(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting custom media:", error);
+      res.status(500).json({ message: "Failed to delete custom media" });
     }
   });
 

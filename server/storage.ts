@@ -11,9 +11,12 @@ import {
   type AirdropTip, type InsertAirdropTip,
   type Market, type InsertMarket,
   type MarketBet, type InsertMarketBet,
+  type SportsVisibility, type InsertSportsVisibility,
+  type LeaguesVisibility, type InsertLeaguesVisibility,
+  type CustomMedia, type InsertCustomMedia,
   users, chatMessages, rounds, bets, userStats, dailyStats,
   airdropPool, airdropDistributions, airdropRecipients, airdropTips,
-  markets, marketBets
+  markets, marketBets, sportsVisibility, leaguesVisibility, customMedia
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -84,6 +87,19 @@ export interface IStorage {
   getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]>;
   createMarketBet(bet: InsertMarketBet): Promise<MarketBet>;
   updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined>;
+  
+  // Sports/Leagues visibility methods
+  getSportsVisibility(): Promise<SportsVisibility[]>;
+  getLeaguesVisibility(): Promise<LeaguesVisibility[]>;
+  setSportVisibility(sportId: string, isHidden: boolean): Promise<SportsVisibility>;
+  setLeagueVisibility(leagueId: string, sportId: string, isHidden: boolean): Promise<LeaguesVisibility>;
+  
+  // Custom media methods
+  getCustomMedia(entityType?: string): Promise<CustomMedia[]>;
+  getCustomMediaByEntity(entityType: string, entityId: string): Promise<CustomMedia | undefined>;
+  getCustomMediaByName(entityType: string, entityName: string): Promise<CustomMedia | undefined>;
+  upsertCustomMedia(media: InsertCustomMedia): Promise<CustomMedia>;
+  deleteCustomMedia(id: string): Promise<void>;
 }
 
 export class DbStorage implements IStorage {
@@ -520,6 +536,89 @@ export class DbStorage implements IStorage {
       .where(eq(marketBets.id, id))
       .returning();
     return result[0];
+  }
+
+  // Sports/Leagues visibility methods
+  async getSportsVisibility(): Promise<SportsVisibility[]> {
+    return await db.select().from(sportsVisibility);
+  }
+
+  async getLeaguesVisibility(): Promise<LeaguesVisibility[]> {
+    return await db.select().from(leaguesVisibility);
+  }
+
+  async setSportVisibility(sportId: string, isHidden: boolean): Promise<SportsVisibility> {
+    const result = await db.insert(sportsVisibility)
+      .values({ sportId, isHidden, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: sportsVisibility.sportId,
+        set: { isHidden, updatedAt: new Date() }
+      })
+      .returning();
+    return result[0];
+  }
+
+  async setLeagueVisibility(leagueId: string, sportId: string, isHidden: boolean): Promise<LeaguesVisibility> {
+    const result = await db.insert(leaguesVisibility)
+      .values({ leagueId, sportId, isHidden, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: leaguesVisibility.leagueId,
+        set: { isHidden, sportId, updatedAt: new Date() }
+      })
+      .returning();
+    return result[0];
+  }
+
+  // Custom media methods
+  async getCustomMedia(entityType?: string): Promise<CustomMedia[]> {
+    if (entityType) {
+      return await db.select().from(customMedia).where(eq(customMedia.entityType, entityType));
+    }
+    return await db.select().from(customMedia);
+  }
+
+  async getCustomMediaByEntity(entityType: string, entityId: string): Promise<CustomMedia | undefined> {
+    const result = await db.select().from(customMedia)
+      .where(and(
+        eq(customMedia.entityType, entityType),
+        eq(customMedia.entityId, entityId)
+      ))
+      .limit(1);
+    return result[0];
+  }
+
+  async getCustomMediaByName(entityType: string, entityName: string): Promise<CustomMedia | undefined> {
+    const result = await db.select().from(customMedia)
+      .where(and(
+        eq(customMedia.entityType, entityType),
+        sql`LOWER(${customMedia.entityName}) = LOWER(${entityName})`
+      ))
+      .limit(1);
+    return result[0];
+  }
+
+  async upsertCustomMedia(media: InsertCustomMedia): Promise<CustomMedia> {
+    const existing = await this.getCustomMediaByEntity(media.entityType, media.entityId);
+    
+    if (existing) {
+      const result = await db.update(customMedia)
+        .set({ 
+          ...media,
+          updatedAt: new Date()
+        })
+        .where(eq(customMedia.id, existing.id))
+        .returning();
+      return result[0];
+    } else {
+      const result = await db.insert(customMedia)
+        .values({ ...media, updatedAt: new Date() })
+        .returning();
+      return result[0];
+    }
+  }
+
+  async deleteCustomMedia(id: string): Promise<void> {
+    await db.delete(customMedia).where(eq(customMedia.id, id));
   }
 }
 
