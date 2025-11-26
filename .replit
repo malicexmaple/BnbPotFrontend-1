@@ -43,6 +43,7 @@ integrations = ["javascript_websocket:1.0.0", "javascript_mem_db:1.0.0"]
 [userenv.shared]
 VITE_CHAIN_ID = "56"
 VITE_BSC_RPC_URL = "https://bsc-dataseed1.binance.org"
+ADMIN_WALLETS = "0x0a7eaa7c8000b4ce9395409b5da615dfeb9a8802"
 
 [[ports]]
 localPort = 5000

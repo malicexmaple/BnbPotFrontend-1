@@ -90,8 +90,9 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
       // Check if user exists
       const user = await storage.getUserByWalletAddress(walletAddress);
       
-      // Check if this user should be admin (first user or has admin role)
-      const isAdmin = user?.role === 'admin';
+      // Check if this wallet is in the admin list (environment-based security)
+      const adminWallets = (process.env.ADMIN_WALLETS || '').toLowerCase().split(',').map(w => w.trim());
+      const isAdmin = adminWallets.includes(walletAddress.toLowerCase());
       
       if (req.session) {
         // Create authenticated session
@@ -127,7 +128,10 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
     }
     
     const user = await storage.getUserByWalletAddress(req.session.walletAddress);
-    const isAdmin = user?.role === 'admin';
+    
+    // Check if this wallet is in the admin list (environment-based security)
+    const adminWallets = (process.env.ADMIN_WALLETS || '').toLowerCase().split(',').map(w => w.trim());
+    const isAdmin = adminWallets.includes(req.session.walletAddress.toLowerCase());
     
     // Update session with current admin status
     if (req.session) {
