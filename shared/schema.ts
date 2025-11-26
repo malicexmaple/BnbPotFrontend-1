@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   walletAddress: text("wallet_address").unique(),
   email: text("email"),
+  role: text("role").notNull().default('user'),
   agreedToTerms: boolean("agreed_to_terms").notNull().default(false),
   agreedAt: timestamp("agreed_at"),
 });
@@ -268,3 +269,58 @@ export const insertCachedImageSchema = createInsertSchema(cachedImages).omit({
 
 export type InsertCachedImage = z.infer<typeof insertCachedImageSchema>;
 export type CachedImage = typeof cachedImages.$inferSelect;
+
+export const markets = pgTable("markets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sport: text("sport").notNull(),
+  league: text("league").notNull(),
+  marketType: text("market_type").notNull().default('match_winner'),
+  teamA: text("team_a").notNull(),
+  teamB: text("team_b").notNull(),
+  teamALogo: text("team_a_logo"),
+  teamBLogo: text("team_b_logo"),
+  description: text("description").notNull(),
+  status: text("status").notNull().default('active'),
+  isLive: boolean("is_live").notNull().default(false),
+  gameTime: timestamp("game_time").notNull(),
+  poolATotal: numeric("pool_a_total", { precision: 20, scale: 8 }).notNull().default('0'),
+  poolBTotal: numeric("pool_b_total", { precision: 20, scale: 8 }).notNull().default('0'),
+  bonusPool: numeric("bonus_pool", { precision: 20, scale: 8 }).notNull().default('0'),
+  winningOutcome: text("winning_outcome"),
+  platformFee: numeric("platform_fee", { precision: 5, scale: 2 }).notNull().default('2.00'),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  settledAt: timestamp("settled_at"),
+});
+
+export const insertMarketSchema = createInsertSchema(markets).omit({
+  id: true,
+  createdAt: true,
+  settledAt: true,
+});
+
+export type InsertMarket = z.infer<typeof insertMarketSchema>;
+export type Market = typeof markets.$inferSelect;
+
+export const marketBets = pgTable("market_bets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  marketId: varchar("market_id").notNull().references(() => markets.id),
+  userId: varchar("user_id").references(() => users.id),
+  userAddress: text("user_address").notNull(),
+  outcome: text("outcome").notNull(),
+  amount: numeric("amount", { precision: 20, scale: 8 }).notNull(),
+  oddsAtBet: numeric("odds_at_bet", { precision: 10, scale: 2 }).notNull(),
+  actualPayout: numeric("actual_payout", { precision: 20, scale: 8 }),
+  status: text("status").notNull().default('active'),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  settledAt: timestamp("settled_at"),
+});
+
+export const insertMarketBetSchema = createInsertSchema(marketBets).omit({
+  id: true,
+  createdAt: true,
+  settledAt: true,
+  actualPayout: true,
+});
+
+export type InsertMarketBet = z.infer<typeof insertMarketBetSchema>;
+export type MarketBet = typeof marketBets.$inferSelect;
