@@ -1,0 +1,160 @@
+Got you — you don’t want to *force* Replit into a specific language, just tell it:
+
+**“Use as few languages as possible, stick with what the project already uses, don’t introduce new frameworks, and keep everything simple and optimized.”**
+
+Here is the **clean final version** rewritten with that rule:
+
+---
+
+# ✅ **Copy–Paste This Into Replit (Minimal Languages Version):**
+
+**“I want you to refactor, clean, optimize, and secure my entire project. Follow ALL of these instructions exactly:**
+
+---
+
+## **1. Keep the tech stack minimal**
+
+* **Do NOT add any new languages, frameworks, or complex tools.**
+* Only use the languages and tools that the project already uses.
+* Consolidate everything so the project runs on the smallest number of languages possible.
+* Remove anything unnecessary or redundant.
+
+**The goal is a clean, simple, modern stack without bloat.**
+
+---
+
+## **2. Project Architecture (Mandatory Structure)**
+
+```
+src/
+  routes/
+  controllers/
+  services/
+  models/
+  blockchain/
+  utils/
+  config/
+  middlewares/
+
+public/
+assets/
+styles/
+.env
+```
+
+* Organize code properly
+* Remove duplicate logic
+* Delete dead/unneeded files
+* Make everything scalable and readable
+
+---
+
+## **3. Database Rules**
+
+* Use the existing database solution already in the project
+* Do NOT add SQL or additional DB systems
+* Keep the data-handling lightweight, clean, and fast
+
+(If the project uses MongoDB, keep it.
+If it uses something else already, keep that.
+No new DB tech.)
+
+---
+
+## **4. Security Upgrades**
+
+* Sanitize all inputs properly
+* Add schema validation for all API requests
+* Add rate limits to critical endpoints
+* Move ALL sensitive data to `.env`
+* Remove all hardcoded keys or secrets
+* Audit and report any vulnerabilities
+
+---
+
+## **5. Performance Optimization**
+
+* Eliminate repeated code
+* Improve file structure
+* Optimize async logic
+* Improve build size and frontend load time
+* Remove unused CSS, components, or libraries
+* Make the entire app smoother and faster
+
+---
+
+## **6. Jackpot / Carousel Game Logic Cleanup**
+
+* Create a clean and modular round-handling service
+* Clean and secure RNG logic
+* Stable countdown timer system
+* Auditable winner/round calculations
+* Clean and modular blockchain interaction files
+
+---
+
+## **7. Efficient Image System (Very Important)**
+
+### **A. Fix slow-loading images**
+
+* Implement proper static caching
+* Ensure images load instantly
+* Reduce unnecessary API calls
+
+### **B. Build an intelligent local image structure**
+
+When the site requests a logo/image:
+
+1. Check if it exists locally
+2. If not, fetch it once
+3. Automatically create a folder path, e.g.:
+
+```
+assets/logos/{token}/logo.png
+assets/projects/{id}/thumb.jpg
+```
+
+4. Save locally
+5. Next time, serve from local storage instead of API
+
+### **C. Final goal**
+
+**API should only return data.
+Images should be served locally with caching.**
+
+### **D. Add browser caching headers**
+
+(e.g. `Cache-Control: public, max-age=31536000`)
+
+### **E. Self-healing**
+
+If a stored image is missing, auto-fetch it again.
+
+---
+
+## **8. Frontend + Tailwind**
+
+* Keep Tailwind (if already included)
+* Remove unused classes
+* Optimize build size
+* Improve UI load performance
+
+---
+
+## **9. Full Project Audit**
+
+When finished, provide a report describing:
+
+* Security issues found
+* Inefficient patterns
+* Missing best practices
+* Suggestions for improvement
+* Any places where performance can improve
+
+---
+
+**Your job is to fully clean, optimize, and secure the project, using ONLY the existing stack. Do not introduce new frameworks, libraries, languages, or technologies unless absolutely necessary. Keep everything lightweight, simple, and production-ready.”**
+
+---
+
+If you want, I can also make a version that sounds more strict, more casual, or more professional — just tell me.
