@@ -32,7 +32,6 @@ interface PredictionMarketCardProps {
 }
 
 export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: PredictionMarketCardProps) {
-  const [hoveredOutcome, setHoveredOutcome] = useState<'A' | 'B' | null>(null);
   const [timeRemaining, setTimeRemaining] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const leagueBadge = getLeagueBadge(market.league);
 
@@ -160,8 +159,6 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
         <div className="grid grid-cols-2 gap-3">
           <Button
             onClick={() => onPlaceBet(market.id, 'A', oddsA)}
-            onMouseEnter={() => setHoveredOutcome('A')}
-            onMouseLeave={() => setHoveredOutcome(null)}
             disabled={isDisabled}
             className={cn(
               "h-[90px] flex-col justify-center py-3 border-2 rounded-lg",
@@ -185,8 +182,6 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
 
           <Button
             onClick={() => onPlaceBet(market.id, 'B', oddsB)}
-            onMouseEnter={() => setHoveredOutcome('B')}
-            onMouseLeave={() => setHoveredOutcome(null)}
             disabled={isDisabled}
             className={cn(
               "h-[90px] flex-col justify-center py-3 border-2 rounded-lg",

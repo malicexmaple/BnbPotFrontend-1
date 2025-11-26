@@ -246,3 +246,25 @@ export const insertAirdropTipSchema = createInsertSchema(airdropTips).omit({
 
 export type InsertAirdropTip = z.infer<typeof insertAirdropTipSchema>;
 export type AirdropTip = typeof airdropTips.$inferSelect;
+
+export const cachedImages = pgTable("cached_images", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  originalUrl: text("original_url").notNull().unique(),
+  localPath: text("local_path").notNull(),
+  contentType: text("content_type"),
+  fileSize: integer("file_size"),
+  category: text("category").notNull().default('general'),
+  cachedAt: timestamp("cached_at").notNull().defaultNow(),
+  lastAccessed: timestamp("last_accessed").notNull().defaultNow(),
+  accessCount: integer("access_count").notNull().default(0),
+});
+
+export const insertCachedImageSchema = createInsertSchema(cachedImages).omit({
+  id: true,
+  cachedAt: true,
+  lastAccessed: true,
+  accessCount: true,
+});
+
+export type InsertCachedImage = z.infer<typeof insertCachedImageSchema>;
+export type CachedImage = typeof cachedImages.$inferSelect;
