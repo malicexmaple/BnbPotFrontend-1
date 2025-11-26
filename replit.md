@@ -6,13 +6,16 @@ BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where t
 
 The application is built as a full-stack TypeScript monorepo with a React frontend, Express backend, and PostgreSQL database. It follows a modern web architecture with real-time capabilities for live game state updates and player interactions.
 
-**Current Status** (November 22, 2025):
+**Current Status** (November 26, 2025):
 - ✅ Production-grade smart contract deployed with Chainlink VRF
 - ✅ Complete blockchain event indexer with database syncing
 - ✅ Dual-mode operation: blockchain mode + database-only fallback
 - ✅ Real-time WebSocket updates for all users
 - ✅ Authentication gates (wallet + account + terms required for betting)
 - ✅ Game viewing available to everyone (read-only for non-authenticated)
+- ✅ **REFACTORED**: Modular route architecture (14 route files)
+- ✅ **REFACTORED**: Comprehensive Zod input validation on all endpoints
+- ✅ **REFACTORED**: Image caching with browser Cache-Control headers
 - 📝 Ready for testnet deployment (see BLOCKCHAIN_DEPLOYMENT_GUIDE.md)
 
 ## User Preferences
@@ -152,26 +155,57 @@ Preferred communication style: Simple, everyday language.
 - **TypeScript**: Strict type checking with path aliases
 - **ESLint/Prettier**: Code quality and formatting (configuration assumed)
 
-### API Structure (Planned)
+### API Structure (Implemented - Modular Routes)
 
-The application currently has minimal API routes but is structured for:
-- **Game State Endpoints**: Real-time jackpot values, player lists, game status
-- **Betting Endpoints**: Place bets, view bet history
-- **User Endpoints**: Authentication, profile management
-- **Chat Endpoints**: Live chat message sending/receiving (likely WebSocket-based)
+The API is organized into 14 modular route files in `server/routes/`:
 
-### Real-Time Communication (Planned)
+**Core Game Routes:**
+- `auth.routes.ts` - Wallet authentication (nonce, verify, session, logout)
+- `users.routes.ts` - User profile management
+- `rounds.routes.ts` - Game round state endpoints
+- `bets.routes.ts` - Bet placement with real-time broadcasting
+- `stats.routes.ts` - Leaderboards, daily winners, statistics
+- `chat.routes.ts` - Chat message history
 
-While not yet implemented, the architecture suggests:
-- **WebSocket Integration**: For live game updates, chat messages, and player actions
-- **Server-Sent Events**: Alternative for one-way real-time updates
-- **HTTP Server**: Foundation exists via `createServer(app)` for WebSocket attachment
+**Airdrop & Markets:**
+- `airdrop.routes.ts` - Airdrop pool, distributions, tips
+- `markets.routes.ts` - Sports betting market CRUD
+- `sports.routes.ts` - TheSportsDB integration
+- `visibility.routes.ts` - Sports/leagues visibility control
+
+**Admin & Media:**
+- `admin.routes.ts` - Admin bootstrap and management
+- `media.routes.ts` - Custom media, image caching with Cache-Control headers
+
+**Infrastructure:**
+- `index.ts` - Route orchestrator and WebSocket setup
+- `types.ts` - RouteDeps interface for dependency injection
+
+**Input Validation:**
+All endpoints use Zod schemas for comprehensive input validation including:
+- Wallet address format validation
+- UUID validation for route parameters
+- String length limits
+- Numeric range validation
+- URL format validation
+
+### Real-Time Communication (Implemented)
+
+**WebSocket Integration** (`server/realtime.ts`):
+- Live game round updates via `broadcastRoundUpdate`
+- Chat message broadcasting via `broadcastChat`
+- Session-based authentication for WebSocket connections
+- Automatic reconnection handling on client
 
 ### Code Organization
 
 **Monorepo Structure**
 - `/client`: Frontend React application
-- `/server`: Backend Express application  
+- `/server`: Backend Express application
+  - `/routes`: Modular route files (14 files)
+  - `realtime.ts`: WebSocket handling
+  - `gameService.ts`: Round lifecycle management
+  - `storage.ts`: Database abstraction layer
 - `/shared`: Code shared between client and server (schemas, types)
 - **Path Aliases**: `@/` (client), `@shared/` (shared), `@assets/` (static assets)
 
@@ -179,3 +213,7 @@ While not yet implemented, the architecture suggests:
 - `/components/ui`: Reusable shadcn/ui components
 - `/components/examples`: Component usage demonstrations
 - Main game components in `/components` root
+
+**Audit Reports** (`.local/state/audit/`):
+- `comprehensive-audit-report.md` - Security and performance audit
+- `unused-code-report.md` - Unused code analysis
