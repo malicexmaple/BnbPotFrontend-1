@@ -17,7 +17,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
-import { NetworkBackground } from "@/components/NetworkBackground";
 import { PredictionMarketCard, type PredictionMarket } from "@/components/PredictionMarketCard";
 import { PredictionMarketPane } from "@/components/PredictionMarketPane";
 import { BetSlipDialog } from "@/components/BetSlipDialog";
@@ -404,11 +403,7 @@ export default function PredictionMarkets() {
         footer={<GameFooter />}
       >
         <div className="flex-1 flex flex-col relative overflow-hidden">
-          <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-            <NetworkBackground color="gold" className="w-full h-full opacity-20" sizeMultiplier={1.25} />
-          </div>
-          
-          <div className="p-6 space-y-4 relative z-10 flex-shrink-0">
+          <div className="p-6 space-y-4 flex-shrink-0">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${predictionMarketsLogo})`} as React.CSSProperties}>
@@ -446,7 +441,7 @@ export default function PredictionMarkets() {
             </div>
           </div>
 
-          <ScrollArea className="flex-1 px-6 relative z-10">
+          <ScrollArea className="flex-1 px-6">
             <div className="flex gap-6">
               <div className="flex-shrink-0" style={{width: '200px'}}>
                 <div className="space-y-1 sticky top-0">

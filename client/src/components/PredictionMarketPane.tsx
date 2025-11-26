@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NetworkBackground } from "@/components/NetworkBackground";
 import { getLeagueBadge } from "@/lib/leagueUtils";
 import type { PredictionMarket } from "@/components/PredictionMarketCard";
 
@@ -154,7 +153,7 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
             onClick={() => onPlaceBet(market.id, 'A', oddsA)}
             disabled={isDisabled}
             className={cn(
-              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 relative overflow-hidden border-2 p-2",
+              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 border-2 p-2",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
             style={{ 
@@ -164,11 +163,8 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
             }}
             data-testid={`button-bet-pane-${market.id}-a`}
           >
-            <div className="absolute inset-0 opacity-40">
-              <NetworkBackground color="gold" className="w-full h-full" />
-            </div>
-            <span className="text-lg font-mono font-bold relative z-10">{formatOdds(oddsA)}</span>
-            <span className="text-[10px] opacity-80 relative z-10">
+            <span className="text-lg font-mono font-bold">{formatOdds(oddsA)}</span>
+            <span className="text-[10px] opacity-80">
               {formatPool(poolATotal)} BNB
             </span>
           </Button>
@@ -177,7 +173,7 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
             onClick={() => onPlaceBet(market.id, 'B', oddsB)}
             disabled={isDisabled}
             className={cn(
-              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 relative overflow-hidden border-2 p-2",
+              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 border-2 p-2",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
             style={{ 
@@ -187,11 +183,8 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
             }}
             data-testid={`button-bet-pane-${market.id}-b`}
           >
-            <div className="absolute inset-0 opacity-40">
-              <NetworkBackground color="gray" className="w-full h-full" />
-            </div>
-            <span className="text-lg font-mono font-bold relative z-10" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
-            <span className="text-[10px] opacity-80 relative z-10" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
+            <span className="text-lg font-mono font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
+            <span className="text-[10px] opacity-80" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
               {formatPool(poolBTotal)} BNB
             </span>
           </Button>

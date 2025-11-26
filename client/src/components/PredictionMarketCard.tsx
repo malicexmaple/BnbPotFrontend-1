@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NetworkBackground } from "@/components/NetworkBackground";
 import { getLeagueBadge } from "@/lib/leagueUtils";
 
 export interface PredictionMarket {
@@ -165,7 +164,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
             onMouseLeave={() => setHoveredOutcome(null)}
             disabled={isDisabled}
             className={cn(
-              "h-[90px] flex-col justify-center py-3 relative overflow-hidden border-2 rounded-lg",
+              "h-[90px] flex-col justify-center py-3 border-2 rounded-lg",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
             style={{ 
@@ -175,10 +174,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
             }}
             data-testid={`button-bet-${market.id}-a`}
           >
-            <div className="absolute inset-0 opacity-40">
-              <NetworkBackground color="gold" className="w-full h-full" />
-            </div>
-            <div className="flex flex-col items-center justify-center gap-1 relative z-10">
+            <div className="flex flex-col items-center justify-center gap-1">
               <span className="text-sm font-semibold truncate max-w-full">{market.teamA}</span>
               <span className="text-2xl font-mono font-bold">{formatOdds(oddsA)}</span>
               <span className="text-xs opacity-90">
@@ -193,7 +189,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
             onMouseLeave={() => setHoveredOutcome(null)}
             disabled={isDisabled}
             className={cn(
-              "h-[90px] flex-col justify-center py-3 relative overflow-hidden border-2 rounded-lg",
+              "h-[90px] flex-col justify-center py-3 border-2 rounded-lg",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
             style={{ 
@@ -203,10 +199,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
             }}
             data-testid={`button-bet-${market.id}-b`}
           >
-            <div className="absolute inset-0 opacity-40">
-              <NetworkBackground color="gray" className="w-full h-full" />
-            </div>
-            <div className="flex flex-col items-center justify-center gap-1 relative z-10">
+            <div className="flex flex-col items-center justify-center gap-1">
               <span className="text-sm font-semibold truncate max-w-full" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{market.teamB}</span>
               <span className="text-2xl font-mono font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
               <span className="text-xs opacity-90" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
