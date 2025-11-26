@@ -321,7 +321,7 @@ export default function SportsDataDemo() {
   const defaultSportId = visibleSports[0]?.id || sportsData[0]?.id;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pt-[100px]">
       <LiveBettingFeed />
       
       <div className="flex-1 overflow-auto relative">

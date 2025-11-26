@@ -68,7 +68,7 @@ export default function PredictionDataDemo() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pt-[100px]">
       <LiveBettingFeed />
       
       <div className="flex-1 overflow-auto relative">
