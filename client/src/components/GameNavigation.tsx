@@ -75,8 +75,8 @@ export default function GameNavigation({
   }, [username]);
 
   return (
-    <div className="flex w-full glass-panel border-b border-accent/30" style={{height: '100px', display: 'flex', borderRadius: 0}}>
-      {/* Left - Logo section (345px on desktop, smaller on mobile) */}
+    <div className="flex w-full border-b border-accent/30" style={{height: '100px', display: 'flex', borderRadius: 0}}>
+      {/* Left - Logo section (345px on desktop, smaller on mobile) - transparent, no glass panel */}
       <div className="hidden lg:flex items-start justify-center flex-shrink-0 w-full max-w-[345px]" style={{ height: '100px' }}>
         <div className="flex items-center justify-center" style={{height: '100px'}}>
           <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
@@ -94,8 +94,8 @@ export default function GameNavigation({
         </div>
       </div>
 
-      {/* Right - Stacked header content */}
-      <div className="flex flex-col flex-1 min-w-0">
+      {/* Right - Stacked header content with glass panel and two-tone gradient */}
+      <div className="flex flex-col flex-1 min-w-0 glass-panel" style={{borderRadius: 0}}>
         {/* Top Header - 30px (hidden on mobile) */}
         <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',
