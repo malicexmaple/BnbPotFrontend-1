@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertChatMessageSchema, insertBetSchema, insertAirdropTipSchema } from "@shared/schema";
 import { gameService } from "./gameService";
-import { generateAuthMessage, verifyWalletSignature, requireAuth, requireTermsAgreement } from "./auth";
+import { generateAuthMessage, verifyWalletSignature, requireAuth, requireTermsAgreement, requireAdminRole } from "./auth";
 import { randomBytes } from "crypto";
 import type { IncomingMessage } from "http";
 import type session from "express-session";
@@ -90,11 +90,15 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
       // Check if user exists
       const user = await storage.getUserByWalletAddress(walletAddress);
       
+      // Check if this user should be admin (first user or has admin role)
+      const isAdmin = user?.role === 'admin';
+      
       if (req.session) {
         // Create authenticated session
         req.session.walletAddress = walletAddress.toLowerCase();
         req.session.username = user?.username;
         req.session.agreedToTerms = user?.agreedToTerms || false;
+        req.session.isAdmin = isAdmin;
         
         // IMPORTANT: Clear and invalidate the used nonce (one-time use only)
         delete req.session.pendingNonce;
@@ -105,7 +109,8 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
         success: true, 
         walletAddress: walletAddress.toLowerCase(),
         username: user?.username,
-        agreedToTerms: user?.agreedToTerms || false
+        agreedToTerms: user?.agreedToTerms || false,
+        isAdmin
       });
     } catch (error) {
       console.error("Error verifying signature:", error);
@@ -122,12 +127,19 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
     }
     
     const user = await storage.getUserByWalletAddress(req.session.walletAddress);
+    const isAdmin = user?.role === 'admin';
+    
+    // Update session with current admin status
+    if (req.session) {
+      req.session.isAdmin = isAdmin;
+    }
     
     res.json({
       authenticated: true,
       walletAddress: req.session.walletAddress,
       username: user?.username,
-      agreedToTerms: user?.agreedToTerms || false
+      agreedToTerms: user?.agreedToTerms || false,
+      isAdmin
     });
   });
   
@@ -535,6 +547,154 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
         return res.status(400).json({ message: "Invalid tip data", error: error.message });
       }
       res.status(500).json({ message: "Failed to add tip" });
+    }
+  });
+
+  // ========================================
+  // ADMIN ENDPOINTS
+  // ========================================
+
+  /**
+   * Bootstrap admin - allows first authenticated user to become admin
+   * Only works if no admin exists yet
+   */
+  app.post("/api/admin/bootstrap", requireAuth, async (req, res) => {
+    try {
+      const walletAddress = req.session!.walletAddress!;
+      
+      // Check if any admin exists
+      const hasAdmin = await storage.hasAnyAdmin();
+      if (hasAdmin) {
+        return res.status(403).json({ message: "Admin already exists. Contact existing admin for access." });
+      }
+      
+      // Make the current user an admin
+      const user = await storage.setUserRole(walletAddress, 'admin');
+      if (!user) {
+        return res.status(404).json({ message: "User not found. Please sign up first." });
+      }
+      
+      // Update session
+      req.session!.isAdmin = true;
+      
+      console.log(`👑 Admin bootstrapped: ${walletAddress}`);
+      res.json({ success: true, message: "You are now an admin!", isAdmin: true });
+    } catch (error) {
+      console.error("Error bootstrapping admin:", error);
+      res.status(500).json({ message: "Failed to bootstrap admin" });
+    }
+  });
+
+  /**
+   * Get all markets (admin only - includes locked and settled)
+   */
+  app.get("/api/admin/markets", requireAuth, requireAdminRole, async (_req, res) => {
+    try {
+      const allMarkets = await storage.getAllMarkets();
+      res.json(allMarkets);
+    } catch (error) {
+      console.error("Error fetching admin markets:", error);
+      res.status(500).json({ message: "Failed to fetch markets" });
+    }
+  });
+
+  /**
+   * Get active markets (public)
+   */
+  app.get("/api/markets", async (_req, res) => {
+    try {
+      const activeMarkets = await storage.getAllActiveMarkets();
+      res.json(activeMarkets);
+    } catch (error) {
+      console.error("Error fetching markets:", error);
+      res.status(500).json({ message: "Failed to fetch markets" });
+    }
+  });
+
+  /**
+   * Get market by ID
+   */
+  app.get("/api/markets/:id", async (req, res) => {
+    try {
+      const market = await storage.getMarketById(req.params.id);
+      if (!market) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      res.json(market);
+    } catch (error) {
+      console.error("Error fetching market:", error);
+      res.status(500).json({ message: "Failed to fetch market" });
+    }
+  });
+
+  /**
+   * Lock market (admin action - close betting)
+   */
+  app.post("/api/markets/:id/lock", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const market = await storage.updateMarketStatus(req.params.id, 'locked');
+      if (!market) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      res.json({ message: "Market locked successfully", market });
+    } catch (error) {
+      console.error("Error locking market:", error);
+      res.status(500).json({ message: "Failed to lock market" });
+    }
+  });
+
+  /**
+   * Settle market with winning outcome (admin action)
+   */
+  app.post("/api/markets/:id/settle", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const { winningOutcome } = req.body;
+      
+      if (!winningOutcome || (winningOutcome !== 'A' && winningOutcome !== 'B')) {
+        return res.status(400).json({ message: "Invalid winning outcome. Must be 'A' or 'B'" });
+      }
+      
+      const market = await storage.getMarketById(req.params.id);
+      if (!market) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      
+      if (market.status === 'settled') {
+        return res.status(400).json({ message: "Market already settled" });
+      }
+      
+      // Settle the market
+      const settledMarket = await storage.settleMarket(req.params.id, winningOutcome);
+      
+      // Get all bets for this market
+      const betsOnMarket = await storage.getMarketBetsByMarketId(req.params.id);
+      
+      // Calculate pool totals
+      const totalPool = parseFloat(market.poolATotal) + parseFloat(market.poolBTotal);
+      const winningPool = winningOutcome === 'A' ? parseFloat(market.poolATotal) : parseFloat(market.poolBTotal);
+      
+      // Process payouts
+      let payoutsProcessed = 0;
+      for (const bet of betsOnMarket) {
+        if (bet.outcome === winningOutcome) {
+          // Calculate payout: (bet amount / winning pool) * total pool
+          const betAmount = parseFloat(bet.amount);
+          const payout = winningPool > 0 ? (betAmount / winningPool) * totalPool : 0;
+          await storage.updateMarketBetStatus(bet.id, 'won', payout.toString());
+          payoutsProcessed++;
+        } else {
+          await storage.updateMarketBetStatus(bet.id, 'lost', '0');
+        }
+      }
+      
+      res.json({ 
+        message: "Market settled successfully", 
+        market: settledMarket,
+        payoutsProcessed
+      });
+    } catch (error) {
+      console.error("Error settling market:", error);
+      res.status(500).json({ message: "Failed to settle market" });
     }
   });
 
