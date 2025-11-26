@@ -8,6 +8,8 @@ import PersistentHeader from "@/components/PersistentHeader";
 import Home from "@/pages/home";
 import Coinflip from "@/pages/coinflip";
 import PredictionMarkets from "@/pages/prediction-markets";
+import Admin from "@/pages/admin";
+import AdminMarkets from "@/pages/admin-markets";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +18,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/coinflip" component={Coinflip} />
       <Route path="/prediction-markets" component={PredictionMarkets} />
+      <Route path="/admin" component={Admin} />
+      <Route path="/admin/markets" component={AdminMarkets} />
       <Route component={NotFound} />
     </Switch>
   );

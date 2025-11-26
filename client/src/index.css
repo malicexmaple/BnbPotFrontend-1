@@ -796,6 +796,24 @@
   }
 }
 
+/* Infinite scrolling animation for live betting feed */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 60s linear infinite;
+}
+
+.animate-scroll-left:hover {
+  animation-play-state: paused;
+}
+
 /* ===== FIXED 1200PX LAYOUT: Forces desktop layout on all devices ===== */
 /* Viewport meta tag set to width=1200 handles all scaling automatically */
 /* Browser zooms to fit 1200px on mobile, PC always shows 1200px minimum */

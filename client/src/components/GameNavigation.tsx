@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut } from "lucide-react";
+import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import {
@@ -23,6 +23,7 @@ interface GameNavigationProps {
   walletAddress?: string;
   username?: string;
   onOpenProfile?: () => void;
+  isAdmin?: boolean;
 }
 
 export default function GameNavigation({ 
@@ -32,7 +33,8 @@ export default function GameNavigation({
   isConnecting = false,
   walletAddress,
   username,
-  onOpenProfile
+  onOpenProfile,
+  isAdmin = false
 }: GameNavigationProps) {
   const [location] = useLocation();
   
@@ -266,6 +268,15 @@ export default function GameNavigation({
                     <Receipt className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
                     <span>Transactions</span>
                   </DropdownMenuItem>
+                  
+                  {isAdmin && (
+                    <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-admin">
+                      <Link href="/admin">
+                        <Shield className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                        <span>Admin</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   
                   <DropdownMenuItem 
                     className="px-3 py-2.5 cursor-pointer" 

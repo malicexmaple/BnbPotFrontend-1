@@ -2,9 +2,11 @@ import { useState } from "react";
 import GameNavigation from "@/components/GameNavigation";
 import ProfileModal from "@/components/ProfileModal";
 import { useGameState } from "@/hooks/useGameState";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function PersistentHeader() {
   const { address, isConnecting, connect, disconnect, username } = useGameState();
+  const { isAdmin } = useAuth();
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   return (
@@ -17,7 +19,8 @@ export default function PersistentHeader() {
           isConnecting={isConnecting} 
           walletAddress={address || undefined} 
           username={username || undefined} 
-          onOpenProfile={() => setShowProfileModal(true)} 
+          onOpenProfile={() => setShowProfileModal(true)}
+          isAdmin={isAdmin}
         />
       </div>
 
