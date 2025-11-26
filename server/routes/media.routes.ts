@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import type { RouteDeps } from "./types";
 import { z } from "zod";
+import * as path from "path";
+import * as fs from "fs";
+import { getCacheFilePath, getOrCacheImage } from "../imageCacheService";
 
 const entityTypeEnum = z.enum(['team', 'player', 'league']);
 
@@ -127,6 +130,112 @@ export function registerMediaRoutes(app: Express, deps: RouteDeps): void {
     } catch (error) {
       console.error("Error deleting custom media:", error);
       res.status(500).json({ message: "Failed to delete custom media" });
+    }
+  });
+
+  /**
+   * Serve cached images with proper browser caching headers
+   * Caches images for 7 days with immutable flag for CDN optimization
+   */
+  app.get("/api/images/cached/:filename", async (req, res) => {
+    try {
+      const { filename } = req.params;
+      
+      // Validate filename to prevent path traversal
+      if (!filename || filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
+        return res.status(400).json({ message: "Invalid filename" });
+      }
+      
+      const filePath = getCacheFilePath(filename);
+      
+      if (!filePath) {
+        return res.status(404).json({ message: "Image not found" });
+      }
+      
+      // Determine content type from file extension
+      const ext = path.extname(filename).toLowerCase();
+      const contentTypes: Record<string, string> = {
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.webp': 'image/webp',
+        '.svg': 'image/svg+xml',
+        '.img': 'application/octet-stream',
+      };
+      
+      const contentType = contentTypes[ext] || 'application/octet-stream';
+      
+      // Set aggressive browser caching headers
+      // Cache for 7 days, immutable for CDN optimization
+      res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+      res.setHeader('ETag', `"${filename}"`);
+      res.setHeader('Content-Type', contentType);
+      
+      // Send the file
+      res.sendFile(filePath);
+    } catch (error) {
+      console.error("Error serving cached image:", error);
+      res.status(500).json({ message: "Failed to serve image" });
+    }
+  });
+
+  /**
+   * Proxy endpoint that caches external images locally and serves them with caching headers
+   * This avoids CORS issues and adds browser caching for external images
+   */
+  app.get("/api/images/proxy", async (req, res) => {
+    try {
+      const { url, category } = req.query;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ message: "URL parameter required" });
+      }
+      
+      // Validate URL format
+      try {
+        new URL(url);
+      } catch {
+        return res.status(400).json({ message: "Invalid URL format" });
+      }
+      
+      // Get or cache the image
+      const cachedPath = await getOrCacheImage(url, typeof category === 'string' ? category : 'proxy');
+      
+      if (!cachedPath) {
+        return res.status(502).json({ message: "Failed to fetch and cache image" });
+      }
+      
+      const filePath = getCacheFilePath(cachedPath);
+      
+      if (!filePath) {
+        return res.status(404).json({ message: "Cached image not found" });
+      }
+      
+      // Determine content type from file extension
+      const ext = path.extname(cachedPath).toLowerCase();
+      const contentTypes: Record<string, string> = {
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.webp': 'image/webp',
+        '.svg': 'image/svg+xml',
+        '.img': 'application/octet-stream',
+      };
+      
+      const contentType = contentTypes[ext] || 'application/octet-stream';
+      
+      // Set aggressive browser caching headers
+      res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+      res.setHeader('ETag', `"${cachedPath}"`);
+      res.setHeader('Content-Type', contentType);
+      
+      // Send the file
+      res.sendFile(filePath);
+    } catch (error) {
+      console.error("Error proxying image:", error);
+      res.status(500).json({ message: "Failed to proxy image" });
     }
   });
 }
