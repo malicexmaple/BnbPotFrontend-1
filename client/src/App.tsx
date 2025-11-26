@@ -49,9 +49,27 @@ const PRELOAD_IMAGES = [
   airdropPackage,
 ];
 
+const MEDIA_PRELOAD = [
+  '/media/3dgifmaker85766_1763561140520.gif',
+  '/media/bnbpotlogonew_1763432221839.png',
+  '/media/jackpotnew_1763477420573.png',
+  '/media/coinflipnew_1763488010364.png',
+  '/media/predictionmarketsnew_1763488010364.png',
+  '/media/3dgifmaker21542_1763401668048.gif',
+  '/media/3dgifmaker22359_1763413463889.gif',
+  '/media/3dgifmaker84959_1763403008581.gif',
+  '/media/3dgifmaker81317_1763413607076.gif',
+  '/media/MOSHED-2025-11-18-4-12-49_1763403537895.gif',
+  '/media/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png',
+  '/media/signupnew_1763410821936.png',
+  '/media/jackpotlegends_1763742593143.png',
+  '/media/airdropnew_1763414250628.png',
+  '/media/airdrop-pachage_1763543740528.png',
+];
+
 function ImagePreloader() {
   useEffect(() => {
-    PRELOAD_IMAGES.forEach((src) => {
+    [...PRELOAD_IMAGES, ...MEDIA_PRELOAD].forEach((src) => {
       const img = new Image();
       img.src = src;
     });
