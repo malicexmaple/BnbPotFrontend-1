@@ -2,17 +2,41 @@ import type { Express } from "express";
 import type { RouteDeps } from "./types";
 import { generateAuthMessage } from "../auth";
 import { randomBytes } from "crypto";
+import { z } from "zod";
+
+const walletAddressSchema = z.string()
+  .min(1, "Wallet address is required")
+  .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address format");
+
+const nonceRequestSchema = z.object({
+  walletAddress: walletAddressSchema,
+});
+
+const verifyRequestSchema = z.object({
+  walletAddress: walletAddressSchema,
+  signature: z.string()
+    .min(1, "Signature is required")
+    .max(500, "Signature too long")
+    .regex(/^0x[a-fA-F0-9]+$/, "Invalid signature format"),
+  message: z.string()
+    .min(1, "Message is required")
+    .max(1000, "Message too long"),
+});
 
 export function registerAuthRoutes(app: Express, deps: RouteDeps): void {
   const { storage, rateLimiters } = deps;
 
   app.post("/api/auth/nonce", rateLimiters.auth, async (req, res) => {
     try {
-      const { walletAddress } = req.body;
-
-      if (!walletAddress) {
-        return res.status(400).json({ message: "Wallet address required" });
+      const parseResult = nonceRequestSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request", 
+          errors: parseResult.error.flatten().fieldErrors 
+        });
       }
+
+      const { walletAddress } = parseResult.data;
 
       const nonce = randomBytes(32).toString('hex');
       const message = generateAuthMessage(walletAddress, nonce);
@@ -31,11 +55,15 @@ export function registerAuthRoutes(app: Express, deps: RouteDeps): void {
 
   app.post("/api/auth/verify", rateLimiters.auth, async (req, res) => {
     try {
-      const { walletAddress, signature, message } = req.body;
-
-      if (!walletAddress || !signature || !message) {
-        return res.status(400).json({ message: "Wallet address, signature, and message required" });
+      const parseResult = verifyRequestSchema.safeParse(req.body);
+      if (!parseResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request", 
+          errors: parseResult.error.flatten().fieldErrors 
+        });
       }
+
+      const { walletAddress, signature, message } = parseResult.data;
 
       const pendingNonce = req.session?.pendingNonce;
       const pendingWallet = req.session?.pendingWallet;

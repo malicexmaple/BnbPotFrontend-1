@@ -1,6 +1,18 @@
 import type { Express } from "express";
 import type { RouteDeps } from "./types";
 import { insertAirdropTipSchema } from "@shared/schema";
+import { z } from "zod";
+
+const historyQuerySchema = z.object({
+  limit: z.string()
+    .optional()
+    .transform((val) => {
+      if (!val) return 10;
+      const num = parseInt(val, 10);
+      return isNaN(num) ? 10 : num;
+    })
+    .pipe(z.number().min(1, "Limit must be at least 1").max(100, "Limit cannot exceed 100")),
+});
 
 export function registerAirdropRoutes(app: Express, deps: RouteDeps): void {
   const { storage, requireAuth, requireTermsAgreement } = deps;
@@ -20,8 +32,15 @@ export function registerAirdropRoutes(app: Express, deps: RouteDeps): void {
 
   app.get("/api/airdrop/history", async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const distributions = await storage.getAirdropDistributions(limit);
+      const queryResult = historyQuerySchema.safeParse(req.query);
+      if (!queryResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid query parameters", 
+          errors: queryResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const distributions = await storage.getAirdropDistributions(queryResult.data.limit);
       res.json(distributions);
     } catch (error) {
       console.error("Error fetching airdrop history:", error);

@@ -1,5 +1,18 @@
 import type { Express } from "express";
 import type { RouteDeps } from "./types";
+import { z } from "zod";
+
+const uuidParamSchema = z.object({
+  id: z.string()
+    .min(1, "ID is required")
+    .uuid("Invalid market ID format"),
+});
+
+const settleMarketSchema = z.object({
+  winningOutcome: z.enum(['A', 'B'], { 
+    errorMap: () => ({ message: "Invalid winning outcome. Must be 'A' or 'B'" })
+  }),
+});
 
 export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
   const { storage, requireAuth, requireAdminRole } = deps;
@@ -16,7 +29,15 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
 
   app.get("/api/markets/:id", async (req, res) => {
     try {
-      const market = await storage.getMarketById(req.params.id);
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid market ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const market = await storage.getMarketById(paramResult.data.id);
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
@@ -29,7 +50,15 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
 
   app.post("/api/markets/:id/lock", requireAuth, requireAdminRole, async (req, res) => {
     try {
-      const market = await storage.updateMarketStatus(req.params.id, 'locked');
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid market ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const market = await storage.updateMarketStatus(paramResult.data.id, 'locked');
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
@@ -42,13 +71,25 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
 
   app.post("/api/markets/:id/settle", requireAuth, requireAdminRole, async (req, res) => {
     try {
-      const { winningOutcome } = req.body;
-
-      if (!winningOutcome || (winningOutcome !== 'A' && winningOutcome !== 'B')) {
-        return res.status(400).json({ message: "Invalid winning outcome. Must be 'A' or 'B'" });
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid market ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
       }
 
-      const market = await storage.getMarketById(req.params.id);
+      const bodyResult = settleMarketSchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request body", 
+          errors: bodyResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { winningOutcome } = bodyResult.data;
+
+      const market = await storage.getMarketById(paramResult.data.id);
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
@@ -57,9 +98,9 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         return res.status(400).json({ message: "Market already settled" });
       }
 
-      const settledMarket = await storage.settleMarket(req.params.id, winningOutcome);
+      const settledMarket = await storage.settleMarket(paramResult.data.id, winningOutcome);
 
-      const betsOnMarket = await storage.getMarketBetsByMarketId(req.params.id);
+      const betsOnMarket = await storage.getMarketBetsByMarketId(paramResult.data.id);
 
       const totalPool = parseFloat(market.poolATotal) + parseFloat(market.poolBTotal);
       const winningPool = winningOutcome === 'A' ? parseFloat(market.poolATotal) : parseFloat(market.poolBTotal);

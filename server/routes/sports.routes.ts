@@ -1,5 +1,59 @@
 import type { Express } from "express";
 import type { RouteDeps } from "./types";
+import { z } from "zod";
+
+const idParamSchema = z.object({
+  leagueId: z.string()
+    .min(1, "League ID is required")
+    .max(50, "League ID too long")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Invalid league ID format"),
+});
+
+const eventIdParamSchema = z.object({
+  eventId: z.string()
+    .min(1, "Event ID is required")
+    .max(50, "Event ID too long")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Invalid event ID format"),
+});
+
+const teamIdParamSchema = z.object({
+  teamId: z.string()
+    .min(1, "Team ID is required")
+    .max(50, "Team ID too long")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Invalid team ID format"),
+});
+
+const searchQueryParamSchema = z.object({
+  query: z.string()
+    .min(1, "Search query is required")
+    .max(100, "Search query too long")
+    .trim(),
+});
+
+const nameParamSchema = z.object({
+  leagueName: z.string()
+    .min(1, "League name is required")
+    .max(200, "League name too long")
+    .trim(),
+});
+
+const teamNameParamSchema = z.object({
+  teamName: z.string()
+    .min(1, "Team name is required")
+    .max(200, "Team name too long")
+    .trim(),
+});
+
+const dateParamSchema = z.object({
+  date: z.string()
+    .min(1, "Date is required")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Use YYYY-MM-DD"),
+});
+
+const eventsByDateQuerySchema = z.object({
+  sport: z.string().max(100).optional(),
+  league: z.string().max(100).optional(),
+});
 
 export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Promise<void> {
   const { theSportsDB } = await import('../thesportsdb');
@@ -16,7 +70,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/events/upcoming/:leagueId", async (req, res) => {
     try {
-      const events = await theSportsDB.getUpcomingEventsByLeague(req.params.leagueId);
+      const paramResult = idParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid league ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const events = await theSportsDB.getUpcomingEventsByLeague(paramResult.data.leagueId);
       res.json(events);
     } catch (error) {
       console.error("Error fetching upcoming events:", error);
@@ -26,7 +88,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/events/past/:leagueId", async (req, res) => {
     try {
-      const events = await theSportsDB.getPastEventsByLeague(req.params.leagueId);
+      const paramResult = idParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid league ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const events = await theSportsDB.getPastEventsByLeague(paramResult.data.leagueId);
       res.json(events);
     } catch (error) {
       console.error("Error fetching past events:", error);
@@ -36,11 +106,26 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/events/date/:date", async (req, res) => {
     try {
-      const { sport, league } = req.query;
+      const paramResult = dateParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid date parameter", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const queryResult = eventsByDateQuerySchema.safeParse(req.query);
+      if (!queryResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid query parameters", 
+          errors: queryResult.error.flatten().fieldErrors 
+        });
+      }
+
       const events = await theSportsDB.getEventsByDate(
-        req.params.date,
-        sport as string | undefined,
-        league as string | undefined
+        paramResult.data.date,
+        queryResult.data.sport,
+        queryResult.data.league
       );
       res.json(events);
     } catch (error) {
@@ -51,7 +136,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/events/:eventId", async (req, res) => {
     try {
-      const event = await theSportsDB.getEventDetails(req.params.eventId);
+      const paramResult = eventIdParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid event ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const event = await theSportsDB.getEventDetails(paramResult.data.eventId);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
@@ -64,7 +157,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/teams/league/:leagueName", async (req, res) => {
     try {
-      const teams = await theSportsDB.getTeamsByLeague(req.params.leagueName);
+      const paramResult = nameParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid league name", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const teams = await theSportsDB.getTeamsByLeague(paramResult.data.leagueName);
       res.json(teams);
     } catch (error) {
       console.error("Error fetching teams:", error);
@@ -74,11 +175,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/teams/search/:query", async (req, res) => {
     try {
-      const query = req.params.query;
-      if (!query) {
-        return res.status(400).json({ message: "Search query required" });
+      const paramResult = searchQueryParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid search query", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
       }
-      const teams = await theSportsDB.searchTeams(query);
+
+      const teams = await theSportsDB.searchTeams(paramResult.data.query);
       res.json(teams);
     } catch (error) {
       console.error("Error searching teams:", error);
@@ -88,7 +193,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/teams/:teamId", async (req, res) => {
     try {
-      const team = await theSportsDB.getTeamDetails(req.params.teamId);
+      const paramResult = teamIdParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid team ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const team = await theSportsDB.getTeamDetails(paramResult.data.teamId);
       if (!team) {
         return res.status(404).json({ message: "Team not found" });
       }
@@ -101,7 +214,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/teams/badge/:teamName", async (req, res) => {
     try {
-      const badge = await theSportsDB.getTeamBadgeByName(req.params.teamName);
+      const paramResult = teamNameParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid team name", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const badge = await theSportsDB.getTeamBadgeByName(paramResult.data.teamName);
       res.json({ badge });
     } catch (error) {
       console.error("Error fetching team badge:", error);
@@ -111,7 +232,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/teams/from-events/:leagueId", async (req, res) => {
     try {
-      const teams = await theSportsDB.getTeamsFromEvents(req.params.leagueId);
+      const paramResult = idParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid league ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const teams = await theSportsDB.getTeamsFromEvents(paramResult.data.leagueId);
       res.json(teams);
     } catch (error) {
       console.error("Error fetching teams from events:", error);
@@ -121,11 +250,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/leagues/search/:query", async (req, res) => {
     try {
-      const query = req.params.query;
-      if (!query) {
-        return res.status(400).json({ message: "Search query required" });
+      const paramResult = searchQueryParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid search query", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
       }
-      const leagues = await theSportsDB.searchLeagues(query);
+
+      const leagues = await theSportsDB.searchLeagues(paramResult.data.query);
       res.json(leagues);
     } catch (error) {
       console.error("Error searching leagues:", error);
@@ -135,7 +268,15 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
 
   app.get("/api/sports/leagues/:leagueId", async (req, res) => {
     try {
-      const league = await theSportsDB.getLeagueDetails(req.params.leagueId);
+      const paramResult = idParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid league ID", 
+          errors: paramResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const league = await theSportsDB.getLeagueDetails(paramResult.data.leagueId);
       if (!league) {
         return res.status(404).json({ message: "League not found" });
       }
