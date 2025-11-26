@@ -10,6 +10,8 @@ import Coinflip from "@/pages/coinflip";
 import PredictionMarkets from "@/pages/prediction-markets";
 import Admin from "@/pages/admin";
 import AdminMarkets from "@/pages/admin-markets";
+import SportsDataDemo from "@/pages/sports-data-demo";
+import PredictionDataDemo from "@/pages/prediction-data-demo";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +22,8 @@ function Router() {
       <Route path="/prediction-markets" component={PredictionMarkets} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/markets" component={AdminMarkets} />
+      <Route path="/admin/sports-data" component={SportsDataDemo} />
+      <Route path="/admin/prediction-data" component={PredictionDataDemo} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, ArrowLeft } from "lucide-react";
+import { TrendingUp, ArrowLeft, Database, Activity } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
@@ -75,7 +75,7 @@ export default function AdminPanel() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="border-accent/20 hover-elevate cursor-pointer" onClick={() => setLocation('/admin/markets')}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-foreground">
@@ -98,6 +98,58 @@ export default function AdminPanel() {
                 >
                   <TrendingUp className="h-4 w-4 mr-2" />
                   Open Markets & Settlements
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-accent/20 hover-elevate cursor-pointer" onClick={() => setLocation('/admin/sports-data')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Database className="h-5 w-5 text-primary" />
+                  Sports Database
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Browse TheSportsDB data, team logos, upcoming events and leagues
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/admin/sports-data');
+                  }}
+                  data-testid="button-sports-data"
+                >
+                  <Database className="h-4 w-4 mr-2" />
+                  Open Sports Database
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-accent/20 hover-elevate cursor-pointer" onClick={() => setLocation('/admin/prediction-data')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Activity className="h-5 w-5 text-primary" />
+                  Prediction Markets
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Configure non-sports prediction market categories and events
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/admin/prediction-data');
+                  }}
+                  data-testid="button-prediction-data"
+                >
+                  <Activity className="h-4 w-4 mr-2" />
+                  Open Prediction Markets
                 </Button>
               </CardContent>
             </Card>
