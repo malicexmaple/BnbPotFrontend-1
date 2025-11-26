@@ -145,24 +145,29 @@ export default function AdminPanel() {
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
           <NetworkBackground color="gold" className="w-full h-full opacity-30" sizeMultiplier={1.25} />
         </div>
-        <div className="container mx-auto p-6 max-w-screen-xl relative z-10">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                Admin <span className="text-primary">Panel</span>
-              </h1>
-              <p className="text-muted-foreground">Manage your platform operations and integrations</p>
+        
+        <div className="glass-panel px-6 py-4 border-b border-accent/30" style={{borderRadius: 0}}>
+          <div className="container mx-auto max-w-screen-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2">
+                  Admin <span className="text-primary">Panel</span>
+                </h1>
+                <p className="text-muted-foreground">Manage your platform operations and integrations</p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setLocation('/')}
+                data-testid="button-back-home"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setLocation('/')}
-              data-testid="button-back-home"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Button>
           </div>
+        </div>
 
+        <div className="container mx-auto p-6 max-w-screen-xl relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="border-accent/20 hover-elevate cursor-pointer" onClick={() => setLocation('/admin/markets')}>
               <CardHeader>

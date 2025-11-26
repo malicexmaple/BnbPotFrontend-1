@@ -329,8 +329,8 @@ export default function SportsDataDemo() {
           <NetworkBackground color="gold" className="w-full h-full opacity-30" sizeMultiplier={1.25} />
         </div>
         
-        <div className="px-4 py-4 max-w-full relative z-10">
-          <div className="space-y-4">
+        <div className="glass-panel px-4 py-4 border-b border-accent/30" style={{borderRadius: 0}}>
+          <div className="max-w-full relative z-10">
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div className="flex-1 min-w-0">
                 <h1 className="text-3xl font-bold text-foreground mb-1">
@@ -361,6 +361,11 @@ export default function SportsDataDemo() {
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="px-4 py-4 max-w-full relative z-10">
+          <div className="space-y-4">
 
             <Collapsible open={settingsOpen} onOpenChange={setSettingsOpen}>
               <CollapsibleContent>

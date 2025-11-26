@@ -244,8 +244,9 @@ export default function AdminMarkets() {
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <NetworkBackground color="gold" className="w-full h-full opacity-30" sizeMultiplier={1.25} />
       </div>
-      <div className="container mx-auto p-6 max-w-screen-xl relative z-10">
-        <div className="mb-4">
+      
+      <div className="glass-panel px-6 py-4 border-b border-accent/30" style={{borderRadius: 0}}>
+        <div className="container mx-auto max-w-screen-xl">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -303,7 +304,9 @@ export default function AdminMarkets() {
             ))}
           </div>
         </div>
+      </div>
 
+      <div className="container mx-auto p-6 max-w-screen-xl relative z-10">
         {marketsLoading ? (
           <div className="space-y-2">
             <Skeleton className="h-20 bg-card" />

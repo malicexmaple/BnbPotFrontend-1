@@ -76,8 +76,8 @@ export default function PredictionDataDemo() {
           <NetworkBackground color="gold" className="w-full h-full opacity-30" sizeMultiplier={1.25} />
         </div>
         
-        <div className="container mx-auto p-6 max-w-7xl relative z-10">
-          <div className="space-y-6">
+        <div className="glass-panel px-6 py-4 border-b border-accent/30" style={{borderRadius: 0}}>
+          <div className="container mx-auto max-w-7xl">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h1 className="text-4xl font-bold text-foreground mb-2">
@@ -97,7 +97,11 @@ export default function PredictionDataDemo() {
                 Admin Panel
               </Button>
             </div>
+          </div>
+        </div>
 
+        <div className="container mx-auto p-6 max-w-7xl relative z-10">
+          <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
               {predictionCategories.map((category) => (
                 <Card 

@@ -69,7 +69,7 @@ export function LiveBettingFeed() {
 
   if (bets.length === 0) {
     return (
-      <div className="w-full bg-gradient-to-r from-background via-card to-background border-b border-accent py-3 overflow-hidden">
+      <div className="w-full glass-panel border-b border-accent/50 py-3 overflow-hidden" style={{borderRadius: 0}}>
         <div className="flex items-center justify-center gap-2 text-muted-foreground">
           <TrendingUp className="h-4 w-4" />
           <span className="text-sm font-medium">Waiting for winning bets...</span>
@@ -92,9 +92,9 @@ export function LiveBettingFeed() {
   };
 
   return (
-    <div className="w-full bg-gradient-to-r from-background via-card to-background border-b border-accent py-3 overflow-hidden relative">
-      <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+    <div className="w-full glass-panel border-b border-accent/50 py-3 overflow-hidden relative" style={{borderRadius: 0}}>
+      <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-card/80 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-card/80 to-transparent z-10 pointer-events-none" />
       
       <div className="flex gap-6 animate-scroll-left whitespace-nowrap">
         {duplicatedBets.map((bet, index) => (
