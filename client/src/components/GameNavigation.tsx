@@ -95,7 +95,12 @@ export default function GameNavigation({
       </div>
 
       {/* Right - Stacked header content with glass panel and two-tone gradient */}
-      <div className="flex flex-col flex-1 min-w-0 glass-panel" style={{borderRadius: 0}}>
+      <div className="flex flex-col flex-1 min-w-0" style={{
+        borderRadius: 0,
+        background: 'linear-gradient(to bottom, rgba(35, 35, 40, 0.95) 0%, rgba(18, 18, 22, 0.98) 100%)',
+        backdropFilter: 'blur(12px)',
+        borderLeft: '1px solid rgba(255, 255, 255, 0.05)'
+      }}>
         {/* Top Header - 30px (hidden on mobile) */}
         <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4 border-b border-border/20" style={{
           height: '30px',
