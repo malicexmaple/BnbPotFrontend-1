@@ -9,8 +9,11 @@ import {
   type AirdropDistribution, type InsertAirdropDistribution,
   type AirdropRecipient, type InsertAirdropRecipient,
   type AirdropTip, type InsertAirdropTip,
+  type Market, type InsertMarket,
+  type MarketBet, type InsertMarketBet,
   users, chatMessages, rounds, bets, userStats, dailyStats,
-  airdropPool, airdropDistributions, airdropRecipients, airdropTips
+  airdropPool, airdropDistributions, airdropRecipients, airdropTips,
+  markets, marketBets
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -23,6 +26,8 @@ export interface IStorage {
   getUserByWalletAddress(walletAddress: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   createOrUpdateUserByWallet(walletAddress: string, username: string, email?: string): Promise<User>;
+  setUserRole(walletAddress: string, role: string): Promise<User | undefined>;
+  hasAnyAdmin(): Promise<boolean>;
   
   // Chat methods
   getChatMessages(limit?: number): Promise<ChatMessage[]>;
@@ -66,6 +71,19 @@ export interface IStorage {
   get24hBetVolume(userAddress: string, cutoffTime: Date): Promise<string>;
   getAllUsers24hBets(cutoffTime: Date): Promise<Array<{userAddress: string; betVolume: string}>>;
   distributeAirdropTransaction(): Promise<void>;
+  
+  // Market methods (admin)
+  getAllMarkets(): Promise<Market[]>;
+  getAllActiveMarkets(): Promise<Market[]>;
+  getMarketById(id: string): Promise<Market | undefined>;
+  createMarket(market: InsertMarket): Promise<Market>;
+  updateMarketStatus(id: string, status: string): Promise<Market | undefined>;
+  settleMarket(id: string, winningOutcome: string): Promise<Market | undefined>;
+  
+  // Market bet methods
+  getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]>;
+  createMarketBet(bet: InsertMarketBet): Promise<MarketBet>;
+  updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined>;
 }
 
 export class DbStorage implements IStorage {
@@ -425,6 +443,83 @@ export class DbStorage implements IStorage {
       .where(sql`${bets.timestamp} >= ${cutoffTime}`)
       .groupBy(bets.userAddress);
     return result;
+  }
+
+  // Admin methods
+  async setUserRole(walletAddress: string, role: string): Promise<User | undefined> {
+    const result = await db.update(users)
+      .set({ role })
+      .where(eq(users.walletAddress, walletAddress))
+      .returning();
+    return result[0];
+  }
+
+  async hasAnyAdmin(): Promise<boolean> {
+    const result = await db.select().from(users).where(eq(users.role, 'admin')).limit(1);
+    return result.length > 0;
+  }
+
+  // Market methods
+  async getAllMarkets(): Promise<Market[]> {
+    return await db.select().from(markets).orderBy(desc(markets.createdAt));
+  }
+
+  async getAllActiveMarkets(): Promise<Market[]> {
+    return await db.select().from(markets)
+      .where(eq(markets.status, 'active'))
+      .orderBy(desc(markets.gameTime));
+  }
+
+  async getMarketById(id: string): Promise<Market | undefined> {
+    const result = await db.select().from(markets).where(eq(markets.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createMarket(market: InsertMarket): Promise<Market> {
+    const result = await db.insert(markets).values(market).returning();
+    return result[0];
+  }
+
+  async updateMarketStatus(id: string, status: string): Promise<Market | undefined> {
+    const result = await db.update(markets)
+      .set({ status })
+      .where(eq(markets.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async settleMarket(id: string, winningOutcome: string): Promise<Market | undefined> {
+    const result = await db.update(markets)
+      .set({ 
+        status: 'settled',
+        winningOutcome,
+        settledAt: new Date()
+      })
+      .where(eq(markets.id, id))
+      .returning();
+    return result[0];
+  }
+
+  // Market bet methods
+  async getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]> {
+    return await db.select().from(marketBets).where(eq(marketBets.marketId, marketId));
+  }
+
+  async createMarketBet(bet: InsertMarketBet): Promise<MarketBet> {
+    const result = await db.insert(marketBets).values(bet).returning();
+    return result[0];
+  }
+
+  async updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined> {
+    const updateData: Partial<MarketBet> = { status, settledAt: new Date() };
+    if (actualPayout !== undefined) {
+      updateData.actualPayout = actualPayout;
+    }
+    const result = await db.update(marketBets)
+      .set(updateData)
+      .where(eq(marketBets.id, id))
+      .returning();
+    return result[0];
   }
 }
 

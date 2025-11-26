@@ -59,12 +59,26 @@ export function requireTermsAgreement(req: Request, res: Response, next: NextFun
   next();
 }
 
+/**
+ * Middleware to ensure authenticated user has admin role
+ * Must be used after requireAuth
+ */
+export function requireAdminRole(req: Request, res: Response, next: NextFunction) {
+  if (!req.session.isAdmin) {
+    return res.status(403).json({ 
+      message: "Admin access required. Only administrators can perform this action." 
+    });
+  }
+  next();
+}
+
 // Extend Express session type to include our custom properties
 declare module "express-session" {
   interface SessionData {
     walletAddress?: string;
     username?: string;
     agreedToTerms?: boolean;
+    isAdmin?: boolean;
     pendingNonce?: string;
     pendingWallet?: string;
   }
