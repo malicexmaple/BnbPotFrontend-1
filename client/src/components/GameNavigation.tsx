@@ -94,18 +94,16 @@ export default function GameNavigation({
         </div>
       </div>
 
-      {/* Right - Stacked header content with glass panel and two-tone gradient */}
+      {/* Right - Stacked header content with two-tone glass effect */}
       <div className="flex flex-col flex-1 min-w-0" style={{
         borderRadius: 0,
-        background: 'linear-gradient(to bottom, rgba(35, 35, 40, 0.95) 0%, rgba(18, 18, 22, 0.98) 100%)',
-        backdropFilter: 'blur(12px)',
-        borderLeft: '1px solid rgba(255, 255, 255, 0.05)'
+        borderLeft: '1px solid rgba(255, 255, 255, 0.03)'
       }}>
-        {/* Top Header - 30px (hidden on mobile) */}
-        <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4 border-b border-border/20" style={{
+        {/* Top Header - 30px (hidden on mobile) - DARKER glass tier */}
+        <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4 border-b border-white/5" style={{
           height: '30px',
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
-          backdropFilter: 'blur(4px)'
+          background: 'rgba(12, 12, 14, 0.95)',
+          backdropFilter: 'blur(12px)'
         }}>
           <div className="flex flex-nowrap items-center gap-3">
             {/* Social Icons */}
@@ -138,11 +136,11 @@ export default function GameNavigation({
           </div>
         </nav>
 
-        {/* Bottom Header - 70px on desktop, 100px on mobile */}
+        {/* Bottom Header - 70px on desktop, 100px on mobile - LIGHTER glass tier */}
         <nav className="flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
           height: '70px',
-          background: 'linear-gradient(135deg, rgba(20, 20, 20, 0.3), rgba(30, 30, 30, 0.3))',
-          backdropFilter: 'blur(4px)',
+          background: 'rgba(22, 22, 26, 0.92)',
+          backdropFilter: 'blur(12px)',
           flex: 1
         }}>
           {/* Navigation tabs */}
