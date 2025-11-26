@@ -23,20 +23,32 @@ import predictionMarketsLogo from '@assets/predictionmarketsnew_1763488010364.pn
 import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
+import { sportsData, type Sport } from "@shared/sports-leagues";
+import { getLeagueBadge, getSportIcon } from "@/lib/leagueUtils";
 
-// Sport icons using lucide-react
+const SportIconImage = ({ sport, className = "w-4 h-4" }: { sport: Sport; className?: string }) => {
+  const iconPath = getSportIcon(sport.id);
+  return (
+    <img 
+      src={iconPath} 
+      alt={sport.name} 
+      className={`${className} object-contain`}
+      onError={(e) => {
+        (e.target as HTMLImageElement).style.display = 'none';
+      }}
+    />
+  );
+};
+
 const SportIcon = ({ sport }: { sport: string }) => {
   const iconClass = "w-4 h-4";
+  const sportData = sportsData.find(s => s.name === sport || s.id === sport);
+  
+  if (sportData) {
+    return <SportIconImage sport={sportData} className={iconClass} />;
+  }
+  
   const iconMap: Record<string, JSX.Element> = {
-    'NFL': <Trophy className={iconClass} />,
-    'CFB': <Trophy className={iconClass} />,
-    'NBA': <Dribbble className={iconClass} />,
-    'NHL': <Target className={iconClass} />,
-    'CS2': <Gamepad2 className={iconClass} />,
-    'Dota 2': <Gamepad2 className={iconClass} />,
-    'Valorant': <Gamepad2 className={iconClass} />,
-    'Football': <CircleDot className={iconClass} />,
-    'Cricket': <Target className={iconClass} />,
     'Live': <Tv className={iconClass} />,
     'Futures': <Calendar className={iconClass} />,
   };
@@ -95,17 +107,11 @@ const demoGames = {
   ]
 };
 
-const popularSports = [
-  { name: 'NFL', count: 16 },
-  { name: 'CFB', count: 67 },
-  { name: 'NBA', count: 39 },
-  { name: 'NHL', count: 16 },
-  { name: 'CS2', count: 8 },
-  { name: 'Dota 2', count: 65 },
-  { name: 'Valorant', count: 6 },
-  { name: 'Football', count: null },
-  { name: 'Cricket', count: null },
-];
+const popularSportsFromData = sportsData.slice(0, 12).map(sport => ({
+  id: sport.id,
+  name: sport.name,
+  leagueCount: sport.leagues.length,
+}));
 
 export default function PredictionMarkets() {
   const { address, isConnecting, walletError, connect, disconnect, shouldShowSignup, username, agreedToTerms, markSignupComplete, messages, isConnected, isAuthenticated, onlineUsers, sendMessage } = useGameState();
@@ -113,6 +119,8 @@ export default function PredictionMarkets() {
   
   const [activeTab, setActiveTab] = useState<'live' | 'futures'>('live');
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
+  const [expandedSport, setExpandedSport] = useState<string | null>(null);
+  const [selectedLeague, setSelectedLeague] = useState<string | null>(null);
   const [showSpreadsAndTotals, setShowSpreadsAndTotals] = useState(true);
   const [selectedGame, setSelectedGame] = useState<any>(demoGames.live[0]);
   const [tradeAmount, setTradeAmount] = useState('');
@@ -386,28 +394,72 @@ export default function PredictionMarkets() {
                     <span>Futures</span>
                   </button>
 
-                  {/* Popular Section */}
+                  {/* Sports Section */}
                   <div className="pt-3 mt-3 border-t border-border/30">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-1">Popular</div>
-                    {popularSports.map((sport) => (
-                      <button
-                        key={sport.name}
-                        onClick={() => setSelectedSport(sport.name)}
-                        className={`w-full flex items-center justify-between gap-1 px-3 py-1.5 rounded text-xs transition-all ${
-                          selectedSport === sport.name 
-                            ? 'bg-white/10 text-foreground' 
-                            : 'text-muted-foreground hover-elevate'
-                        }`}
-                        data-testid={`button-pm-sport-${sport.name.toLowerCase()}`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <SportIcon sport={sport.name} />
-                          <span>{sport.name}</span>
-                        </div>
-                        {sport.count && (
-                          <span className="text-xs text-muted-foreground">{sport.count}</span>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-1">Sports</div>
+                    {sportsData.slice(0, 12).map((sport) => (
+                      <div key={sport.id}>
+                        <button
+                          onClick={() => {
+                            if (expandedSport === sport.id) {
+                              setExpandedSport(null);
+                            } else {
+                              setExpandedSport(sport.id);
+                              setSelectedSport(sport.id);
+                            }
+                          }}
+                          className={`w-full flex items-center justify-between gap-1 px-3 py-1.5 rounded text-xs transition-all ${
+                            selectedSport === sport.id 
+                              ? 'bg-white/10 text-foreground' 
+                              : 'text-muted-foreground hover-elevate'
+                          }`}
+                          data-testid={`button-pm-sport-${sport.id}`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <SportIcon sport={sport.id} />
+                            <span>{sport.name}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground">{sport.leagues.length}</span>
+                            <ChevronDown className={`w-3 h-3 transition-transform ${expandedSport === sport.id ? 'rotate-180' : ''}`} />
+                          </div>
+                        </button>
+                        {expandedSport === sport.id && (
+                          <div className="ml-4 mt-1 mb-2 space-y-0.5 max-h-48 overflow-y-auto">
+                            {sport.leagues.slice(0, 20).map((league) => (
+                              <button
+                                key={league.id}
+                                onClick={() => setSelectedLeague(league.id)}
+                                className={`w-full flex items-center gap-2 px-2 py-1 rounded text-xs transition-all ${
+                                  selectedLeague === league.id 
+                                    ? 'bg-primary/20 text-primary' 
+                                    : 'text-muted-foreground hover:bg-white/5'
+                                }`}
+                                data-testid={`button-pm-league-${league.id}`}
+                              >
+                                {league.badge ? (
+                                  <img 
+                                    src={league.badge} 
+                                    alt={league.displayName}
+                                    className="w-4 h-4 object-contain flex-shrink-0"
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="w-4 h-4 rounded-full bg-muted flex-shrink-0" />
+                                )}
+                                <span className="truncate">{league.displayName}</span>
+                              </button>
+                            ))}
+                            {sport.leagues.length > 20 && (
+                              <div className="text-xs text-muted-foreground px-2 py-1">
+                                +{sport.leagues.length - 20} more leagues
+                              </div>
+                            )}
+                          </div>
                         )}
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -419,9 +471,20 @@ export default function PredictionMarkets() {
                 <h2 className="text-2xl font-bold text-foreground italic">Live</h2>
 
                 {/* Live Games */}
-                {demoGames.live.map((game) => (
+                {demoGames.live.map((game) => {
+                  const leagueBadge = getLeagueBadge(game.league);
+                  return (
                   <div key={game.id} className="space-y-2">
-                    <div className="text-sm font-bold text-foreground">{game.league}</div>
+                    <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                      {leagueBadge && (
+                        <img 
+                          src={leagueBadge} 
+                          alt={game.league}
+                          className="w-5 h-5 object-contain"
+                        />
+                      )}
+                      {game.league}
+                    </div>
                     <div 
                       className="p-3 rounded-lg cursor-pointer hover-elevate transition-all"
                       style={{ background: 'rgba(30, 30, 35, 0.8)', border: '1px solid rgba(60, 60, 60, 0.3)' }}
@@ -464,7 +527,7 @@ export default function PredictionMarkets() {
                       )}
                     </div>
                   </div>
-                ))}
+                )})}
 
                 {/* Starting Soon Section */}
                 <div className="pt-4">
@@ -484,7 +547,9 @@ export default function PredictionMarkets() {
                   </div>
 
                   {/* Upcoming Games */}
-                  {demoGames.upcoming.map((game) => (
+                  {demoGames.upcoming.map((game) => {
+                    const upcomingLeagueBadge = getLeagueBadge(game.league);
+                    return (
                     <div 
                       key={game.id}
                       className="p-3 rounded-lg cursor-pointer hover-elevate transition-all mb-2"
@@ -494,6 +559,13 @@ export default function PredictionMarkets() {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
+                          {upcomingLeagueBadge && (
+                            <img 
+                              src={upcomingLeagueBadge} 
+                              alt={game.league}
+                              className="w-5 h-5 object-contain"
+                            />
+                          )}
                           <span className="text-xs font-medium text-foreground">{game.time}</span>
                           <span className="text-xs text-muted-foreground">{game.volume}</span>
                         </div>
@@ -544,7 +616,7 @@ export default function PredictionMarkets() {
                         </div>
                       ))}
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
 
