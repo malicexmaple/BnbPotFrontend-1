@@ -235,35 +235,6 @@
     letter-spacing: 0.03em;
   }
 
-  @keyframes pulse-glow {
-    0%, 100% {
-      opacity: 1;
-      filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.6));
-    }
-    50% {
-      opacity: 0.8;
-      filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.9));
-    }
-  }
-
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  @keyframes gradient-shift {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .gradient-animate {
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
-  }
-
   @keyframes bounce-arrow {
     0%, 100% {
       transform: translate(-50%, 0px);
@@ -392,20 +363,6 @@
     z-index: -1;
   }
   
-  .stats-divider {
-    position: relative;
-  }
-  
-  .stats-divider::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 12px;
-    bottom: 12px;
-    width: 1px;
-    background: rgba(234, 179, 8, 0.3);
-  }
-  
   .neon-border::after {
     content: '';
     position: absolute;
@@ -442,19 +399,6 @@
     margin: -0.1em;
   }
 
-  @keyframes carousel-slide {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(calc(-50%));
-    }
-  }
-
-  .carousel-animate {
-    animation: carousel-slide 10s linear infinite;
-  }
-  
   .carousel-center-card {
     position: relative;
     background: rgba(15, 15, 15, 0.9);
@@ -492,51 +436,6 @@
     z-index: 0;
   }
 
-  .goldxeffect {
-    position: relative;
-    background: rgba(234, 179, 8, 0.15);
-    border: 2px solid transparent;
-    background-image: 
-      linear-gradient(rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.15)),
-      linear-gradient(140deg, #EAB308 0%, #FCD34D 50%, #EAB308 100%);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    box-shadow: 
-      inset 0 1px 1px rgba(255, 255, 255, 0.1),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.5),
-      0 0 24px rgba(234, 179, 8, 0.4),
-      0 4px 12px rgba(0, 0, 0, 0.7);
-  }
-  
-  .goldxeffect::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
-  }
-  
-  .goldxeffect::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .goldxeffect:hover {
-    box-shadow: 
-      inset 0 1px 1px rgba(255, 255, 255, 0.1),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.5),
-      0 0 32px rgba(234, 179, 8, 0.6),
-      0 4px 16px rgba(0, 0, 0, 0.7);
-  }
 }
 
 /**
@@ -763,36 +662,6 @@
 
   .wiggle-on-hover:hover {
     animation: wiggle 0.3s ease-in-out infinite;
-  }
-
-  /* Air stream animations for parachute - more intense */
-  @keyframes airStream0 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-80px) translateX(3px); opacity: 0; } }
-  @keyframes airStream1 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-90px) translateX(-2px); opacity: 0; } }
-  @keyframes airStream2 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-95px) translateX(4px); opacity: 0; } }
-  @keyframes airStream3 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-75px) translateX(-3px); opacity: 0; } }
-  @keyframes airStream4 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-100px) translateX(2px); opacity: 0; } }
-  @keyframes airStream5 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-85px) translateX(-4px); opacity: 0; } }
-  @keyframes airStream6 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-92px) translateX(3px); opacity: 0; } }
-  @keyframes airStream7 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-88px) translateX(-2px); opacity: 0; } }
-
-  /* Air stream animations for airdrop logo - more intense */
-  @keyframes airStreamLogo0 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-55px) translateX(2px); opacity: 0; } }
-  @keyframes airStreamLogo1 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-60px) translateX(-2px); opacity: 0; } }
-  @keyframes airStreamLogo2 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-50px) translateX(3px); opacity: 0; } }
-  @keyframes airStreamLogo3 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-58px) translateX(-3px); opacity: 0; } }
-  @keyframes airStreamLogo4 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-65px) translateX(2px); opacity: 0; } }
-  @keyframes airStreamLogo5 { 0% { transform: translateY(0px) translateX(0px); opacity: 0; } 30% { opacity: 0.9; } 100% { transform: translateY(-62px) translateX(-2px); opacity: 0; } }
-
-  /* Floating animation for airdrop logo */
-  @keyframes floatAirdrop {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-4px); }
-  }
-
-  /* Gentle floating animation for airdrop box */
-  @keyframes floatAirdropBox {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-3px); }
   }
 }
 
