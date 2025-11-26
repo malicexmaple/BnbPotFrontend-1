@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { db } from "./db";
-import { registerRoutes } from "./routes";
+import { registerRoutes } from "./routes/index";
 import { setupVite, serveStatic, log } from "./vite";
 import { gameService } from "./gameService";
 import { validateEnvironment } from "./env";

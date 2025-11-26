@@ -180,6 +180,11 @@ export function createRateLimiter(config: RateLimitConfig) {
 }
 
 /**
+ * Rate limiter middleware type
+ */
+export type RateLimitMiddleware = ReturnType<typeof createRateLimiter>;
+
+/**
  * Pre-configured rate limiters for common use cases
  * Each has isolated storage to prevent cross-contamination
  */
