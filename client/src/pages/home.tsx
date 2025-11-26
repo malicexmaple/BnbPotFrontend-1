@@ -41,7 +41,12 @@ export default function Home() {
   
   const [timeRemaining, setTimeRemaining] = useState<number>(GAME.ROUND_DURATION);
   const [betAmount, setBetAmount] = useState("");
-  const [scrollOffset, setScrollOffset] = useState(0);
+  const [scrollOffset, setScrollOffset] = useState(() => {
+    // Initialize based on global clock to prevent visible jump on navigation
+    const now = Date.now();
+    const resetPoint = (CAROUSEL.CARD_WIDTH + CAROUSEL.GAP) * CAROUSEL.TOTAL_CARDS;
+    return (now * CAROUSEL.ANIMATION_SPEED) % resetPoint;
+  });
   const [showChatRules, setShowChatRules] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
