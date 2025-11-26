@@ -324,3 +324,20 @@ export const insertMarketBetSchema = createInsertSchema(marketBets).omit({
 
 export type InsertMarketBet = z.infer<typeof insertMarketBetSchema>;
 export type MarketBet = typeof marketBets.$inferSelect;
+
+export const teamBadgeCache = pgTable("team_badge_cache", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teamName: text("team_name").notNull().unique(),
+  badgeUrl: text("badge_url"),
+  teamId: text("team_id"),
+  fetchedAt: timestamp("fetched_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
+export const insertTeamBadgeCacheSchema = createInsertSchema(teamBadgeCache).omit({
+  id: true,
+  fetchedAt: true,
+});
+
+export type InsertTeamBadgeCache = z.infer<typeof insertTeamBadgeCacheSchema>;
+export type TeamBadgeCache = typeof teamBadgeCache.$inferSelect;
