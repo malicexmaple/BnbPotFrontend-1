@@ -443,7 +443,7 @@ export default function PredictionMarkets() {
 
           <ScrollArea className="flex-1 px-6">
             <div className="flex gap-6">
-              <div className="flex-shrink-0" style={{width: '200px'}}>
+              <div className="hidden lg:block flex-shrink-0" style={{width: '200px'}}>
                 <div className="space-y-1 sticky top-0">
                   <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-2 font-bold">
                     <span className="text-foreground">LIVE</span> <span className="text-primary">MARKETS</span>
