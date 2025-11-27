@@ -152,19 +152,15 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
           <Button
             onClick={() => onPlaceBet(market.id, 'A', oddsA)}
             disabled={isDisabled}
+            variant="outline"
             className={cn(
-              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 border-2 p-2",
+              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 border-2 p-2 bg-card hover:bg-primary/10 border-primary/30 hover:border-primary/50",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
-            style={{ 
-              background: market.teamAColor || 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)',
-              borderColor: market.teamAColor ? `${market.teamAColor}88` : '#d5b877',
-              color: '#000'
-            }}
             data-testid={`button-bet-pane-${market.id}-a`}
           >
-            <span className="text-lg font-bold">{formatOdds(oddsA)}</span>
-            <span className="text-[10px] opacity-80">
+            <span className="text-lg font-bold text-primary">{formatOdds(oddsA)}</span>
+            <span className="text-[10px] text-muted-foreground">
               {formatPool(poolATotal)} BNB
             </span>
           </Button>
@@ -172,19 +168,15 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
           <Button
             onClick={() => onPlaceBet(market.id, 'B', oddsB)}
             disabled={isDisabled}
+            variant="outline"
             className={cn(
-              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 border-2 p-2",
+              "h-[55px] w-[70px] flex flex-col items-center justify-center gap-0.5 border-2 p-2 bg-card hover:bg-primary/10 border-primary/30 hover:border-primary/50",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
-            style={{ 
-              background: market.teamBColor || 'linear-gradient(135deg, #2d2d2d 0%, #424242 50%, #2d2d2d 100%)',
-              borderColor: market.teamBColor ? `${market.teamBColor}88` : '#555',
-              color: '#fff'
-            }}
             data-testid={`button-bet-pane-${market.id}-b`}
           >
-            <span className="text-lg font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
-            <span className="text-[10px] opacity-80" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
+            <span className="text-lg font-bold text-primary">{formatOdds(oddsB)}</span>
+            <span className="text-[10px] text-muted-foreground">
               {formatPool(poolBTotal)} BNB
             </span>
           </Button>

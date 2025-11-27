@@ -160,21 +160,17 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
           <Button
             onClick={() => onPlaceBet(market.id, 'A', oddsA)}
             disabled={isDisabled}
+            variant="outline"
             className={cn(
-              "h-[90px] flex-col justify-center py-3 border-2 rounded-lg",
+              "h-[90px] flex-col justify-center py-3 border-2 rounded-lg bg-card hover:bg-primary/10 border-primary/30 hover:border-primary/50",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
-            style={{ 
-              background: market.teamAColor || 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)',
-              borderColor: market.teamAColor ? `${market.teamAColor}88` : '#d5b877',
-              color: '#000'
-            }}
             data-testid={`button-bet-${market.id}-a`}
           >
             <div className="flex flex-col items-center justify-center gap-1">
-              <span className="text-sm font-semibold truncate max-w-full">{market.teamA}</span>
-              <span className="text-2xl font-bold">{formatOdds(oddsA)}</span>
-              <span className="text-xs opacity-90">
+              <span className="text-sm font-semibold truncate max-w-full text-foreground">{market.teamA}</span>
+              <span className="text-2xl font-bold text-primary">{formatOdds(oddsA)}</span>
+              <span className="text-xs text-muted-foreground">
                 Pool: {formatPool(poolATotal)} BNB
               </span>
             </div>
@@ -183,21 +179,17 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
           <Button
             onClick={() => onPlaceBet(market.id, 'B', oddsB)}
             disabled={isDisabled}
+            variant="outline"
             className={cn(
-              "h-[90px] flex-col justify-center py-3 border-2 rounded-lg",
+              "h-[90px] flex-col justify-center py-3 border-2 rounded-lg bg-card hover:bg-primary/10 border-primary/30 hover:border-primary/50",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
-            style={{ 
-              background: market.teamBColor || 'linear-gradient(135deg, #2d2d2d 0%, #424242 50%, #2d2d2d 100%)',
-              borderColor: market.teamBColor ? `${market.teamBColor}88` : '#555',
-              color: '#fff'
-            }}
             data-testid={`button-bet-${market.id}-b`}
           >
             <div className="flex flex-col items-center justify-center gap-1">
-              <span className="text-sm font-semibold truncate max-w-full" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{market.teamB}</span>
-              <span className="text-2xl font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
-              <span className="text-xs opacity-90" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
+              <span className="text-sm font-semibold truncate max-w-full text-foreground">{market.teamB}</span>
+              <span className="text-2xl font-bold text-primary">{formatOdds(oddsB)}</span>
+              <span className="text-xs text-muted-foreground">
                 Pool: {formatPool(poolBTotal)} BNB
               </span>
             </div>

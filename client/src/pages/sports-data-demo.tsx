@@ -787,10 +787,10 @@ export default function SportsDataDemo() {
                               size="sm"
                               className="border-dashed border-primary/50 text-primary hover:bg-primary/10"
                               onClick={() => setAddDialogOpen(true)}
-                              data-testid={`button-add-league-${sport.id}`}
+                              data-testid={`button-add-media-${sport.id}`}
                             >
                               <Plus className="h-4 w-4 mr-1" />
-                              Add League
+                              Add Media
                             </Button>
                           </div>
                           
