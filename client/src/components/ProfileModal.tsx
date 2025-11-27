@@ -22,6 +22,7 @@ interface ProfileModalProps {
   username: string;
   walletAddress?: string;
   onDisconnect?: () => void;
+  initialTab?: "options" | "statistics" | "transactions" | "muted";
 }
 
 export default function ProfileModal({ 
@@ -29,9 +30,16 @@ export default function ProfileModal({
   onOpenChange, 
   username, 
   walletAddress,
-  onDisconnect 
+  onDisconnect,
+  initialTab = "options"
 }: ProfileModalProps) {
-  const [activeTab, setActiveTab] = useState("options");
+  const [activeTab, setActiveTab] = useState(initialTab);
+  
+  useEffect(() => {
+    if (open) {
+      setActiveTab(initialTab);
+    }
+  }, [open, initialTab]);
   const [showClientSeed, setShowClientSeed] = useState(false);
   const [streamerMode, setStreamerMode] = useState(false);
   const [timeRange, setTimeRange] = useState("7days");

@@ -4,10 +4,18 @@ import ProfileModal from "@/components/ProfileModal";
 import { useGameState } from "@/hooks/useGameState";
 import { useAuth } from "@/hooks/useAuth";
 
+type ProfileTab = "options" | "statistics" | "transactions" | "muted";
+
 export default function PersistentHeader() {
   const { address, isConnecting, connect, disconnect, username, bnbBalance } = useGameState();
   const { isAdmin } = useAuth();
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileTab, setProfileTab] = useState<ProfileTab>("options");
+
+  const openProfileTab = (tab: ProfileTab) => {
+    setProfileTab(tab);
+    setShowProfileModal(true);
+  };
 
   return (
     <>
@@ -20,7 +28,10 @@ export default function PersistentHeader() {
           walletAddress={address || undefined} 
           username={username || undefined} 
           bnbBalance={bnbBalance || undefined}
-          onOpenProfile={() => setShowProfileModal(true)}
+          onOpenOptions={() => openProfileTab("options")}
+          onOpenStatistics={() => openProfileTab("statistics")}
+          onOpenTransactions={() => openProfileTab("transactions")}
+          onOpenMutedUsers={() => openProfileTab("muted")}
           isAdmin={isAdmin}
         />
       </div>
@@ -31,6 +42,8 @@ export default function PersistentHeader() {
           onOpenChange={setShowProfileModal}
           walletAddress={address || undefined}
           username={username}
+          onDisconnect={disconnect}
+          initialTab={profileTab}
         />
       )}
     </>

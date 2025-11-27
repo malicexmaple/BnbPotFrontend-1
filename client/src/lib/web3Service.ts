@@ -272,10 +272,3 @@ export class Web3Service {
 
 // Singleton instance
 export const web3Service = new Web3Service();
-
-// Type definitions for window.ethereum
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}

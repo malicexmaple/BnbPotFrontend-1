@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut, Shield } from "lucide-react";
+import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut, Shield, VolumeX } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import {
@@ -23,7 +23,10 @@ interface GameNavigationProps {
   walletAddress?: string;
   username?: string;
   bnbBalance?: string;
-  onOpenProfile?: () => void;
+  onOpenOptions?: () => void;
+  onOpenStatistics?: () => void;
+  onOpenTransactions?: () => void;
+  onOpenMutedUsers?: () => void;
   isAdmin?: boolean;
 }
 
@@ -35,7 +38,10 @@ export default function GameNavigation({
   walletAddress,
   username,
   bnbBalance,
-  onOpenProfile,
+  onOpenOptions,
+  onOpenStatistics,
+  onOpenTransactions,
+  onOpenMutedUsers,
   isAdmin = false
 }: GameNavigationProps) {
   const [location] = useLocation();
@@ -227,55 +233,40 @@ export default function GameNavigation({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border/40">
-                  <div className="px-3 py-3 border-b border-border/20">
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 text-base font-bold overflow-hidden"
-                        style={{
-                          background: avatarUrl ? 'transparent' : `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`
-                        }}
-                      >
-                        {avatarUrl ? (
-                          <img src={avatarUrl} alt={username} className="w-full h-full object-cover" />
-                        ) : (
-                          username.slice(0, 2).toUpperCase()
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-foreground">{username}</div>
-                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 mt-1">1</Badge>
-                      </div>
-                      <ChevronRight className="text-muted-foreground flex-shrink-0" style={{width: '16px', height: '16px'}} />
-                    </div>
-                  </div>
-                  
-                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" style={{
-                    border: '2px solid rgba(234, 179, 8, 0.4)',
-                    borderRadius: '8px',
-                    margin: '8px',
-                    background: 'rgba(234, 179, 8, 0.05)'
-                  }} data-testid="menu-leaderboard">
-                    <Trophy className="mr-3" style={{width: '18px', height: '18px', color: '#EAB308'}} />
-                    <span className="font-semibold">SP Leaderboard</span>
-                  </DropdownMenuItem>
-                  
                   <DropdownMenuItem 
                     className="px-3 py-2.5 cursor-pointer" 
-                    onClick={onOpenProfile}
+                    onClick={onOpenOptions}
                     data-testid="menu-options"
                   >
                     <Settings className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
                     <span>Options</span>
                   </DropdownMenuItem>
                   
-                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" data-testid="menu-statistics">
+                  <DropdownMenuItem 
+                    className="px-3 py-2.5 cursor-pointer" 
+                    onClick={onOpenStatistics}
+                    data-testid="menu-statistics"
+                  >
                     <BarChart3 className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
                     <span>Statistics</span>
                   </DropdownMenuItem>
                   
-                  <DropdownMenuItem className="px-3 py-2.5 cursor-pointer" data-testid="menu-transactions">
+                  <DropdownMenuItem 
+                    className="px-3 py-2.5 cursor-pointer" 
+                    onClick={onOpenTransactions}
+                    data-testid="menu-transactions"
+                  >
                     <Receipt className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
                     <span>Transactions</span>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    className="px-3 py-2.5 cursor-pointer" 
+                    onClick={onOpenMutedUsers}
+                    data-testid="menu-muted-users"
+                  >
+                    <VolumeX className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                    <span>Muted Users</span>
                   </DropdownMenuItem>
                   
                   {isAdmin && (
