@@ -50,7 +50,7 @@ export default function GameLayout({
                 {leftSidebar}
 
                 {/* Main game area */}
-                <div className="flex-1 flex flex-col relative min-w-0">
+                <div className="flex-1 flex flex-col relative">
                   {children}
                 </div>
 
