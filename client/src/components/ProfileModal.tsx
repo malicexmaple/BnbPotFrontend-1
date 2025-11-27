@@ -3,10 +3,11 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, ChevronDown, Check, X } from "lucide-react";
+import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, ChevronDown, Check, X, Loader2 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import AvatarUploadModal from "./AvatarUploadModal";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import {
   Select,
   SelectContent,
@@ -53,13 +54,43 @@ export default function ProfileModal({
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingSeed, setIsEditingSeed] = useState(false);
   const [editedUsername, setEditedUsername] = useState(username);
-  const [editedEmail, setEditedEmail] = useState("user@example.com");
+  const [editedEmail, setEditedEmail] = useState("");
   const [editedSeed, setEditedSeed] = useState("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6");
   
   // Store pre-edit values for cancel functionality
   const [preEditUsername, setPreEditUsername] = useState(username);
-  const [preEditEmail, setPreEditEmail] = useState("user@example.com");
+  const [preEditEmail, setPreEditEmail] = useState("");
   const [preEditSeed, setPreEditSeed] = useState("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6");
+  
+  // Saving state
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Fetch user data when modal opens
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (open && walletAddress) {
+        try {
+          const response = await fetch(`/api/users/me?walletAddress=${encodeURIComponent(walletAddress)}`);
+          if (response.ok) {
+            const userData = await response.json();
+            setEditedUsername(userData.username || username);
+            setEditedEmail(userData.email || "");
+            setPreEditUsername(userData.username || username);
+            setPreEditEmail(userData.email || "");
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+    
+    if (open) {
+      fetchUserData();
+      setIsEditingUsername(false);
+      setIsEditingEmail(false);
+      setIsEditingSeed(false);
+    }
+  }, [open, walletAddress, username]);
 
   // Start editing helpers
   const startEditingUsername = () => {
@@ -93,39 +124,67 @@ export default function ProfileModal({
     setIsEditingSeed(false);
   };
 
-  // Reset edited values when modal opens
-  useEffect(() => {
-    if (open) {
-      setEditedUsername(username);
-      setIsEditingUsername(false);
-      setIsEditingEmail(false);
-      setIsEditingSeed(false);
-    }
-  }, [open, username]);
-
   // Handler for saving username
-  const handleSaveUsername = () => {
-    toast({
-      title: "Username updated",
-      description: `Your username has been changed to ${editedUsername}`,
-    });
-    setIsEditingUsername(false);
+  const handleSaveUsername = async () => {
+    if (!editedUsername.trim()) {
+      toast({
+        title: "Error",
+        description: "Username cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSaving(true);
+    try {
+      await apiRequest("PATCH", "/api/users/profile", { username: editedUsername });
+      setPreEditUsername(editedUsername);
+      toast({
+        title: "Username updated",
+        description: `Your username has been changed to ${editedUsername}`,
+      });
+      setIsEditingUsername(false);
+      // Dispatch event to update header/other components
+      window.dispatchEvent(new CustomEvent('usernameUpdated', { detail: { username: editedUsername } }));
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update username",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Handler for saving email
-  const handleSaveEmail = () => {
-    toast({
-      title: "Email updated",
-      description: `Your email has been changed to ${editedEmail}`,
-    });
-    setIsEditingEmail(false);
+  const handleSaveEmail = async () => {
+    setIsSaving(true);
+    try {
+      await apiRequest("PATCH", "/api/users/profile", { email: editedEmail || "" });
+      setPreEditEmail(editedEmail);
+      toast({
+        title: "Email updated",
+        description: editedEmail ? `Your email has been changed to ${editedEmail}` : "Your email has been cleared",
+      });
+      setIsEditingEmail(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update email",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  // Handler for saving client seed
+  // Handler for saving client seed (local only - not persisted to backend)
   const handleSaveSeed = () => {
+    setPreEditSeed(editedSeed);
     toast({
       title: "Client seed updated",
-      description: "Your client seed has been updated successfully",
+      description: "Your client seed has been updated for this session",
     });
     setIsEditingSeed(false);
   };
@@ -348,14 +407,16 @@ export default function ProfileModal({
                           variant="ghost" 
                           size="icon"
                           onClick={handleSaveUsername}
+                          disabled={isSaving}
                           data-testid="button-save-username"
                         >
-                          <Check className="w-4 h-4 text-green-500" />
+                          {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 text-green-500" />}
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="icon"
                           onClick={cancelEditingUsername}
+                          disabled={isSaving}
                           data-testid="button-cancel-username"
                         >
                           <X className="w-4 h-4 text-red-500" />
@@ -402,14 +463,16 @@ export default function ProfileModal({
                           variant="ghost" 
                           size="icon"
                           onClick={handleSaveEmail}
+                          disabled={isSaving}
                           data-testid="button-save-email"
                         >
-                          <Check className="w-4 h-4 text-green-500" />
+                          {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 text-green-500" />}
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="icon"
                           onClick={cancelEditingEmail}
+                          disabled={isSaving}
                           data-testid="button-cancel-email"
                         >
                           <X className="w-4 h-4 text-red-500" />
@@ -418,7 +481,8 @@ export default function ProfileModal({
                     ) : (
                       <>
                         <Input 
-                          value={editedEmail} 
+                          value={editedEmail || ""} 
+                          placeholder="Enter your email"
                           readOnly 
                           className="flex-1 bg-muted/30 border-border/20"
                           data-testid="input-email"

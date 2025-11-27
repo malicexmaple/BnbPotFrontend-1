@@ -21,6 +21,20 @@ const signupSchema = z.object({
     .or(z.literal('')),
 });
 
+const updateProfileSchema = z.object({
+  username: z.string()
+    .min(3, "Username must be at least 3 characters")
+    .max(30, "Username must be 30 characters or less")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Username can only contain letters, numbers, underscores, and hyphens")
+    .trim()
+    .optional(),
+  email: z.string()
+    .email("Invalid email address")
+    .max(255, "Email must be 255 characters or less")
+    .optional()
+    .or(z.literal('')),
+});
+
 export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
   const { storage, requireAuth } = deps;
 
@@ -72,6 +86,45 @@ export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
     } catch (error) {
       console.error("Error creating user:", error);
       res.status(500).json({ message: "Failed to create user" });
+    }
+  });
+
+  // Update user profile
+  app.patch("/api/users/profile", requireAuth, async (req, res) => {
+    try {
+      const bodyResult = updateProfileSchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid profile data", 
+          errors: bodyResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const walletAddress = req.session!.walletAddress!;
+      const existingUser = await storage.getUserByWalletAddress(walletAddress);
+      
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const { username, email } = bodyResult.data;
+      
+      // Use provided values or keep existing
+      const updatedUser = await storage.createOrUpdateUserByWallet(
+        walletAddress, 
+        username || existingUser.username,
+        email !== undefined ? email : existingUser.email || undefined
+      );
+
+      if (req.session && username) {
+        req.session.username = updatedUser.username;
+      }
+
+      const { password, ...userData } = updatedUser;
+      res.json(userData);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
     }
   });
 }
