@@ -15,10 +15,11 @@ import {
   type LeaguesVisibility, type InsertLeaguesVisibility,
   type CustomMedia, type InsertCustomMedia,
   type VisibilitySetting, type InsertVisibilitySetting,
+  type CustomLeague, type InsertCustomLeague,
   users, chatMessages, rounds, bets, userStats, dailyStats,
   airdropPool, airdropDistributions, airdropRecipients, airdropTips,
   markets, marketBets, sportsVisibility, leaguesVisibility, customMedia,
-  visibilitySettings
+  visibilitySettings, customLeagues
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -109,6 +110,13 @@ export interface IStorage {
   getCustomMediaByName(entityType: string, entityName: string): Promise<CustomMedia | undefined>;
   upsertCustomMedia(media: InsertCustomMedia): Promise<CustomMedia>;
   deleteCustomMedia(id: string): Promise<void>;
+  
+  // Custom leagues methods
+  getCustomLeagues(sportId?: string): Promise<CustomLeague[]>;
+  getCustomLeagueById(id: string): Promise<CustomLeague | undefined>;
+  createCustomLeague(league: InsertCustomLeague): Promise<CustomLeague>;
+  updateCustomLeague(id: string, data: Partial<InsertCustomLeague>): Promise<CustomLeague | undefined>;
+  deleteCustomLeague(id: string): Promise<void>;
 }
 
 export class DbStorage implements IStorage {
@@ -724,6 +732,42 @@ export class DbStorage implements IStorage {
 
   async deleteCustomMedia(id: string): Promise<void> {
     await db.delete(customMedia).where(eq(customMedia.id, id));
+  }
+
+  // Custom leagues methods
+  async getCustomLeagues(sportId?: string): Promise<CustomLeague[]> {
+    if (sportId) {
+      return await db.select().from(customLeagues)
+        .where(eq(customLeagues.sportId, sportId))
+        .orderBy(customLeagues.displayName);
+    }
+    return await db.select().from(customLeagues).orderBy(customLeagues.displayName);
+  }
+
+  async getCustomLeagueById(id: string): Promise<CustomLeague | undefined> {
+    const result = await db.select().from(customLeagues)
+      .where(eq(customLeagues.id, id))
+      .limit(1);
+    return result[0];
+  }
+
+  async createCustomLeague(league: InsertCustomLeague): Promise<CustomLeague> {
+    const result = await db.insert(customLeagues)
+      .values({ ...league, updatedAt: new Date() })
+      .returning();
+    return result[0];
+  }
+
+  async updateCustomLeague(id: string, data: Partial<InsertCustomLeague>): Promise<CustomLeague | undefined> {
+    const result = await db.update(customLeagues)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(customLeagues.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteCustomLeague(id: string): Promise<void> {
+    await db.delete(customLeagues).where(eq(customLeagues.id, id));
   }
 }
 
