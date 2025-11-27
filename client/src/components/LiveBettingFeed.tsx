@@ -68,14 +68,7 @@ export function LiveBettingFeed() {
   }, []);
 
   if (bets.length === 0) {
-    return (
-      <div className="w-full glass-panel border-b border-accent/50 py-3 overflow-hidden" style={{borderRadius: 0}}>
-        <div className="flex items-center justify-center gap-2 text-muted-foreground">
-          <TrendingUp className="h-4 w-4" />
-          <span className="text-sm font-medium">Waiting for winning bets...</span>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const getUserName = (displayName: string | null, email: string) => {
