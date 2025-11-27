@@ -3,9 +3,10 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, ChevronDown } from "lucide-react";
+import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, ChevronDown, Check, X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import AvatarUploadModal from "./AvatarUploadModal";
+import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,7 @@ export default function ProfileModal({
   initialTab = "options"
 }: ProfileModalProps) {
   const [activeTab, setActiveTab] = useState(initialTab);
+  const { toast } = useToast();
   
   useEffect(() => {
     if (open) {
@@ -45,6 +47,105 @@ export default function ProfileModal({
   const [timeRange, setTimeRange] = useState("7days");
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // Editing state
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [isEditingSeed, setIsEditingSeed] = useState(false);
+  const [editedUsername, setEditedUsername] = useState(username);
+  const [editedEmail, setEditedEmail] = useState("user@example.com");
+  const [editedSeed, setEditedSeed] = useState("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6");
+  
+  // Store pre-edit values for cancel functionality
+  const [preEditUsername, setPreEditUsername] = useState(username);
+  const [preEditEmail, setPreEditEmail] = useState("user@example.com");
+  const [preEditSeed, setPreEditSeed] = useState("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6");
+
+  // Start editing helpers
+  const startEditingUsername = () => {
+    setPreEditUsername(editedUsername);
+    setIsEditingUsername(true);
+  };
+  
+  const startEditingEmail = () => {
+    setPreEditEmail(editedEmail);
+    setIsEditingEmail(true);
+  };
+  
+  const startEditingSeed = () => {
+    setPreEditSeed(editedSeed);
+    setIsEditingSeed(true);
+  };
+
+  // Cancel editing helpers
+  const cancelEditingUsername = () => {
+    setEditedUsername(preEditUsername);
+    setIsEditingUsername(false);
+  };
+  
+  const cancelEditingEmail = () => {
+    setEditedEmail(preEditEmail);
+    setIsEditingEmail(false);
+  };
+  
+  const cancelEditingSeed = () => {
+    setEditedSeed(preEditSeed);
+    setIsEditingSeed(false);
+  };
+
+  // Reset edited values when modal opens
+  useEffect(() => {
+    if (open) {
+      setEditedUsername(username);
+      setIsEditingUsername(false);
+      setIsEditingEmail(false);
+      setIsEditingSeed(false);
+    }
+  }, [open, username]);
+
+  // Handler for saving username
+  const handleSaveUsername = () => {
+    toast({
+      title: "Username updated",
+      description: `Your username has been changed to ${editedUsername}`,
+    });
+    setIsEditingUsername(false);
+  };
+
+  // Handler for saving email
+  const handleSaveEmail = () => {
+    toast({
+      title: "Email updated",
+      description: `Your email has been changed to ${editedEmail}`,
+    });
+    setIsEditingEmail(false);
+  };
+
+  // Handler for saving client seed
+  const handleSaveSeed = () => {
+    toast({
+      title: "Client seed updated",
+      description: "Your client seed has been updated successfully",
+    });
+    setIsEditingSeed(false);
+  };
+
+  // Handler for social links
+  const handleFollowTwitter = () => {
+    window.open("https://twitter.com/bnbpot", "_blank", "noopener,noreferrer");
+  };
+
+  const handleJoinDiscord = () => {
+    window.open("https://discord.gg/bnbpot", "_blank", "noopener,noreferrer");
+  };
+
+  // Handler for connecting accounts (OAuth coming soon)
+  const handleConnectSocial = (platform: string) => {
+    toast({
+      title: "Coming Soon",
+      description: `${platform} account connection will be available soon!`,
+    });
+  };
 
   // Load avatar from localStorage whenever username or modal open state changes
   useEffect(() => {
@@ -234,16 +335,52 @@ export default function ProfileModal({
                 <div>
                   <label className="text-sm text-muted-foreground block mb-2">Enter name</label>
                   <div className="flex items-center gap-2">
-                    <Input 
-                      value={username} 
-                      readOnly 
-                      className="flex-1 bg-muted/30 border-border/20"
-                      data-testid="input-username"
-                    />
-                    <Button variant="ghost" size="sm" className="gap-2" data-testid="button-edit-username">
-                      <Pencil className="w-4 h-4" />
-                      Edit
-                    </Button>
+                    {isEditingUsername ? (
+                      <>
+                        <Input 
+                          value={editedUsername}
+                          onChange={(e) => setEditedUsername(e.target.value)}
+                          className="flex-1 bg-muted/30 border-border/20"
+                          data-testid="input-username-edit"
+                          autoFocus
+                        />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={handleSaveUsername}
+                          data-testid="button-save-username"
+                        >
+                          <Check className="w-4 h-4 text-green-500" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={cancelEditingUsername}
+                          data-testid="button-cancel-username"
+                        >
+                          <X className="w-4 h-4 text-red-500" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Input 
+                          value={editedUsername} 
+                          readOnly 
+                          className="flex-1 bg-muted/30 border-border/20"
+                          data-testid="input-username"
+                        />
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="gap-2" 
+                          onClick={startEditingUsername}
+                          data-testid="button-edit-username"
+                        >
+                          <Pencil className="w-4 h-4" />
+                          Edit
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -251,21 +388,58 @@ export default function ProfileModal({
                 <div>
                   <label className="text-sm text-muted-foreground block mb-2">Enter email</label>
                   <div className="flex items-center gap-2">
-                    <Input 
-                      value="user@example.com" 
-                      readOnly 
-                      className="flex-1 bg-muted/30 border-border/20"
-                      data-testid="input-email"
-                    />
-                    <Button variant="ghost" size="icon" data-testid="button-verify-email">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </Button>
-                    <Button variant="ghost" size="sm" className="gap-2" data-testid="button-edit-email">
-                      <Pencil className="w-4 h-4" />
-                      Edit
-                    </Button>
+                    {isEditingEmail ? (
+                      <>
+                        <Input 
+                          value={editedEmail}
+                          onChange={(e) => setEditedEmail(e.target.value)}
+                          type="email"
+                          className="flex-1 bg-muted/30 border-border/20"
+                          data-testid="input-email-edit"
+                          autoFocus
+                        />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={handleSaveEmail}
+                          data-testid="button-save-email"
+                        >
+                          <Check className="w-4 h-4 text-green-500" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={cancelEditingEmail}
+                          data-testid="button-cancel-email"
+                        >
+                          <X className="w-4 h-4 text-red-500" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Input 
+                          value={editedEmail} 
+                          readOnly 
+                          className="flex-1 bg-muted/30 border-border/20"
+                          data-testid="input-email"
+                        />
+                        <Button variant="ghost" size="icon" data-testid="button-verify-email">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="gap-2" 
+                          onClick={startEditingEmail}
+                          data-testid="button-edit-email"
+                        >
+                          <Pencil className="w-4 h-4" />
+                          Edit
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -273,25 +447,70 @@ export default function ProfileModal({
                 <div>
                   <label className="text-sm text-muted-foreground block mb-2">Client Seed</label>
                   <div className="flex items-center gap-2">
-                    <Input 
-                      type={showClientSeed ? "text" : "password"}
-                      value="a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
-                      readOnly 
-                      className="flex-1 bg-muted/30 border-border/20 font-mono"
-                      data-testid="input-client-seed"
-                    />
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => setShowClientSeed(!showClientSeed)}
-                      data-testid="button-toggle-seed"
-                    >
-                      {showClientSeed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="gap-2" data-testid="button-edit-seed">
-                      <Pencil className="w-4 h-4" />
-                      Edit
-                    </Button>
+                    {isEditingSeed ? (
+                      <>
+                        <Input 
+                          type={showClientSeed ? "text" : "password"}
+                          value={editedSeed}
+                          onChange={(e) => setEditedSeed(e.target.value)}
+                          className="flex-1 bg-muted/30 border-border/20 font-mono"
+                          data-testid="input-client-seed-edit"
+                          autoFocus
+                        />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => setShowClientSeed(!showClientSeed)}
+                          data-testid="button-toggle-seed"
+                        >
+                          {showClientSeed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={handleSaveSeed}
+                          data-testid="button-save-seed"
+                        >
+                          <Check className="w-4 h-4 text-green-500" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={cancelEditingSeed}
+                          data-testid="button-cancel-seed"
+                        >
+                          <X className="w-4 h-4 text-red-500" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Input 
+                          type={showClientSeed ? "text" : "password"}
+                          value={editedSeed}
+                          readOnly 
+                          className="flex-1 bg-muted/30 border-border/20 font-mono"
+                          data-testid="input-client-seed"
+                        />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => setShowClientSeed(!showClientSeed)}
+                          data-testid="button-toggle-seed"
+                        >
+                          {showClientSeed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="gap-2" 
+                          onClick={startEditingSeed}
+                          data-testid="button-edit-seed"
+                        >
+                          <Pencil className="w-4 h-4" />
+                          Edit
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -333,7 +552,12 @@ export default function ProfileModal({
                           <div className="text-xs text-muted-foreground">Not Connected</div>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" data-testid="button-connect-discord">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleConnectSocial("Discord")}
+                        data-testid="button-connect-discord"
+                      >
                         Connect Account
                       </Button>
                     </div>
@@ -350,7 +574,12 @@ export default function ProfileModal({
                           <div className="text-xs text-muted-foreground">Not Connected</div>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" data-testid="button-connect-twitter">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleConnectSocial("X / Twitter")}
+                        data-testid="button-connect-twitter"
+                      >
                         Connect Account
                       </Button>
                     </div>
@@ -371,10 +600,15 @@ export default function ProfileModal({
                         <div className="text-muted-foreground">X / Twitter</div>
                       </div>
                     </div>
-                    <Button size="sm" style={{
-                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
-                      color: 'white'
-                    }} data-testid="button-follow-twitter">
+                    <Button 
+                      size="sm" 
+                      onClick={handleFollowTwitter}
+                      style={{
+                        background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
+                        color: 'white'
+                      }} 
+                      data-testid="button-follow-twitter"
+                    >
                       Follow now
                     </Button>
                   </div>
@@ -391,10 +625,15 @@ export default function ProfileModal({
                         <div className="text-muted-foreground">Discord</div>
                       </div>
                     </div>
-                    <Button size="sm" style={{
-                      background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
-                      color: 'white'
-                    }} data-testid="button-join-discord">
+                    <Button 
+                      size="sm" 
+                      onClick={handleJoinDiscord}
+                      style={{
+                        background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
+                        color: 'white'
+                      }} 
+                      data-testid="button-join-discord"
+                    >
                       Join
                     </Button>
                   </div>
