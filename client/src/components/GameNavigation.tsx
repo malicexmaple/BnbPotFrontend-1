@@ -154,7 +154,7 @@ export default function GameNavigation({
               className={`font-medium px-1.5 sm:px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
               style={{height: '32px', fontSize: '14px'}}
             >
-              <img src={jackpotTabLogo} alt="Jackpot" loading="eager" width="80" height="34" className="nav-tab-logo h-6 sm:h-[34px]" />
+              <img src={jackpotTabLogo} alt="Jackpot" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
           <Link href="/coinflip" onClick={(e) => { if (activeTab === "coinflip") e.preventDefault(); }}>
@@ -165,7 +165,7 @@ export default function GameNavigation({
               className={`font-medium px-1.5 sm:px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
               style={{height: '32px', fontSize: '14px'}}
             >
-              <img src={coinflipLogo} alt="Coinflip" loading="eager" width="80" height="34" className="nav-tab-logo h-6 sm:h-[34px]" />
+              <img src={coinflipLogo} alt="Coinflip" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
           <Link href="/prediction-markets" onClick={(e) => { if (activeTab === "prediction-markets") e.preventDefault(); }}>
@@ -176,7 +176,7 @@ export default function GameNavigation({
               className={`font-medium px-1.5 sm:px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
               style={{height: '32px', fontSize: '14px'}}
             >
-              <img src={predictionMarketsLogo} alt="Prediction Markets" loading="eager" width="140" height="34" className="nav-tab-logo h-6 sm:h-[34px]" />
+              <img src={predictionMarketsLogo} alt="Prediction Markets" className="h-6 sm:h-[34px] w-auto" />
             </Button>
           </Link>
           </div>
