@@ -3,7 +3,15 @@ import type { RouteDeps } from "./types";
 import { z } from "zod";
 import * as path from "path";
 import * as fs from "fs";
-import { getCacheFilePath, getOrCacheImage } from "../imageCacheService";
+import { 
+  getCacheFilePath, 
+  getOrCacheImage, 
+  createSportFolder, 
+  createLeagueFolder,
+  listSportFolders,
+  listLeagueFolders,
+  getImagesBySportLeague
+} from "../imageCacheService";
 
 const entityTypeEnum = z.enum(['team', 'player', 'league']);
 
@@ -134,26 +142,215 @@ export function registerMediaRoutes(app: Express, deps: RouteDeps): void {
   });
 
   /**
-   * Serve cached images with proper browser caching headers
-   * Caches images for 7 days with immutable flag for CDN optimization
+   * Create a new sport folder in the image cache directory
    */
-  app.get("/api/images/cached/:filename", async (req, res) => {
+  app.post("/api/sports/folders", requireAuth, requireAdminRole, async (req, res) => {
     try {
-      const { filename } = req.params;
+      const bodySchema = z.object({
+        sportName: z.string()
+          .min(1, "Sport name is required")
+          .max(100, "Sport name too long")
+          .trim(),
+      });
       
-      // Validate filename to prevent path traversal
-      if (!filename || filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
-        return res.status(400).json({ message: "Invalid filename" });
+      const bodyResult = bodySchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request body", 
+          errors: bodyResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { sportName } = bodyResult.data;
+      const result = createSportFolder(sportName);
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: result.error || "Failed to create sport folder",
+          folderPath: result.folderPath
+        });
       }
       
-      const filePath = getCacheFilePath(filename);
+      res.json({ 
+        success: true, 
+        folderPath: result.folderPath,
+        message: `Sport folder '${sportName}' created successfully`
+      });
+    } catch (error) {
+      console.error("Error creating sport folder:", error);
+      res.status(500).json({ message: "Failed to create sport folder" });
+    }
+  });
+
+  /**
+   * Create a new league folder within a sport
+   */
+  app.post("/api/sports/leagues", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const bodySchema = z.object({
+        sportId: z.string()
+          .min(1, "Sport ID is required")
+          .max(100, "Sport ID too long"),
+        leagueName: z.string()
+          .min(1, "League name is required")
+          .max(100, "League name too long")
+          .trim(),
+      });
+      
+      const bodyResult = bodySchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request body", 
+          errors: bodyResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { sportId, leagueName } = bodyResult.data;
+      const result = createLeagueFolder(sportId, leagueName);
+      
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: result.error || "Failed to create league folder",
+          folderPath: result.folderPath
+        });
+      }
+      
+      res.json({ 
+        success: true, 
+        folderPath: result.folderPath,
+        message: `League folder '${leagueName}' created successfully`
+      });
+    } catch (error) {
+      console.error("Error creating league folder:", error);
+      res.status(500).json({ message: "Failed to create league folder" });
+    }
+  });
+
+  /**
+   * List all sport folders
+   */
+  app.get("/api/sports/folders", async (req, res) => {
+    try {
+      const folders = listSportFolders();
+      res.json({ folders });
+    } catch (error) {
+      console.error("Error listing sport folders:", error);
+      res.status(500).json({ message: "Failed to list sport folders" });
+    }
+  });
+
+  /**
+   * List league folders within a sport
+   */
+  app.get("/api/sports/folders/:sportId/leagues", async (req, res) => {
+    try {
+      const { sportId } = req.params;
+      
+      if (!sportId || sportId.length > 100) {
+        return res.status(400).json({ message: "Invalid sport ID" });
+      }
+      
+      const folders = listLeagueFolders(sportId);
+      res.json({ folders });
+    } catch (error) {
+      console.error("Error listing league folders:", error);
+      res.status(500).json({ message: "Failed to list league folders" });
+    }
+  });
+
+  /**
+   * Get cached images for a sport/league
+   */
+  app.get("/api/sports/folders/:sportId/images", async (req, res) => {
+    try {
+      const { sportId } = req.params;
+      const { leagueId } = req.query;
+      
+      if (!sportId || sportId.length > 100) {
+        return res.status(400).json({ message: "Invalid sport ID" });
+      }
+      
+      const images = await getImagesBySportLeague(
+        sportId, 
+        typeof leagueId === 'string' ? leagueId : undefined
+      );
+      res.json({ images });
+    } catch (error) {
+      console.error("Error getting sport/league images:", error);
+      res.status(500).json({ message: "Failed to get images" });
+    }
+  });
+
+  /**
+   * Cache an image to a specific sport/league folder
+   */
+  app.post("/api/images/cache", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const bodySchema = z.object({
+        url: z.string().url("Invalid URL format"),
+        sportId: z.string().max(100).optional(),
+        leagueId: z.string().max(100).optional(),
+        teamId: z.string().max(100).optional(),
+        category: z.string().max(50).optional(),
+      });
+      
+      const bodyResult = bodySchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request body", 
+          errors: bodyResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { url, sportId, leagueId, teamId, category } = bodyResult.data;
+      
+      const cachedPath = await getOrCacheImage(url, {
+        sportId,
+        leagueId,
+        teamId,
+        category: category || 'general',
+      });
+      
+      if (!cachedPath) {
+        return res.status(502).json({ message: "Failed to fetch and cache image" });
+      }
+      
+      res.json({ 
+        success: true, 
+        localPath: cachedPath,
+        serveUrl: `/api/images/cached/${encodeURIComponent(cachedPath)}`
+      });
+    } catch (error) {
+      console.error("Error caching image:", error);
+      res.status(500).json({ message: "Failed to cache image" });
+    }
+  });
+
+  /**
+   * Serve cached images with proper browser caching headers
+   * Supports both flat filenames and hierarchical paths (sport/league/filename.png)
+   * Caches images for 7 days with immutable flag for CDN optimization
+   */
+  app.get("/api/images/cached/*", async (req, res) => {
+    try {
+      const imagePath = (req.params as { 0?: string })[0] || "";
+      
+      // Validate path to prevent traversal attacks
+      if (!imagePath || imagePath.includes("..")) {
+        return res.status(400).json({ message: "Invalid path" });
+      }
+      
+      // Decode the path (handles URL-encoded slashes)
+      const decodedPath = decodeURIComponent(imagePath);
+      
+      const filePath = getCacheFilePath(decodedPath);
       
       if (!filePath) {
         return res.status(404).json({ message: "Image not found" });
       }
       
       // Determine content type from file extension
-      const ext = path.extname(filename).toLowerCase();
+      const ext = path.extname(decodedPath).toLowerCase();
       const contentTypes: Record<string, string> = {
         '.png': 'image/png',
         '.jpg': 'image/jpeg',
@@ -169,7 +366,7 @@ export function registerMediaRoutes(app: Express, deps: RouteDeps): void {
       // Set aggressive browser caching headers
       // Cache for 7 days, immutable for CDN optimization
       res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
-      res.setHeader('ETag', `"${filename}"`);
+      res.setHeader('ETag', `"${decodedPath}"`);
       res.setHeader('Content-Type', contentType);
       
       // Send the file
