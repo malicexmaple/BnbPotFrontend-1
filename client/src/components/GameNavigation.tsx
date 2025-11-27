@@ -97,14 +97,13 @@ export default function GameNavigation({
       {/* Right - Stacked header content with two-tone glass effect */}
       <div className="flex flex-col flex-1 min-w-0" style={{
         borderRadius: 0,
-        borderLeft: '1px solid rgba(60, 60, 60, 0.3)'
+        borderLeft: '1px solid rgba(255, 255, 255, 0.03)'
       }}>
         {/* Top Header - 30px (hidden on mobile) - DARKER glass tier */}
-        <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4" style={{
+        <nav className="hidden sm:flex flex-nowrap items-center justify-between px-4 border-b border-white/5" style={{
           height: '30px',
-          background: 'rgba(14, 14, 14, 0.95)',
-          borderBottom: '1px solid rgba(60, 60, 60, 0.2)',
-          boxShadow: 'inset 0 -1px 2px rgba(0, 0, 0, 0.5)'
+          background: 'rgba(12, 12, 14, 0.95)',
+          backdropFilter: 'blur(12px)'
         }}>
           <div className="flex flex-nowrap items-center gap-3">
             {/* Social Icons */}
@@ -137,11 +136,11 @@ export default function GameNavigation({
           </div>
         </nav>
 
-        {/* Bottom Header - 70px on desktop, 100px on mobile - LIGHTER glass tier (matches glass-panel) */}
+        {/* Bottom Header - 70px on desktop, 100px on mobile - LIGHTER glass tier */}
         <nav className="flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
           height: '70px',
-          background: 'rgba(20, 20, 20, 0.8)',
-          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
+          background: 'rgba(22, 22, 26, 0.92)',
+          backdropFilter: 'blur(12px)',
           flex: 1
         }}>
           {/* Navigation tabs */}

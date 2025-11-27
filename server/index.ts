@@ -1,7 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import path from "path";
 import { db } from "./db";
 import { registerRoutes } from "./routes/index";
 import { setupVite, serveStatic, log } from "./vite";
@@ -58,23 +57,6 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: false }));
-
-// PERFORMANCE: Cache images with long-lived headers for faster loading
-app.use((req, res, next) => {
-  if ((req.method === 'GET' || req.method === 'HEAD') && 
-      /\.(png|jpe?g|gif|webp|svg|avif|ico)$/i.test(req.path)) {
-    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-  }
-  next();
-});
-
-// Serve attached_assets with caching headers
-app.use('/media', express.static(path.resolve(import.meta.dirname, '..', 'attached_assets'), {
-  maxAge: '1y',
-  immutable: true,
-  etag: true,
-  lastModified: true,
-}));
 
 // SECURITY: Add comprehensive security headers (2025 best practices)
 app.use((_req, res, next) => {
