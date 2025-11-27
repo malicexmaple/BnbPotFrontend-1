@@ -138,7 +138,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
           {isUpcoming && (
             <div className="flex items-center gap-1" data-testid={`time-remaining-${market.id}`}>
               <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="font-mono text-sm font-semibold text-muted-foreground">
+              <span className="text-sm font-semibold text-muted-foreground">
                 {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
               </span>
             </div>
@@ -173,7 +173,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
           >
             <div className="flex flex-col items-center justify-center gap-1">
               <span className="text-sm font-semibold truncate max-w-full">{market.teamA}</span>
-              <span className="text-2xl font-mono font-bold">{formatOdds(oddsA)}</span>
+              <span className="text-2xl font-bold">{formatOdds(oddsA)}</span>
               <span className="text-xs opacity-90">
                 Pool: {formatPool(poolATotal)} BNB
               </span>
@@ -196,7 +196,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
           >
             <div className="flex flex-col items-center justify-center gap-1">
               <span className="text-sm font-semibold truncate max-w-full" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{market.teamB}</span>
-              <span className="text-2xl font-mono font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
+              <span className="text-2xl font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
               <span className="text-xs opacity-90" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
                 Pool: {formatPool(poolBTotal)} BNB
               </span>
