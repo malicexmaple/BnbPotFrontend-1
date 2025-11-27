@@ -4,13 +4,15 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { TheSportsDBDemo } from "@/components/TheSportsDBDemo";
 import { NetworkBackground } from "@/components/NetworkBackground";
 import { LiveBettingFeed } from "@/components/LiveBettingFeed";
+import { SportVisibilityControls } from "@/components/SportVisibilityControls";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sportsData } from "@shared/sports-leagues";
-import type { SportsVisibility, LeaguesVisibility, CustomLeague } from "@shared/schema";
+import type { CustomLeague, VisibilitySetting } from "@shared/schema";
 import {
   Select,
   SelectContent,
@@ -18,16 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Gamepad2, Plus, Upload, Search, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Gamepad2, Plus, Upload, Search, Eye, EyeOff, Settings } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
-interface VisibilitySettings {
-  sports: SportsVisibility[];
-  leagues: LeaguesVisibility[];
-}
 
 function getSportIcon(sport: typeof sportsData[0], className: string = "h-4 w-4") {
   if (sport.iconType === 'svg') {
@@ -75,8 +73,8 @@ export default function SportsDataDemo() {
   const [newLeagueName, setNewLeagueName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: visibilitySettings, refetch: refetchVisibility } = useQuery<VisibilitySettings>({
-    queryKey: ['/api/sports/visibility'],
+  const { data: visibilitySettings = [], refetch: refetchVisibility } = useQuery<VisibilitySetting[]>({
+    queryKey: ['/api/visibility-settings'],
     enabled: isAdmin,
   });
 
@@ -89,17 +87,26 @@ export default function SportsDataDemo() {
     enabled: isAdmin && !!selectedSport,
   });
 
+  const isSportVisible = (sportId: string): boolean => {
+    const setting = visibilitySettings.find(s => s.type === 'sport' && s.sportId === sportId);
+    return setting ? setting.isVisible : true;
+  };
+
+  const isLeagueVisible = (leagueId: string): boolean => {
+    const setting = visibilitySettings.find(s => s.type === 'league' && s.leagueId === leagueId);
+    return setting ? setting.isVisible : true;
+  };
+
   const toggleSportVisibilityMutation = useMutation({
-    mutationFn: async ({ sportId, isHidden }: { sportId: string; isHidden: boolean }) => {
-      const response = await apiRequest('PATCH', `/api/sports/visibility/sport/${sportId}`, { isHidden });
-      return response.json();
+    mutationFn: async ({ sportId, isVisible }: { sportId: string; isVisible: boolean }) => {
+      return await apiRequest('POST', `/api/admin/visibility/sport/${sportId}`, { isVisible });
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/visibility'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/visibility-settings'] });
       
-      if (variables.isHidden && variables.sportId === selectedSport) {
+      if (!variables.isVisible && variables.sportId === selectedSport) {
         const nextVisibleSport = sportsData.find(s => 
-          s.id !== variables.sportId && !isSportHidden(s.id)
+          s.id !== variables.sportId && isSportVisible(s.id)
         );
         if (nextVisibleSport) {
           setSelectedSport(nextVisibleSport.id);
@@ -108,7 +115,7 @@ export default function SportsDataDemo() {
       
       toast({
         title: "Visibility updated",
-        description: variables.isHidden 
+        description: !variables.isVisible 
           ? "Sport hidden from prediction market" 
           : "Sport visible in prediction market",
       });
@@ -122,24 +129,16 @@ export default function SportsDataDemo() {
     },
   });
 
-  const isSportHidden = (sportId: string): boolean => {
-    return visibilitySettings?.sports.find(s => s.sportId === sportId)?.isHidden || false;
-  };
-
-  const isLeagueHidden = (leagueId: string): boolean => {
-    return visibilitySettings?.leagues.find(l => l.leagueId === leagueId)?.isHidden || false;
-  };
-
   const handleToggleSportVisibility = (sportId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const currentlyHidden = isSportHidden(sportId);
-    toggleSportVisibilityMutation.mutate({ sportId, isHidden: !currentlyHidden });
+    const currentlyVisible = isSportVisible(sportId);
+    toggleSportVisibilityMutation.mutate({ sportId, isVisible: !currentlyVisible });
   };
 
   const currentSport = sportsData.find(s => s.id === selectedSport) || sportsData[0];
   
   const getVisibleLeagues = (sport: typeof sportsData[0]) => {
-    return sport.leagues.filter(league => !isLeagueHidden(league.id));
+    return sport.leagues.filter(league => isLeagueVisible(league.id));
   };
 
   const staticLeagues = currentSport ? getVisibleLeagues(currentSport) : [];
@@ -355,8 +354,23 @@ export default function SportsDataDemo() {
         </div>
 
         <div className="px-4 py-4 max-w-full relative z-10">
-          <div className="space-y-4">
-            
+          <Tabs defaultValue="data" className="space-y-4">
+            <TabsList className="grid w-full max-w-[400px] grid-cols-2">
+              <TabsTrigger value="data" data-testid="tab-sports-data">
+                <Search className="h-4 w-4 mr-2" />
+                Sports Data
+              </TabsTrigger>
+              <TabsTrigger value="visibility" data-testid="tab-visibility-controls">
+                <Settings className="h-4 w-4 mr-2" />
+                Visibility Controls
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="visibility" className="space-y-4">
+              <SportVisibilityControls />
+            </TabsContent>
+
+            <TabsContent value="data" className="space-y-4">
             {sportsData.length === 0 ? (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground">No sports available.</p>
@@ -365,7 +379,7 @@ export default function SportsDataDemo() {
               <>
                 <div className="flex flex-wrap gap-2 pb-2">
                   {sportsData.map((sport) => {
-                    const isHidden = isSportHidden(sport.id);
+                    const isHidden = !isSportVisible(sport.id);
                     return (
                       <div
                         key={sport.id}
@@ -475,7 +489,8 @@ export default function SportsDataDemo() {
                 )}
               </>
             )}
-          </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
