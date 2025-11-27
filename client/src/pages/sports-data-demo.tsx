@@ -6,16 +6,15 @@ import { NetworkBackground } from "@/components/NetworkBackground";
 import { LiveBettingFeed } from "@/components/LiveBettingFeed";
 import { SportVisibilityControls } from "@/components/SportVisibilityControls";
 import { UploadPanel } from "@/components/UploadPanel";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { sportsData } from "@shared/sports-leagues";
-import type { SportsVisibility, LeaguesVisibility, CustomMedia } from "@shared/schema";
+import type { SportsVisibility, LeaguesVisibility } from "@shared/schema";
 import {
   Select,
   SelectContent,
@@ -23,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Gamepad2, Settings, ChevronDown, ChevronRight, Plus, Trash2, Image, Users } from "lucide-react";
+import { ArrowLeft, Gamepad2, Settings, ChevronDown, ChevronRight, Plus, FolderPlus } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -34,13 +33,13 @@ interface VisibilitySettings {
   leagues: LeaguesVisibility[];
 }
 
-function getSportIcon(sport: typeof sportsData[0]) {
+function getSportIcon(sport: typeof sportsData[0], className: string = "h-4 w-4") {
   if (sport.iconType === 'svg') {
     return (
       <img 
         src={`/sport-icons/${sport.iconName}.svg`} 
         alt={sport.name}
-        className="h-4 w-4 brightness-0 invert"
+        className={`${className} brightness-0 invert`}
         onError={(e) => { 
           e.currentTarget.style.display = 'none';
         }}
@@ -51,7 +50,7 @@ function getSportIcon(sport: typeof sportsData[0]) {
       <img 
         src={`/sport-icons/${sport.iconName}.png`} 
         alt={sport.name}
-        className="h-4 w-4 brightness-0 invert"
+        className={`${className} brightness-0 invert`}
         onError={(e) => { 
           e.currentTarget.style.display = 'none';
         }}
@@ -60,27 +59,9 @@ function getSportIcon(sport: typeof sportsData[0]) {
   } else {
     const icons = LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>;
     const IconComponent = icons[sport.iconName] || Gamepad2;
-    return <IconComponent className="h-4 w-4" />;
+    return <IconComponent className={className} />;
   }
 }
-
-interface CustomMediaFormData {
-  entityType: 'team' | 'player';
-  entityName: string;
-  logoUrl: string;
-  photoUrl: string;
-  sportId: string;
-  leagueId: string;
-}
-
-const initialFormData: CustomMediaFormData = {
-  entityType: 'team',
-  entityName: '',
-  logoUrl: '',
-  photoUrl: '',
-  sportId: '',
-  leagueId: '',
-};
 
 export default function SportsDataDemo() {
   const [, setLocation] = useLocation();
@@ -90,115 +71,59 @@ export default function SportsDataDemo() {
     Object.fromEntries(sportsData.map(sport => [sport.id, sport.leagues[0]?.id || ""]))
   );
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [expandedSports, setExpandedSports] = useState<Record<string, boolean>>({});
-  const [customMediaOpen, setCustomMediaOpen] = useState(false);
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [mediaToDelete, setMediaToDelete] = useState<CustomMedia | null>(null);
-  const [formData, setFormData] = useState<CustomMediaFormData>(initialFormData);
+  const [addLeagueDialogOpen, setAddLeagueDialogOpen] = useState(false);
+  const [addSportDialogOpen, setAddSportDialogOpen] = useState(false);
+  const [currentSportForLeague, setCurrentSportForLeague] = useState<string>("");
+  const [newLeagueName, setNewLeagueName] = useState("");
+  const [newSportName, setNewSportName] = useState("");
 
   const { data: visibilitySettings } = useQuery<VisibilitySettings>({
     queryKey: ['/api/sports/visibility'],
     enabled: isAdmin,
   });
 
-  const { data: customMediaList = [], isLoading: customMediaLoading } = useQuery<CustomMedia[]>({
-    queryKey: ['/api/sports/custom-media'],
-    enabled: isAdmin,
-  });
-
-  const createCustomMediaMutation = useMutation({
-    mutationFn: async (data: CustomMediaFormData) => {
-      const payload = {
-        entityType: data.entityType,
-        entityId: `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        entityName: data.entityName,
-        logoUrl: data.logoUrl || undefined,
-        photoUrl: data.photoUrl || undefined,
-        sportId: data.sportId || undefined,
-        leagueId: data.leagueId || undefined,
-      };
-      const response = await apiRequest('POST', '/api/sports/custom-media', payload);
+  const createLeagueMutation = useMutation({
+    mutationFn: async ({ sportId, leagueName }: { sportId: string; leagueName: string }) => {
+      const response = await apiRequest('POST', '/api/sports/leagues', { sportId, leagueName });
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/custom-media'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sports'] });
       toast({
-        title: "Custom media added",
-        description: "The custom media has been created successfully.",
+        title: "League created",
+        description: "The league folder has been created successfully.",
       });
-      setAddDialogOpen(false);
-      setFormData(initialFormData);
+      setAddLeagueDialogOpen(false);
+      setNewLeagueName("");
+      setCurrentSportForLeague("");
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to create custom media.",
+        description: "Failed to create league.",
         variant: "destructive",
       });
     },
   });
 
-  const deleteCustomMediaMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await apiRequest('DELETE', `/api/sports/custom-media/${id}`);
+  const createSportMutation = useMutation({
+    mutationFn: async ({ sportName }: { sportName: string }) => {
+      const response = await apiRequest('POST', '/api/sports/folders', { sportName });
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/custom-media'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sports'] });
       toast({
-        title: "Custom media deleted",
-        description: "The custom media has been removed.",
+        title: "Sport created",
+        description: "The sport folder has been created successfully.",
       });
-      setDeleteDialogOpen(false);
-      setMediaToDelete(null);
+      setAddSportDialogOpen(false);
+      setNewSportName("");
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to delete custom media.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const sportVisibilityMutation = useMutation({
-    mutationFn: async ({ sportId, isHidden }: { sportId: string; isHidden: boolean }) => {
-      const response = await apiRequest('PATCH', `/api/sports/visibility/sport/${sportId}`, { isHidden });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/visibility'] });
-      toast({
-        title: "Sport visibility updated",
-        description: "The sport visibility has been changed.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update sport visibility.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const leagueVisibilityMutation = useMutation({
-    mutationFn: async ({ leagueId, sportId, isHidden }: { leagueId: string; sportId: string; isHidden: boolean }) => {
-      const response = await apiRequest('PATCH', `/api/sports/visibility/league/${leagueId}`, { sportId, isHidden });
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/visibility'] });
-      toast({
-        title: "League visibility updated",
-        description: "The league visibility has been changed.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update league visibility.",
+        description: "Failed to create sport.",
         variant: "destructive",
       });
     },
@@ -218,71 +143,34 @@ export default function SportsDataDemo() {
     return sport.leagues.filter(league => !isLeagueHidden(league.id));
   };
 
-  const toggleSportExpanded = (sportId: string) => {
-    setExpandedSports(prev => ({ ...prev, [sportId]: !prev[sportId] }));
+  const handleAddLeague = (sportId: string) => {
+    setCurrentSportForLeague(sportId);
+    setAddLeagueDialogOpen(true);
   };
 
-  const getSportName = (sportId: string | undefined | null) => {
-    if (!sportId) return 'All Sports';
-    const sport = sportsData.find(s => s.id === sportId);
-    return sport?.name || sportId;
-  };
-
-  const getLeagueName = (leagueId: string | undefined | null, sportId: string | undefined | null) => {
-    if (!leagueId) return 'All Leagues';
-    const sport = sportsData.find(s => s.id === sportId);
-    if (sport) {
-      const league = sport.leagues.find(l => l.id === leagueId);
-      if (league) return league.displayName;
-    }
-    for (const s of sportsData) {
-      const league = s.leagues.find(l => l.id === leagueId);
-      if (league) return league.displayName;
-    }
-    return leagueId;
-  };
-
-  const getAvailableLeagues = (sportId: string) => {
-    const sport = sportsData.find(s => s.id === sportId);
-    return sport?.leagues || [];
-  };
-
-  const handleFormSubmit = () => {
-    if (!formData.entityName.trim()) {
+  const handleCreateLeague = () => {
+    if (!newLeagueName.trim()) {
       toast({
         title: "Validation Error",
-        description: "Name is required.",
+        description: "League name is required.",
         variant: "destructive",
       });
       return;
     }
-    if (formData.entityType === 'team' && !formData.logoUrl.trim()) {
+    createLeagueMutation.mutate({ sportId: currentSportForLeague, leagueName: newLeagueName.trim() });
+  };
+
+  const handleCreateSport = () => {
+    if (!newSportName.trim()) {
       toast({
         title: "Validation Error",
-        description: "Logo URL is required for teams.",
+        description: "Sport name is required.",
         variant: "destructive",
       });
       return;
     }
-    if (formData.entityType === 'player' && !formData.photoUrl.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Photo URL is required for players.",
-        variant: "destructive",
-      });
-      return;
-    }
-    createCustomMediaMutation.mutate(formData);
+    createSportMutation.mutate({ sportName: newSportName.trim() });
   };
-
-  const handleConfirmDelete = () => {
-    if (mediaToDelete) {
-      deleteCustomMediaMutation.mutate(mediaToDelete.id);
-    }
-  };
-
-  const teamMedia = customMediaList.filter(m => m.entityType === 'team');
-  const playerMedia = customMediaList.filter(m => m.entityType === 'player');
 
   useEffect(() => {
     if (!isLoading) {
@@ -320,8 +208,6 @@ export default function SportsDataDemo() {
     return null;
   }
 
-  const defaultSportId = visibleSports[0]?.id || sportsData[0]?.id;
-
   return (
     <div className="flex flex-col h-full pt-[100px]">
       <LiveBettingFeed />
@@ -343,6 +229,15 @@ export default function SportsDataDemo() {
                 </p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setAddSportDialogOpen(true)}
+                  data-testid="button-add-sport"
+                >
+                  <FolderPlus className="h-4 w-4 mr-2" />
+                  Add Sport
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
@@ -375,444 +270,190 @@ export default function SportsDataDemo() {
               </CollapsibleContent>
             </Collapsible>
 
-            <Collapsible open={customMediaOpen} onOpenChange={setCustomMediaOpen}>
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mb-2"
-                  data-testid="button-custom-media-settings"
-                >
-                  <Image className="h-4 w-4 mr-2" />
-                  Custom Media
-                  {customMediaOpen ? (
-                    <ChevronDown className="h-4 w-4 ml-2" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 ml-2" />
-                  )}
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <Card className="p-4 mb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-semibold flex items-center gap-2">
-                      <Image className="h-4 w-4" />
-                      Custom Team Logos & Player Photos
-                    </h3>
-                    <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button size="sm" data-testid="button-add-custom-media">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Custom Media
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Add Custom Media</DialogTitle>
-                          <DialogDescription>
-                            Add a custom team logo or player photo to override API data.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="entityType">Type</Label>
-                            <Select
-                              value={formData.entityType}
-                              onValueChange={(value: 'team' | 'player') => 
-                                setFormData({ ...formData, entityType: value, logoUrl: '', photoUrl: '' })
-                              }
-                            >
-                              <SelectTrigger data-testid="select-entity-type">
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="team">Team Logo</SelectItem>
-                                <SelectItem value="player">Player Photo</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label htmlFor="entityName">
-                              {formData.entityType === 'team' ? 'Team Name' : 'Player Name'}
-                            </Label>
-                            <Input
-                              id="entityName"
-                              value={formData.entityName}
-                              onChange={(e) => setFormData({ ...formData, entityName: e.target.value })}
-                              placeholder={formData.entityType === 'team' ? 'e.g., Manchester United' : 'e.g., Lionel Messi'}
-                              data-testid="input-entity-name"
-                            />
-                          </div>
-                          
-                          {formData.entityType === 'team' && (
-                            <div className="space-y-2">
-                              <Label htmlFor="logoUrl">Logo URL</Label>
-                              <Input
-                                id="logoUrl"
-                                value={formData.logoUrl}
-                                onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
-                                placeholder="https://example.com/logo.png"
-                                data-testid="input-logo-url"
-                              />
-                            </div>
-                          )}
-                          
-                          {formData.entityType === 'player' && (
-                            <div className="space-y-2">
-                              <Label htmlFor="photoUrl">Photo URL</Label>
-                              <Input
-                                id="photoUrl"
-                                value={formData.photoUrl}
-                                onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
-                                placeholder="https://example.com/photo.png"
-                                data-testid="input-photo-url"
-                              />
-                            </div>
-                          )}
-                          
-                          <div className="space-y-2">
-                            <Label htmlFor="sportId">Sport (optional)</Label>
-                            <Select
-                              value={formData.sportId || "none"}
-                              onValueChange={(value) => 
-                                setFormData({ ...formData, sportId: value === 'none' ? '' : value, leagueId: '' })
-                              }
-                            >
-                              <SelectTrigger data-testid="select-sport">
-                                <SelectValue placeholder="Select sport" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="none">All Sports</SelectItem>
-                                {sportsData.map((sport) => (
-                                  <SelectItem key={sport.id} value={sport.id}>
-                                    {sport.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          
-                          {formData.sportId && (
-                            <div className="space-y-2">
-                              <Label htmlFor="leagueId">League (optional)</Label>
-                              <Select
-                                value={formData.leagueId || "none"}
-                                onValueChange={(value) => 
-                                  setFormData({ ...formData, leagueId: value === 'none' ? '' : value })
-                                }
-                              >
-                                <SelectTrigger data-testid="select-league">
-                                  <SelectValue placeholder="Select league" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="none">All Leagues</SelectItem>
-                                  {getAvailableLeagues(formData.sportId).map((league) => (
-                                    <SelectItem key={league.id} value={league.id}>
-                                      {league.displayName}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                        </div>
-                        <DialogFooter>
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setAddDialogOpen(false);
-                              setFormData(initialFormData);
-                            }}
-                            data-testid="button-cancel-add"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleFormSubmit}
-                            disabled={createCustomMediaMutation.isPending}
-                            data-testid="button-submit-add"
-                          >
-                            {createCustomMediaMutation.isPending ? 'Adding...' : 'Add Media'}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                  
-                  {customMediaLoading ? (
-                    <div className="text-center py-4 text-muted-foreground">Loading custom media...</div>
-                  ) : customMediaList.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Image className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                      <p>No custom media added yet.</p>
-                      <p className="text-xs mt-1">Click "Add Custom Media" to add team logos or player photos.</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {teamMedia.length > 0 && (
-                        <div>
-                          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1">
-                            <Image className="h-3 w-3" />
-                            Team Logos ({teamMedia.length})
-                          </h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                            {teamMedia.map((media) => (
-                              <div
-                                key={media.id}
-                                className="flex items-center gap-3 p-2 border rounded-md bg-muted/30"
-                                data-testid={`custom-media-${media.id}`}
-                              >
-                                <div className="shrink-0 w-10 h-10 bg-background rounded border flex items-center justify-center overflow-hidden">
-                                  {media.logoUrl ? (
-                                    <img
-                                      src={media.logoUrl}
-                                      alt={media.entityName}
-                                      className="w-8 h-8 object-contain"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                      }}
-                                    />
-                                  ) : (
-                                    <Image className="h-4 w-4 text-muted-foreground" />
-                                  )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium truncate">{media.entityName}</p>
-                                  <p className="text-xs text-muted-foreground truncate">
-                                    {getSportName(media.sportId)}
-                                    {media.leagueId && ` / ${getLeagueName(media.leagueId, media.sportId)}`}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="shrink-0"
-                                  onClick={() => {
-                                    setMediaToDelete(media);
-                                    setDeleteDialogOpen(true);
-                                  }}
-                                  data-testid={`button-delete-${media.id}`}
-                                >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {playerMedia.length > 0 && (
-                        <div>
-                          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            Player Photos ({playerMedia.length})
-                          </h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                            {playerMedia.map((media) => (
-                              <div
-                                key={media.id}
-                                className="flex items-center gap-3 p-2 border rounded-md bg-muted/30"
-                                data-testid={`custom-media-${media.id}`}
-                              >
-                                <div className="shrink-0 w-10 h-10 bg-background rounded-full border flex items-center justify-center overflow-hidden">
-                                  {media.photoUrl ? (
-                                    <img
-                                      src={media.photoUrl}
-                                      alt={media.entityName}
-                                      className="w-10 h-10 object-cover rounded-full"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                      }}
-                                    />
-                                  ) : (
-                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                  )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium truncate">{media.entityName}</p>
-                                  <p className="text-xs text-muted-foreground truncate">
-                                    {getSportName(media.sportId)}
-                                    {media.leagueId && ` / ${getLeagueName(media.leagueId, media.sportId)}`}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="shrink-0"
-                                  onClick={() => {
-                                    setMediaToDelete(media);
-                                    setDeleteDialogOpen(true);
-                                  }}
-                                  data-testid={`button-delete-${media.id}`}
-                                >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </Card>
-              </CollapsibleContent>
-            </Collapsible>
-            
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Delete Custom Media</DialogTitle>
-                  <DialogDescription>
-                    Are you sure you want to delete this custom media? This action cannot be undone.
-                  </DialogDescription>
-                </DialogHeader>
-                {mediaToDelete && (
-                  <div className="flex items-center gap-3 p-3 border rounded-md bg-muted/30">
-                    <div className="shrink-0 w-10 h-10 bg-background rounded border flex items-center justify-center overflow-hidden">
-                      {mediaToDelete.entityType === 'team' && mediaToDelete.logoUrl ? (
-                        <img
-                          src={mediaToDelete.logoUrl}
-                          alt={mediaToDelete.entityName}
-                          className="w-8 h-8 object-contain"
-                        />
-                      ) : mediaToDelete.entityType === 'player' && mediaToDelete.photoUrl ? (
-                        <img
-                          src={mediaToDelete.photoUrl}
-                          alt={mediaToDelete.entityName}
-                          className="w-10 h-10 object-cover rounded-full"
-                        />
-                      ) : (
-                        <Image className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{mediaToDelete.entityName}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{mediaToDelete.entityType}</p>
-                    </div>
-                  </div>
-                )}
-                <DialogFooter>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setDeleteDialogOpen(false);
-                      setMediaToDelete(null);
-                    }}
-                    data-testid="button-cancel-delete"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={handleConfirmDelete}
-                    disabled={deleteCustomMediaMutation.isPending}
-                    data-testid="button-confirm-delete"
-                  >
-                    {deleteCustomMediaMutation.isPending ? 'Deleting...' : 'Delete'}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
             {visibleSports.length === 0 ? (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground">All sports are hidden. Use the visibility settings to show sports.</p>
               </Card>
             ) : (
-              <Tabs defaultValue={defaultSportId} className="w-full">
-                <div className="overflow-x-auto pb-2">
-                  <TabsList 
-                    className="inline-flex w-auto min-w-full justify-start gap-1 h-auto bg-card/50 p-2" 
-                    data-testid="tabs-sports"
-                  >
-                    {visibleSports.map((sport) => (
-                      <TabsTrigger 
-                        key={sport.id}
-                        value={sport.id}
-                        className="gap-2 whitespace-nowrap shrink-0"
-                        data-testid={`tab-${sport.id}`}
-                      >
-                        {getSportIcon(sport)}
-                        <span>{sport.name}</span>
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                </div>
-                
+              <Accordion type="single" collapsible defaultValue={visibleSports[0]?.id} className="space-y-2">
                 {visibleSports.map((sport) => {
                   const visibleLeagues = getVisibleLeagues(sport);
                   const selectedLeagueId = selectedLeagues[sport.id];
                   const selectedLeague = visibleLeagues.find(l => l.id === selectedLeagueId) || visibleLeagues[0];
                   
                   return (
-                    <TabsContent key={sport.id} value={sport.id} className="space-y-4">
-                      <UploadPanel sport={sport.name} defaultLeague={selectedLeague?.name} />
-                      
-                      {visibleLeagues.length === 0 ? (
-                        <Card className="p-6 text-center">
-                          <p className="text-muted-foreground">All leagues for this sport are hidden.</p>
-                        </Card>
-                      ) : (
-                        <>
-                          <div className="flex items-center gap-3 flex-wrap">
-                            <label className="text-sm font-medium whitespace-nowrap">Select League:</label>
-                            <Select
-                              value={selectedLeague?.id || selectedLeagueId}
-                              onValueChange={(value) => setSelectedLeagues({ ...selectedLeagues, [sport.id]: value })}
-                            >
-                              <SelectTrigger className="w-[280px]" data-testid={`select-league-${sport.id}`}>
-                                <SelectValue placeholder="Select a league" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {visibleLeagues.map((league) => (
-                                  <SelectItem key={league.id} value={league.id}>
-                                    <div className="flex items-center gap-2">
-                                      {league.badge && (
-                                        <img 
-                                          src={league.badge} 
-                                          alt={league.displayName} 
-                                          className="h-5 w-5 object-contain" 
-                                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                        />
-                                      )}
-                                      <span>{league.displayName}</span>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              className="border-dashed border-primary/50 text-primary hover:bg-primary/10"
-                              onClick={() => setAddDialogOpen(true)}
-                              data-testid={`button-add-media-${sport.id}`}
-                            >
-                              <Plus className="h-4 w-4 mr-1" />
-                              Add Media
-                            </Button>
-                          </div>
+                    <AccordionItem 
+                      key={sport.id} 
+                      value={sport.id}
+                      className="border border-border rounded-lg bg-card/50 overflow-hidden"
+                      data-testid={`accordion-sport-${sport.id}`}
+                    >
+                      <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          {getSportIcon(sport, "h-5 w-5")}
+                          <span className="text-lg font-semibold">{sport.name}</span>
+                          <span className="text-sm text-muted-foreground">
+                            ({visibleLeagues.length} leagues)
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4">
+                        <div className="space-y-4">
+                          <UploadPanel sport={sport.name} defaultLeague={selectedLeague?.name} />
                           
-                          {selectedLeague && (
-                            <TheSportsDBDemo 
-                              leagueId={selectedLeague.id} 
-                              leagueName={selectedLeague.name} 
-                              displayName={selectedLeague.displayName}
-                              leagueBadge={selectedLeague.badge}
-                              sport={sport.name}
-                            />
+                          {visibleLeagues.length === 0 ? (
+                            <Card className="p-6 text-center">
+                              <p className="text-muted-foreground">All leagues for this sport are hidden.</p>
+                            </Card>
+                          ) : (
+                            <>
+                              <div className="flex items-center gap-3 flex-wrap">
+                                <label className="text-sm font-medium whitespace-nowrap">Select League:</label>
+                                <Select
+                                  value={selectedLeague?.id || selectedLeagueId}
+                                  onValueChange={(value) => setSelectedLeagues({ ...selectedLeagues, [sport.id]: value })}
+                                >
+                                  <SelectTrigger className="w-[280px]" data-testid={`select-league-${sport.id}`}>
+                                    <SelectValue placeholder="Select a league" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {visibleLeagues.map((league) => (
+                                      <SelectItem key={league.id} value={league.id}>
+                                        <div className="flex items-center gap-2">
+                                          {league.badge && (
+                                            <img 
+                                              src={league.badge} 
+                                              alt={league.displayName} 
+                                              className="h-5 w-5 object-contain" 
+                                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                            />
+                                          )}
+                                          <span>{league.displayName}</span>
+                                        </div>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="border-dashed border-primary/50 text-primary hover:bg-primary/10"
+                                  onClick={() => handleAddLeague(sport.id)}
+                                  data-testid={`button-add-league-${sport.id}`}
+                                >
+                                  <Plus className="h-4 w-4 mr-1" />
+                                  Add League
+                                </Button>
+                              </div>
+                              
+                              {selectedLeague && (
+                                <TheSportsDBDemo 
+                                  leagueId={selectedLeague.id} 
+                                  leagueName={selectedLeague.name} 
+                                  displayName={selectedLeague.displayName}
+                                  leagueBadge={selectedLeague.badge}
+                                  sport={sport.name}
+                                />
+                              )}
+                            </>
                           )}
-                        </>
-                      )}
-                    </TabsContent>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
                   );
                 })}
-              </Tabs>
+              </Accordion>
             )}
           </div>
         </div>
       </div>
+
+      <Dialog open={addLeagueDialogOpen} onOpenChange={setAddLeagueDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New League</DialogTitle>
+            <DialogDescription>
+              Create a new league folder within the selected sport. This will create the folder structure for storing team logos and media.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="leagueName">League Name</Label>
+              <Input
+                id="leagueName"
+                value={newLeagueName}
+                onChange={(e) => setNewLeagueName(e.target.value)}
+                placeholder="e.g., Premier League, NBA, NFL"
+                data-testid="input-league-name"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Sport: {sportsData.find(s => s.id === currentSportForLeague)?.name || currentSportForLeague}
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAddLeagueDialogOpen(false);
+                setNewLeagueName("");
+              }}
+              data-testid="button-cancel-add-league"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleCreateLeague}
+              disabled={createLeagueMutation.isPending}
+              data-testid="button-submit-add-league"
+            >
+              {createLeagueMutation.isPending ? 'Creating...' : 'Create League'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={addSportDialogOpen} onOpenChange={setAddSportDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Sport</DialogTitle>
+            <DialogDescription>
+              Create a new sport folder. You can then add leagues within this sport.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="sportName">Sport Name</Label>
+              <Input
+                id="sportName"
+                value={newSportName}
+                onChange={(e) => setNewSportName(e.target.value)}
+                placeholder="e.g., Cricket, Rugby, Golf"
+                data-testid="input-sport-name"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAddSportDialogOpen(false);
+                setNewSportName("");
+              }}
+              data-testid="button-cancel-add-sport"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleCreateSport}
+              disabled={createSportMutation.isPending}
+              data-testid="button-submit-add-sport"
+            >
+              {createSportMutation.isPending ? 'Creating...' : 'Create Sport'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
