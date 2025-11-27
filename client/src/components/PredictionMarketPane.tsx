@@ -107,7 +107,7 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
           {isUpcoming && (
             <div className="flex items-center gap-1" data-testid={`time-remaining-pane-${market.id}`}>
               <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="font-mono text-sm font-semibold text-muted-foreground">
+              <span className="text-sm font-semibold text-muted-foreground">
                 {timeRemaining.hours}h {timeRemaining.minutes}m {timeRemaining.seconds}s
               </span>
             </div>
@@ -145,7 +145,7 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
 
         <div className="text-right min-w-[80px]">
           <div className="text-xs text-muted-foreground">Liquidity</div>
-          <div className="font-mono text-sm text-foreground">{formatPool(totalPool)} BNB</div>
+          <div className="text-sm font-semibold text-foreground">{formatPool(totalPool)} BNB</div>
         </div>
 
         <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
             }}
             data-testid={`button-bet-pane-${market.id}-a`}
           >
-            <span className="text-lg font-mono font-bold">{formatOdds(oddsA)}</span>
+            <span className="text-lg font-bold">{formatOdds(oddsA)}</span>
             <span className="text-[10px] opacity-80">
               {formatPool(poolATotal)} BNB
             </span>
@@ -183,7 +183,7 @@ export function PredictionMarketPane({ market, onPlaceBet, disabled = false }: P
             }}
             data-testid={`button-bet-pane-${market.id}-b`}
           >
-            <span className="text-lg font-mono font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
+            <span className="text-lg font-bold" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>{formatOdds(oddsB)}</span>
             <span className="text-[10px] opacity-80" style={{ textShadow: '0 0 8px rgba(0,0,0,0.9)' }}>
               {formatPool(poolBTotal)} BNB
             </span>
