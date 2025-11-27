@@ -1,9 +1,10 @@
-import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import { useChat } from "@/hooks/useChat";
 import { useJackpotContract } from "@/hooks/useJackpotContract";
 import { queryClient } from '@/lib/queryClient';
+import { web3Service } from '@/lib/web3Service';
 
 interface GameStateContextType {
   address: string | null;
@@ -20,6 +21,8 @@ interface GameStateContextType {
   isAuthenticated: boolean;
   onlineUsers: number;
   sendMessage: (message: string) => boolean;
+  bnbBalance: string | null;
+  refreshBalance: () => Promise<void>;
   contract: {
     isContractAvailable: boolean;
     placeBet?: (amount: string) => Promise<{ success: boolean; txHash?: string; error?: string }>;
@@ -43,6 +46,28 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
   const contract = useJackpotContract(address || undefined, contractAddress);
   
   const wsRef = useRef<WebSocket | null>(null);
+  const [bnbBalance, setBnbBalance] = useState<string | null>(null);
+  
+  const refreshBalance = useCallback(async () => {
+    if (!address) {
+      setBnbBalance(null);
+      return;
+    }
+    try {
+      const balance = await web3Service.getBalance(address);
+      setBnbBalance(balance);
+    } catch (err) {
+      console.error('Failed to fetch BNB balance:', err);
+    }
+  }, [address]);
+  
+  useEffect(() => {
+    refreshBalance();
+    if (address) {
+      const interval = setInterval(refreshBalance, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [address, refreshBalance]);
   
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -97,6 +122,8 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
       isAuthenticated,
       onlineUsers,
       sendMessage,
+      bnbBalance,
+      refreshBalance,
       contract,
     }}>
       {children}

@@ -5,7 +5,7 @@ import { useGameState } from "@/hooks/useGameState";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function PersistentHeader() {
-  const { address, isConnecting, connect, disconnect, username } = useGameState();
+  const { address, isConnecting, connect, disconnect, username, bnbBalance } = useGameState();
   const { isAdmin } = useAuth();
   const [showProfileModal, setShowProfileModal] = useState(false);
 
@@ -19,6 +19,7 @@ export default function PersistentHeader() {
           isConnecting={isConnecting} 
           walletAddress={address || undefined} 
           username={username || undefined} 
+          bnbBalance={bnbBalance || undefined}
           onOpenProfile={() => setShowProfileModal(true)}
           isAdmin={isAdmin}
         />

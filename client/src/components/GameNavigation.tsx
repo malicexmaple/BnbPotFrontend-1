@@ -22,6 +22,7 @@ interface GameNavigationProps {
   isConnecting?: boolean;
   walletAddress?: string;
   username?: string;
+  bnbBalance?: string;
   onOpenProfile?: () => void;
   isAdmin?: boolean;
 }
@@ -33,6 +34,7 @@ export default function GameNavigation({
   isConnecting = false,
   walletAddress,
   username,
+  bnbBalance,
   onOpenProfile,
   isAdmin = false
 }: GameNavigationProps) {
@@ -213,7 +215,14 @@ export default function GameNavigation({
                         </svg>
                       )}
                     </div>
-                    <span className="hidden sm:inline">{username}</span>
+                    <div className="hidden sm:flex flex-col items-start">
+                      <span className="font-bold">{username}</span>
+                      {bnbBalance && (
+                        <span className="text-[10px] text-primary opacity-80 font-mono">
+                          {parseFloat(bnbBalance).toFixed(4)} BNB
+                        </span>
+                      )}
+                    </div>
                     <ChevronRight className="ml-1 sm:ml-2" style={{width: '12px', height: '12px'}} />
                   </Button>
                 </DropdownMenuTrigger>
