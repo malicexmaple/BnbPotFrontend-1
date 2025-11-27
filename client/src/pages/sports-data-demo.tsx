@@ -73,7 +73,7 @@ export default function SportsDataDemo() {
   const [newLeagueName, setNewLeagueName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: visibilitySettings = [], refetch: refetchVisibility } = useQuery<VisibilitySetting[]>({
+  const { data: visibilitySettings = [] } = useQuery<VisibilitySetting[]>({
     queryKey: ['/api/visibility-settings'],
     enabled: isAdmin,
   });
@@ -101,6 +101,35 @@ export default function SportsDataDemo() {
     mutationFn: async ({ sportId, isVisible }: { sportId: string; isVisible: boolean }) => {
       return await apiRequest('POST', `/api/admin/visibility/sport/${sportId}`, { isVisible });
     },
+    onMutate: async ({ sportId, isVisible }) => {
+      await queryClient.cancelQueries({ queryKey: ['/api/visibility-settings'] });
+      
+      const previousSettings = queryClient.getQueryData<VisibilitySetting[]>(['/api/visibility-settings']);
+      
+      queryClient.setQueryData<VisibilitySetting[]>(['/api/visibility-settings'], (old = []) => {
+        const existingIndex = old.findIndex(s => s.type === 'sport' && s.sportId === sportId);
+        if (existingIndex >= 0) {
+          const updated = [...old];
+          updated[existingIndex] = { ...updated[existingIndex], isVisible };
+          return updated;
+        } else {
+          const now = new Date().toISOString();
+          return [...old, { 
+            id: `optimistic-${sportId}`, 
+            type: 'sport' as const, 
+            sportId, 
+            leagueId: null, 
+            isVisible, 
+            manualOverride: false,
+            updatedBy: null,
+            createdAt: now,
+            updatedAt: now,
+          }];
+        }
+      });
+      
+      return { previousSettings };
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/visibility-settings'] });
       
@@ -120,7 +149,10 @@ export default function SportsDataDemo() {
           : "Sport visible in prediction market",
       });
     },
-    onError: () => {
+    onError: (_, __, context) => {
+      if (context?.previousSettings) {
+        queryClient.setQueryData(['/api/visibility-settings'], context.previousSettings);
+      }
       toast({
         title: "Error",
         description: "Failed to update sport visibility",
