@@ -755,7 +755,7 @@ export default function SportsDataDemo() {
                         </Card>
                       ) : (
                         <>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 flex-wrap">
                             <label className="text-sm font-medium whitespace-nowrap">Select League:</label>
                             <Select
                               value={selectedLeague?.id || selectedLeagueId}
@@ -782,6 +782,16 @@ export default function SportsDataDemo() {
                                 ))}
                               </SelectContent>
                             </Select>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="border-dashed border-primary/50 text-primary hover:bg-primary/10"
+                              onClick={() => setAddDialogOpen(true)}
+                              data-testid={`button-add-league-${sport.id}`}
+                            >
+                              <Plus className="h-4 w-4 mr-1" />
+                              Add League
+                            </Button>
                           </div>
                           
                           {selectedLeague && (

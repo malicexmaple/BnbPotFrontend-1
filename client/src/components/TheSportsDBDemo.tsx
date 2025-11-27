@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Search, Calendar, Trophy, AlertCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Search, Calendar, Trophy, AlertCircle, Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import type { SportsDBEvent, SportsDBTeam } from "@shared/thesportsdb-types";
 
 function TeamLogo({ teamName, logoUrl, size = "md" }: { teamName?: string | null; logoUrl?: string; size?: "sm" | "md" }) {
@@ -72,6 +76,42 @@ export function TheSportsDBDemo({
   const [teamSearch, setTeamSearch] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [eventsToShow, setEventsToShow] = useState(50);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [uploadForm, setUploadForm] = useState({ name: "", logoUrl: "" });
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const uploadTeamMutation = useMutation({
+    mutationFn: async (data: { name: string; logoUrl: string }) => {
+      const payload = {
+        entityType: 'team' as const,
+        entityId: `custom_team_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        entityName: data.name,
+        logoUrl: data.logoUrl,
+        sportId: sport.toLowerCase().replace(/\s+/g, '-'),
+        leagueId: leagueId,
+      };
+      const response = await apiRequest('POST', '/api/sports/custom-media', payload);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Team logo added successfully" });
+      setUploadForm({ name: "", logoUrl: "" });
+      setUploadDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/sports/custom-media"] });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to add team logo", variant: "destructive" });
+    },
+  });
+
+  const handleUploadSubmit = () => {
+    if (!uploadForm.name || !uploadForm.logoUrl) {
+      toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
+      return;
+    }
+    uploadTeamMutation.mutate(uploadForm);
+  };
 
   const { data: upcomingEvents, isLoading: eventsLoading, error: eventsError } = useQuery<SportsDBEvent[]>({
     queryKey: ['/api/sports/events/upcoming', leagueId],
@@ -246,6 +286,23 @@ export function TheSportsDBDemo({
                   </CardContent>
                 </Card>
               ))}
+              
+              {/* Upload Logo Card */}
+              <Card 
+                className="bg-card/30 border-dashed border-2 border-muted-foreground/30 hover-elevate cursor-pointer" 
+                onClick={() => setUploadDialogOpen(true)}
+                data-testid="card-upload-team-logo"
+              >
+                <CardContent className="p-4 flex flex-col items-center text-center gap-2 h-full justify-center">
+                  <div className="h-16 w-16 rounded-full border-2 border-dashed border-muted-foreground/50 flex items-center justify-center">
+                    <Upload className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <div className="w-full">
+                    <p className="font-semibold text-sm">Upload Logo</p>
+                    <p className="text-xs text-muted-foreground">Add custom team</p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           ) : (
             <Alert>
@@ -363,6 +420,59 @@ export function TheSportsDBDemo({
           )}
         </CardContent>
       </Card>
+
+      {/* Upload Team Logo Dialog */}
+      <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload Team Logo</DialogTitle>
+            <DialogDescription>
+              Add a custom team logo for this league.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="teamName">Team Name</Label>
+              <Input
+                id="teamName"
+                value={uploadForm.name}
+                onChange={(e) => setUploadForm({ ...uploadForm, name: e.target.value })}
+                placeholder="e.g., Los Angeles Lakers"
+                data-testid="input-upload-team-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="logoUrl">Logo URL</Label>
+              <Input
+                id="logoUrl"
+                value={uploadForm.logoUrl}
+                onChange={(e) => setUploadForm({ ...uploadForm, logoUrl: e.target.value })}
+                placeholder="https://example.com/logo.png"
+                data-testid="input-upload-logo-url"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setUploadDialogOpen(false);
+                setUploadForm({ name: "", logoUrl: "" });
+              }}
+              data-testid="button-cancel-upload"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUploadSubmit}
+              disabled={uploadTeamMutation.isPending}
+              data-testid="button-submit-upload"
+            >
+              {uploadTeamMutation.isPending ? 'Uploading...' : 'Upload'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
