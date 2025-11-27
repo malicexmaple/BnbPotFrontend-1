@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { sportsData } from "@shared/sports-leagues";
-import type { SportsVisibility, LeaguesVisibility } from "@shared/schema";
+import type { SportsVisibility, LeaguesVisibility, CustomLeague } from "@shared/schema";
 import {
   Select,
   SelectContent,
@@ -80,6 +80,15 @@ export default function SportsDataDemo() {
     enabled: isAdmin,
   });
 
+  const { data: customLeagues = [] } = useQuery<CustomLeague[]>({
+    queryKey: ['/api/sports/custom-leagues', selectedSport],
+    queryFn: async () => {
+      const res = await fetch(`/api/sports/custom-leagues?sportId=${selectedSport}`);
+      return res.json();
+    },
+    enabled: isAdmin && !!selectedSport,
+  });
+
   const toggleSportVisibilityMutation = useMutation({
     mutationFn: async ({ sportId, isHidden }: { sportId: string; isHidden: boolean }) => {
       const response = await apiRequest('PATCH', `/api/sports/visibility/sport/${sportId}`, { isHidden });
@@ -133,29 +142,42 @@ export default function SportsDataDemo() {
     return sport.leagues.filter(league => !isLeagueHidden(league.id));
   };
 
-  const visibleLeagues = currentSport ? getVisibleLeagues(currentSport) : [];
+  const staticLeagues = currentSport ? getVisibleLeagues(currentSport) : [];
+  
+  const customLeagueItems = customLeagues.map(cl => ({
+    id: cl.id,
+    name: cl.name,
+    displayName: cl.displayName,
+    badge: cl.badgeUrl || undefined,
+    isCustom: true,
+  }));
+  
+  const visibleLeagues = [...staticLeagues, ...customLeagueItems];
   const selectedLeagueId = selectedLeagues[currentSport?.id || ""];
   const selectedLeague = visibleLeagues.find(l => l.id === selectedLeagueId) || visibleLeagues[0];
 
   const addLeagueMutation = useMutation({
-    mutationFn: async ({ sportId, leagueName }: { sportId: string; leagueName: string }) => {
-      const response = await apiRequest('POST', '/api/sports/leagues', { sportId, leagueName });
+    mutationFn: async ({ sportId, leagueName, displayName }: { sportId: string; leagueName: string; displayName: string }) => {
+      const response = await apiRequest('POST', '/api/sports/custom-leagues', { 
+        sportId, 
+        name: leagueName,
+        displayName 
+      });
       return response.json();
     },
     onSuccess: (data) => {
       toast({
         title: "League created",
-        description: data.message || `League folder created successfully`,
+        description: data.message || `Custom league created successfully`,
       });
       setAddLeagueDialogOpen(false);
       setNewLeagueName("");
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/folders'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/sports/visibility'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sports/custom-leagues', selectedSport] });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to create league folder",
+        description: "Failed to create custom league",
         variant: "destructive",
       });
     },
@@ -256,7 +278,11 @@ export default function SportsDataDemo() {
       return;
     }
     
-    addLeagueMutation.mutate({ sportId: currentSport.id, leagueName: newLeagueName });
+    addLeagueMutation.mutate({ 
+      sportId: currentSport.id, 
+      leagueName: newLeagueName.trim(),
+      displayName: newLeagueName.trim()
+    });
   };
 
   useEffect(() => {

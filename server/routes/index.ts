@@ -18,6 +18,7 @@ import { registerMarketsRoutes } from "./markets.routes";
 import { registerSportsRoutes } from "./sports.routes";
 import { registerVisibilityRoutes } from "./visibility.routes";
 import { registerMediaRoutes } from "./media.routes";
+import { registerCustomLeaguesRoutes } from "./custom-leagues.routes";
 
 export async function registerRoutes(app: Express, sessionParser: any): Promise<Server> {
   const httpServer = createServer(app);
@@ -45,6 +46,7 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
   await registerSportsRoutes(app, deps);
   registerVisibilityRoutes(app, deps);
   registerMediaRoutes(app, deps);
+  registerCustomLeaguesRoutes(app, deps);
 
   return httpServer;
 }
