@@ -413,3 +413,38 @@ export const insertCustomMediaSchema = createInsertSchema(customMedia).omit({
 
 export type InsertCustomMedia = z.infer<typeof insertCustomMediaSchema>;
 export type CustomMedia = typeof customMedia.$inferSelect;
+
+// Custom Leagues (admin-created leagues that appear alongside static leagues)
+export const customLeagues = pgTable("custom_leagues", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sportId: text("sport_id").notNull(),
+  name: text("name").notNull(),
+  displayName: text("display_name").notNull(),
+  badgeUrl: text("badge_url"),
+  folderPath: text("folder_path"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertCustomLeagueSchema = createInsertSchema(customLeagues).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  sportId: z.string()
+    .min(1, "Sport ID is required")
+    .max(100, "Sport ID too long"),
+  name: z.string()
+    .min(1, "League name is required")
+    .max(100, "League name too long")
+    .trim(),
+  displayName: z.string()
+    .min(1, "Display name is required")
+    .max(200, "Display name too long")
+    .trim(),
+  badgeUrl: z.string().url().nullable().optional(),
+  folderPath: z.string().max(500).nullable().optional(),
+});
+
+export type InsertCustomLeague = z.infer<typeof insertCustomLeagueSchema>;
+export type CustomLeague = typeof customLeagues.$inferSelect;
