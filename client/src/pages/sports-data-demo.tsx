@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { TheSportsDBDemo } from "@/components/TheSportsDBDemo";
 import { NetworkBackground } from "@/components/NetworkBackground";
 import { LiveBettingFeed } from "@/components/LiveBettingFeed";
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Gamepad2, Plus, Upload, Search } from "lucide-react";
+import { ArrowLeft, Gamepad2, Plus, Upload, Search, Eye, EyeOff } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -75,9 +75,42 @@ export default function SportsDataDemo() {
   const [newLeagueName, setNewLeagueName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: visibilitySettings } = useQuery<VisibilitySettings>({
+  const { data: visibilitySettings, refetch: refetchVisibility } = useQuery<VisibilitySettings>({
     queryKey: ['/api/sports/visibility'],
     enabled: isAdmin,
+  });
+
+  const toggleSportVisibilityMutation = useMutation({
+    mutationFn: async ({ sportId, isHidden }: { sportId: string; isHidden: boolean }) => {
+      const response = await apiRequest('PATCH', `/api/sports/visibility/sport/${sportId}`, { isHidden });
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/sports/visibility'] });
+      
+      if (variables.isHidden && variables.sportId === selectedSport) {
+        const nextVisibleSport = sportsData.find(s => 
+          s.id !== variables.sportId && !isSportHidden(s.id)
+        );
+        if (nextVisibleSport) {
+          setSelectedSport(nextVisibleSport.id);
+        }
+      }
+      
+      toast({
+        title: "Visibility updated",
+        description: variables.isHidden 
+          ? "Sport hidden from prediction market" 
+          : "Sport visible in prediction market",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update sport visibility",
+        variant: "destructive",
+      });
+    },
   });
 
   const isSportHidden = (sportId: string): boolean => {
@@ -88,8 +121,13 @@ export default function SportsDataDemo() {
     return visibilitySettings?.leagues.find(l => l.leagueId === leagueId)?.isHidden || false;
   };
 
-  const visibleSports = sportsData.filter(sport => !isSportHidden(sport.id));
-  const currentSport = visibleSports.find(s => s.id === selectedSport) || visibleSports[0];
+  const handleToggleSportVisibility = (sportId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const currentlyHidden = isSportHidden(sportId);
+    toggleSportVisibilityMutation.mutate({ sportId, isHidden: !currentlyHidden });
+  };
+
+  const currentSport = sportsData.find(s => s.id === selectedSport) || sportsData[0];
   
   const getVisibleLeagues = (sport: typeof sportsData[0]) => {
     return sport.leagues.filter(league => !isLeagueHidden(league.id));
@@ -98,6 +136,70 @@ export default function SportsDataDemo() {
   const visibleLeagues = currentSport ? getVisibleLeagues(currentSport) : [];
   const selectedLeagueId = selectedLeagues[currentSport?.id || ""];
   const selectedLeague = visibleLeagues.find(l => l.id === selectedLeagueId) || visibleLeagues[0];
+
+  const addLeagueMutation = useMutation({
+    mutationFn: async ({ sportId, leagueName }: { sportId: string; leagueName: string }) => {
+      const response = await apiRequest('POST', '/api/sports/leagues', { sportId, leagueName });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "League created",
+        description: data.message || `League folder created successfully`,
+      });
+      setAddLeagueDialogOpen(false);
+      setNewLeagueName("");
+      queryClient.invalidateQueries({ queryKey: ['/api/sports/folders'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sports/visibility'] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to create league folder",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const uploadMediaMutation = useMutation({
+    mutationFn: async ({ name, file, type }: { name: string; file: File; type: 'team' | 'player' }) => {
+      const reader = new FileReader();
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      
+      const response = await apiRequest('POST', '/api/sports/upload-media', {
+        entityName: name,
+        entityType: type,
+        entityId: `custom_${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        sportId: currentSport?.id || '',
+        leagueId: selectedLeague?.id || '',
+        fileData: base64Data,
+        fileName: file.name,
+      });
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Upload successful",
+        description: `${uploadType === 'team' ? 'Team logo' : 'Player photo'} uploaded successfully`,
+      });
+      setUploadDialogOpen(false);
+      setTeamName("");
+      setSelectedFile(null);
+      queryClient.invalidateQueries({ queryKey: ['/api/sports/custom-media'] });
+    },
+    onError: () => {
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -132,14 +234,7 @@ export default function SportsDataDemo() {
       return;
     }
 
-    toast({
-      title: "Upload started",
-      description: `Uploading ${uploadType} data...`,
-    });
-
-    setUploadDialogOpen(false);
-    setTeamName("");
-    setSelectedFile(null);
+    uploadMediaMutation.mutate({ name: teamName, file: selectedFile, type: uploadType });
   };
 
   const handleAddLeague = () => {
@@ -152,13 +247,16 @@ export default function SportsDataDemo() {
       return;
     }
     
-    toast({
-      title: "League created",
-      description: `League "${newLeagueName}" has been created`,
-    });
+    if (!currentSport?.id) {
+      toast({
+        title: "Sport required",
+        description: "Please select a sport first",
+        variant: "destructive",
+      });
+      return;
+    }
     
-    setAddLeagueDialogOpen(false);
-    setNewLeagueName("");
+    addLeagueMutation.mutate({ sportId: currentSport.id, leagueName: newLeagueName });
   };
 
   useEffect(() => {
@@ -233,28 +331,53 @@ export default function SportsDataDemo() {
         <div className="px-4 py-4 max-w-full relative z-10">
           <div className="space-y-4">
             
-            {visibleSports.length === 0 ? (
+            {sportsData.length === 0 ? (
               <Card className="p-8 text-center">
-                <p className="text-muted-foreground">All sports are hidden. Use the visibility settings to show sports.</p>
+                <p className="text-muted-foreground">No sports available.</p>
               </Card>
             ) : (
               <>
                 <div className="flex flex-wrap gap-2 pb-2">
-                  {visibleSports.map((sport) => (
-                    <button
-                      key={sport.id}
-                      onClick={() => setSelectedSport(sport.id)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors ${
-                        selectedSport === sport.id
-                          ? 'bg-primary/20 text-primary border border-primary/50'
-                          : 'bg-card/50 text-muted-foreground border border-border hover:bg-card hover:text-foreground'
-                      }`}
-                      data-testid={`sport-pill-${sport.id}`}
-                    >
-                      {getSportIcon(sport, "h-4 w-4")}
-                      <span>{sport.name}</span>
-                    </button>
-                  ))}
+                  {sportsData.map((sport) => {
+                    const isHidden = isSportHidden(sport.id);
+                    return (
+                      <div
+                        key={sport.id}
+                        className={`flex items-center gap-1 pr-1 rounded-full text-sm transition-colors ${
+                          selectedSport === sport.id
+                            ? 'bg-primary/20 text-primary border border-primary/50'
+                            : isHidden
+                              ? 'bg-card/30 text-muted-foreground/50 border border-border/50'
+                              : 'bg-card/50 text-muted-foreground border border-border hover:bg-card hover:text-foreground'
+                        }`}
+                      >
+                        <button
+                          onClick={() => setSelectedSport(sport.id)}
+                          className="flex items-center gap-2 px-3 py-1.5"
+                          data-testid={`sport-pill-${sport.id}`}
+                        >
+                          {getSportIcon(sport, "h-4 w-4")}
+                          <span className={isHidden ? 'line-through opacity-50' : ''}>{sport.name}</span>
+                        </button>
+                        <button
+                          onClick={(e) => handleToggleSportVisibility(sport.id, e)}
+                          className={`p-1 rounded-full transition-colors ${
+                            isHidden 
+                              ? 'hover:bg-muted-foreground/20 text-muted-foreground/50' 
+                              : 'hover:bg-primary/20 text-primary'
+                          }`}
+                          title={isHidden ? 'Show in prediction market' : 'Hide from prediction market'}
+                          data-testid={`toggle-visibility-${sport.id}`}
+                        >
+                          {isHidden ? (
+                            <EyeOff className="h-3.5 w-3.5" />
+                          ) : (
+                            <Eye className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap">

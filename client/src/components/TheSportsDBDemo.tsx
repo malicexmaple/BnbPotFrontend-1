@@ -77,40 +77,59 @@ export function TheSportsDBDemo({
   const [searchTerm, setSearchTerm] = useState("");
   const [eventsToShow, setEventsToShow] = useState(50);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [uploadForm, setUploadForm] = useState({ name: "", logoUrl: "" });
+  const [uploadForm, setUploadForm] = useState({ name: "", file: null as File | null });
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const uploadTeamMutation = useMutation({
-    mutationFn: async (data: { name: string; logoUrl: string }) => {
+    mutationFn: async (data: { name: string; file: File }) => {
+      const reader = new FileReader();
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(data.file);
+      });
+      
       const payload = {
         entityType: 'team' as const,
         entityId: `custom_team_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         entityName: data.name,
-        logoUrl: data.logoUrl,
         sportId: sport.toLowerCase().replace(/\s+/g, '-'),
         leagueId: leagueId,
+        fileData: base64Data,
+        fileName: data.file.name,
       };
-      const response = await apiRequest('POST', '/api/sports/custom-media', payload);
+      const response = await apiRequest('POST', '/api/sports/upload-media', payload);
       return response.json();
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Team logo added successfully" });
-      setUploadForm({ name: "", logoUrl: "" });
+      toast({ title: "Success", description: "Team logo uploaded successfully" });
+      setUploadForm({ name: "", file: null });
       setUploadDialogOpen(false);
       queryClient.invalidateQueries({ queryKey: ["/api/sports/custom-media"] });
     },
     onError: () => {
-      toast({ title: "Error", description: "Failed to add team logo", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to upload team logo", variant: "destructive" });
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 2 * 1024 * 1024) {
+        toast({ title: "File too large", description: "Maximum file size is 2MB", variant: "destructive" });
+        return;
+      }
+      setUploadForm({ ...uploadForm, file });
+    }
+  };
+
   const handleUploadSubmit = () => {
-    if (!uploadForm.name || !uploadForm.logoUrl) {
+    if (!uploadForm.name || !uploadForm.file) {
       toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
       return;
     }
-    uploadTeamMutation.mutate(uploadForm);
+    uploadTeamMutation.mutate({ name: uploadForm.name, file: uploadForm.file });
   };
 
   const { data: upcomingEvents, isLoading: eventsLoading, error: eventsError } = useQuery<SportsDBEvent[]>({
@@ -442,14 +461,19 @@ export function TheSportsDBDemo({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="logoUrl">Logo URL</Label>
+              <Label htmlFor="logoFile">Logo Image</Label>
               <Input
-                id="logoUrl"
-                value={uploadForm.logoUrl}
-                onChange={(e) => setUploadForm({ ...uploadForm, logoUrl: e.target.value })}
-                placeholder="https://example.com/logo.png"
-                data-testid="input-upload-logo-url"
+                id="logoFile"
+                type="file"
+                accept="image/jpeg,image/png,image/gif"
+                onChange={handleFileChange}
+                className="cursor-pointer"
+                data-testid="input-upload-logo-file"
               />
+              <p className="text-xs text-muted-foreground">Max 2MB. Formats: JPEG, PNG, GIF</p>
+              {uploadForm.file && (
+                <p className="text-xs text-primary">Selected: {uploadForm.file.name}</p>
+              )}
             </div>
           </div>
           <DialogFooter>
@@ -457,7 +481,7 @@ export function TheSportsDBDemo({
               variant="outline"
               onClick={() => {
                 setUploadDialogOpen(false);
-                setUploadForm({ name: "", logoUrl: "" });
+                setUploadForm({ name: "", file: null });
               }}
               data-testid="button-cancel-upload"
             >

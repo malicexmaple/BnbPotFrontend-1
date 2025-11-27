@@ -54,6 +54,24 @@ const customMediaBodySchema = z.object({
   leagueId: z.string().max(100).nullable().optional(),
 });
 
+const uploadMediaBodySchema = z.object({
+  entityType: entityTypeEnum,
+  entityId: z.string()
+    .min(1, "Entity ID is required")
+    .max(100, "Entity ID too long"),
+  entityName: z.string()
+    .min(1, "Entity name is required")
+    .max(200, "Entity name too long")
+    .trim(),
+  sportId: z.string().max(100).optional().default(''),
+  leagueId: z.string().max(100).optional().default(''),
+  fileData: z.string()
+    .min(1, "File data is required"),
+  fileName: z.string()
+    .min(1, "File name is required")
+    .max(255, "File name too long"),
+});
+
 export function registerMediaRoutes(app: Express, deps: RouteDeps): void {
   const { storage, requireAuth, requireAdminRole } = deps;
 
@@ -138,6 +156,115 @@ export function registerMediaRoutes(app: Express, deps: RouteDeps): void {
     } catch (error) {
       console.error("Error deleting custom media:", error);
       res.status(500).json({ message: "Failed to delete custom media" });
+    }
+  });
+
+  /**
+   * Upload media file with base64 data
+   * Saves file to cache directory and creates custom media entry
+   */
+  app.post("/api/sports/upload-media", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const bodyResult = uploadMediaBodySchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid request body", 
+          errors: bodyResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { entityType, entityId, entityName, sportId, leagueId, fileData, fileName } = bodyResult.data;
+
+      const sanitizeForPath = (str: string): string => {
+        return str.toLowerCase()
+          .replace(/[^a-z0-9-]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+          .slice(0, 50);
+      };
+
+      const base64Match = fileData.match(/^data:image\/(jpeg|jpg|png|gif|webp);base64,(.+)$/i);
+      if (!base64Match) {
+        return res.status(400).json({ message: "Invalid file data format. Expected base64 encoded JPEG, PNG, GIF, or WebP image." });
+      }
+
+      const [, imageType, base64Content] = base64Match;
+      const buffer = Buffer.from(base64Content, 'base64');
+      
+      if (buffer.length > 2 * 1024 * 1024) {
+        return res.status(400).json({ message: "File too large. Maximum size is 2MB." });
+      }
+
+      const sanitizedName = sanitizeForPath(entityName);
+      const sanitizedEntityId = sanitizeForPath(entityId);
+      const timestamp = Date.now();
+      const normalizedImageType = imageType.toLowerCase() === 'jpg' ? 'jpeg' : imageType.toLowerCase();
+      const savedFileName = `${sanitizedName}-${timestamp}.${normalizedImageType}`;
+      
+      let folderPath = 'uploads';
+      if (sportId) {
+        const sanitizedSportId = sanitizeForPath(sportId);
+        folderPath = `uploads/${sanitizedSportId}`;
+        if (leagueId) {
+          const sanitizedLeagueId = sanitizeForPath(leagueId);
+          folderPath = `${folderPath}/${sanitizedLeagueId}`;
+        }
+      }
+      
+      const baseCacheDir = path.join(process.cwd(), '.cache', 'images');
+      if (!fs.existsSync(baseCacheDir)) {
+        fs.mkdirSync(baseCacheDir, { recursive: true });
+      }
+      
+      const cacheDir = path.join(baseCacheDir, folderPath);
+      if (!fs.existsSync(cacheDir)) {
+        fs.mkdirSync(cacheDir, { recursive: true });
+      }
+      
+      const filePath = path.join(cacheDir, savedFileName);
+      
+      try {
+        await fs.promises.writeFile(filePath, buffer);
+      } catch (writeError) {
+        console.error("Error writing file:", writeError);
+        return res.status(500).json({ message: "Failed to save uploaded file" });
+      }
+      
+      const serveUrl = `/api/images/cached/${folderPath}/${savedFileName}`;
+      
+      const logoUrl = entityType === 'team' || entityType === 'league' ? serveUrl : null;
+      const photoUrl = entityType === 'player' ? serveUrl : null;
+      
+      try {
+        const media = await storage.upsertCustomMedia({
+          entityType,
+          entityId: sanitizedEntityId,
+          entityName,
+          logoUrl,
+          photoUrl,
+          thumbnailUrl: null,
+          sportId: sportId || null,
+          leagueId: leagueId || null
+        });
+
+        res.json({ 
+          success: true, 
+          media,
+          localPath: filePath,
+          serveUrl
+        });
+      } catch (storageError) {
+        console.error("Error saving media to database:", storageError);
+        try {
+          await fs.promises.unlink(filePath);
+        } catch (cleanupError) {
+          console.error("Error cleaning up file after storage failure:", cleanupError);
+        }
+        return res.status(500).json({ message: "Failed to save media metadata" });
+      }
+    } catch (error) {
+      console.error("Error uploading media:", error);
+      res.status(500).json({ message: "Failed to upload media" });
     }
   });
 
