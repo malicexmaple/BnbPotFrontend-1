@@ -282,16 +282,12 @@
     display: block;
     position: relative;
     z-index: 1;
-    background: rgba(20, 20, 20, 0.5);
   }
 
-  /* Ensure images have placeholder background while loading */
-  img {
-    background-color: rgba(20, 20, 20, 0.3);
-  }
-
-  img[src] {
-    background-color: transparent;
+  /* Navigation tab logos - prevent layout shift during loading */
+  .nav-tab-logo {
+    display: block;
+    object-fit: contain;
   }
 
   .shine-image::before {
