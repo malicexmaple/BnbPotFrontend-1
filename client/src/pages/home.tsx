@@ -23,7 +23,7 @@ import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import clockIcon from '@assets/3dgifmaker22359_1763413463889.gif';
 import cloverIcon from '@assets/3dgifmaker84959_1763403008581.gif';
 import treasureChest from '@assets/3dgifmaker81317_1763413607076.gif';
-import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
+import coinStack from '@assets/potofgold_1764255881728.png';
 import bnbpotBg from '@assets/MOSHED-2025-11-18-4-12-49_1763403537895.gif';
 import jackpotLogo from '@assets/jackpotnew_1763477420573.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';

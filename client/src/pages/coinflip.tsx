@@ -20,7 +20,7 @@ import { GAME, BORDER_RADIUS, DARK_BG } from "@/constants/layout";
 import type { RoundWithBets } from "@shared/schema";
 import bnbLogo from '@assets/3dgifmaker21542_1763401668048.gif';
 import bnbIcon from '@assets/bnb-bnb-logo_1763489145043.png';
-import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
+import coinStack from '@assets/potofgold_1764255881728.png';
 import coinflipLogo from '@assets/coinflipnew_1763488010364.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';

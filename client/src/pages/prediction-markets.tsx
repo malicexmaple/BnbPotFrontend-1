@@ -21,7 +21,7 @@ import { PredictionMarketCard, type PredictionMarket } from "@/components/Predic
 import { PredictionMarketPane } from "@/components/PredictionMarketPane";
 import { BetSlipDialog } from "@/components/BetSlipDialog";
 import predictionMarketsLogo from '@assets/predictionmarketsnew_1763488010364.png';
-import coinStack from '@assets/vecteezy_binance-coin-bnb-coin-stacks-cryptocurrency-3d-render_21627671_1763398880775.png';
+import coinStack from '@assets/potofgold_1764255881728.png';
 import jackpotLegendsLogo from '@assets/jackpotlegends_1763742593143.png';
 import signupLogo from '@assets/signupnew_1763410821936.png';
 import { sportsData, type Sport } from "@shared/sports-leagues";
