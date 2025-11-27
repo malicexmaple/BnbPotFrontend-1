@@ -364,6 +364,29 @@ export const insertLeaguesVisibilitySchema = createInsertSchema(leaguesVisibilit
 export type InsertLeaguesVisibility = z.infer<typeof insertLeaguesVisibilitySchema>;
 export type LeaguesVisibility = typeof leaguesVisibility.$inferSelect;
 
+// Unified Visibility Settings (matching reference project structure)
+// This is the new approach with isVisible + manualOverride for auto-hide feature
+export const visibilitySettings = pgTable("visibility_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type").notNull(), // 'sport' or 'league'
+  sportId: text("sport_id"), // Sport ID from sportsData
+  leagueId: text("league_id"), // League ID from sportsData
+  isVisible: boolean("is_visible").notNull().default(true),
+  manualOverride: boolean("manual_override").notNull().default(false), // True if admin manually set visibility
+  updatedBy: varchar("updated_by"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertVisibilitySettingSchema = createInsertSchema(visibilitySettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertVisibilitySetting = z.infer<typeof insertVisibilitySettingSchema>;
+export type VisibilitySetting = typeof visibilitySettings.$inferSelect;
+
 // Custom Media Overrides for Teams and Players
 export const customMedia = pgTable("custom_media", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

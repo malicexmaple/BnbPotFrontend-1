@@ -4,6 +4,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { TheSportsDBDemo } from "@/components/TheSportsDBDemo";
 import { NetworkBackground } from "@/components/NetworkBackground";
 import { LiveBettingFeed } from "@/components/LiveBettingFeed";
+import { SportVisibilityControls } from "@/components/SportVisibilityControls";
+import { UploadPanel } from "@/components/UploadPanel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -368,88 +370,8 @@ export default function SportsDataDemo() {
           <div className="space-y-4">
 
             <Collapsible open={settingsOpen} onOpenChange={setSettingsOpen}>
-              <CollapsibleContent>
-                <Card className="p-4 mb-4">
-                  <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Sport & League Visibility Settings
-                  </h3>
-                  <div className="space-y-2 max-h-80 overflow-y-auto">
-                    {sportsData.map((sport) => (
-                      <div key={sport.id} className="border rounded-md">
-                        <div className="flex items-center justify-between p-2 gap-3">
-                          <button
-                            onClick={() => toggleSportExpanded(sport.id)}
-                            className="flex items-center gap-2 flex-1 text-left hover-elevate rounded-sm p-1"
-                            data-testid={`button-expand-${sport.id}`}
-                          >
-                            {expandedSports[sport.id] ? (
-                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            {getSportIcon(sport)}
-                            <span className="text-sm font-medium">{sport.name}</span>
-                            <span className="text-xs text-muted-foreground">({sport.leagues.length} leagues)</span>
-                          </button>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">
-                              {isSportHidden(sport.id) ? 'Hidden' : 'Visible'}
-                            </span>
-                            <Switch
-                              checked={!isSportHidden(sport.id)}
-                              onCheckedChange={(checked) => {
-                                sportVisibilityMutation.mutate({ sportId: sport.id, isHidden: !checked });
-                              }}
-                              disabled={sportVisibilityMutation.isPending}
-                              data-testid={`switch-sport-${sport.id}`}
-                            />
-                          </div>
-                        </div>
-                        
-                        {expandedSports[sport.id] && (
-                          <div className="border-t bg-muted/30 p-2 space-y-1">
-                            {sport.leagues.map((league) => (
-                              <div 
-                                key={league.id}
-                                className="flex items-center justify-between py-1 px-2 rounded-sm"
-                              >
-                                <div className="flex items-center gap-2">
-                                  {league.badge && (
-                                    <img 
-                                      src={league.badge} 
-                                      alt={league.displayName} 
-                                      className="h-4 w-4 object-contain" 
-                                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                    />
-                                  )}
-                                  <span className="text-sm">{league.displayName}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-xs text-muted-foreground">
-                                    {isLeagueHidden(league.id) ? 'Hidden' : 'Visible'}
-                                  </span>
-                                  <Switch
-                                    checked={!isLeagueHidden(league.id)}
-                                    onCheckedChange={(checked) => {
-                                      leagueVisibilityMutation.mutate({ 
-                                        leagueId: league.id, 
-                                        sportId: sport.id, 
-                                        isHidden: !checked 
-                                      });
-                                    }}
-                                    disabled={leagueVisibilityMutation.isPending || isSportHidden(sport.id)}
-                                    data-testid={`switch-league-${league.id}`}
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </Card>
+              <CollapsibleContent className="mb-4">
+                <SportVisibilityControls />
               </CollapsibleContent>
             </Collapsible>
 
@@ -825,6 +747,8 @@ export default function SportsDataDemo() {
                   
                   return (
                     <TabsContent key={sport.id} value={sport.id} className="space-y-4">
+                      <UploadPanel sport={sport.name} defaultLeague={selectedLeague?.name} />
+                      
                       {visibleLeagues.length === 0 ? (
                         <Card className="p-6 text-center">
                           <p className="text-muted-foreground">All leagues for this sport are hidden.</p>

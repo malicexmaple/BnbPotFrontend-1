@@ -14,9 +14,11 @@ import {
   type SportsVisibility, type InsertSportsVisibility,
   type LeaguesVisibility, type InsertLeaguesVisibility,
   type CustomMedia, type InsertCustomMedia,
+  type VisibilitySetting, type InsertVisibilitySetting,
   users, chatMessages, rounds, bets, userStats, dailyStats,
   airdropPool, airdropDistributions, airdropRecipients, airdropTips,
-  markets, marketBets, sportsVisibility, leaguesVisibility, customMedia
+  markets, marketBets, sportsVisibility, leaguesVisibility, customMedia,
+  visibilitySettings
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -88,11 +90,18 @@ export interface IStorage {
   createMarketBet(bet: InsertMarketBet): Promise<MarketBet>;
   updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined>;
   
-  // Sports/Leagues visibility methods
+  // Sports/Leagues visibility methods (legacy)
   getSportsVisibility(): Promise<SportsVisibility[]>;
   getLeaguesVisibility(): Promise<LeaguesVisibility[]>;
   setSportVisibility(sportId: string, isHidden: boolean): Promise<SportsVisibility>;
   setLeagueVisibility(leagueId: string, sportId: string, isHidden: boolean): Promise<LeaguesVisibility>;
+  
+  // Unified visibility settings methods (new)
+  getVisibilitySettings(): Promise<VisibilitySetting[]>;
+  toggleSportVisibility(sportId: string, isVisible: boolean, userId?: string, manualOverride?: boolean): Promise<VisibilitySetting>;
+  toggleLeagueVisibility(leagueId: string, sportId: string, isVisible: boolean, userId?: string, manualOverride?: boolean): Promise<VisibilitySetting>;
+  resetSportToAuto(sportId: string): Promise<void>;
+  resetLeagueToAuto(leagueId: string): Promise<void>;
   
   // Custom media methods
   getCustomMedia(entityType?: string): Promise<CustomMedia[]>;
@@ -567,6 +576,102 @@ export class DbStorage implements IStorage {
       })
       .returning();
     return result[0];
+  }
+
+  // Unified visibility settings methods (new)
+  async getVisibilitySettings(): Promise<VisibilitySetting[]> {
+    return await db.select().from(visibilitySettings);
+  }
+
+  async toggleSportVisibility(sportId: string, isVisible: boolean, userId?: string, manualOverride: boolean = true): Promise<VisibilitySetting> {
+    // Check if a setting exists for this sport
+    const existing = await db.select().from(visibilitySettings)
+      .where(and(
+        eq(visibilitySettings.type, 'sport'),
+        eq(visibilitySettings.sportId, sportId)
+      ))
+      .limit(1);
+    
+    if (existing.length > 0) {
+      // Update existing setting
+      const result = await db.update(visibilitySettings)
+        .set({ 
+          isVisible,
+          manualOverride,
+          updatedBy: userId || null,
+          updatedAt: new Date()
+        })
+        .where(eq(visibilitySettings.id, existing[0].id))
+        .returning();
+      return result[0];
+    } else {
+      // Create new setting
+      const result = await db.insert(visibilitySettings)
+        .values({
+          type: 'sport',
+          sportId,
+          isVisible,
+          manualOverride,
+          updatedBy: userId || null,
+        })
+        .returning();
+      return result[0];
+    }
+  }
+
+  async toggleLeagueVisibility(leagueId: string, sportId: string, isVisible: boolean, userId?: string, manualOverride: boolean = true): Promise<VisibilitySetting> {
+    // Check if a setting exists for this league
+    const existing = await db.select().from(visibilitySettings)
+      .where(and(
+        eq(visibilitySettings.type, 'league'),
+        eq(visibilitySettings.leagueId, leagueId)
+      ))
+      .limit(1);
+    
+    if (existing.length > 0) {
+      // Update existing setting
+      const result = await db.update(visibilitySettings)
+        .set({ 
+          isVisible,
+          manualOverride,
+          updatedBy: userId || null,
+          updatedAt: new Date()
+        })
+        .where(eq(visibilitySettings.id, existing[0].id))
+        .returning();
+      return result[0];
+    } else {
+      // Create new setting
+      const result = await db.insert(visibilitySettings)
+        .values({
+          type: 'league',
+          leagueId,
+          sportId,
+          isVisible,
+          manualOverride,
+          updatedBy: userId || null,
+        })
+        .returning();
+      return result[0];
+    }
+  }
+
+  async resetSportToAuto(sportId: string): Promise<void> {
+    // Delete the setting to reset to automatic behavior
+    await db.delete(visibilitySettings)
+      .where(and(
+        eq(visibilitySettings.type, 'sport'),
+        eq(visibilitySettings.sportId, sportId)
+      ));
+  }
+
+  async resetLeagueToAuto(leagueId: string): Promise<void> {
+    // Delete the setting to reset to automatic behavior
+    await db.delete(visibilitySettings)
+      .where(and(
+        eq(visibilitySettings.type, 'league'),
+        eq(visibilitySettings.leagueId, leagueId)
+      ));
   }
 
   // Custom media methods
