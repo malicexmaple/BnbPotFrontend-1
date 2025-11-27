@@ -119,7 +119,7 @@ export function SportVisibilityControls() {
             <Badge variant="outline" className="gap-1"><Hand className="h-3 w-3" />Manual - Admin override active</Badge>
             <Badge variant="secondary" className="gap-1"><Clock className="h-3 w-3" />Auto-hidden - No upcoming events</Badge>
             <Badge variant="default" className="gap-1 opacity-70"><Zap className="h-3 w-3" />Active - Has upcoming events</Badge>
-            <Badge variant="ghost" className="gap-1"><RotateCcw className="h-3 w-3" />Reset - Return to auto</Badge>
+            <Badge variant="outline" className="gap-1"><RotateCcw className="h-3 w-3" />Reset - Return to auto</Badge>
           </div>
         </CardDescription>
       </CardHeader>
