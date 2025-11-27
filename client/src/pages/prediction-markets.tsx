@@ -403,7 +403,7 @@ export default function PredictionMarkets() {
         footer={<GameFooter />}
       >
         <div className="flex-1 flex flex-col relative overflow-hidden">
-          <div className="p-6 space-y-4 flex-shrink-0">
+          <div className="p-6 space-y-5 relative z-10 flex-shrink-0">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex flex-col">
                 <div className="shine-image" style={{'--shine-mask': `url(${predictionMarketsLogo})`} as React.CSSProperties}>
@@ -442,8 +442,10 @@ export default function PredictionMarkets() {
           </div>
 
           <ScrollArea className="flex-1 px-6">
+            {/* Width anchor to prevent mobile zoom squishing - matches other game pages */}
+            <div aria-hidden="true" style={{ width: '900px', height: 0, visibility: 'hidden' }} />
             <div className="flex gap-6">
-              <div className="hidden lg:block flex-shrink-0" style={{width: '200px'}}>
+              <div className="flex-shrink-0" style={{width: '200px'}}>
                 <div className="space-y-1 sticky top-0">
                   <div className="text-xs text-muted-foreground uppercase tracking-wider px-3 py-2 font-bold">
                     <span className="text-foreground">LIVE</span> <span className="text-primary">MARKETS</span>
