@@ -71,6 +71,7 @@ export default function SportsDataDemo() {
   const [teamName, setTeamName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [newLeagueName, setNewLeagueName] = useState("");
+  const [newLeagueBadgeUrl, setNewLeagueBadgeUrl] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: visibilitySettings = [] } = useQuery<VisibilitySetting[]>({
@@ -113,7 +114,7 @@ export default function SportsDataDemo() {
           updated[existingIndex] = { ...updated[existingIndex], isVisible };
           return updated;
         } else {
-          const now = new Date().toISOString();
+          const now = new Date();
           return [...old, { 
             id: `optimistic-${sportId}`, 
             type: 'sport' as const, 
@@ -188,11 +189,12 @@ export default function SportsDataDemo() {
   const selectedLeague = visibleLeagues.find(l => l.id === selectedLeagueId) || visibleLeagues[0];
 
   const addLeagueMutation = useMutation({
-    mutationFn: async ({ sportId, leagueName, displayName }: { sportId: string; leagueName: string; displayName: string }) => {
+    mutationFn: async ({ sportId, leagueName, displayName, badgeUrl }: { sportId: string; leagueName: string; displayName: string; badgeUrl?: string }) => {
       const response = await apiRequest('POST', '/api/sports/custom-leagues', { 
         sportId, 
         name: leagueName,
-        displayName 
+        displayName,
+        badgeUrl: badgeUrl || null
       });
       return response.json();
     },
@@ -203,6 +205,7 @@ export default function SportsDataDemo() {
       });
       setAddLeagueDialogOpen(false);
       setNewLeagueName("");
+      setNewLeagueBadgeUrl("");
       queryClient.invalidateQueries({ queryKey: ['/api/sports/custom-leagues', selectedSport] });
     },
     onError: () => {
@@ -312,7 +315,8 @@ export default function SportsDataDemo() {
     addLeagueMutation.mutate({ 
       sportId: currentSport.id, 
       leagueName: newLeagueName.trim(),
-      displayName: newLeagueName.trim()
+      displayName: newLeagueName.trim(),
+      badgeUrl: newLeagueBadgeUrl.trim() || undefined
     });
   };
 
@@ -526,7 +530,13 @@ export default function SportsDataDemo() {
         </div>
       </div>
 
-      <Dialog open={addLeagueDialogOpen} onOpenChange={setAddLeagueDialogOpen}>
+      <Dialog open={addLeagueDialogOpen} onOpenChange={(open) => {
+        setAddLeagueDialogOpen(open);
+        if (!open) {
+          setNewLeagueName("");
+          setNewLeagueBadgeUrl("");
+        }
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add League</DialogTitle>
@@ -542,13 +552,37 @@ export default function SportsDataDemo() {
                 data-testid="input-league-name"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="leagueBadgeUrl">Badge URL (optional)</Label>
+              <Input
+                id="leagueBadgeUrl"
+                value={newLeagueBadgeUrl}
+                onChange={(e) => setNewLeagueBadgeUrl(e.target.value)}
+                placeholder="https://example.com/badge.png"
+                data-testid="input-league-badge-url"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter a URL to an image for the league badge/logo
+              </p>
+            </div>
+            {newLeagueBadgeUrl && (
+              <div className="flex items-center gap-2 p-2 bg-muted rounded">
+                <img 
+                  src={newLeagueBadgeUrl} 
+                  alt="Badge preview" 
+                  className="h-8 w-8 object-contain"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+                <span className="text-sm text-muted-foreground">Badge preview</span>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddLeagueDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleAddLeague} data-testid="button-create-league">
-              Add League
+            <Button onClick={handleAddLeague} disabled={addLeagueMutation.isPending} data-testid="button-create-league">
+              {addLeagueMutation.isPending ? "Creating..." : "Add League"}
             </Button>
           </DialogFooter>
         </DialogContent>
