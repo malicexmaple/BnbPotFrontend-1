@@ -72,6 +72,9 @@ export default function SportsDataDemo() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [newLeagueName, setNewLeagueName] = useState("");
   const [newLeagueBadgeUrl, setNewLeagueBadgeUrl] = useState("");
+  const [newLeagueBadgeFile, setNewLeagueBadgeFile] = useState<File | null>(null);
+  const [newLeagueBadgePreview, setNewLeagueBadgePreview] = useState<string>("");
+  const [isUploadingBadge, setIsUploadingBadge] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: visibilitySettings = [] } = useQuery<VisibilitySetting[]>({
@@ -293,7 +296,27 @@ export default function SportsDataDemo() {
     uploadMediaMutation.mutate({ name: teamName, file: selectedFile, type: uploadType });
   };
 
-  const handleAddLeague = () => {
+  const handleLeagueBadgeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Maximum file size is 2MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setNewLeagueBadgeFile(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setNewLeagueBadgePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddLeague = async () => {
     if (!newLeagueName.trim()) {
       toast({
         title: "Name required",
@@ -311,12 +334,56 @@ export default function SportsDataDemo() {
       });
       return;
     }
+
+    let badgeUrl = newLeagueBadgeUrl.trim() || undefined;
+    
+    const leagueSlug = newLeagueName.trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    
+    if (newLeagueBadgeFile) {
+      setIsUploadingBadge(true);
+      try {
+        const base64Data = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(newLeagueBadgeFile);
+        });
+        
+        const response = await apiRequest('POST', '/api/sports/upload-media', {
+          entityName: newLeagueName.trim(),
+          entityType: 'league',
+          entityId: leagueSlug,
+          sportId: currentSport.id,
+          leagueId: leagueSlug,
+          fileData: base64Data,
+          fileName: newLeagueBadgeFile.name,
+        });
+        
+        const result = await response.json();
+        if (result.success && result.serveUrl) {
+          badgeUrl = result.serveUrl;
+        }
+      } catch (error) {
+        console.error("Badge upload error:", error);
+        toast({
+          title: "Upload failed",
+          description: "Failed to upload badge image. The league will be created without a badge.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsUploadingBadge(false);
+      }
+    }
     
     addLeagueMutation.mutate({ 
       sportId: currentSport.id, 
       leagueName: newLeagueName.trim(),
       displayName: newLeagueName.trim(),
-      badgeUrl: newLeagueBadgeUrl.trim() || undefined
+      badgeUrl
     });
   };
 
@@ -535,6 +602,8 @@ export default function SportsDataDemo() {
         if (!open) {
           setNewLeagueName("");
           setNewLeagueBadgeUrl("");
+          setNewLeagueBadgeFile(null);
+          setNewLeagueBadgePreview("");
         }
       }}>
         <DialogContent>
@@ -552,28 +621,66 @@ export default function SportsDataDemo() {
                 data-testid="input-league-name"
               />
             </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="leagueBadgeUrl">Badge URL (optional)</Label>
-              <Input
-                id="leagueBadgeUrl"
-                value={newLeagueBadgeUrl}
-                onChange={(e) => setNewLeagueBadgeUrl(e.target.value)}
-                placeholder="https://example.com/badge.png"
-                data-testid="input-league-badge-url"
-              />
-              <p className="text-xs text-muted-foreground">
-                Enter a URL to an image for the league badge/logo
-              </p>
-            </div>
-            {newLeagueBadgeUrl && (
-              <div className="flex items-center gap-2 p-2 bg-muted rounded">
-                <img 
-                  src={newLeagueBadgeUrl} 
-                  alt="Badge preview" 
-                  className="h-8 w-8 object-contain"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              <Label>League Badge (optional)</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={handleLeagueBadgeFileChange}
+                  className="cursor-pointer"
+                  data-testid="input-league-badge-file"
                 />
-                <span className="text-sm text-muted-foreground">Badge preview</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Max 2MB. Formats: JPEG, PNG, GIF, WebP</p>
+            </div>
+            
+            {newLeagueBadgePreview && (
+              <div className="flex items-center gap-3 p-3 bg-muted rounded">
+                <img 
+                  src={newLeagueBadgePreview} 
+                  alt="Badge preview" 
+                  className="h-12 w-12 object-contain rounded"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium">Badge preview</span>
+                  <p className="text-xs text-muted-foreground">{newLeagueBadgeFile?.name}</p>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => {
+                    setNewLeagueBadgeFile(null);
+                    setNewLeagueBadgePreview("");
+                  }}
+                >
+                  Remove
+                </Button>
+              </div>
+            )}
+            
+            {!newLeagueBadgeFile && (
+              <div className="space-y-2">
+                <Label htmlFor="leagueBadgeUrl">Or paste a Badge URL</Label>
+                <Input
+                  id="leagueBadgeUrl"
+                  value={newLeagueBadgeUrl}
+                  onChange={(e) => setNewLeagueBadgeUrl(e.target.value)}
+                  placeholder="https://example.com/badge.png"
+                  data-testid="input-league-badge-url"
+                />
+                {newLeagueBadgeUrl && (
+                  <div className="flex items-center gap-2 p-2 bg-muted rounded">
+                    <img 
+                      src={newLeagueBadgeUrl} 
+                      alt="Badge preview" 
+                      className="h-8 w-8 object-contain"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                    <span className="text-sm text-muted-foreground">URL preview</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -581,8 +688,12 @@ export default function SportsDataDemo() {
             <Button variant="outline" onClick={() => setAddLeagueDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleAddLeague} disabled={addLeagueMutation.isPending} data-testid="button-create-league">
-              {addLeagueMutation.isPending ? "Creating..." : "Add League"}
+            <Button 
+              onClick={handleAddLeague} 
+              disabled={addLeagueMutation.isPending || isUploadingBadge} 
+              data-testid="button-create-league"
+            >
+              {isUploadingBadge ? "Uploading..." : addLeagueMutation.isPending ? "Creating..." : "Add League"}
             </Button>
           </DialogFooter>
         </DialogContent>
