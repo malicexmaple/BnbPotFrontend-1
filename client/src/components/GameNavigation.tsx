@@ -228,7 +228,7 @@ export default function GameNavigation({
                     <div className="hidden sm:flex flex-col items-start">
                       <span className="font-bold">{username}</span>
                       {bnbBalance && (
-                        <span className="text-[10px] text-primary opacity-80 font-mono">
+                        <span className="text-[10px] text-white font-normal">
                           {parseFloat(bnbBalance).toFixed(4)} BNB
                         </span>
                       )}
