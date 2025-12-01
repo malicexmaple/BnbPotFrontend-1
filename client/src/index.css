@@ -188,9 +188,31 @@
 }
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  /* App shell for maintaining 1200px layout on all screens */
+  #root {
+    min-width: 1200px;
+    transform-origin: top left;
+  }
+
+  /* Scale down for viewports narrower than 1200px */
+  @media (max-width: 1199px) {
+    #root {
+      transform: scale(calc(100vw / 1200));
+      width: 1200px;
+      height: calc(100vh / (100vw / 1200));
+      height: calc(100dvh / (100vw / 1200));
+    }
   }
 
   .font-mono {

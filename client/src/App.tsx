@@ -39,32 +39,20 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [contentReady, setContentReady] = useState(false);
   const prevLocationRef = useRef(location);
   const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (location !== prevLocationRef.current) {
       setIsTransitioning(true);
-      setContentReady(false);
       
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
 
-      // Wait for content to render and layout to stabilize
       transitionTimeoutRef.current = setTimeout(() => {
-        // Use requestAnimationFrame to ensure layout is complete
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            setContentReady(true);
-            setTimeout(() => {
-              setIsTransitioning(false);
-            }, 50);
-          });
-        });
-      }, 400);
+        setIsTransitioning(false);
+      }, 300);
       
       prevLocationRef.current = location;
     }
@@ -76,26 +64,16 @@ function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
     };
   }, [location]);
 
-  const showContent = !isTransitioning && contentReady;
-
   return (
     <>
       <PageTransitionLoader style={{ 
         opacity: isTransitioning ? 1 : 0,
-        pointerEvents: isTransitioning ? 'auto' : 'none',
-        transition: 'opacity 100ms ease-out'
+        pointerEvents: isTransitioning ? 'auto' : 'none'
       }} />
-      <div 
-        ref={contentRef}
-        style={{ 
-          position: isTransitioning ? 'fixed' : 'relative',
-          left: isTransitioning ? '-9999px' : '0',
-          visibility: showContent ? 'visible' : 'hidden',
-          opacity: showContent ? 1 : 0,
-          width: '100%',
-          transition: showContent ? 'opacity 100ms ease-in' : 'none'
-        }}
-      >
+      <div style={{ 
+        visibility: isTransitioning ? 'hidden' : 'visible',
+        opacity: isTransitioning ? 0 : 1
+      }}>
         {children}
       </div>
     </>
