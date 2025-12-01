@@ -12,6 +12,8 @@ export const users = pgTable("users", {
   role: text("role").notNull().default('user'),
   agreedToTerms: boolean("agreed_to_terms").notNull().default(false),
   agreedAt: timestamp("agreed_at"),
+  avatarUrl: text("avatar_url"),
+  clientSeed: text("client_seed"),
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({
