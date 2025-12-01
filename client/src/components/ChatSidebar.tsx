@@ -197,16 +197,16 @@ export default function ChatSidebar({
           borderRadius: isCollapsed ? '8px' : '4px',
           width: isCollapsed ? `${SIDEBAR.COLLAPSE_BUTTON_WIDTH_COLLAPSED}px` : `${SIDEBAR.COLLAPSE_BUTTON_WIDTH_EXPANDED}px`,
           height: `${SIDEBAR.COLLAPSE_BUTTON_HEIGHT}px`,
-          background: DARK_BG.GRADIENT,
-          border: GOLDEN.BORDER_LIGHT,
-          boxShadow: GOLDEN.GLOW
+          background: DARK_BG.MEDIUM,
+          border: '1px solid rgba(60, 60, 60, 0.4)',
+          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
         }}
         data-testid="button-collapse-chat"
       >
         {isCollapsed ? (
-          <Flame className="w-8 h-8 text-yellow-400" fill="#facc15" />
+          <Flame className="w-8 h-8 text-white" fill="white" />
         ) : (
-          <svg className="w-3 h-3 text-yellow-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 text-foreground transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         )}
