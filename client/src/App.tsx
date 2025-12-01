@@ -38,41 +38,43 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 
 function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+  const [contentVisible, setContentVisible] = useState(true);
   const prevLocationRef = useRef(location);
-  const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (location !== prevLocationRef.current) {
-      setIsTransitioning(true);
+      // Immediately show loader and hide content
+      setShowLoader(true);
+      setContentVisible(false);
       
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-      }
-
-      transitionTimeoutRef.current = setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
+      // Wait for page to fully load and zoom to stabilize
+      const timer = setTimeout(() => {
+        // First make content visible (but loader still showing)
+        setContentVisible(true);
+        
+        // Then after another frame, hide loader
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              setShowLoader(false);
+            }, 100);
+          });
+        });
+      }, 500);
       
       prevLocationRef.current = location;
+      
+      return () => clearTimeout(timer);
     }
-
-    return () => {
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-      }
-    };
   }, [location]);
 
   return (
     <>
-      <PageTransitionLoader style={{ 
-        opacity: isTransitioning ? 1 : 0,
-        pointerEvents: isTransitioning ? 'auto' : 'none'
-      }} />
+      {showLoader && <PageTransitionLoader />}
       <div style={{ 
-        visibility: isTransitioning ? 'hidden' : 'visible',
-        opacity: isTransitioning ? 0 : 1
+        opacity: contentVisible && !showLoader ? 1 : 0,
+        transition: 'opacity 150ms ease-in'
       }}>
         {children}
       </div>
