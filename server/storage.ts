@@ -132,7 +132,8 @@ export class DbStorage implements IStorage {
   }
 
   async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.walletAddress, walletAddress)).limit(1);
+    const normalizedAddress = walletAddress.toLowerCase();
+    const result = await db.select().from(users).where(eq(users.walletAddress, normalizedAddress)).limit(1);
     return result[0];
   }
 
@@ -142,7 +143,8 @@ export class DbStorage implements IStorage {
   }
 
   async createOrUpdateUserByWallet(walletAddress: string, username: string, email?: string): Promise<User> {
-    const existingUser = await this.getUserByWalletAddress(walletAddress);
+    const normalizedAddress = walletAddress.toLowerCase();
+    const existingUser = await this.getUserByWalletAddress(normalizedAddress);
     
     if (existingUser) {
       // Update existing user
@@ -153,13 +155,13 @@ export class DbStorage implements IStorage {
           agreedToTerms: true,
           agreedAt: new Date()
         })
-        .where(eq(users.walletAddress, walletAddress))
+        .where(eq(users.walletAddress, normalizedAddress))
         .returning();
       return result[0];
     } else {
-      // Create new user
+      // Create new user with normalized (lowercase) wallet address
       const result = await db.insert(users).values({
-        walletAddress,
+        walletAddress: normalizedAddress,
         username,
         email,
         password: 'N/A', // Required field, but not used for wallet-based auth
@@ -480,9 +482,10 @@ export class DbStorage implements IStorage {
 
   // Admin methods
   async setUserRole(walletAddress: string, role: string): Promise<User | undefined> {
+    const normalizedAddress = walletAddress.toLowerCase();
     const result = await db.update(users)
       .set({ role })
-      .where(eq(users.walletAddress, walletAddress))
+      .where(eq(users.walletAddress, normalizedAddress))
       .returning();
     return result[0];
   }
