@@ -36,7 +36,6 @@ export default function AvatarUploadModal({
   };
 
   const handleRemove = () => {
-    localStorage.removeItem(`avatar_${username}`);
     onAvatarUpdate(null);
     onOpenChange(false);
   };
@@ -79,7 +78,6 @@ export default function AvatarUploadModal({
   };
 
   const handleCropSave = (croppedImageUrl: string) => {
-    localStorage.setItem(`avatar_${username}`, croppedImageUrl);
     onAvatarUpdate(croppedImageUrl);
     setShowCropDialog(false);
     onOpenChange(false);

@@ -55,12 +55,12 @@ export default function ProfileModal({
   const [isEditingSeed, setIsEditingSeed] = useState(false);
   const [editedUsername, setEditedUsername] = useState(username);
   const [editedEmail, setEditedEmail] = useState("");
-  const [editedSeed, setEditedSeed] = useState("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6");
+  const [editedSeed, setEditedSeed] = useState("");
   
   // Store pre-edit values for cancel functionality
   const [preEditUsername, setPreEditUsername] = useState(username);
   const [preEditEmail, setPreEditEmail] = useState("");
-  const [preEditSeed, setPreEditSeed] = useState("a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6");
+  const [preEditSeed, setPreEditSeed] = useState("");
   
   // Saving state
   const [isSaving, setIsSaving] = useState(false);
@@ -77,6 +77,10 @@ export default function ProfileModal({
             setEditedEmail(userData.email || "");
             setPreEditUsername(userData.username || username);
             setPreEditEmail(userData.email || "");
+            // Load avatar and client seed from database (always set to ensure fresh data)
+            setAvatarUrl(userData.avatarUrl || null);
+            setEditedSeed(userData.clientSeed || "");
+            setPreEditSeed(userData.clientSeed || "");
           }
         } catch (error) {
           console.error("Failed to fetch user data:", error);
@@ -179,14 +183,35 @@ export default function ProfileModal({
     }
   };
 
-  // Handler for saving client seed (local only - not persisted to backend)
-  const handleSaveSeed = () => {
-    setPreEditSeed(editedSeed);
-    toast({
-      title: "Client seed updated",
-      description: "Your client seed has been updated for this session",
-    });
-    setIsEditingSeed(false);
+  // Handler for saving client seed to database
+  const handleSaveSeed = async () => {
+    if (!editedSeed.trim() || editedSeed.length < 16) {
+      toast({
+        title: "Error",
+        description: "Client seed must be at least 16 characters",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSaving(true);
+    try {
+      await apiRequest("PATCH", "/api/users/profile", { clientSeed: editedSeed });
+      setPreEditSeed(editedSeed);
+      toast({
+        title: "Client seed updated",
+        description: "Your client seed has been saved",
+      });
+      setIsEditingSeed(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update client seed",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Handler for social links
@@ -206,21 +231,19 @@ export default function ProfileModal({
     });
   };
 
-  // Load avatar from localStorage whenever username or modal open state changes
-  useEffect(() => {
-    if (username && open) {
-      const storedAvatar = localStorage.getItem(`avatar_${username}`);
-      setAvatarUrl(storedAvatar);
-    }
-  }, [username, open]);
-
-  const handleAvatarUpdate = (newAvatarUrl: string | null) => {
+  const handleAvatarUpdate = async (newAvatarUrl: string | null) => {
     setAvatarUrl(newAvatarUrl);
-    // Dispatch custom event to notify other components
-    window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { username, avatarUrl: newAvatarUrl } }));
+    // Save avatar to database
+    try {
+      await apiRequest("PATCH", "/api/users/profile", { avatarUrl: newAvatarUrl || "" });
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: { username, avatarUrl: newAvatarUrl } }));
+    } catch (error) {
+      console.error("Failed to save avatar:", error);
+    }
   };
 
-  // Listen for avatar updates from child modals and other tabs
+  // Listen for avatar updates from child modals
   useEffect(() => {
     const handleAvatarEvent = (event: CustomEvent) => {
       if (event.detail.username === username) {
@@ -228,17 +251,9 @@ export default function ProfileModal({
       }
     };
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === `avatar_${username}`) {
-        setAvatarUrl(event.newValue);
-      }
-    };
-
     window.addEventListener('avatarUpdated', handleAvatarEvent as EventListener);
-    window.addEventListener('storage', handleStorageChange);
     return () => {
       window.removeEventListener('avatarUpdated', handleAvatarEvent as EventListener);
-      window.removeEventListener('storage', handleStorageChange);
     };
   }, [username]);
 
@@ -517,7 +532,7 @@ export default function ProfileModal({
                           type={showClientSeed ? "text" : "password"}
                           value={editedSeed}
                           onChange={(e) => setEditedSeed(e.target.value)}
-                          className="flex-1 bg-muted/30 border-border/20 font-mono"
+                          className="flex-1 bg-muted/30 border-border/20 uppercase tracking-wide"
                           data-testid="input-client-seed-edit"
                           autoFocus
                         />
@@ -552,7 +567,7 @@ export default function ProfileModal({
                           type={showClientSeed ? "text" : "password"}
                           value={editedSeed}
                           readOnly 
-                          className="flex-1 bg-muted/30 border-border/20 font-mono"
+                          className="flex-1 bg-muted/30 border-border/20 uppercase tracking-wide"
                           data-testid="input-client-seed"
                         />
                         <Button 
@@ -584,7 +599,7 @@ export default function ProfileModal({
                   <Input 
                     value={walletAddress || "Not Connected"} 
                     readOnly 
-                    className="bg-muted/30 border-border/20 font-mono text-sm"
+                    className="bg-muted/30 border-border/20 uppercase tracking-wide text-sm"
                     data-testid="input-wallet"
                   />
                 </div>
