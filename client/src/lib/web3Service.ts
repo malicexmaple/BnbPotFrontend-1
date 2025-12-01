@@ -66,10 +66,15 @@ export class Web3Service {
   
   /**
    * Get read-only contract instance (no wallet needed)
+   * Returns null in demo mode when no RPC URL is configured
    */
-  getReadOnlyContract(): ethers.Contract {
+  getReadOnlyContract(): ethers.Contract | null {
     if (!this.contractAddress) {
-      throw new Error("Contract address not configured");
+      return null;
+    }
+    
+    if (!this.rpcUrl) {
+      return null;
     }
     
     const provider = new ethers.JsonRpcProvider(this.rpcUrl);
@@ -78,9 +83,12 @@ export class Web3Service {
   
   /**
    * Get current round information from contract
+   * Returns null in demo mode
    */
   async getCurrentRound() {
     const contract = this.contract || this.getReadOnlyContract();
+    if (!contract) return null;
+    
     const round = await contract.getCurrentRound();
     
     return {
@@ -122,27 +130,36 @@ export class Web3Service {
   
   /**
    * Get player's total bets in a specific round
+   * Returns "0" in demo mode
    */
   async getPlayerBetsInRound(roundNumber: number, playerAddress: string): Promise<string> {
     const contract = this.contract || this.getReadOnlyContract();
+    if (!contract) return "0";
+    
     const amount = await contract.getPlayerBetsInRound(roundNumber, playerAddress);
     return ethers.formatEther(amount);
   }
   
   /**
    * Get player's win chance percentage (in basis points, divide by 100 for percentage)
+   * Returns 0 in demo mode
    */
   async getPlayerWinChance(playerAddress: string): Promise<number> {
     const contract = this.contract || this.getReadOnlyContract();
+    if (!contract) return 0;
+    
     const chanceBps = await contract.getPlayerWinChance(playerAddress);
     return Number(chanceBps) / 100; // Convert basis points to percentage
   }
   
   /**
    * Get all bets for a specific round
+   * Returns empty array in demo mode
    */
   async getRoundBets(roundNumber: number) {
     const contract = this.contract || this.getReadOnlyContract();
+    if (!contract) return [];
+    
     const bets = await contract.getRoundBets(roundNumber);
     
     return bets.map((bet: any) => ({
@@ -166,6 +183,7 @@ export class Web3Service {
   
   /**
    * Listen for contract events
+   * Returns no-op cleanup function in demo mode
    */
   subscribeToEvents(callbacks: {
     onBetPlaced?: (player: string, roundNumber: number, amount: string, roundTotal: string) => void;
@@ -174,6 +192,10 @@ export class Web3Service {
     onRoundStarted?: (roundNumber: number, startTime: number) => void;
   }) {
     const contract = this.contract || this.getReadOnlyContract();
+    
+    if (!contract) {
+      return () => {};
+    }
     
     if (callbacks.onBetPlaced) {
       contract.on("BetPlaced", (player, roundNumber, amount, totalPlayerBets, roundTotal) => {
