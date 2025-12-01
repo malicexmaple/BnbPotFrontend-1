@@ -21,9 +21,14 @@ import {
   markets, marketBets, sportsVisibility, leaguesVisibility, customMedia,
   visibilitySettings, customLeagues
 } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { randomUUID, randomBytes } from "crypto";
 import { db } from "./db";
 import { eq, desc, and, or, sql } from "drizzle-orm";
+
+// Generate a cryptographically secure client seed (32 bytes = 64 hex characters)
+function generateClientSeed(): string {
+  return randomBytes(32).toString('hex');
+}
 
 export interface IStorage {
   // User methods
@@ -32,6 +37,7 @@ export interface IStorage {
   getUserByWalletAddress(walletAddress: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   createOrUpdateUserByWallet(walletAddress: string, username: string, email?: string): Promise<User>;
+  updateUserProfile(walletAddress: string, data: { avatarUrl?: string; clientSeed?: string; username?: string; email?: string }): Promise<User | undefined>;
   setUserRole(walletAddress: string, role: string): Promise<User | undefined>;
   hasAnyAdmin(): Promise<boolean>;
   
@@ -159,17 +165,27 @@ export class DbStorage implements IStorage {
         .returning();
       return result[0];
     } else {
-      // Create new user with normalized (lowercase) wallet address
+      // Create new user with normalized (lowercase) wallet address and unique client seed
       const result = await db.insert(users).values({
         walletAddress: normalizedAddress,
         username,
         email,
         password: 'N/A', // Required field, but not used for wallet-based auth
         agreedToTerms: true,
-        agreedAt: new Date()
+        agreedAt: new Date(),
+        clientSeed: generateClientSeed()
       }).returning();
       return result[0];
     }
+  }
+
+  async updateUserProfile(walletAddress: string, data: { avatarUrl?: string; clientSeed?: string; username?: string; email?: string }): Promise<User | undefined> {
+    const normalizedAddress = walletAddress.toLowerCase();
+    const result = await db.update(users)
+      .set(data)
+      .where(eq(users.walletAddress, normalizedAddress))
+      .returning();
+    return result[0];
   }
 
   // Chat methods

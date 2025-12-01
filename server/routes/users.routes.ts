@@ -33,6 +33,15 @@ const updateProfileSchema = z.object({
     .max(255, "Email must be 255 characters or less")
     .optional()
     .or(z.literal('')),
+  avatarUrl: z.string()
+    .max(10000, "Avatar URL too large")
+    .optional()
+    .or(z.literal('')),
+  clientSeed: z.string()
+    .min(16, "Client seed must be at least 16 characters")
+    .max(128, "Client seed must be 128 characters or less")
+    .regex(/^[a-zA-Z0-9]+$/, "Client seed can only contain alphanumeric characters")
+    .optional(),
 });
 
 export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
@@ -107,14 +116,21 @@ export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const { username, email } = bodyResult.data;
+      const { username, email, avatarUrl, clientSeed } = bodyResult.data;
       
-      // Use provided values or keep existing
-      const updatedUser = await storage.createOrUpdateUserByWallet(
-        walletAddress, 
-        username || existingUser.username,
-        email !== undefined ? email : existingUser.email || undefined
-      );
+      // Build update object with only provided fields
+      const updateData: { username?: string; email?: string; avatarUrl?: string; clientSeed?: string } = {};
+      
+      if (username !== undefined) updateData.username = username;
+      if (email !== undefined) updateData.email = email || undefined;
+      if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl || undefined;
+      if (clientSeed !== undefined) updateData.clientSeed = clientSeed;
+
+      const updatedUser = await storage.updateUserProfile(walletAddress, updateData);
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
       if (req.session && username) {
         req.session.username = updatedUser.username;
