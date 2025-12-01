@@ -123,35 +123,48 @@ export default function ChatSidebar({
     return () => clearInterval(interval);
   }, []);
 
-  // Load avatar URLs for all users in messages
+  // Fetch avatar URLs from database for all users in messages
   useEffect(() => {
-    const newAvatarUrls: Record<string, string | null> = {};
-    messages.forEach(msg => {
-      const storedAvatar = localStorage.getItem(`avatar_${msg.username}`);
-      newAvatarUrls[msg.username] = storedAvatar;
-    });
-    setAvatarUrls(newAvatarUrls);
+    const fetchAvatars = async () => {
+      const uniqueUsernames = Array.from(new Set(messages.map(msg => msg.username)));
+      const newAvatarUrls: Record<string, string | null> = { ...avatarUrls };
+      
+      for (const username of uniqueUsernames) {
+        // Skip if we already have this avatar cached
+        if (newAvatarUrls[username] !== undefined) continue;
+        
+        try {
+          // Fetch user data by username (we need to add this endpoint or use existing one)
+          const response = await fetch(`/api/users/avatar/${encodeURIComponent(username)}`);
+          if (response.ok) {
+            const data = await response.json();
+            newAvatarUrls[username] = data.avatarUrl || null;
+          } else {
+            newAvatarUrls[username] = null;
+          }
+        } catch {
+          newAvatarUrls[username] = null;
+        }
+      }
+      
+      setAvatarUrls(newAvatarUrls);
+    };
+    
+    if (messages.length > 0) {
+      fetchAvatars();
+    }
   }, [messages]);
 
-  // Listen for avatar updates from same tab and other tabs
+  // Listen for avatar updates from same session
   useEffect(() => {
     const handleAvatarUpdate = (event: CustomEvent) => {
       const { username, avatarUrl } = event.detail;
       setAvatarUrls(prev => ({ ...prev, [username]: avatarUrl }));
     };
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key && event.key.startsWith('avatar_')) {
-        const username = event.key.replace('avatar_', '');
-        setAvatarUrls(prev => ({ ...prev, [username]: event.newValue }));
-      }
-    };
-
     window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-    window.addEventListener('storage', handleStorageChange);
     return () => {
       window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 

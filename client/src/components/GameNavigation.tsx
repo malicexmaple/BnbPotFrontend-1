@@ -51,16 +51,29 @@ export default function GameNavigation({
     : location === "/prediction-markets" ? "prediction-markets"
     : "jackpot";
   
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(() => {
-    return username ? localStorage.getItem(`avatar_${username}`) : null;
-  });
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
+  // Fetch avatar from database when user is authenticated
   useEffect(() => {
-    if (username) {
-      setAvatarUrl(localStorage.getItem(`avatar_${username}`));
-    }
-  }, [username]);
+    const fetchAvatar = async () => {
+      if (walletAddress) {
+        try {
+          const response = await fetch(`/api/users/me?walletAddress=${encodeURIComponent(walletAddress)}`);
+          if (response.ok) {
+            const userData = await response.json();
+            setAvatarUrl(userData.avatarUrl || null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch avatar:", error);
+        }
+      } else {
+        setAvatarUrl(null);
+      }
+    };
+    fetchAvatar();
+  }, [walletAddress]);
 
+  // Listen for avatar updates from same session (e.g., ProfileModal updates)
   useEffect(() => {
     const handleAvatarUpdate = (event: CustomEvent) => {
       if (username && event.detail.username === username) {
@@ -68,17 +81,9 @@ export default function GameNavigation({
       }
     };
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (username && event.key === `avatar_${username}`) {
-        setAvatarUrl(event.newValue);
-      }
-    };
-
     window.addEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-    window.addEventListener('storage', handleStorageChange);
     return () => {
       window.removeEventListener('avatarUpdated', handleAvatarUpdate as EventListener);
-      window.removeEventListener('storage', handleStorageChange);
     };
   }, [username]);
 

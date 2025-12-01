@@ -62,14 +62,25 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
   const isWinner = type === 'winner';
   const isLatest = type === 'latest';
 
-  // Load avatar from localStorage in effect to avoid SSR issues
+  // Load avatar from API data or fetch from database
   useEffect(() => {
-    if (statsData.avatarUrl) {
-      setAvatarUrl(statsData.avatarUrl);
-    } else {
-      const storedAvatar = localStorage.getItem(`avatar_${statsData.username}`);
-      setAvatarUrl(storedAvatar || undefined);
-    }
+    const loadAvatar = async () => {
+      if (statsData.avatarUrl) {
+        setAvatarUrl(statsData.avatarUrl);
+      } else if (statsData.username) {
+        // Fetch avatar from database if not provided in stats data
+        try {
+          const response = await fetch(`/api/users/avatar/${encodeURIComponent(statsData.username)}`);
+          if (response.ok) {
+            const data = await response.json();
+            setAvatarUrl(data.avatarUrl || undefined);
+          }
+        } catch {
+          setAvatarUrl(undefined);
+        }
+      }
+    };
+    loadAvatar();
   }, [statsData.username, statsData.avatarUrl]);
 
   return (

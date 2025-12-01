@@ -98,6 +98,26 @@ export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
     }
   });
 
+  // Get user avatar by username (public endpoint for chat/stats display)
+  app.get("/api/users/avatar/:username", async (req, res) => {
+    try {
+      const { username } = req.params;
+      if (!username || username.length < 1) {
+        return res.status(400).json({ message: "Username is required" });
+      }
+
+      const user = await storage.getUserByUsername(username);
+      if (!user) {
+        return res.status(404).json({ avatarUrl: null });
+      }
+
+      res.json({ avatarUrl: user.avatarUrl || null });
+    } catch (error) {
+      console.error("Error fetching user avatar:", error);
+      res.status(500).json({ message: "Failed to fetch user avatar" });
+    }
+  });
+
   // Update user profile
   app.patch("/api/users/profile", requireAuth, async (req, res) => {
     try {
