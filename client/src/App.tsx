@@ -48,7 +48,7 @@ function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
       setShowLoader(true);
       setContentVisible(false);
       
-      // Wait for page to fully load and zoom to stabilize
+      // Wait at least 5 seconds to fully hide any loading
       const timer = setTimeout(() => {
         // First make content visible (but loader still showing)
         setContentVisible(true);
@@ -61,7 +61,7 @@ function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
             }, 100);
           });
         });
-      }, 500);
+      }, 5000);
       
       prevLocationRef.current = location;
       
