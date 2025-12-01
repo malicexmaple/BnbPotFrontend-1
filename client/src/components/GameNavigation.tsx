@@ -154,38 +154,32 @@ export default function GameNavigation({
           flex: 1
         }}>
           {/* Navigation tabs */}
-          <div className="flex flex-nowrap items-center gap-0.5 sm:gap-1">
+          <div className="flex flex-nowrap items-center gap-1 sm:gap-2">
           <Link href="/" onClick={(e) => { if (activeTab === "jackpot") e.preventDefault(); }}>
             <Button
               data-testid="button-jackpot-tab"
               variant="ghost"
-              size="sm"
-              className={`font-medium px-1.5 sm:px-3 ${activeTab === "jackpot" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-              style={{height: '32px', fontSize: '14px'}}
+              className={`px-2 sm:px-4 h-10 sm:h-12 ${activeTab === "jackpot" ? "bg-white/10" : ""}`}
             >
-              <img src={jackpotTabLogo} alt="Jackpot" className="h-6 sm:h-[34px] w-auto" />
+              <img src={jackpotTabLogo} alt="Jackpot" className="h-6 sm:h-8 w-auto" />
             </Button>
           </Link>
           <Link href="/coinflip" onClick={(e) => { if (activeTab === "coinflip") e.preventDefault(); }}>
             <Button
               data-testid="button-coinflip-tab"
               variant="ghost"
-              size="sm"
-              className={`font-medium px-1.5 sm:px-3 ${activeTab === "coinflip" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-              style={{height: '32px', fontSize: '14px'}}
+              className={`px-2 sm:px-4 h-10 sm:h-12 ${activeTab === "coinflip" ? "bg-white/10" : ""}`}
             >
-              <img src={coinflipLogo} alt="Coinflip" className="h-6 sm:h-[34px] w-auto" />
+              <img src={coinflipLogo} alt="Coinflip" className="h-6 sm:h-8 w-auto" />
             </Button>
           </Link>
           <Link href="/prediction-markets" onClick={(e) => { if (activeTab === "prediction-markets") e.preventDefault(); }}>
             <Button
               data-testid="button-prediction-markets-tab"
               variant="ghost"
-              size="sm"
-              className={`font-medium px-1.5 sm:px-3 ${activeTab === "prediction-markets" ? "text-foreground bg-white/10" : "text-muted-foreground"}`}
-              style={{height: '32px', fontSize: '14px'}}
+              className={`px-2 sm:px-4 h-10 sm:h-12 ${activeTab === "prediction-markets" ? "bg-white/10" : ""}`}
             >
-              <img src={predictionMarketsLogo} alt="Prediction Markets" className="h-6 sm:h-[34px] w-auto" />
+              <img src={predictionMarketsLogo} alt="Prediction Markets" className="h-6 sm:h-8 w-auto" />
             </Button>
           </Link>
           </div>
