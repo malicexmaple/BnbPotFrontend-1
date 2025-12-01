@@ -1,6 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
 import { lazy, Suspense, useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -9,7 +8,6 @@ import { GameStateProvider } from "@/contexts/GameStateContext";
 import PersistentHeader from "@/components/PersistentHeader";
 import LoadingScreen, { PageTransitionLoader } from "@/components/LoadingScreen";
 import RotateDeviceOverlay from "@/components/RotateDeviceOverlay";
-import AppShell from "@/components/AppShell";
 
 import jackpotLogo from "@assets/jackpotnew_1763477420573.png";
 import coinflipLogo from "@assets/coinflipnew_1763488010364.png";
@@ -147,22 +145,16 @@ function App() {
   }
 
   return (
-    <>
-      {/* Overlays rendered outside scaled shell via portal */}
-      {createPortal(<RotateDeviceOverlay />, document.body)}
-      {createPortal(<Toaster />, document.body)}
-      
-      <AppShell>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <GameStateProvider>
-              <PersistentHeader />
-              <Router />
-            </GameStateProvider>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </AppShell>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <GameStateProvider>
+          <Toaster />
+          <RotateDeviceOverlay />
+          <PersistentHeader />
+          <Router />
+        </GameStateProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
