@@ -198,9 +198,8 @@ export default function GameNavigation({
                   <Button
                     data-testid="button-user-menu"
                     size="sm"
-                    className="font-bold pl-1.5 pr-2 sm:pl-2 sm:pr-5 text-white border-0 glass-panel"
+                    className="font-bold pl-1.5 pr-2 sm:pl-2 sm:pr-5 h-10 sm:h-12 text-white border-0 glass-panel"
                     style={{
-                      height: '44px',
                       fontSize: '12px',
                       borderRadius: '10px',
                       border: '2px solid transparent',
@@ -316,9 +315,8 @@ export default function GameNavigation({
                 onClick={onConnect}
                 disabled={isConnecting}
                 size="sm"
-                className="font-bold px-3 sm:px-5 text-white border-0 glass-panel no-default-hover-elevate"
+                className="font-bold px-3 sm:px-5 h-10 sm:h-12 text-white border-0 glass-panel no-default-hover-elevate"
                 style={{
-                  height: '44px',
                   fontSize: '12px',
                   borderRadius: '10px',
                   border: '2px solid transparent',
