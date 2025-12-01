@@ -1,32 +1,25 @@
 import { Switch, Route } from "wouter";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GameStateProvider } from "@/contexts/GameStateContext";
 import PersistentHeader from "@/components/PersistentHeader";
-import Home from "@/pages/home";
-import Coinflip from "@/pages/coinflip";
-import PredictionMarkets from "@/pages/prediction-markets";
-import NotFound from "@/pages/not-found";
+import LoadingScreen, { PageTransitionLoader } from "@/components/LoadingScreen";
 
+const Home = lazy(() => import("@/pages/home"));
+const Coinflip = lazy(() => import("@/pages/coinflip"));
+const PredictionMarkets = lazy(() => import("@/pages/prediction-markets"));
 const Admin = lazy(() => import("@/pages/admin"));
 const AdminMarkets = lazy(() => import("@/pages/admin-markets"));
 const SportsDataDemo = lazy(() => import("@/pages/sports-data-demo"));
 const PredictionDataDemo = lazy(() => import("@/pages/prediction-data-demo"));
-
-function PageLoader() {
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-    </div>
-  );
-}
+const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<PageTransitionLoader />}>
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/coinflip" component={Coinflip} />
@@ -42,6 +35,47 @@ function Router() {
 }
 
 function App() {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+
+  useEffect(() => {
+    const preloadAssets = async () => {
+      const criticalImages = [
+        '/src/assets/3dgifmaker85766_1764628423703.gif'
+      ];
+      
+      await Promise.all(
+        criticalImages.map(src => {
+          return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = src;
+          });
+        })
+      );
+      
+      setAssetsLoaded(true);
+    };
+
+    preloadAssets();
+  }, []);
+
+  const handleLoadingComplete = () => {
+    setIsInitialLoading(false);
+  };
+
+  if (isInitialLoading) {
+    return (
+      <LoadingScreen 
+        minDuration={1500}
+        showProgress={true}
+        message="Initializing..."
+        onComplete={handleLoadingComplete}
+      />
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
