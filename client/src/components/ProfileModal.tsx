@@ -18,6 +18,11 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import profileLogo from '@assets/PROIFILE_1763429559487.png';
 
+const EMPTY_CHART_DATA = [
+  { games: 0, profit: 0 },
+  { games: 1, profit: 0 },
+];
+
 interface ProfileModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -260,11 +265,6 @@ export default function ProfileModal({
   const getAvatarColor = () => {
     return `hsl(${username.charCodeAt(0) * 137.5 % 360}, 65%, 50%)`;
   };
-
-  const chartData = [
-    { games: 0, profit: 0 },
-    { games: 1, profit: 0 },
-  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -763,7 +763,7 @@ export default function ProfileModal({
                     border: '1px solid rgba(60, 60, 70, 0.3)'
                   }}>
                     <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={chartData}>
+                      <LineChart data={EMPTY_CHART_DATA}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 100, 110, 0.2)" />
                         <XAxis 
                           dataKey="games" 

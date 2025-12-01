@@ -16,6 +16,49 @@ interface NetworkBackgroundProps {
   sizeMultiplier?: number;
 }
 
+const COLOR_RGB: Record<string, [number, number, number]> = {
+  gray: [140, 140, 140],
+  purple: [140, 110, 235],
+  yellow: [255, 215, 0],
+  bronze: [205, 127, 50],
+  silver: [192, 192, 192],
+  sapphire: [15, 82, 186],
+  emerald: [0, 255, 65],
+  gold: [255, 215, 0],
+  ruby: [220, 20, 60],
+  diamond: [185, 242, 255],
+  pearl: [240, 234, 214],
+  opal: [168, 195, 188],
+  stardust: [255, 228, 181],
+  nebula: [157, 78, 221],
+  supernova: [255, 107, 53],
+  orange: [255, 71, 143],
+};
+
+const PARTICLE_OPACITY: Record<string, number> = {
+  gray: 0.9,
+  orange: 0.95,
+};
+
+const getParticleColor = (color: string): string => {
+  const rgb = COLOR_RGB[color] || COLOR_RGB.orange;
+  const opacity = PARTICLE_OPACITY[color] ?? 1;
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`;
+};
+
+const getLineColor = (color: string, opacity: number): string => {
+  const rgb = COLOR_RGB[color] || COLOR_RGB.orange;
+  const r = color === "gray" ? 120 : rgb[0];
+  const g = color === "gray" ? 120 : rgb[1];
+  const b = color === "gray" ? 120 : rgb[2];
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+const getDotColor = (color: string, opacity: number): string => {
+  const rgb = COLOR_RGB[color] || COLOR_RGB.orange;
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opacity})`;
+};
+
 export function NetworkBackground({ className = "", color = "orange", sizeMultiplier = 1.0 }: NetworkBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -103,25 +146,7 @@ export function NetworkBackground({ className = "", color = "orange", sizeMultip
         if (particle.y > rect.height) particle.y = 0;
 
         const particleSize = particle.radius;
-        const colorMap: Record<string, string> = {
-          gray: "rgba(140, 140, 140, 0.9)",
-          purple: "rgba(140, 110, 235, 1)",
-          yellow: "rgba(255, 215, 0, 1)",
-          bronze: "rgba(205, 127, 50, 1)",
-          silver: "rgba(192, 192, 192, 1)",
-          sapphire: "rgba(15, 82, 186, 1)",
-          emerald: "rgba(0, 255, 65, 1)",
-          gold: "rgba(255, 215, 0, 1)",
-          ruby: "rgba(220, 20, 60, 1)",
-          diamond: "rgba(185, 242, 255, 1)",
-          pearl: "rgba(240, 234, 214, 1)",
-          opal: "rgba(168, 195, 188, 1)",
-          stardust: "rgba(255, 228, 181, 1)",
-          nebula: "rgba(157, 78, 221, 1)",
-          supernova: "rgba(255, 107, 53, 1)",
-          orange: "rgba(255, 71, 143, 0.95)"
-        };
-        ctx.fillStyle = colorMap[color] || colorMap.orange;
+        ctx.fillStyle = getParticleColor(color);
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particleSize, 0, Math.PI * 2);
         ctx.fill();
@@ -136,25 +161,7 @@ export function NetworkBackground({ className = "", color = "orange", sizeMultip
           if (distance < connectionRange) {
             const baseOpacity = color === "gray" ? 0.15 : 0.3;
             const opacity = (1 - distance / connectionRange) * baseOpacity;
-            const lineColorMap: Record<string, string> = {
-              gray: `rgba(120, 120, 120, ${opacity})`,
-              purple: `rgba(140, 110, 235, ${opacity})`,
-              yellow: `rgba(255, 215, 0, ${opacity})`,
-              bronze: `rgba(205, 127, 50, ${opacity})`,
-              gold: `rgba(255, 215, 0, ${opacity})`,
-              silver: `rgba(192, 192, 192, ${opacity})`,
-              sapphire: `rgba(15, 82, 186, ${opacity})`,
-              emerald: `rgba(0, 255, 65, ${opacity})`,
-              ruby: `rgba(220, 20, 60, ${opacity})`,
-              diamond: `rgba(185, 242, 255, ${opacity})`,
-              pearl: `rgba(240, 234, 214, ${opacity})`,
-              opal: `rgba(168, 195, 188, ${opacity})`,
-              stardust: `rgba(255, 228, 181, ${opacity})`,
-              nebula: `rgba(157, 78, 221, ${opacity})`,
-              supernova: `rgba(255, 107, 53, ${opacity})`,
-              orange: `rgba(255, 71, 143, ${opacity})`
-            };
-            ctx.strokeStyle = lineColorMap[color] || lineColorMap.orange;
+            ctx.strokeStyle = getLineColor(color, opacity);
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
@@ -177,25 +184,7 @@ export function NetworkBackground({ className = "", color = "orange", sizeMultip
           if (distance < maxInteractionDistance) {
             hasConnection = true;
             const opacity = (1 - distance / maxInteractionDistance) * 0.5;
-            const mouseLineColorMap: Record<string, string> = {
-              gray: `rgba(140, 140, 140, ${opacity})`,
-              purple: `rgba(140, 110, 235, ${opacity})`,
-              yellow: `rgba(255, 215, 0, ${opacity})`,
-              bronze: `rgba(205, 127, 50, ${opacity})`,
-              gold: `rgba(255, 215, 0, ${opacity})`,
-              silver: `rgba(192, 192, 192, ${opacity})`,
-              sapphire: `rgba(15, 82, 186, ${opacity})`,
-              emerald: `rgba(0, 255, 65, ${opacity})`,
-              ruby: `rgba(220, 20, 60, ${opacity})`,
-              diamond: `rgba(185, 242, 255, ${opacity})`,
-              pearl: `rgba(240, 234, 214, ${opacity})`,
-              opal: `rgba(168, 195, 188, ${opacity})`,
-              stardust: `rgba(255, 228, 181, ${opacity})`,
-              nebula: `rgba(157, 78, 221, ${opacity})`,
-              supernova: `rgba(255, 107, 53, ${opacity})`,
-              orange: `rgba(255, 71, 143, ${opacity})`
-            };
-            ctx.strokeStyle = mouseLineColorMap[color] || mouseLineColorMap.orange;
+            ctx.strokeStyle = getDotColor(color, opacity);
             
             ctx.lineWidth = 1.5;
             ctx.beginPath();
@@ -206,25 +195,7 @@ export function NetworkBackground({ className = "", color = "orange", sizeMultip
         });
 
         if (hasConnection) {
-          const mouseDotColorMap: Record<string, string> = {
-            gray: "rgba(140, 140, 140, 0.7)",
-            purple: "rgba(140, 110, 235, 0.7)",
-            yellow: "rgba(255, 215, 0, 0.7)",
-            bronze: "rgba(205, 127, 50, 0.7)",
-            gold: "rgba(255, 215, 0, 0.7)",
-            silver: "rgba(192, 192, 192, 0.7)",
-            sapphire: "rgba(15, 82, 186, 0.7)",
-            emerald: "rgba(0, 255, 65, 0.7)",
-            ruby: "rgba(220, 20, 60, 0.7)",
-            diamond: "rgba(185, 242, 255, 0.7)",
-            pearl: "rgba(240, 234, 214, 0.7)",
-            opal: "rgba(168, 195, 188, 0.7)",
-            stardust: "rgba(255, 228, 181, 0.7)",
-            nebula: "rgba(157, 78, 221, 0.7)",
-            supernova: "rgba(255, 107, 53, 0.7)",
-            orange: "rgba(255, 71, 143, 0.7)"
-          };
-          ctx.fillStyle = mouseDotColorMap[color] || mouseDotColorMap.orange;
+          ctx.fillStyle = getDotColor(color, 0.7);
           
           ctx.beginPath();
           ctx.arc(mouse.x, mouse.y, 4, 0, Math.PI * 2);
