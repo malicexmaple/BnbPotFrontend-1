@@ -7,7 +7,7 @@ import { Settings, BarChart3, Receipt, VolumeX, LogOut, Eye, EyeOff, Pencil, Che
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import AvatarUploadModal from "./AvatarUploadModal";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   Select,
   SelectContent,
@@ -153,7 +153,11 @@ export default function ProfileModal({
         description: `Your username has been changed to ${editedUsername}`,
       });
       setIsEditingUsername(false);
-      // Dispatch event to update header/other components
+      
+      // Invalidate user profile query to refresh username everywhere
+      queryClient.invalidateQueries({ queryKey: ['/api/users/me'] });
+      
+      // Also dispatch event for localStorage sync (for same-browser tabs)
       window.dispatchEvent(new CustomEvent('usernameUpdated', { detail: { username: editedUsername } }));
     } catch (error: any) {
       toast({

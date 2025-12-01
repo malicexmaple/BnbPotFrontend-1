@@ -1,10 +1,20 @@
 import { createContext, useContext, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useWallet } from "@/hooks/useWallet";
 import { useSignupTracking } from "@/hooks/useSignupTracking";
 import { useChat } from "@/hooks/useChat";
 import { useJackpotContract } from "@/hooks/useJackpotContract";
 import { queryClient } from '@/lib/queryClient';
 import { web3Service } from '@/lib/web3Service';
+
+interface UserProfile {
+  id: number;
+  username: string;
+  email?: string;
+  walletAddress: string;
+  avatarUrl?: string;
+  agreedToTermsAt?: string;
+}
 
 interface GameStateContextType {
   address: string | null;
@@ -36,7 +46,25 @@ const GameStateContext = createContext<GameStateContextType | null>(null);
 
 export function GameStateProvider({ children }: { children: ReactNode }) {
   const { address, isConnecting, error, connect, disconnect } = useWallet();
-  const { shouldShowSignup, username, agreedToTerms, markSignupComplete } = useSignupTracking(address);
+  const { shouldShowSignup, username: localUsername, agreedToTerms, markSignupComplete } = useSignupTracking(address);
+  
+  // Fetch user profile from database - this is the source of truth for username
+  const { data: userProfile } = useQuery<UserProfile | null>({
+    queryKey: ['/api/users/me', address],
+    queryFn: async () => {
+      if (!address) return null;
+      const res = await fetch(`/api/users/me?walletAddress=${encodeURIComponent(address)}`);
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error('Failed to fetch user profile');
+      return res.json();
+    },
+    enabled: !!address,
+    staleTime: 30000, // Cache for 30 seconds
+  });
+  
+  // Use database username if available, fall back to localStorage username
+  const username = userProfile?.username || localUsername;
+  
   const { messages, isConnected, isAuthenticated, onlineUsers, sendMessage } = useChat({ 
     username: username || undefined, 
     walletAddress: address || undefined 
