@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { GameStateProvider } from "@/contexts/GameStateContext";
 import PersistentHeader from "@/components/PersistentHeader";
 import LoadingScreen, { PageTransitionLoader } from "@/components/LoadingScreen";
+import RotateDeviceOverlay from "@/components/RotateDeviceOverlay";
 
 import jackpotLogo from "@assets/jackpotnew_1763477420573.png";
 import coinflipLogo from "@assets/coinflipnew_1763488010364.png";
@@ -146,6 +147,7 @@ function App() {
       <TooltipProvider>
         <GameStateProvider>
           <Toaster />
+          <RotateDeviceOverlay />
           <PersistentHeader />
           <Router />
         </GameStateProvider>
