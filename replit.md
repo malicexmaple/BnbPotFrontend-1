@@ -19,6 +19,9 @@ The application is built as a full-stack TypeScript monorepo with a React fronte
 - ✅ **NEW**: Sport/League visibility controls with auto-hide and manual override
 - ✅ **NEW**: URL-based custom media uploads for teams/players/leagues
 - ✅ **NEW**: Replit Object Storage integration for avatar and media uploads
+- ✅ **OPTIMIZED**: Route-based lazy loading for admin pages (React.lazy)
+- ✅ **OPTIMIZED**: Static data moved outside components to reduce re-renders
+- ✅ **OPTIMIZED**: Graceful demo mode handling (no blockchain connection spam)
 - 📝 Ready for testnet deployment (see BLOCKCHAIN_DEPLOYMENT_GUIDE.md)
 
 ## User Preferences
