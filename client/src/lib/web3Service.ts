@@ -30,10 +30,11 @@ export class Web3Service {
   
   private contractAddress: string;
   private rpcUrl: string;
+  private hasWarnedMissingRpc: boolean = false;
   
   constructor() {
     this.contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || "";
-    this.rpcUrl = import.meta.env.VITE_BSC_RPC_URL || "https://bsc-dataseed1.binance.org";
+    this.rpcUrl = import.meta.env.VITE_BSC_RPC_URL || "";
   }
   
   /**
@@ -223,11 +224,30 @@ export class Web3Service {
   
   /**
    * Get BNB balance of an address
+   * Uses BrowserProvider when wallet is connected, otherwise falls back to JsonRpcProvider
+   * In demo mode (no contract + no RPC), returns "0" if no wallet provider is available
    */
   async getBalance(address: string): Promise<string> {
-    const provider = this.provider || new ethers.JsonRpcProvider(this.rpcUrl);
-    const balance = await provider.getBalance(address);
-    return ethers.formatEther(balance);
+    try {
+      if (this.provider) {
+        const balance = await this.provider.getBalance(address);
+        return ethers.formatEther(balance);
+      }
+      
+      if (!this.rpcUrl) {
+        if (this.contractAddress && !this.hasWarnedMissingRpc) {
+          console.warn("⚠️ VITE_BSC_RPC_URL is not configured but VITE_CONTRACT_ADDRESS is set. Balance will show as 0 until wallet is connected or RPC URL is configured.");
+          this.hasWarnedMissingRpc = true;
+        }
+        return "0";
+      }
+      
+      const provider = new ethers.JsonRpcProvider(this.rpcUrl);
+      const balance = await provider.getBalance(address);
+      return ethers.formatEther(balance);
+    } catch {
+      return "0";
+    }
   }
   
   /**
