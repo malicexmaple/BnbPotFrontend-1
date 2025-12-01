@@ -34,7 +34,7 @@ const updateProfileSchema = z.object({
     .optional()
     .or(z.literal('')),
   avatarUrl: z.string()
-    .max(10000, "Avatar URL too large")
+    .max(500000, "Avatar URL too large (max 500KB)")
     .optional()
     .or(z.literal('')),
   clientSeed: z.string()
