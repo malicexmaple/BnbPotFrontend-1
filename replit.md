@@ -6,18 +6,19 @@ BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where t
 
 The application is built as a full-stack TypeScript monorepo with a React frontend, Express backend, and PostgreSQL database. It follows a modern web architecture with real-time capabilities for live game state updates and player interactions.
 
-**Current Status** (November 27, 2025):
+**Current Status** (December 1, 2025):
 - ✅ Production-grade smart contract deployed with Chainlink VRF
 - ✅ Complete blockchain event indexer with database syncing
 - ✅ Dual-mode operation: blockchain mode + database-only fallback
 - ✅ Real-time WebSocket updates for all users
 - ✅ Authentication gates (wallet + account + terms required for betting)
 - ✅ Game viewing available to everyone (read-only for non-authenticated)
-- ✅ **REFACTORED**: Modular route architecture (14 route files)
+- ✅ **REFACTORED**: Modular route architecture (15 route files)
 - ✅ **REFACTORED**: Comprehensive Zod input validation on all endpoints
 - ✅ **REFACTORED**: Image caching with browser Cache-Control headers
 - ✅ **NEW**: Sport/League visibility controls with auto-hide and manual override
 - ✅ **NEW**: URL-based custom media uploads for teams/players/leagues
+- ✅ **NEW**: Replit Object Storage integration for avatar and media uploads
 - 📝 Ready for testnet deployment (see BLOCKCHAIN_DEPLOYMENT_GUIDE.md)
 
 ## User Preferences
@@ -93,6 +94,19 @@ Preferred communication style: Simple, everyday language.
 **In-Memory Storage**
 - **MemStorage Class**: Temporary in-memory data store for development
 - **Interface Pattern**: `IStorage` interface allows swapping between memory and database implementations
+
+**Object Storage** (Added December 2025)
+- **Replit Object Storage**: Persistent file storage for user uploads (avatars, team logos, etc.)
+- **Service**: `server/objectStorage.ts` - Handles uploads/downloads via Replit sidecar API
+- **ACL**: `server/objectAcl.ts` - Access control policy definitions
+- **Routes**: `server/routes/objectStorage.routes.ts` - Upload and serve endpoints
+- **Configuration**: Requires `PRIVATE_OBJECT_DIR` environment variable (e.g., `/bucket-name`)
+- **Fallback**: When Object Storage is not configured, avatars fall back to base64 storage in database
+- **Endpoints**:
+  - `POST /api/avatars/upload` - Upload avatar (persists to user profile)
+  - `POST /api/objects/upload` - Generic file upload
+  - `POST /api/sports/upload-media-storage` - Sports media upload
+  - `GET /objects/*` - Serve uploaded files
 
 **Migration Strategy**
 - **Drizzle Kit**: Schema migrations with `drizzle-kit push` command

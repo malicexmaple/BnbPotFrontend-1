@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import AvatarCropModal from "./AvatarCropModal";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface AvatarUploadModalProps {
   open: boolean;
@@ -30,6 +32,8 @@ export default function AvatarUploadModal({
   const [imageLink, setImageLink] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [tempImageUrl, setTempImageUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const { toast } = useToast();
 
   const handleUploadClick = () => {
     setShowUploadDialog(true);
@@ -77,10 +81,36 @@ export default function AvatarUploadModal({
     img.src = imageLink;
   };
 
-  const handleCropSave = (croppedImageUrl: string) => {
-    onAvatarUpdate(croppedImageUrl);
-    setShowCropDialog(false);
-    onOpenChange(false);
+  const handleCropSave = async (croppedImageUrl: string) => {
+    setIsUploading(true);
+    try {
+      const response = await apiRequest("POST", "/api/avatars/upload", {
+        fileData: croppedImageUrl,
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || `Server error: ${response.status}`);
+      }
+      
+      if (data.success && data.avatarUrl) {
+        onAvatarUpdate(data.avatarUrl);
+        setShowCropDialog(false);
+        onOpenChange(false);
+      } else {
+        throw new Error(data.message || "Failed to upload avatar");
+      }
+    } catch (error: any) {
+      console.error("Error uploading avatar:", error);
+      toast({
+        title: "Upload Failed",
+        description: error.message || "Failed to upload avatar. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleCropCancel = () => {
@@ -296,6 +326,7 @@ export default function AvatarUploadModal({
         username={username}
         onSave={handleCropSave}
         onCancel={handleCropCancel}
+        isUploading={isUploading}
       />
     </Dialog>
   );

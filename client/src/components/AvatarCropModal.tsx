@@ -5,7 +5,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { GOLDEN, DARK_BG, BORDER_RADIUS } from "@/constants/layout";
 import Cropper from "react-easy-crop";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 interface AvatarCropModalProps {
   open: boolean;
@@ -14,6 +14,7 @@ interface AvatarCropModalProps {
   username: string;
   onSave: (croppedImageUrl: string) => void;
   onCancel: () => void;
+  isUploading?: boolean;
 }
 
 interface Area {
@@ -76,6 +77,7 @@ export default function AvatarCropModal({
   username,
   onSave,
   onCancel,
+  isUploading = false,
 }: AvatarCropModalProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -199,20 +201,29 @@ export default function AvatarCropModal({
             <Button
               onClick={handleSave}
               className="w-full font-bold text-white"
+              disabled={isUploading}
               style={{
-                background: 'linear-gradient(135deg, #EAB308, #FCD34D)',
+                background: isUploading ? 'rgba(234, 179, 8, 0.5)' : 'linear-gradient(135deg, #EAB308, #FCD34D)',
                 border: '2px solid rgba(234, 179, 8, 0.5)',
                 boxShadow: '0 0 20px rgba(234, 179, 8, 0.3)'
               }}
               data-testid="button-save-avatar"
             >
-              Save as Avatar
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                "Save as Avatar"
+              )}
             </Button>
 
             <Button
               onClick={onCancel}
               variant="outline"
               className="w-full"
+              disabled={isUploading}
               style={{
                 border: '1px solid rgba(60, 60, 60, 0.5)',
                 background: 'rgba(20, 20, 20, 0.5)'
