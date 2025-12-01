@@ -33,7 +33,7 @@ function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
 
       transitionTimeoutRef.current = setTimeout(() => {
         setIsTransitioning(false);
-      }, 400);
+      }, 600);
       
       prevLocationRef.current = location;
     }
@@ -47,8 +47,14 @@ function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {isTransitioning && <PageTransitionLoader />}
-      <div style={{ display: isTransitioning ? 'none' : 'block' }}>
+      <PageTransitionLoader style={{ 
+        opacity: isTransitioning ? 1 : 0,
+        pointerEvents: isTransitioning ? 'auto' : 'none'
+      }} />
+      <div style={{ 
+        visibility: isTransitioning ? 'hidden' : 'visible',
+        opacity: isTransitioning ? 0 : 1
+      }}>
         {children}
       </div>
     </>
@@ -85,8 +91,6 @@ function App() {
     return (
       <LoadingScreen 
         minDuration={1500}
-        showProgress={true}
-        message="Initializing..."
         onComplete={handleLoadingComplete}
       />
     );
