@@ -233,6 +233,23 @@ export default function GameNavigation({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border/40">
+                  {walletAddress && (
+                    <div 
+                      className="px-3 py-2.5 border-b border-border/40"
+                      data-testid="display-wallet-address"
+                    >
+                      <div className="text-[10px] text-muted-foreground mb-1">Connected Wallet</div>
+                      <div 
+                        className="text-xs font-mono text-foreground/80 cursor-pointer hover:text-foreground transition-colors"
+                        onClick={() => {
+                          navigator.clipboard.writeText(walletAddress);
+                        }}
+                        title="Click to copy full address"
+                      >
+                        {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                      </div>
+                    </div>
+                  )}
                   <DropdownMenuItem 
                     className="px-3 py-2.5 cursor-pointer" 
                     onClick={onOpenOptions}
