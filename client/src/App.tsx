@@ -8,6 +8,24 @@ import { GameStateProvider } from "@/contexts/GameStateContext";
 import PersistentHeader from "@/components/PersistentHeader";
 import LoadingScreen, { PageTransitionLoader } from "@/components/LoadingScreen";
 
+import jackpotLogo from "@assets/jackpotnew_1763477420573.png";
+import coinflipLogo from "@assets/coinflipnew_1763488010364.png";
+import predictionMarketsLogo from "@assets/predictionmarketsnew_1763488010364.png";
+import bnbLogo from "@assets/3dgifmaker21542_1763401668048.gif";
+import jackpotLegendsLogo from "@assets/jackpotlegends_1763742593143.png";
+import coinflipKingsLogo from "@assets/coinfip-kings_1764256293716.png";
+import signupLogo from "@assets/signupnew_1763410821936.png";
+
+const CRITICAL_ASSETS = [
+  jackpotLogo,
+  coinflipLogo,
+  predictionMarketsLogo,
+  bnbLogo,
+  jackpotLegendsLogo,
+  coinflipKingsLogo,
+  signupLogo
+];
+
 const Home = lazy(() => import("@/pages/home"));
 const Coinflip = lazy(() => import("@/pages/coinflip"));
 const PredictionMarkets = lazy(() => import("@/pages/prediction-markets"));
@@ -80,11 +98,38 @@ function Router() {
   );
 }
 
+function preloadImages(urls: string[]): Promise<void[]> {
+  return Promise.all(
+    urls.map(url => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+        img.src = url;
+      });
+    })
+  );
+}
+
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [assetsReady, setAssetsReady] = useState(false);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+
+  useEffect(() => {
+    preloadImages(CRITICAL_ASSETS).then(() => {
+      setAssetsReady(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (assetsReady && minTimeElapsed) {
+      setIsInitialLoading(false);
+    }
+  }, [assetsReady, minTimeElapsed]);
 
   const handleLoadingComplete = () => {
-    setIsInitialLoading(false);
+    setMinTimeElapsed(true);
   };
 
   if (isInitialLoading) {
