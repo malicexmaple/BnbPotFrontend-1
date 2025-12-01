@@ -27,11 +27,11 @@ import coinflipKingsLogo from '@assets/coinfip-kings_1764256293716.png';
 import coinsBackground from '@assets/Ycjxd8iDdsXoHotkLjUPo-item-0x1_1763550444466.png';
 
 const demoGames = [
-  { username: "CryptoKing", level: 12, amount: "0.15", side: "heads" },
-  { username: "DegenMaster", level: 8, amount: "0.08", side: "tails" },
-  { username: "BNBWhale", level: 15, amount: "0.25", side: "heads" },
-  { username: "FlipLord", level: 6, amount: "0.05", side: "tails" },
-  { username: "LuckyDegen", level: 10, amount: "0.12", side: "heads" },
+  { username: "CryptoKing", level: 12, amount: 0.15, side: "heads" },
+  { username: "DegenMaster", level: 8, amount: 0.08, side: "tails" },
+  { username: "BNBWhale", level: 15, amount: 0.25, side: "heads" },
+  { username: "FlipLord", level: 6, amount: 0.05, side: "tails" },
+  { username: "LuckyDegen", level: 10, amount: 0.12, side: "heads" },
 ];
 
 export default function Coinflip() {
