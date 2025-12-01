@@ -1,4 +1,5 @@
 import { useEffect, useState, CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import loadingLogo from "@assets/3dgifmaker85766_1764628423703.gif";
 
 interface LoadingScreenProps {
@@ -6,22 +7,7 @@ interface LoadingScreenProps {
   onComplete?: () => void;
 }
 
-export default function LoadingScreen({ 
-  minDuration = 0, 
-  onComplete
-}: LoadingScreenProps) {
-  const [fadeOut, setFadeOut] = useState(false);
-
-  useEffect(() => {
-    if (minDuration > 0 && onComplete) {
-      const timer = setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(onComplete, 300);
-      }, minDuration);
-      return () => clearTimeout(timer);
-    }
-  }, [minDuration, onComplete]);
-
+function LoadingContent({ fadeOut = false }: { fadeOut?: boolean }) {
   return (
     <div 
       className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-300 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
@@ -52,12 +38,31 @@ export default function LoadingScreen({
   );
 }
 
+export default function LoadingScreen({ 
+  minDuration = 0, 
+  onComplete
+}: LoadingScreenProps) {
+  const [fadeOut, setFadeOut] = useState(false);
+
+  useEffect(() => {
+    if (minDuration > 0 && onComplete) {
+      const timer = setTimeout(() => {
+        setFadeOut(true);
+        setTimeout(onComplete, 300);
+      }, minDuration);
+      return () => clearTimeout(timer);
+    }
+  }, [minDuration, onComplete]);
+
+  return <LoadingContent fadeOut={fadeOut} />;
+}
+
 interface PageTransitionLoaderProps {
   style?: CSSProperties;
 }
 
 export function PageTransitionLoader({ style }: PageTransitionLoaderProps = {}) {
-  return (
+  const content = (
     <div 
       className="fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-200"
       style={{
@@ -85,4 +90,6 @@ export function PageTransitionLoader({ style }: PageTransitionLoaderProps = {}) 
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }
