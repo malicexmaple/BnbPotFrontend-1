@@ -149,13 +149,12 @@ export default function GameNavigation({
         </nav>
 
         {/* Bottom Header - 70px on desktop - glass panel matching site */}
-        <nav className="flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
+        <nav className="glass-panel flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
           height: '70px',
-          background: 'rgba(20, 20, 20, 0.8)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
-          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.7)',
-          flex: 1
+          flex: 1,
+          borderRadius: 0,
+          border: 'none',
+          borderBottom: '1px solid rgba(60, 60, 60, 0.3)'
         }}>
           {/* Navigation tabs */}
           <div className="flex flex-nowrap items-center gap-1 sm:gap-2">
