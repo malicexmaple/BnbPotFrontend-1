@@ -114,6 +114,7 @@ export default function GameNavigation({
           height: '30px',
           background: 'rgba(10, 10, 10, 0.9)',
           backdropFilter: 'blur(8px)',
+          borderLeft: '1px solid rgba(60, 60, 60, 0.3)',
           borderBottom: '1px solid rgba(60, 60, 60, 0.2)',
           boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.02), inset 0 -1px 2px rgba(0, 0, 0, 0.5)'
         }}>
@@ -148,13 +149,15 @@ export default function GameNavigation({
           </div>
         </nav>
 
-        {/* Bottom Header - 70px on desktop - glass panel matching site */}
-        <nav className="glass-panel flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
+        {/* Bottom Header - 70px on desktop - glass panel matching site, no outer glow */}
+        <nav className="flex flex-nowrap items-center justify-between px-2 sm:px-4" style={{
           height: '70px',
           flex: 1,
-          borderRadius: 0,
-          border: 'none',
-          borderBottom: '1px solid rgba(60, 60, 60, 0.3)'
+          background: 'rgba(20, 20, 20, 0.8)',
+          backdropFilter: 'blur(8px)',
+          borderLeft: '1px solid rgba(60, 60, 60, 0.3)',
+          borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
+          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)'
         }}>
           {/* Navigation tabs */}
           <div className="flex flex-nowrap items-center gap-1 sm:gap-2">
