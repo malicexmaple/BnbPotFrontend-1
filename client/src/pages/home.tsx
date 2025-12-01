@@ -56,26 +56,6 @@ export default function Home() {
   });
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Expose utility functions for testing
-  useEffect(() => {
-    (window as any).clearAllAvatars = () => {
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
-        if (key.startsWith('avatar_')) {
-          localStorage.removeItem(key);
-        }
-      });
-      console.log('✅ All avatars cleared! Refresh the page to see changes.');
-      window.location.reload();
-    };
-    
-    (window as any).clearAll = () => {
-      localStorage.clear();
-      console.log('✅ All localStorage cleared! Refresh the page to see changes.');
-      window.location.reload();
-    };
-  }, []);
-
   // Track previous round to detect when a round actually completes
   const prevRoundRef = useRef<any>(null);
 

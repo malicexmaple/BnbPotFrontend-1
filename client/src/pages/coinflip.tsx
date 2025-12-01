@@ -51,38 +51,6 @@ export default function Coinflip() {
     agreedToTerms: false
   });
   
-  // Static demo data for coinflip games (no random values to prevent re-render jitter)
-  const demoGames = [
-    { username: '999BW', level: 69, amount: 1.666 },
-    { username: 'L3on', level: 25, amount: 0.002 },
-    { username: 'Franciso', level: 20, amount: 0.002 },
-    { username: 'AreWeUp', level: 19, amount: 0.002 },
-    { username: 'CryptoKing', level: 45, amount: 0.125 },
-    { username: 'BNBWhale', level: 38, amount: 0.500 },
-    { username: 'MoonBoy', level: 22, amount: 0.050 },
-    { username: 'DiamondHands', level: 31, amount: 0.200 },
-  ];
-
-  // Expose utility functions for testing
-  useEffect(() => {
-    (window as any).clearAllAvatars = () => {
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
-        if (key.startsWith('avatar_')) {
-          localStorage.removeItem(key);
-        }
-      });
-      console.log('✅ All avatars cleared! Refresh the page to see changes.');
-      window.location.reload();
-    };
-    
-    (window as any).clearAll = () => {
-      localStorage.clear();
-      console.log('✅ All localStorage cleared! Refresh the page to see changes.');
-      window.location.reload();
-    };
-  }, []);
-
   // Track previous round to detect when a round actually completes
   const prevRoundRef = useRef<any>(null);
 
