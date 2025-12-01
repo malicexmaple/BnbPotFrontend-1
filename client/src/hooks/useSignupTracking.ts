@@ -70,10 +70,10 @@ export function useSignupTracking(walletAddress: string | null) {
     const handleUsernameUpdate = (event: CustomEvent) => {
       const newUsername = event.detail?.username;
       if (newUsername) {
-        // Update state
+        // Update React state immediately
         setUsername(newUsername);
         
-        // Also update localStorage
+        // Also update localStorage to persist across refreshes
         try {
           const userData = JSON.parse(
             localStorage.getItem('userData') || '[]'
@@ -81,10 +81,19 @@ export function useSignupTracking(walletAddress: string | null) {
           
           const existingIndex = userData.findIndex(u => u.wallet === walletAddress);
           if (existingIndex >= 0) {
+            // Update existing record
             userData[existingIndex].username = newUsername;
-            localStorage.setItem('userData', JSON.stringify(userData));
-            console.log('✅ Username updated in localStorage:', newUsername);
+          } else {
+            // Create new record if it doesn't exist
+            userData.push({
+              wallet: walletAddress,
+              username: newUsername,
+              agreedToTerms: true,
+              agreedAt: new Date().toISOString()
+            });
           }
+          localStorage.setItem('userData', JSON.stringify(userData));
+          console.log('✅ Username updated in localStorage:', newUsername);
         } catch (error) {
           console.error('Error updating username in localStorage:', error);
         }
