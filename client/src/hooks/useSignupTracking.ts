@@ -63,6 +63,40 @@ export function useSignupTracking(walletAddress: string | null) {
     }
   }, [walletAddress]);
 
+  // Listen for username updates from profile modal
+  useEffect(() => {
+    if (!walletAddress) return;
+
+    const handleUsernameUpdate = (event: CustomEvent) => {
+      const newUsername = event.detail?.username;
+      if (newUsername) {
+        // Update state
+        setUsername(newUsername);
+        
+        // Also update localStorage
+        try {
+          const userData = JSON.parse(
+            localStorage.getItem('userData') || '[]'
+          ) as UserData[];
+          
+          const existingIndex = userData.findIndex(u => u.wallet === walletAddress);
+          if (existingIndex >= 0) {
+            userData[existingIndex].username = newUsername;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            console.log('✅ Username updated in localStorage:', newUsername);
+          }
+        } catch (error) {
+          console.error('Error updating username in localStorage:', error);
+        }
+      }
+    };
+
+    window.addEventListener('usernameUpdated', handleUsernameUpdate as EventListener);
+    return () => {
+      window.removeEventListener('usernameUpdated', handleUsernameUpdate as EventListener);
+    };
+  }, [walletAddress]);
+
   /**
    * Marks the current wallet as having completed signup with username and terms agreement
    */
