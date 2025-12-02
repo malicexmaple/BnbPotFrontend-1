@@ -8,6 +8,7 @@ import { GameStateProvider } from "@/contexts/GameStateContext";
 import PersistentHeader from "@/components/PersistentHeader";
 import LoadingScreen, { PageTransitionLoader } from "@/components/LoadingScreen";
 import RotateDeviceOverlay from "@/components/RotateDeviceOverlay";
+import DesktopScaleWrapper from "@/components/DesktopScaleWrapper";
 
 import jackpotLogo from "@assets/jackpotnew_1763477420573.png";
 import coinflipLogo from "@assets/coinflipnew_1763488010364.png";
@@ -148,10 +149,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <GameStateProvider>
-          <Toaster />
-          <RotateDeviceOverlay />
-          <PersistentHeader />
-          <Router />
+          <DesktopScaleWrapper>
+            <Toaster />
+            <RotateDeviceOverlay />
+            <PersistentHeader />
+            <Router />
+          </DesktopScaleWrapper>
         </GameStateProvider>
       </TooltipProvider>
     </QueryClientProvider>

@@ -1,25 +1,23 @@
 import { ReactNode } from "react";
-import { useViewportScale } from "@/hooks/useViewportScale";
+import { useDesktopScale, isFirefox } from "@/hooks/useDesktopScale";
 
 interface DesktopScaleWrapperProps {
   children: ReactNode;
 }
 
 export default function DesktopScaleWrapper({ children }: DesktopScaleWrapperProps) {
-  const { scale, isDesktop } = useViewportScale();
+  const scale = useDesktopScale();
 
-  if (!isDesktop || scale === 1) {
+  if (scale === 1) {
     return <>{children}</>;
   }
 
-  const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
-
-  if (isFirefox) {
+  if (isFirefox()) {
     return (
       <div
         style={{
           transform: `scale(${scale})`,
-          transformOrigin: 'top left',
+          transformOrigin: 'top center',
           width: `${100 / scale}%`,
           minHeight: `${100 / scale}vh`,
         }}
