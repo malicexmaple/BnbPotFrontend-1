@@ -9,28 +9,28 @@
         var screenHeight = window.screen.height;
         
         // Calculate optimal scale based on screen size
-        // User preference: 1920x1080 → 80% scale, 1760x990 → 67% scale
-        // Using linear interpolation formula derived from these data points
+        // User data points:
+        // - 1920x1080 → 80% zoom
+        // - 1760x990 → 80% zoom
+        // - 1128x643 → 50% zoom
         var scale;
         var designWidth;
         
         if (screenWidth >= 1600) {
-          // Large screens: use formula based on user's preferred zoom levels
-          // scale = 0.0008125 * screenWidth - 0.76 (derived from the two data points)
-          scale = 0.0008125 * screenWidth - 0.76;
-          
-          // Clamp scale between 0.6 and 0.9 for large screens
-          scale = Math.max(0.6, Math.min(0.9, scale));
-          
-          // Calculate the effective design width to achieve this scale
+          // Large screens: fixed 80% scale
+          scale = 0.80;
           designWidth = Math.round(screenWidth / scale);
-        } else if (screenWidth >= 1200) {
-          // Medium screens: gradual transition
-          // At 1200px we want ~95% scale, at 1600px we want ~65%
-          scale = 0.95 - ((screenWidth - 1200) / 400) * 0.30;
+        } else if (screenWidth >= 1128) {
+          // Medium screens: linear interpolation from 50% to 80%
+          // At 1128px → 50%, at 1600px → 80%
+          scale = 0.50 + (screenWidth - 1128) * 0.30 / 472;
+          designWidth = Math.round(screenWidth / scale);
+        } else if (screenWidth >= 768) {
+          // Smaller screens: gradual scale from 50% down to 40%
+          scale = 0.40 + (screenWidth - 768) * 0.10 / 360;
           designWidth = Math.round(screenWidth / scale);
         } else {
-          // Mobile/small screens: use fixed design width with natural scaling
+          // Mobile: fixed design width with natural scaling
           designWidth = 1200;
           scale = screenWidth / designWidth;
         }
