@@ -2,41 +2,27 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1200" id="viewport-meta" />
+    <meta name="viewport" content="width=2400" id="viewport-meta" />
     <script>
       (function() {
         var screenWidth = window.screen.width;
-        var screenHeight = window.screen.height;
         
-        // Calculate optimal scale based on screen size
-        // User data points:
-        // - 1920x1080 → 80% zoom
-        // - 1760x990 → 80% zoom
-        // - 1128x643 → 50% zoom
-        var scale;
-        var designWidth;
+        // Simple approach: set viewport width so content naturally scales
+        // User data points show optimal viewing at these effective widths:
+        // - 1920 at 80% → viewport 2400px (1920/0.8)
+        // - 1760 at 80% → viewport 2200px (1760/0.8)
+        // - 1128 at 50% → viewport 2256px (1128/0.5)
+        // All around 2200-2400px, so we use 2400 as the fixed viewport width
         
-        if (screenWidth >= 1600) {
-          // Large screens: fixed 80% scale
-          scale = 0.80;
-          designWidth = Math.round(screenWidth / scale);
-        } else if (screenWidth >= 1128) {
-          // Medium screens: linear interpolation from 50% to 80%
-          // At 1128px → 50%, at 1600px → 80%
-          scale = 0.50 + (screenWidth - 1128) * 0.30 / 472;
-          designWidth = Math.round(screenWidth / scale);
-        } else if (screenWidth >= 768) {
-          // Smaller screens: gradual scale from 50% down to 40%
-          scale = 0.40 + (screenWidth - 768) * 0.10 / 360;
-          designWidth = Math.round(screenWidth / scale);
-        } else {
-          // Mobile: fixed design width with natural scaling
-          designWidth = 1200;
-          scale = screenWidth / designWidth;
+        var viewportWidth = 2400;
+        
+        // For very small screens (mobile), use smaller viewport for readability
+        if (screenWidth < 768) {
+          viewportWidth = 1200;
         }
         
         var viewport = document.getElementById('viewport-meta');
-        viewport.setAttribute('content', 'width=' + designWidth + ', initial-scale=' + scale + ', minimum-scale=' + scale + ', maximum-scale=' + scale);
+        viewport.setAttribute('content', 'width=' + viewportWidth);
       })();
     </script>
     <title>BNBPOT.COM - Crypto Jackpot Gaming</title>
