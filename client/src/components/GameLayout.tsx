@@ -30,8 +30,8 @@ export default function GameLayout({
         zIndex: -1
       }} />
       
-      {/* Full height container */}
-      <div className="w-full h-screen flex flex-col overflow-hidden">
+      {/* ONE scrollable container with header + content */}
+      <div className="w-full">
         {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
         {header && (
           <div className="fixed top-0 left-0 right-0 w-full z-50">
@@ -40,26 +40,27 @@ export default function GameLayout({
         )}
 
         {/* Content - with top padding to account for fixed header */}
-        <div className="flex-1 flex flex-col w-full min-h-0" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
-          {/* Main content area with sidebars - grows to fill space */}
-          <div className="flex-1 flex min-h-0">
-            {/* Left sidebar */}
-            {leftSidebar}
+        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
+          {/* Wrapper for content + footer */}
+          <div className="flex-1 flex flex-col w-full">
+            {/* Content wrapper */}
+            <div className="flex-1 flex flex-col">
+              <div className="flex-1 flex">
+                {/* Left sidebar */}
+                {leftSidebar}
 
-            {/* Main game area - scrollable */}
-            <div className="flex-1 flex flex-col relative overflow-y-auto">
-              {children}
-              {/* Extra scroll space */}
-              <div style={{ height: '400px', flexShrink: 0 }} />
+                {/* Main game area */}
+                <div className="flex-1 flex flex-col relative">
+                  {children}
+                </div>
+
+                {/* Right sidebar */}
+                {rightSidebar}
+              </div>
             </div>
-
-            {/* Right sidebar */}
-            {rightSidebar}
           </div>
-        </div>
 
-        {/* Footer - stays at bottom */}
-        <div className="flex-shrink-0">
+          {/* Footer */}
           {footer}
         </div>
       </div>
