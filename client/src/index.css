@@ -188,39 +188,6 @@
 }
 
 @layer base {
-  :root {
-    --design-width: 1200;
-    --app-scale: clamp(0.25, calc(100vw / 1200px), 1);
-  }
-  
-  html, body {
-    overflow-x: hidden;
-  }
-  
-  #root {
-    width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    overflow: hidden;
-  }
-  
-  .app-scale-wrapper {
-    width: 1200px;
-    min-height: 100vh;
-    transform: scale(var(--app-scale));
-    transform-origin: top center;
-    flex-shrink: 0;
-  }
-  
-  /* Compensate for scaled height */
-  @media (max-width: 1200px) {
-    #root {
-      min-height: calc(100vh / var(--app-scale));
-    }
-  }
-  
   body {
     @apply font-sans antialiased bg-background text-foreground;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);

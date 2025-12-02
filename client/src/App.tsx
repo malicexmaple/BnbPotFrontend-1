@@ -137,28 +137,24 @@ function App() {
 
   if (isInitialLoading) {
     return (
-      <div className="app-scale-wrapper">
-        <LoadingScreen 
-          minDuration={1500}
-          onComplete={handleLoadingComplete}
-        />
-      </div>
+      <LoadingScreen 
+        minDuration={1500}
+        onComplete={handleLoadingComplete}
+      />
     );
   }
 
   return (
-    <div className="app-scale-wrapper">
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <GameStateProvider>
-            <Toaster />
-            <RotateDeviceOverlay />
-            <PersistentHeader />
-            <Router />
-          </GameStateProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <GameStateProvider>
+          <Toaster />
+          <RotateDeviceOverlay />
+          <PersistentHeader />
+          <Router />
+        </GameStateProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
