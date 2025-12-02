@@ -6,7 +6,7 @@ BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where t
 
 The application is built as a full-stack TypeScript monorepo with a React frontend, Express backend, and PostgreSQL database. It follows a modern web architecture with real-time capabilities for live game state updates and player interactions.
 
-**Current Status** (December 1, 2025):
+**Current Status** (December 2, 2025):
 - ✅ Production-grade smart contract deployed with Chainlink VRF
 - ✅ Complete blockchain event indexer with database syncing
 - ✅ Dual-mode operation: blockchain mode + database-only fallback
@@ -22,6 +22,7 @@ The application is built as a full-stack TypeScript monorepo with a React fronte
 - ✅ **OPTIMIZED**: Route-based lazy loading for admin pages (React.lazy)
 - ✅ **OPTIMIZED**: Static data moved outside components to reduce re-renders
 - ✅ **OPTIMIZED**: Graceful demo mode handling (no blockchain connection spam)
+- ✅ **FIXED**: Footer layout - removed JavaScript zoom that broke viewport height calculations
 - 📝 Ready for testnet deployment (see BLOCKCHAIN_DEPLOYMENT_GUIDE.md)
 
 ## User Preferences
