@@ -174,7 +174,7 @@ export default function ChatSidebar({
   };
 
   return (
-    <div className="hidden lg:flex flex-shrink-0 transition-all duration-300 relative glass-panel" style={{
+    <div className="hidden lg:flex flex-shrink-0 transition-all duration-300 relative glass-panel h-full" style={{
       width: isCollapsed ? '0px' : `${SIDEBAR.CHAT_WIDTH}px`,
       paddingLeft: '0px',
       paddingTop: isCollapsed ? '0px' : '24px',
@@ -184,7 +184,8 @@ export default function ChatSidebar({
       zIndex: 50,
       borderRadius: '0px',
       flexDirection: 'column',
-      alignSelf: 'stretch'
+      alignSelf: 'stretch',
+      height: '100%'
     }}>
       {/* Collapse Button */}
       <button
