@@ -30,8 +30,8 @@ export default function GameLayout({
         zIndex: -1
       }} />
       
-      {/* Full height container */}
-      <div className="w-full h-screen flex flex-col overflow-hidden" style={{ paddingBottom: '44px' }}>
+      {/* Full height container - uses CSS variable set by zoom script for proper height */}
+      <div className="w-full flex flex-col overflow-hidden" style={{ minHeight: 'var(--viewport-height, 100vh)' }}>
         {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
         {header && (
           <div className="fixed top-0 left-0 right-0 w-full z-50">
@@ -55,11 +55,11 @@ export default function GameLayout({
             {rightSidebar}
           </div>
         </div>
-      </div>
 
-      {/* Footer - fixed at actual viewport bottom */}
-      <div className="fixed left-0 right-0 z-40" style={{ bottom: 0 }}>
-        {footer}
+        {/* Footer - stays at bottom */}
+        <div className="flex-shrink-0">
+          {footer}
+        </div>
       </div>
     </>
   );
