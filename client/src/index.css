@@ -718,3 +718,36 @@
 /* ===== FIXED 1200PX LAYOUT: Forces desktop layout on all devices ===== */
 /* Viewport meta tag set to width=1200 handles all scaling automatically */
 /* Browser zooms to fit 1200px on mobile, PC always shows 1200px minimum */
+
+/* ===== DESKTOP AUTO-SCALING ===== */
+/* Only applies to desktop with mouse (not touch devices) */
+/* Site designed at 2560px, scales down for smaller desktop screens */
+@media (hover: hover) and (pointer: fine) {
+  /* 1920px screens: scale to ~75% (1920/2560) */
+  @media (min-width: 1800px) and (max-width: 2399px) {
+    html {
+      zoom: 0.75;
+    }
+  }
+  
+  /* 1600-1799px screens: scale to ~65% */
+  @media (min-width: 1500px) and (max-width: 1799px) {
+    html {
+      zoom: 0.65;
+    }
+  }
+  
+  /* 1366-1499px screens: scale to ~55% */
+  @media (min-width: 1300px) and (max-width: 1499px) {
+    html {
+      zoom: 0.55;
+    }
+  }
+  
+  /* Smaller desktop screens: scale to ~50% */
+  @media (min-width: 1000px) and (max-width: 1299px) {
+    html {
+      zoom: 0.50;
+    }
+  }
+}
