@@ -45,7 +45,6 @@
           
           if (isTouch || isCoarse) {
             document.documentElement.style.zoom = '';
-            document.documentElement.style.setProperty('--viewport-height', '100vh');
             return;
           }
           
@@ -55,27 +54,20 @@
           if (screenWidth === lastScreenWidth) return;
           lastScreenWidth = screenWidth;
           
-          var zoomLevel = 1;
-          
           // Apply zoom based on screen resolution
           if (screenWidth >= 2400) {
-            zoomLevel = 1;
+            document.documentElement.style.zoom = '1';
           } else if (screenWidth >= 1800) {
-            zoomLevel = 0.80;
+            document.documentElement.style.zoom = '0.80';
           } else if (screenWidth >= 1500) {
-            zoomLevel = 0.70;
+            document.documentElement.style.zoom = '0.70';
           } else if (screenWidth >= 1300) {
-            zoomLevel = 0.60;
+            document.documentElement.style.zoom = '0.60';
           } else if (screenWidth >= 1000) {
-            zoomLevel = 0.55;
+            document.documentElement.style.zoom = '0.55';
           } else {
-            zoomLevel = 1;
+            document.documentElement.style.zoom = '1';
           }
-          
-          document.documentElement.style.zoom = zoomLevel;
-          // Compensate for zoom by increasing viewport height
-          var compensatedHeight = 'calc(100vh / ' + zoomLevel + ')';
-          document.documentElement.style.setProperty('--viewport-height', compensatedHeight);
         }
         
         // Apply on load
