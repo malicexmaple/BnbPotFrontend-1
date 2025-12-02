@@ -165,12 +165,14 @@ export default function GameNavigation({
             <Button
               data-testid="button-jackpot-tab"
               variant="ghost"
-              className="px-2 sm:px-4 h-10 sm:h-12 glass-panel"
+              className="px-2 sm:px-4 h-10 sm:h-12"
               style={{
                 borderRadius: '10px',
-                border: activeTab === "jackpot" ? '1px solid rgba(60, 60, 60, 0.6)' : '1px solid rgba(60, 60, 60, 0.3)',
-                background: activeTab === "jackpot" ? 'rgba(30, 30, 30, 0.9)' : 'transparent',
-                boxShadow: activeTab === "jackpot" ? 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)' : 'none'
+                background: 'rgba(20, 20, 20, 0.7)',
+                border: activeTab === "jackpot" ? '2px solid rgba(234, 179, 8, 0.5)' : '1px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: activeTab === "jackpot" 
+                  ? '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)' 
+                  : 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
               }}
             >
               <img src={jackpotTabLogo} alt="Jackpot" className="h-6 sm:h-8 w-auto" />
@@ -180,12 +182,14 @@ export default function GameNavigation({
             <Button
               data-testid="button-coinflip-tab"
               variant="ghost"
-              className="px-2 sm:px-4 h-10 sm:h-12 glass-panel"
+              className="px-2 sm:px-4 h-10 sm:h-12"
               style={{
                 borderRadius: '10px',
-                border: activeTab === "coinflip" ? '1px solid rgba(60, 60, 60, 0.6)' : '1px solid rgba(60, 60, 60, 0.3)',
-                background: activeTab === "coinflip" ? 'rgba(30, 30, 30, 0.9)' : 'transparent',
-                boxShadow: activeTab === "coinflip" ? 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)' : 'none'
+                background: 'rgba(20, 20, 20, 0.7)',
+                border: activeTab === "coinflip" ? '2px solid rgba(234, 179, 8, 0.5)' : '1px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: activeTab === "coinflip" 
+                  ? '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)' 
+                  : 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
               }}
             >
               <img src={coinflipLogo} alt="Coinflip" className="h-6 sm:h-8 w-auto" />
@@ -195,12 +199,14 @@ export default function GameNavigation({
             <Button
               data-testid="button-prediction-markets-tab"
               variant="ghost"
-              className="px-2 sm:px-4 h-10 sm:h-12 glass-panel"
+              className="px-2 sm:px-4 h-10 sm:h-12"
               style={{
                 borderRadius: '10px',
-                border: activeTab === "prediction-markets" ? '1px solid rgba(60, 60, 60, 0.6)' : '1px solid rgba(60, 60, 60, 0.3)',
-                background: activeTab === "prediction-markets" ? 'rgba(30, 30, 30, 0.9)' : 'transparent',
-                boxShadow: activeTab === "prediction-markets" ? 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)' : 'none'
+                background: 'rgba(20, 20, 20, 0.7)',
+                border: activeTab === "prediction-markets" ? '2px solid rgba(234, 179, 8, 0.5)' : '1px solid rgba(60, 60, 60, 0.4)',
+                boxShadow: activeTab === "prediction-markets" 
+                  ? '0 0 20px rgba(234, 179, 8, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)' 
+                  : 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
               }}
             >
               <img src={predictionMarketsLogo} alt="Prediction Markets" className="h-6 sm:h-8 w-auto" />
