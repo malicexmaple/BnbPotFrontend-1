@@ -19,7 +19,7 @@ export default function PersistentHeader() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 w-full z-[100]">
+      <div className="relative lg:fixed lg:top-0 lg:left-0 lg:right-0 w-full z-[100]">
         <GameNavigation 
           onConnect={connect} 
           onDisconnect={disconnect} 
