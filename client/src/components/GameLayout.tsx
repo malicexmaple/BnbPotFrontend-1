@@ -40,14 +40,14 @@ export default function GameLayout({
         )}
 
         {/* Content - with top padding to account for fixed header */}
-        <div className="flex-1 flex flex-col w-full overflow-auto" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
-          {/* Main content area with sidebars */}
-          <div className="flex-1 flex">
+        <div className="flex-1 flex flex-col w-full min-h-0" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
+          {/* Main content area with sidebars - grows to fill space */}
+          <div className="flex-1 flex min-h-0">
             {/* Left sidebar */}
             {leftSidebar}
 
-            {/* Main game area */}
-            <div className="flex-1 flex flex-col relative">
+            {/* Main game area - scrollable */}
+            <div className="flex-1 flex flex-col relative overflow-y-auto">
               {children}
             </div>
 
@@ -56,7 +56,7 @@ export default function GameLayout({
           </div>
         </div>
 
-        {/* Footer - fixed at bottom */}
+        {/* Footer - stays at bottom */}
         <div className="flex-shrink-0">
           {footer}
         </div>
