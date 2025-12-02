@@ -91,7 +91,7 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
           }}
         >
           <Avatar 
-            className="w-10 h-10"
+            className="w-14 h-14"
             style={{
               border: isLatest 
                 ? '2px solid rgba(147, 51, 234, 0.5)' 
