@@ -30,38 +30,35 @@ export default function GameLayout({
         zIndex: -1
       }} />
       
-      {/* ONE scrollable container with header + content */}
-      <div className="w-full">
+      {/* Main layout container */}
+      <div className="w-full min-h-screen flex flex-col">
         {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
         {header && (
-          <div className="fixed top-0 left-0 right-0 w-full z-50">
+          <div className="fixed top-0 left-0 right-0 w-full z-[100]">
             {header}
           </div>
         )}
 
-        {/* Content - with top padding to account for fixed header */}
-        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
-          {/* Wrapper for content + footer */}
-          <div className="flex-1 flex flex-col w-full">
-            {/* Content wrapper */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex-1 flex">
-                {/* Left sidebar */}
-                {leftSidebar}
-
-                {/* Main game area */}
-                <div className="flex-1 flex flex-col relative">
-                  {children}
-                </div>
-
-                {/* Right sidebar */}
-                {rightSidebar}
-              </div>
-            </div>
+        {/* Content area - with top padding to account for fixed header */}
+        <div className="flex-1 flex" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
+          {/* Left sidebar - sticky on scroll */}
+          <div className="sticky top-[100px] self-start h-[calc(100vh-100px)] flex-shrink-0 z-[60]">
+            {leftSidebar}
           </div>
 
-          {/* Footer */}
-          {footer}
+          {/* Main game area - scrollable with content clipping */}
+          <div className="flex-1 flex flex-col relative overflow-hidden">
+            <div className="flex-1 flex flex-col">
+              {children}
+            </div>
+            {/* Footer inside main area */}
+            {footer}
+          </div>
+
+          {/* Right sidebar - sticky on scroll */}
+          <div className="sticky top-[100px] self-start h-[calc(100vh-100px)] flex-shrink-0 z-[60]">
+            {rightSidebar}
+          </div>
         </div>
       </div>
     </>
