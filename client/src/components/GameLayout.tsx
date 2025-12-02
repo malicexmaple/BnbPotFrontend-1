@@ -30,8 +30,8 @@ export default function GameLayout({
         zIndex: -1
       }} />
       
-      {/* ONE scrollable container with header + content */}
-      <div className="w-full">
+      {/* Full height container */}
+      <div className="w-full h-screen flex flex-col overflow-hidden">
         {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
         {header && (
           <div className="fixed top-0 left-0 right-0 w-full z-50">
@@ -40,27 +40,24 @@ export default function GameLayout({
         )}
 
         {/* Content - with top padding to account for fixed header */}
-        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
-          {/* Wrapper for content + footer */}
-          <div className="flex-1 flex flex-col w-full">
-            {/* Content wrapper */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex-1 flex">
-                {/* Left sidebar */}
-                {leftSidebar}
+        <div className="flex-1 flex flex-col w-full overflow-auto" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
+          {/* Main content area with sidebars */}
+          <div className="flex-1 flex">
+            {/* Left sidebar */}
+            {leftSidebar}
 
-                {/* Main game area */}
-                <div className="flex-1 flex flex-col relative">
-                  {children}
-                </div>
-
-                {/* Right sidebar */}
-                {rightSidebar}
-              </div>
+            {/* Main game area */}
+            <div className="flex-1 flex flex-col relative">
+              {children}
             </div>
-          </div>
 
-          {/* Footer */}
+            {/* Right sidebar */}
+            {rightSidebar}
+          </div>
+        </div>
+
+        {/* Footer - fixed at bottom */}
+        <div className="flex-shrink-0">
           {footer}
         </div>
       </div>
