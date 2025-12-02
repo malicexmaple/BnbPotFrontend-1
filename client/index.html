@@ -2,16 +2,7 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1200" id="viewport-meta" />
-    <script>
-      (function() {
-        var designWidth = 1200;
-        var screenWidth = window.screen.width;
-        var scale = screenWidth / designWidth;
-        var viewport = document.getElementById('viewport-meta');
-        viewport.setAttribute('content', 'width=' + designWidth + ', initial-scale=' + scale + ', minimum-scale=' + scale + ', maximum-scale=' + scale);
-      })();
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BNBPOT.COM - Crypto Jackpot Gaming</title>
     <meta name="description" content="BNBPOT.COM - Winner takes all crypto jackpot gaming platform. Play, bet, and win big with provably fair blockchain gaming." />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -33,53 +24,6 @@
           console.info('Wallet connection error handled by app');
         }
       });
-      
-      // Desktop auto-zoom based on screen resolution
-      (function() {
-        var lastScreenWidth = 0;
-        
-        function applyDesktopZoom() {
-          // Only apply on desktop (not touch devices)
-          var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-          var isCoarse = window.matchMedia('(pointer: coarse)').matches;
-          
-          if (isTouch || isCoarse) {
-            document.documentElement.style.zoom = '';
-            return;
-          }
-          
-          var screenWidth = window.screen.width;
-          
-          // Only update if screen changed
-          if (screenWidth === lastScreenWidth) return;
-          lastScreenWidth = screenWidth;
-          
-          // Apply zoom based on screen resolution
-          if (screenWidth >= 2400) {
-            document.documentElement.style.zoom = '1';
-          } else if (screenWidth >= 1800) {
-            document.documentElement.style.zoom = '0.80';
-          } else if (screenWidth >= 1500) {
-            document.documentElement.style.zoom = '0.70';
-          } else if (screenWidth >= 1300) {
-            document.documentElement.style.zoom = '0.60';
-          } else if (screenWidth >= 1000) {
-            document.documentElement.style.zoom = '0.55';
-          } else {
-            document.documentElement.style.zoom = '1';
-          }
-        }
-        
-        // Apply on load
-        applyDesktopZoom();
-        
-        // Re-check periodically (for monitor switching)
-        setInterval(applyDesktopZoom, 1000);
-        
-        // Also check on resize and focus
-        window.addEventListener('resize', applyDesktopZoom);
-        window.addEventListener('focus', applyDesktopZoom);
-      })();
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

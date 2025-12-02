@@ -49,6 +49,8 @@ export default function GameLayout({
             {/* Main game area - scrollable */}
             <div className="flex-1 flex flex-col relative overflow-y-auto">
               {children}
+              {/* Extra scroll space */}
+              <div style={{ height: '400px', flexShrink: 0 }} />
             </div>
 
             {/* Right sidebar */}
