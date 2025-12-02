@@ -5,9 +5,36 @@
     <meta name="viewport" content="width=1200" id="viewport-meta" />
     <script>
       (function() {
-        var designWidth = 1200;
         var screenWidth = window.screen.width;
-        var scale = screenWidth / designWidth;
+        var screenHeight = window.screen.height;
+        
+        // Calculate optimal scale based on screen size
+        // User preference: 1920x1080 → 80% scale, 1760x990 → 67% scale
+        // Using linear interpolation formula derived from these data points
+        var scale;
+        var designWidth;
+        
+        if (screenWidth >= 1600) {
+          // Large screens: use formula based on user's preferred zoom levels
+          // scale = 0.0008125 * screenWidth - 0.76 (derived from the two data points)
+          scale = 0.0008125 * screenWidth - 0.76;
+          
+          // Clamp scale between 0.6 and 0.9 for large screens
+          scale = Math.max(0.6, Math.min(0.9, scale));
+          
+          // Calculate the effective design width to achieve this scale
+          designWidth = Math.round(screenWidth / scale);
+        } else if (screenWidth >= 1200) {
+          // Medium screens: gradual transition
+          // At 1200px we want ~95% scale, at 1600px we want ~65%
+          scale = 0.95 - ((screenWidth - 1200) / 400) * 0.30;
+          designWidth = Math.round(screenWidth / scale);
+        } else {
+          // Mobile/small screens: use fixed design width with natural scaling
+          designWidth = 1200;
+          scale = screenWidth / designWidth;
+        }
+        
         var viewport = document.getElementById('viewport-meta');
         viewport.setAttribute('content', 'width=' + designWidth + ', initial-scale=' + scale + ', minimum-scale=' + scale + ', maximum-scale=' + scale);
       })();
