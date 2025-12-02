@@ -30,8 +30,30 @@ export default function GameLayout({
         zIndex: -1
       }} />
       
-      {/* Full height container - uses CSS variable set by zoom script for proper height */}
-      <div className="w-full flex flex-col overflow-hidden" style={{ minHeight: 'var(--viewport-height, 100vh)' }}>
+      {/* Left sidebar - fixed position */}
+      <div className="fixed left-0 z-40" style={{ 
+        top: 'clamp(70px, 100px, 100px)', 
+        bottom: '50px',
+        overflowY: 'auto'
+      }}>
+        {leftSidebar}
+      </div>
+      
+      {/* Right sidebar - fixed position */}
+      <div className="fixed right-0 z-40" style={{ 
+        top: 'clamp(70px, 100px, 100px)', 
+        bottom: '50px',
+        overflowY: 'auto'
+      }}>
+        {rightSidebar}
+      </div>
+      
+      {/* Scrollable main content area */}
+      <div className="w-full overflow-y-auto" style={{ 
+        minHeight: 'var(--viewport-height, 100vh)',
+        paddingTop: 'clamp(70px, 100px, 100px)',
+        paddingBottom: '120px'
+      }}>
         {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
         {header && (
           <div className="fixed top-0 left-0 right-0 w-full z-50">
@@ -39,24 +61,16 @@ export default function GameLayout({
           </div>
         )}
 
-        {/* Content - with top padding to account for fixed header */}
-        <div className="flex-1 flex flex-col w-full min-h-0" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
-          {/* Main content area with sidebars - grows to fill space */}
-          <div className="flex-1 flex min-h-0">
-            {/* Left sidebar */}
-            {leftSidebar}
-
-            {/* Main game area - scrollable */}
-            <div className="flex-1 flex flex-col relative overflow-y-auto">
-              {children}
-            </div>
-
-            {/* Right sidebar */}
-            {rightSidebar}
-          </div>
+        {/* Main game area with margins for fixed sidebars */}
+        <div className="flex-1 flex flex-col relative" style={{
+          marginLeft: '345px',
+          marginRight: '345px',
+          minHeight: 'calc(var(--viewport-height, 100vh) - 170px)'
+        }}>
+          {children}
         </div>
 
-        {/* Footer - stays at bottom */}
+        {/* Footer - at bottom of scrollable area */}
         <div className="flex-shrink-0">
           {footer}
         </div>
