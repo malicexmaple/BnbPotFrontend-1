@@ -31,7 +31,7 @@ export default function GameLayout({
       }} />
       
       {/* Full height container */}
-      <div className="w-full h-screen flex flex-col overflow-hidden">
+      <div className="w-full h-screen flex flex-col overflow-hidden" style={{ paddingBottom: '44px' }}>
         {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
         {header && (
           <div className="fixed top-0 left-0 right-0 w-full z-50">
@@ -55,11 +55,11 @@ export default function GameLayout({
             {rightSidebar}
           </div>
         </div>
+      </div>
 
-        {/* Footer - stays at bottom */}
-        <div className="flex-shrink-0">
-          {footer}
-        </div>
+      {/* Footer - fixed at actual viewport bottom */}
+      <div className="fixed left-0 right-0 z-40" style={{ bottom: 0 }}>
+        {footer}
       </div>
     </>
   );
