@@ -20,7 +20,6 @@ interface DailyStatsProps {
 export default function DailyStats({ type, data }: DailyStatsProps) {
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
 
-  // Fetch data from API based on type
   const endpoint = type === 'latest' 
     ? '/api/stats/latest-winner'
     : type === 'winner'
@@ -29,46 +28,25 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
 
   const { data: apiData } = useQuery<DailyStatsData | null>({
     queryKey: [endpoint],
-    refetchInterval: 10000, // Refetch every 10 seconds
-    enabled: !data, // Only fetch if data prop is not provided
+    refetchInterval: 10000,
+    enabled: !data,
   });
 
-  // Fallback data when no API data or prop data is available
   const defaultData: DailyStatsData = type === 'winner' 
-    ? {
-        round: 180202,
-        username: 'ion_crypto',
-        userLevel: 42,
-        wonAmount: 2.833,
-        chance: 5.87
-      }
+    ? { round: 180202, username: 'ion_crypto', userLevel: 42, wonAmount: 2.833, chance: 5.87 }
     : type === 'latest'
-    ? {
-        round: 190000,
-        username: 'crypto_king',
-        userLevel: 28,
-        wonAmount: 1.456,
-        chance: 3.42
-      }
-    : {
-        round: 189805,
-        username: 'fendix',
-        userLevel: 11,
-        wonAmount: 0.788,
-        chance: 1.20
-      };
+    ? { round: 190000, username: 'crypto_king', userLevel: 28, wonAmount: 1.456, chance: 3.42 }
+    : { round: 189805, username: 'fendix', userLevel: 11, wonAmount: 0.788, chance: 1.20 };
 
   const statsData = data || apiData || defaultData;
   const isWinner = type === 'winner';
   const isLatest = type === 'latest';
 
-  // Load avatar from API data or fetch from database
   useEffect(() => {
     const loadAvatar = async () => {
       if (statsData.avatarUrl) {
         setAvatarUrl(statsData.avatarUrl);
       } else if (statsData.username) {
-        // Fetch avatar from database if not provided in stats data
         try {
           const response = await fetch(`/api/users/avatar/${encodeURIComponent(statsData.username)}`);
           if (response.ok) {
@@ -83,191 +61,107 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
     loadAvatar();
   }, [statsData.username, statsData.avatarUrl]);
 
+  const labelText = isLatest ? 'LATEST WINNER' : isWinner ? 'WIN OF THE DAY' : 'LUCK OF THE DAY';
+
   return (
     <div 
-      className="glass-panel p-3" 
+      className="glass-panel p-2.5" 
       style={{
-        borderRadius: '18px',
+        borderRadius: '12px',
         background: 'rgba(20, 20, 20, 0.7)',
         border: '1px solid rgba(60, 60, 60, 0.4)',
         boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)'
       }}
       data-testid={`card-daily-${type}`}
     >
-      {/* Header with Round Number */}
+      {/* Header Row: ROUND label left, round number right */}
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">ROUND</div>
-        <div className="text-xs text-muted-foreground font-mono">#{statsData.round}</div>
+        <span className="text-[9px] text-muted-foreground uppercase tracking-wider">ROUND</span>
+        <span className="text-[11px] text-muted-foreground font-mono">#{statsData.round}</span>
       </div>
 
-      {/* Avatar Section */}
-      <div className="flex flex-col items-center mb-2">
+      {/* Main Row: Avatar + Username/Badge + Type Label */}
+      <div className="flex items-center gap-2 mb-2">
+        {/* Avatar */}
         <div 
-          className="relative mb-2" 
           style={{
             filter: isLatest 
-              ? 'drop-shadow(0 0 15px rgba(147, 51, 234, 0.6))' 
-              : 'drop-shadow(0 0 15px rgba(234, 179, 8, 0.6))'
+              ? 'drop-shadow(0 0 8px rgba(147, 51, 234, 0.5))' 
+              : 'drop-shadow(0 0 8px rgba(234, 179, 8, 0.5))'
           }}
         >
           <Avatar 
-            className="w-16 h-16"
+            className="w-10 h-10"
             style={{
               border: isLatest 
                 ? '2px solid rgba(147, 51, 234, 0.5)' 
                 : '2px solid rgba(234, 179, 8, 0.5)',
               boxShadow: isLatest 
-                ? 'inset 0 0 10px rgba(147, 51, 234, 0.3), 0 0 15px rgba(147, 51, 234, 0.4)' 
-                : 'inset 0 0 10px rgba(234, 179, 8, 0.3), 0 0 15px rgba(234, 179, 8, 0.4)'
+                ? 'inset 0 0 6px rgba(147, 51, 234, 0.3)' 
+                : 'inset 0 0 6px rgba(234, 179, 8, 0.3)'
             }}
           >
             <AvatarImage src={avatarUrl} />
-            <AvatarFallback>{statsData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="text-xs">{statsData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         </div>
 
-        {/* Username with Badge */}
-        <div className="flex items-center gap-2 mb-1.5">
-          <span className="font-semibold text-foreground text-sm" data-testid={`text-${type}-username`}>
-            {statsData.username}
-          </span>
-          <Badge 
-            variant="secondary" 
-            className="text-xs font-bold"
+        {/* Username + Level Badge */}
+        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-foreground text-xs truncate" data-testid={`text-${type}-username`}>
+              {statsData.username}
+            </span>
+            <Badge 
+              variant="secondary" 
+              className="text-[10px] font-bold px-1.5 py-0"
+              style={{
+                background: isLatest ? 'rgba(147, 51, 234, 0.2)' : 'rgba(234, 179, 8, 0.2)',
+                color: isLatest ? '#c084fc' : '#fcd34d',
+                border: isLatest ? '1px solid rgba(147, 51, 234, 0.3)' : '1px solid rgba(234, 179, 8, 0.3)'
+              }}
+            >
+              {statsData.userLevel}
+            </Badge>
+          </div>
+          
+          {/* Type Label Badge */}
+          <div 
+            className="px-2 py-0.5 rounded-full font-bold text-[9px] uppercase tracking-wider w-fit"
             style={{
-              background: isLatest 
-                ? 'rgba(147, 51, 234, 0.2)' 
-                : 'rgba(234, 179, 8, 0.2)',
-              color: isLatest ? '#c084fc' : '#fcd34d',
-              border: isLatest 
-                ? '1px solid rgba(147, 51, 234, 0.3)' 
-                : '1px solid rgba(234, 179, 8, 0.3)'
+              background: isLatest
+                ? 'linear-gradient(135deg, rgba(147, 51, 234, 0.8), rgba(168, 85, 247, 0.8))'
+                : isWinner 
+                ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(250, 204, 21, 0.9))' 
+                : 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
+              color: '#ffffff',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
+              border: isLatest
+                ? '1px solid rgba(147, 51, 234, 0.7)'
+                : isWinner
+                ? '1px solid rgba(250, 204, 21, 0.8)'
+                : '1px solid rgba(234, 179, 8, 0.6)'
             }}
+            data-testid={`badge-${type}-label`}
           >
-            {statsData.userLevel}
-          </Badge>
-        </div>
-
-        {/* Label Badge */}
-        <div 
-          className="px-3 py-1 rounded-full font-bold text-[11px] uppercase tracking-wider relative"
-          style={{
-            background: isLatest
-              ? 'linear-gradient(135deg, rgba(147, 51, 234, 0.8), rgba(168, 85, 247, 0.8))'
-              : isWinner 
-              ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(250, 204, 21, 0.9))' 
-              : 'linear-gradient(135deg, rgba(180, 83, 9, 0.8), rgba(234, 179, 8, 0.8))',
-            color: '#ffffff',
-            textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
-            boxShadow: isLatest
-              ? '0 0 20px rgba(147, 51, 234, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-              : isWinner
-              ? '0 0 20px rgba(250, 204, 21, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-              : '0 0 15px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-            border: isLatest
-              ? '1px solid rgba(147, 51, 234, 0.7)'
-              : isWinner
-              ? '1px solid rgba(250, 204, 21, 0.8)'
-              : '1px solid rgba(234, 179, 8, 0.6)'
-          }}
-          data-testid={`badge-${type}-label`}
-        >
-          {isLatest ? 'LATEST WINNER' : isWinner ? 'WIN OF THE DAY' : 'LUCK OF THE DAY'}
-          {isWinner ? (
-            <>
-              {/* Lightning strikes for Win of the Day - Multiple bolts with electric yellow */}
-              <svg 
-                className="absolute -top-1 -right-1 w-3.5 h-3.5 animate-ping" 
-                viewBox="0 0 24 24" 
-                style={{
-                  animationDelay: '0s', 
-                  filter: 'drop-shadow(0 0 8px rgba(250, 204, 21, 1)) drop-shadow(0 0 4px rgba(250, 204, 21, 0.8))'
-                }}
-              >
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
-              </svg>
-              <svg 
-                className="absolute -top-1 -left-1 w-3 h-3 animate-ping" 
-                viewBox="0 0 24 24" 
-                style={{
-                  animationDelay: '0.15s', 
-                  filter: 'drop-shadow(0 0 6px rgba(250, 204, 21, 0.9)) drop-shadow(0 0 3px rgba(250, 204, 21, 0.7))'
-                }}
-              >
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
-              </svg>
-              <svg 
-                className="absolute -bottom-1 -right-0.5 w-2.5 h-2.5 animate-ping" 
-                viewBox="0 0 24 24" 
-                style={{
-                  animationDelay: '0.3s', 
-                  filter: 'drop-shadow(0 0 5px rgba(250, 204, 21, 0.8))'
-                }}
-              >
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
-              </svg>
-              <svg 
-                className="absolute top-0 left-1/2 w-3 h-3 animate-ping" 
-                viewBox="0 0 24 24" 
-                style={{
-                  animationDelay: '0.1s', 
-                  filter: 'drop-shadow(0 0 7px rgba(250, 204, 21, 0.9))'
-                }}
-              >
-                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="#FACC15"/>
-              </svg>
-            </>
-          ) : (
-            <>
-              {/* Golden sparkles for Luck of the Day */}
-              <svg 
-                className="absolute -top-1 -right-1 w-3 h-3 animate-ping" 
-                viewBox="0 0 24 24" 
-                style={{
-                  animationDelay: '0s', 
-                  filter: 'drop-shadow(0 0 4px rgba(253, 224, 71, 0.8))'
-                }}
-              >
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#FCD34D"/>
-              </svg>
-              <svg 
-                className="absolute -top-1 -left-1 w-2.5 h-2.5 animate-ping" 
-                viewBox="0 0 24 24" 
-                style={{
-                  animationDelay: '0.2s', 
-                  filter: 'drop-shadow(0 0 3px rgba(254, 240, 138, 0.8))'
-                }}
-              >
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#FEF08A"/>
-              </svg>
-            </>
-          )}
+            {labelText}
+          </div>
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="space-y-1.5 mt-2">
-        {/* Won Amount with BNB icon */}
+      {/* Stats Section - Compact */}
+      <div className="space-y-1">
+        {/* Won Amount */}
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">Won</span>
-          <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground/60 font-mono text-sm">=</span>
-            <svg 
-              className="w-4 h-4 flex-shrink-0" 
-              viewBox="0 0 32 32" 
-              fill="none"
-              style={{
-                filter: 'drop-shadow(0 0 4px rgba(243, 186, 47, 0.6))'
-              }}
-            >
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">WON</span>
+          <div className="flex items-center gap-1">
+            <span className="text-muted-foreground/60 font-mono text-xs">=</span>
+            <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 32 32" fill="none"
+              style={{ filter: 'drop-shadow(0 0 3px rgba(243, 186, 47, 0.6))' }}>
               <circle cx="16" cy="16" r="16" fill="#F3BA2F"/>
               <path d="M12.116 14.404L16 10.52l3.886 3.886 2.26-2.26L16 6l-6.144 6.144 2.26 2.26zM6 16l2.26-2.26L10.52 16l-2.26 2.26L6 16zm6.116 1.596L16 21.48l3.886-3.886 2.26 2.259L16 26l-6.144-6.144-.003-.003 2.263-2.257zM21.48 16l2.26-2.26L26 16l-2.26 2.26L21.48 16zm-3.188-.002h.002V16L16 18.294l-2.291-2.29-.004-.004.004-.003.401-.402.195-.195L16 13.706l2.293 2.293z" fill="#fff"/>
             </svg>
-            <span 
-              className="font-mono font-bold no-text-shadow text-base" 
-              style={{color: '#FFFFFF'}}
-              data-testid={`text-${type}-won`}
-            >
+            <span className="font-mono font-bold no-text-shadow text-sm" style={{color: '#FFFFFF'}} data-testid={`text-${type}-won`}>
               {statsData.wonAmount.toFixed(3)}
             </span>
           </div>
@@ -275,14 +169,8 @@ export default function DailyStats({ type, data }: DailyStatsProps) {
 
         {/* Chance */}
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground uppercase tracking-wider">Chance</span>
-          <span 
-            className="font-bold text-base no-text-shadow" 
-            style={{
-              color: '#fcd34d'
-            }}
-            data-testid={`text-${type}-chance`}
-          >
+          <span className="text-[10px] text-muted-foreground uppercase tracking-wider">CHANCE</span>
+          <span className="font-bold text-sm no-text-shadow" style={{ color: '#fcd34d' }} data-testid={`text-${type}-chance`}>
             {statsData.chance.toFixed(2)}%
           </span>
         </div>
