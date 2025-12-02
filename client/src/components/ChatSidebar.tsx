@@ -220,7 +220,9 @@ export default function ChatSidebar({
           width: '100%',
           maxWidth: '300px',
           marginTop: `${SIDEBAR.CHAT_MARGIN_TOP}px`,
-          marginLeft: `${SIDEBAR.CHAT_MARGIN_LEFT}px`
+          marginLeft: `${SIDEBAR.CHAT_MARGIN_LEFT}px`,
+          overflowY: 'auto',
+          overflowX: 'hidden'
         }}>
           {/* Degen Chat Header */}
           <div className="glass-panel p-3 flex items-center justify-between" style={{
@@ -245,7 +247,7 @@ export default function ChatSidebar({
           {/* Chat Box Container */}
           <div className="glass-panel flex-1 flex flex-col relative" style={{
             borderRadius: BORDER_RADIUS.CHAT_BOTTOM,
-            overflow: 'visible'
+            overflow: 'hidden'
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">

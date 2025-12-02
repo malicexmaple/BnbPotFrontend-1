@@ -41,10 +41,9 @@ export default function GameLayout({
       <div className="fixed left-0 z-40 hidden lg:flex flex-col" style={{ 
         top: '100px', 
         bottom: '60px',
-        overflowY: 'auto',
-        overflowX: 'visible'
+        overflow: 'visible'
       }}>
-        <div className="flex-1 flex flex-col h-full">
+        <div className="flex-1 flex flex-col h-full" style={{ overflow: 'visible' }}>
           {leftSidebar}
         </div>
       </div>
@@ -53,10 +52,9 @@ export default function GameLayout({
       <div className="fixed right-0 z-40 hidden lg:flex flex-col" style={{ 
         top: '100px', 
         bottom: '60px',
-        overflowY: 'auto',
-        overflowX: 'visible'
+        overflow: 'visible'
       }}>
-        <div className="flex-1 flex flex-col h-full">
+        <div className="flex-1 flex flex-col h-full" style={{ overflow: 'visible' }}>
           {rightSidebar}
         </div>
       </div>
@@ -65,7 +63,7 @@ export default function GameLayout({
       <div className="w-full overflow-y-auto" style={{ 
         minHeight: 'var(--viewport-height, 100vh)',
         paddingTop: '100px',
-        paddingBottom: '80px',
+        paddingBottom: '480px',
         marginLeft: '345px',
         marginRight: '345px',
         width: 'calc(100% - 690px)'
