@@ -332,7 +332,7 @@ export default function Home() {
           />
         }
         rightSidebar={
-          <div className="hidden lg:flex flex-shrink-0 transition-all duration-300 relative glass-panel h-full" style={{
+          <div className="hidden lg:block flex-shrink-0 space-y-3 transition-all duration-300 relative glass-panel" style={{
             width: isLeaderboardCollapsed ? '0px' : '345px',
             paddingLeft: '0px',
             paddingTop: isLeaderboardCollapsed ? '0px' : '24px',
@@ -341,9 +341,9 @@ export default function Home() {
             overflow: 'visible',
             zIndex: 50,
             borderRadius: '0px',
+            display: 'flex',
             flexDirection: 'column',
-            alignSelf: 'stretch',
-            height: '100%'
+            alignSelf: 'stretch'
           }}>
             <button
               onClick={() => setIsLeaderboardCollapsed(!isLeaderboardCollapsed)}
@@ -370,7 +370,7 @@ export default function Home() {
             </button>
           
           {!isLeaderboardCollapsed && (
-            <div className="flex flex-col flex-1" style={{marginTop: '0px', marginLeft: '23px', height: '100%', overflowY: 'auto', overflowX: 'hidden'}}>
+            <div style={{marginTop: '-85px', marginLeft: '23px'}}>
           <div className="p-1" style={{width: '297px'}}>
             <div className="glass-panel p-4 neon-border relative" style={{borderRadius: '18px', overflow: 'visible'}}>
             <div className="absolute -top-2 -right-2 w-20 h-20 z-10 group cursor-pointer">

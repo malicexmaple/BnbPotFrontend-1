@@ -174,7 +174,7 @@ export default function ChatSidebar({
   };
 
   return (
-    <div className="hidden lg:flex flex-shrink-0 transition-all duration-300 relative glass-panel h-full" style={{
+    <div className="hidden lg:flex flex-shrink-0 transition-all duration-300 relative glass-panel" style={{
       width: isCollapsed ? '0px' : `${SIDEBAR.CHAT_WIDTH}px`,
       paddingLeft: '0px',
       paddingTop: isCollapsed ? '0px' : '24px',
@@ -184,8 +184,7 @@ export default function ChatSidebar({
       zIndex: 50,
       borderRadius: '0px',
       flexDirection: 'column',
-      alignSelf: 'stretch',
-      height: '100%'
+      alignSelf: 'stretch'
     }}>
       {/* Collapse Button */}
       <button
@@ -220,9 +219,7 @@ export default function ChatSidebar({
           width: '100%',
           maxWidth: '300px',
           marginTop: `${SIDEBAR.CHAT_MARGIN_TOP}px`,
-          marginLeft: `${SIDEBAR.CHAT_MARGIN_LEFT}px`,
-          overflowY: 'auto',
-          overflowX: 'hidden'
+          marginLeft: `${SIDEBAR.CHAT_MARGIN_LEFT}px`
         }}>
           {/* Degen Chat Header */}
           <div className="glass-panel p-3 flex items-center justify-between" style={{
@@ -247,7 +244,7 @@ export default function ChatSidebar({
           {/* Chat Box Container */}
           <div className="glass-panel flex-1 flex flex-col relative" style={{
             borderRadius: BORDER_RADIUS.CHAT_BOTTOM,
-            overflow: 'hidden'
+            overflow: 'visible'
           }}>
             {/* LIVE AIRDROP Section */}
             <div className="absolute top-2 left-2 right-2 z-10">

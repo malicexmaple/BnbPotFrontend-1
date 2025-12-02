@@ -30,55 +30,50 @@ export default function GameLayout({
         zIndex: -1
       }} />
       
-      {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
-      {header && (
-        <div className="fixed top-0 left-0 right-0 w-full z-50">
-          {header}
-        </div>
-      )}
-      
-      {/* Left sidebar - fixed position, full height minus header and footer */}
-      <div className="fixed left-0 z-40 hidden lg:flex flex-col" style={{ 
-        top: '100px', 
-        bottom: '60px',
-        overflow: 'visible'
+      {/* Left sidebar - fixed position */}
+      <div className="fixed left-0 z-40" style={{ 
+        top: 'clamp(70px, 100px, 100px)', 
+        bottom: '50px',
+        overflowY: 'auto'
       }}>
-        <div className="flex-1 flex flex-col h-full" style={{ overflow: 'visible' }}>
-          {leftSidebar}
-        </div>
+        {leftSidebar}
       </div>
       
-      {/* Right sidebar - fixed position, full height minus header and footer */}
-      <div className="fixed right-0 z-40 hidden lg:flex flex-col" style={{ 
-        top: '100px', 
-        bottom: '60px',
-        overflow: 'visible'
+      {/* Right sidebar - fixed position */}
+      <div className="fixed right-0 z-40" style={{ 
+        top: 'clamp(70px, 100px, 100px)', 
+        bottom: '50px',
+        overflowY: 'auto'
       }}>
-        <div className="flex-1 flex flex-col h-full" style={{ overflow: 'visible' }}>
-          {rightSidebar}
-        </div>
+        {rightSidebar}
       </div>
       
-      {/* Main scrollable content area */}
+      {/* Scrollable main content area */}
       <div className="w-full overflow-y-auto" style={{ 
         minHeight: 'var(--viewport-height, 100vh)',
-        paddingTop: '100px',
-        paddingBottom: '480px',
-        marginLeft: '345px',
-        marginRight: '345px',
-        width: 'calc(100% - 690px)'
+        paddingTop: 'clamp(70px, 100px, 100px)',
+        paddingBottom: '120px'
       }}>
-        {/* Main game area */}
+        {/* Header - only render if provided (pages can use PersistentHeader from App instead) */}
+        {header && (
+          <div className="fixed top-0 left-0 right-0 w-full z-50">
+            {header}
+          </div>
+        )}
+
+        {/* Main game area with margins for fixed sidebars */}
         <div className="flex-1 flex flex-col relative" style={{
-          minHeight: 'calc(var(--viewport-height, 100vh) - 250px)'
+          marginLeft: '345px',
+          marginRight: '345px',
+          minHeight: 'calc(var(--viewport-height, 100vh) - 170px)'
         }}>
           {children}
         </div>
-      </div>
 
-      {/* Footer - fixed at very bottom of viewport */}
-      <div className="fixed left-0 right-0 z-50" style={{ bottom: 0 }}>
-        {footer}
+        {/* Footer - at bottom of scrollable area */}
+        <div className="flex-shrink-0">
+          {footer}
+        </div>
       </div>
     </>
   );
