@@ -67,17 +67,21 @@ export function setupWebSocket(
 
     storage.getCurrentRound().then(async (round) => {
       if (round) {
-        const bets = await storage.getBetsByRound(round.id);
-        ws.send(JSON.stringify({
-          type: "round_update",
-          data: {
-            ...round,
-            bets,
-            timeRemaining: Math.max(0, Math.floor((new Date(round.endTime || new Date()).getTime() - Date.now()) / 1000))
-          }
-        }));
+        try {
+          const bets = await storage.getBetsByRound(round.id);
+          ws.send(JSON.stringify({
+            type: "round_update",
+            data: {
+              ...round,
+              bets: bets || [],
+              timeRemaining: Math.max(0, Math.floor((new Date(round.endTime || new Date()).getTime() - Date.now()) / 1000))
+            }
+          }));
+        } catch (err) {
+          console.error("Error sending initial round update:", err);
+        }
       }
-    });
+    }).catch(err => console.error("Error fetching current round:", err));
 
     broadcastOnlineCount();
 

@@ -256,7 +256,13 @@ export class DbStorage implements IStorage {
 
   // Bet methods
   async getBetsByRound(roundId: string): Promise<Bet[]> {
-    return await db.select().from(bets).where(eq(bets.roundId, roundId));
+    try {
+      const result = await db.select().from(bets).where(eq(bets.roundId, roundId));
+      return result || [];
+    } catch (error) {
+      console.error(`Error fetching bets for round ${roundId}:`, error);
+      return [];
+    }
   }
 
   async createBet(insertBet: InsertBet): Promise<Bet> {
