@@ -15,6 +15,7 @@ import { registerStatsRoutes } from "./stats.routes";
 import { registerAirdropRoutes } from "./airdrop.routes";
 import { registerAdminRoutes } from "./admin.routes";
 import { registerMarketsRoutes } from "./markets.routes";
+import { registerMarketBetsRoutes } from "./marketBets.routes";
 import { registerSportsRoutes } from "./sports.routes";
 import { registerVisibilityRoutes } from "./visibility.routes";
 import { registerMediaRoutes } from "./media.routes";
@@ -43,6 +44,7 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
   registerStatsRoutes(app, deps);
   registerAirdropRoutes(app, deps);
   registerAdminRoutes(app, deps);
+  registerMarketBetsRoutes(app, deps);
   registerMarketsRoutes(app, deps);
   await registerSportsRoutes(app, deps);
   registerVisibilityRoutes(app, deps);

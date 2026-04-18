@@ -5,6 +5,7 @@ import { z } from "zod";
 const createMarketSchema = z.object({
   sport: z.string().min(1).max(64),
   league: z.string().min(1).max(128),
+  leagueId: z.string().max(64).optional().or(z.literal('').transform(() => undefined)),
   marketType: z.string().min(1).max(32).optional().default('match_winner'),
   teamA: z.string().min(1).max(128),
   teamB: z.string().min(1).max(128),
@@ -73,6 +74,7 @@ export function registerAdminRoutes(app: Express, deps: RouteDeps): void {
       const market = await storage.createMarket({
         sport: data.sport,
         league: data.league,
+        leagueId: data.leagueId ?? null,
         marketType: data.marketType,
         teamA: data.teamA,
         teamB: data.teamB,

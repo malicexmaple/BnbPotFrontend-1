@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut, Shield, VolumeX } from "lucide-react";
+import { Wallet, Trophy, ChevronRight, Settings, BarChart3, Receipt, LogOut, Shield, VolumeX, Ticket, Award } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import {
@@ -308,6 +308,20 @@ export default function GameNavigation({
                     <span>Muted Users</span>
                   </DropdownMenuItem>
                   
+                  <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-my-bets">
+                    <Link href="/my-bets">
+                      <Ticket className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                      <span>My Bets</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-leaderboard">
+                    <Link href="/leaderboard">
+                      <Award className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                      <span>Leaderboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+
                   {isAdmin && (
                     <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-admin">
                       <Link href="/admin">

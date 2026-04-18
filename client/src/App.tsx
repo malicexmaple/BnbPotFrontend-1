@@ -34,6 +34,8 @@ const Admin = lazy(() => import("@/pages/admin"));
 const AdminMarkets = lazy(() => import("@/pages/admin-markets"));
 const SportsDataDemo = lazy(() => import("@/pages/sports-data-demo"));
 const PredictionDataDemo = lazy(() => import("@/pages/prediction-data-demo"));
+const MyBets = lazy(() => import("@/pages/my-bets"));
+const Leaderboard = lazy(() => import("@/pages/leaderboard"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function RouteTransitionWrapper({ children }: { children: React.ReactNode }) {
@@ -94,6 +96,8 @@ function Router() {
           <Route path="/admin/markets" component={AdminMarkets} />
           <Route path="/admin/sports-data" component={SportsDataDemo} />
           <Route path="/admin/prediction-data" component={PredictionDataDemo} />
+          <Route path="/my-bets" component={MyBets} />
+          <Route path="/leaderboard" component={Leaderboard} />
           <Route component={NotFound} />
         </Switch>
       </Suspense>

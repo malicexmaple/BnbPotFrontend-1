@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useGameState } from "@/hooks/useGameState";
 import GameLayout from "@/components/GameLayout";
 import { PredictionMarketCard, type PredictionMarket } from "@/components/PredictionMarketCard";
+import BetsFeed from "@/components/BetsFeed";
 import { PredictionMarketPane } from "@/components/PredictionMarketPane";
 import { BetSlipDialog } from "@/components/BetSlipDialog";
 import predictionMarketsLogo from '@assets/predictionmarketsnew_1763488010364.png';
@@ -196,6 +197,7 @@ export default function PredictionMarkets() {
       id: m.id,
       sport: m.sport,
       league: m.league,
+      leagueId: m.leagueId ?? undefined,
       teamA: m.teamA,
       teamB: m.teamB,
       description: m.description,
@@ -451,6 +453,10 @@ export default function PredictionMarkets() {
                 </div>
                 
                 <div style={{width: '100%', maxWidth: '297px', marginTop: '5px'}}>
+                  <BetsFeed limit={10} />
+                </div>
+
+                <div style={{width: '100%', maxWidth: '297px', marginTop: '10px'}}>
                   <DailyStats type="latest" />
                 </div>
 

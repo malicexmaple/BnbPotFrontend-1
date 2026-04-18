@@ -279,6 +279,7 @@ export const markets = pgTable("markets", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   sport: text("sport").notNull(),
   league: text("league").notNull(),
+  leagueId: text("league_id"),
   marketType: text("market_type").notNull().default('match_winner'),
   teamA: text("team_a").notNull(),
   teamB: text("team_b").notNull(),
@@ -329,6 +330,20 @@ export const insertMarketBetSchema = createInsertSchema(marketBets).omit({
 
 export type InsertMarketBet = z.infer<typeof insertMarketBetSchema>;
 export type MarketBet = typeof marketBets.$inferSelect;
+
+export type MarketBetWithMarket = MarketBet & {
+  market: Pick<Market, 'id' | 'sport' | 'league' | 'teamA' | 'teamB' | 'description' | 'gameTime' | 'status' | 'winningOutcome'>;
+};
+
+export type MarketLeaderboardEntry = {
+  userAddress: string;
+  username: string | null;
+  totalBets: number;
+  wins: number;
+  totalWagered: string;
+  totalWon: string;
+  netProfit: string;
+};
 
 export const teamBadgeCache = pgTable("team_badge_cache", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

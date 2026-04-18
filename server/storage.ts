@@ -94,6 +94,9 @@ export interface IStorage {
   
   // Market bet methods
   getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]>;
+  getMarketBetsByUserAddress(userAddress: string, limit?: number): Promise<Array<MarketBet & { market: Market }>>;
+  getRecentMarketBets(limit: number): Promise<Array<MarketBet & { market: Market; username: string | null }>>;
+  getMarketLeaderboard(limit: number): Promise<Array<{ userAddress: string; username: string | null; totalBets: number; wins: number; totalWagered: string; totalWon: string; netProfit: string }>>;
   createMarketBet(bet: InsertMarketBet): Promise<MarketBet>;
   placeMarketBetTransaction(
     marketId: string,
@@ -694,6 +697,78 @@ export class DbStorage implements IStorage {
 
       return { bet: insertedBet, market: updatedMarket };
     });
+  }
+
+  async getMarketBetsByUserAddress(userAddress: string, limit: number = 100): Promise<Array<MarketBet & { market: Market }>> {
+    try {
+      const rows = await db
+        .select()
+        .from(marketBets)
+        .innerJoin(markets, eq(marketBets.marketId, markets.id))
+        .where(eq(marketBets.userAddress, userAddress))
+        .orderBy(desc(marketBets.createdAt))
+        .limit(limit);
+      return rows.map((r: any) => ({ ...r.market_bets, market: r.markets }));
+    } catch (e) {
+      console.error('getMarketBetsByUserAddress failed', e);
+      return [];
+    }
+  }
+
+  async getRecentMarketBets(limit: number): Promise<Array<MarketBet & { market: Market; username: string | null }>> {
+    try {
+      const rows = await db
+        .select()
+        .from(marketBets)
+        .innerJoin(markets, eq(marketBets.marketId, markets.id))
+        .leftJoin(users, eq(marketBets.userId, users.id))
+        .orderBy(desc(marketBets.createdAt))
+        .limit(limit);
+      return rows.map((r: any) => ({
+        ...r.market_bets,
+        market: r.markets,
+        username: r.users?.username ?? null,
+      }));
+    } catch (e) {
+      console.error('getRecentMarketBets failed', e);
+      return [];
+    }
+  }
+
+  async getMarketLeaderboard(limit: number): Promise<Array<{ userAddress: string; username: string | null; totalBets: number; wins: number; totalWagered: string; totalWon: string; netProfit: string }>> {
+    try {
+      const rows: any = await db.execute(sql`
+        SELECT
+          mb.user_address AS user_address,
+          MAX(u.username) AS username,
+          COUNT(*)::int AS total_bets,
+          SUM(CASE WHEN mb.status = 'won' THEN 1 ELSE 0 END)::int AS wins,
+          COALESCE(SUM(mb.amount::numeric), 0)::text AS total_wagered,
+          COALESCE(SUM(CASE WHEN mb.status = 'won' THEN mb.actual_payout::numeric ELSE 0 END), 0)::text AS total_won
+        FROM market_bets mb
+        LEFT JOIN users u ON u.id = mb.user_id
+        GROUP BY mb.user_address
+        ORDER BY total_won::numeric DESC, total_wagered::numeric DESC
+        LIMIT ${limit}
+      `);
+      const list = (rows.rows ?? rows) as any[];
+      return list.map((r) => {
+        const wagered = parseFloat(r.total_wagered || '0');
+        const won = parseFloat(r.total_won || '0');
+        return {
+          userAddress: r.user_address,
+          username: r.username ?? null,
+          totalBets: Number(r.total_bets) || 0,
+          wins: Number(r.wins) || 0,
+          totalWagered: wagered.toFixed(8),
+          totalWon: won.toFixed(8),
+          netProfit: (won - wagered).toFixed(8),
+        };
+      });
+    } catch (e) {
+      console.error('getMarketLeaderboard failed', e);
+      return [];
+    }
   }
 
   async updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined> {

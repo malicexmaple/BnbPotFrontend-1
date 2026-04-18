@@ -38,6 +38,7 @@ export default function AdminMarkets() {
   const emptyForm = {
     sport: "Football",
     league: "",
+    leagueId: "",
     teamA: "",
     teamB: "",
     description: "",
@@ -186,6 +187,7 @@ export default function AdminMarkets() {
       };
       if (payload.teamALogo) body.teamALogo = payload.teamALogo;
       if (payload.teamBLogo) body.teamBLogo = payload.teamBLogo;
+      if (payload.leagueId) body.leagueId = payload.leagueId;
       const res = await apiRequest("POST", "/api/admin/markets", body);
       return res.json();
     },
@@ -549,6 +551,16 @@ export default function AdminMarkets() {
                   onChange={(e) => setCreateForm({ ...createForm, league: e.target.value })}
                   placeholder="e.g. NBA, Premier League"
                   data-testid="input-create-league"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-leagueId">League ID (optional)</Label>
+                <Input
+                  id="cm-leagueId"
+                  value={createForm.leagueId}
+                  onChange={(e) => setCreateForm({ ...createForm, leagueId: e.target.value })}
+                  placeholder="Slug used by sidebar filter (e.g. nba, epl)"
+                  data-testid="input-create-leagueId"
                 />
               </div>
               <div className="space-y-1">
