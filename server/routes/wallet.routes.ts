@@ -9,8 +9,15 @@ const depositSchema = z.object({
 
 const withdrawSchema = z.object({
   amount: z.union([z.string(), z.number()]).transform((v) => String(v)),
-  toAddress: z.string().min(10).max(100),
+  toAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
 });
+
+const MAX_AMOUNT = 1_000_000;
+
+function validAmount(amount: string): boolean {
+  const n = parseFloat(amount);
+  return Number.isFinite(n) && n > 0 && n <= MAX_AMOUNT;
+}
 
 async function resolveUser(req: Request, storage: RouteDeps["storage"]) {
   const walletAddress = req.session?.walletAddress;
@@ -32,7 +39,7 @@ async function ensureWallet(userId: string, storage: RouteDeps["storage"]) {
 }
 
 export function registerWalletRoutes(app: Express, deps: RouteDeps): void {
-  const { storage, requireAuth } = deps;
+  const { storage, requireAuth, rateLimiters } = deps;
 
   app.get("/api/wallet", requireAuth, async (req: Request, res: Response) => {
     try {
@@ -46,21 +53,18 @@ export function registerWalletRoutes(app: Express, deps: RouteDeps): void {
     }
   });
 
-  app.post("/api/wallet/deposit", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/wallet/deposit", rateLimiters.api, requireAuth, async (req: Request, res: Response) => {
     try {
       const parsed = depositSchema.safeParse(req.body);
-      if (!parsed.success) {
+      if (!parsed.success || !validAmount(parsed.data.amount)) {
         return res.status(400).json({ message: "Invalid deposit amount" });
       }
       const amount = parsed.data.amount;
-      if (parseFloat(amount) <= 0) {
-        return res.status(400).json({ message: "Invalid deposit amount" });
-      }
       const user = await resolveUser(req, storage);
       if (!user) return res.status(404).json({ message: "User not found" });
       const wallet = await ensureWallet(user.id, storage);
-      const newBalance = (parseFloat(wallet.balance) + parseFloat(amount)).toString();
-      const updated = await storage.updateWalletBalance(wallet.id, newBalance);
+      const updated = await storage.adjustWalletBalance(wallet.id, amount, false);
+      if (!updated) return res.status(500).json({ message: "Failed to update balance" });
       await storage.createTransaction({
         walletId: wallet.id,
         userId: user.id,
@@ -77,14 +81,14 @@ export function registerWalletRoutes(app: Express, deps: RouteDeps): void {
     }
   });
 
-  app.post("/api/wallet/quick-deposit", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/wallet/quick-deposit", rateLimiters.api, requireAuth, async (req: Request, res: Response) => {
     try {
       const amount = "5";
       const user = await resolveUser(req, storage);
       if (!user) return res.status(404).json({ message: "User not found" });
       const wallet = await ensureWallet(user.id, storage);
-      const newBalance = (parseFloat(wallet.balance) + parseFloat(amount)).toString();
-      const updated = await storage.updateWalletBalance(wallet.id, newBalance);
+      const updated = await storage.adjustWalletBalance(wallet.id, amount, false);
+      if (!updated) return res.status(500).json({ message: "Failed to update balance" });
       await storage.createTransaction({
         walletId: wallet.id,
         userId: user.id,
@@ -101,7 +105,7 @@ export function registerWalletRoutes(app: Express, deps: RouteDeps): void {
     }
   });
 
-  app.post("/api/wallet/withdraw", requireAuth, async (req: Request, res: Response) => {
+  app.post("/api/wallet/withdraw", rateLimiters.api, requireAuth, async (req: Request, res: Response) => {
     try {
       const parsed = withdrawSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -111,19 +115,16 @@ export function registerWalletRoutes(app: Express, deps: RouteDeps): void {
         });
       }
       const { amount, toAddress } = parsed.data;
-      if (parseFloat(amount) <= 0) {
+      if (!validAmount(amount)) {
         return res.status(400).json({ message: "Invalid withdrawal amount" });
       }
       const user = await resolveUser(req, storage);
       if (!user) return res.status(404).json({ message: "User not found" });
       const wallet = await storage.getWalletByUserId(user.id);
       if (!wallet) return res.status(404).json({ message: "Wallet not found" });
-      const currentBalance = parseFloat(wallet.balance);
-      if (currentBalance < parseFloat(amount)) {
-        return res.status(400).json({ message: "Insufficient balance" });
-      }
-      const newBalance = (currentBalance - parseFloat(amount)).toString();
-      const updated = await storage.updateWalletBalance(wallet.id, newBalance);
+      // Atomic check + deduct in a single SQL UPDATE — prevents concurrent-spend race.
+      const updated = await storage.adjustWalletBalance(wallet.id, `-${amount}`, true);
+      if (!updated) return res.status(400).json({ message: "Insufficient balance" });
       await storage.createTransaction({
         walletId: wallet.id,
         userId: user.id,

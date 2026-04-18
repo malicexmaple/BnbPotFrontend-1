@@ -80,6 +80,7 @@ declare module "express-session" {
     agreedToTerms?: boolean;
     isAdmin?: boolean;
     pendingNonce?: string;
+    pendingNonceTime?: number;
     pendingWallet?: string;
   }
 }

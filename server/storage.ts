@@ -143,6 +143,7 @@ export interface IStorage {
   getWalletByUserId(userId: string): Promise<Wallet | undefined>;
   createWallet(wallet: InsertWallet): Promise<Wallet>;
   updateWalletBalance(walletId: string, newBalance: string): Promise<Wallet | undefined>;
+  adjustWalletBalance(walletId: string, delta: string, requireSufficient: boolean): Promise<Wallet | undefined>;
 
   // Transactions
   createTransaction(tx: InsertTransaction): Promise<Transaction>;
@@ -1201,6 +1202,22 @@ export class DbStorage implements IStorage {
     const rows = await safeRows(
       db.update(wallets).set({ balance: newBalance, updatedAt: new Date() }).where(eq(wallets.id, walletId)).returning(),
       'updateWalletBalance'
+    );
+    return rows[0];
+  }
+  async adjustWalletBalance(walletId: string, delta: string, requireSufficient: boolean): Promise<Wallet | undefined> {
+    const whereClause = requireSufficient
+      ? sql`${wallets.id} = ${walletId} AND CAST(${wallets.balance} AS NUMERIC) + ${delta}::numeric >= 0`
+      : sql`${wallets.id} = ${walletId}`;
+    const rows = await safeRows(
+      db.update(wallets)
+        .set({
+          balance: sql`CAST(CAST(${wallets.balance} AS NUMERIC) + ${delta}::numeric AS TEXT)`,
+          updatedAt: new Date(),
+        })
+        .where(whereClause)
+        .returning(),
+      'adjustWalletBalance'
     );
     return rows[0];
   }

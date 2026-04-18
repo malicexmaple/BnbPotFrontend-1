@@ -14,6 +14,7 @@ The application is built as a full-stack TypeScript monorepo with a React fronte
 - ✅ **NEW**: `useAuth` hook enriched with full User record via `/api/auth/user` alias
 - ✅ **NEW**: Schema additions — `wallets`, `transactions`, `customTeams`, `customPlayers`
 - ✅ **NEW**: Polymarket polish — implied probability bars on market cards, header dropdown links to Wallet/Profile/Activity Feed, admin panel cards for Custom Media Library + Activity Feed
+- ✅ **HARDENED**: Atomic wallet balance updates via SQL (no concurrent-spend race), rate limiting on wallet routes, 5-minute nonce expiry on auth challenges, strict 0x-40-hex withdrawal address validation
 
 **Earlier Status** (December 1, 2025):
 - ✅ Production-grade smart contract deployed with Chainlink VRF

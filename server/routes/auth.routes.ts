@@ -43,6 +43,7 @@ export function registerAuthRoutes(app: Express, deps: RouteDeps): void {
 
       if (req.session) {
         req.session.pendingNonce = nonce;
+        req.session.pendingNonceTime = Date.now();
         req.session.pendingWallet = walletAddress.toLowerCase();
       }
 
@@ -67,9 +68,20 @@ export function registerAuthRoutes(app: Express, deps: RouteDeps): void {
 
       const pendingNonce = req.session?.pendingNonce;
       const pendingWallet = req.session?.pendingWallet;
+      const pendingNonceTime = req.session?.pendingNonceTime ?? 0;
 
       if (!pendingNonce || !pendingWallet) {
         return res.status(401).json({ message: "No pending authentication. Please request a new challenge." });
+      }
+
+      // Nonce must be used within 5 minutes
+      if (Date.now() - pendingNonceTime > 5 * 60 * 1000) {
+        if (req.session) {
+          delete req.session.pendingNonce;
+          delete req.session.pendingNonceTime;
+          delete req.session.pendingWallet;
+        }
+        return res.status(401).json({ message: "Authentication challenge expired. Please request a new one." });
       }
 
       if (pendingWallet.toLowerCase() !== walletAddress.toLowerCase()) {
