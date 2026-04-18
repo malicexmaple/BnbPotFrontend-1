@@ -39,12 +39,14 @@ export default function GameLayout({
           </div>
         )}
 
-        {/* Full-viewport flex column: header padding + sidebars row that grows + footer at the bottom */}
+        {/* Full-viewport flex column: header padding + sidebars row that grows + footer at the bottom.
+            The `/ var(--app-zoom)` divisor compensates for the CSS `zoom` applied on <html> in
+            client/index.html so the layout still fills the visible viewport at any scale factor. */}
         <div
           className="flex flex-col w-full"
           style={{
             paddingTop: 'clamp(70px, 100px, 100px)',
-            minHeight: '100vh',
+            minHeight: 'calc(100vh / var(--app-zoom, 1))',
           }}
         >
           {/* Sidebars + main row — grows to fill all remaining vertical space so panels reach the footer */}

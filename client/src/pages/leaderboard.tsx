@@ -14,7 +14,7 @@ export default function Leaderboard() {
   });
 
   return (
-    <div className="min-h-screen bg-background pt-24 px-4 pb-12">
+    <div className="bg-background pt-24 px-4 pb-12" style={{ minHeight: 'calc(100vh / var(--app-zoom, 1))' }}>
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>

@@ -1,33 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Trophy, X, Clock, AlertCircle } from "lucide-react";
+import { ArrowLeft, Trophy, X, Clock, AlertCircle, RotateCcw } from "lucide-react";
 import { useLocation } from "wouter";
 import { useGameState } from "@/hooks/useGameState";
 import type { MarketBet, Market } from "@shared/schema";
 
 type BetWithMarket = MarketBet & { market: Market };
 
+const PAGE_SIZE = 20;
+
 export default function MyBets() {
   const [, setLocation] = useLocation();
   const { address } = useGameState();
+  const [visible, setVisible] = useState(PAGE_SIZE);
 
   const { data: bets, isLoading, isError } = useQuery<BetWithMarket[]>({
     queryKey: ["/api/market-bets/my-bets?limit=100"],
     enabled: !!address,
   });
 
+  useEffect(() => {
+    setVisible(PAGE_SIZE);
+  }, [address]);
+
   const grouped = {
     active: (bets || []).filter((b) => b.status === "active"),
     won: (bets || []).filter((b) => b.status === "won"),
     lost: (bets || []).filter((b) => b.status === "lost"),
+    refunded: (bets || []).filter((b) => b.status === "refunded"),
   };
 
+  const visibleBets = (bets || []).slice(0, visible);
+  const hasMore = (bets?.length ?? 0) > visible;
+
   return (
-    <div className="min-h-screen bg-background pt-24 px-4 pb-12">
+    <div className="bg-background pt-24 px-4 pb-12" style={{ minHeight: 'calc(100vh / var(--app-zoom, 1))' }}>
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
@@ -54,10 +66,11 @@ export default function MyBets() {
           </Alert>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard label="Active" value={grouped.active.length} icon={<Clock className="h-5 w-5" />} testId="stat-active" />
           <StatCard label="Won" value={grouped.won.length} icon={<Trophy className="h-5 w-5" />} testId="stat-won" />
           <StatCard label="Lost" value={grouped.lost.length} icon={<X className="h-5 w-5" />} testId="stat-lost" />
+          <StatCard label="Refunded" value={grouped.refunded.length} icon={<RotateCcw className="h-5 w-5" />} testId="stat-refunded" />
         </div>
 
         {address && isLoading && (
@@ -78,10 +91,22 @@ export default function MyBets() {
         )}
 
         <div className="space-y-3">
-          {(bets || []).map((bet) => (
+          {visibleBets.map((bet) => (
             <BetRow key={bet.id} bet={bet} />
           ))}
         </div>
+
+        {hasMore && (
+          <div className="flex justify-center pt-2">
+            <Button
+              variant="outline"
+              onClick={() => setVisible((v) => v + PAGE_SIZE)}
+              data-testid="button-load-more-bets"
+            >
+              Load more ({(bets?.length ?? 0) - visible} remaining)
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -104,8 +129,14 @@ function StatCard({ label, value, icon, testId }: { label: string; value: number
 function BetRow({ bet }: { bet: BetWithMarket }) {
   const team = bet.outcome === "A" ? bet.market.teamA : bet.market.teamB;
   const opponent = bet.outcome === "A" ? bet.market.teamB : bet.market.teamA;
-  const statusVariant: "default" | "secondary" | "destructive" =
-    bet.status === "won" ? "default" : bet.status === "lost" ? "destructive" : "secondary";
+  const statusVariant: "default" | "secondary" | "destructive" | "outline" =
+    bet.status === "won"
+      ? "default"
+      : bet.status === "lost"
+      ? "destructive"
+      : bet.status === "refunded"
+      ? "outline"
+      : "secondary";
 
   return (
     <Card className="hover-elevate" data-testid={`bet-row-${bet.id}`}>
