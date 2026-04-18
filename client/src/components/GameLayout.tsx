@@ -63,8 +63,9 @@ export default function GameLayout({
             {rightSidebar}
           </div>
 
-          {/* Footer pinned to the bottom of the viewport-tall column */}
-          <div className="flex-shrink-0 w-full">
+          {/* Footer pinned to the bottom of the viewport-tall column.
+              `relative z-30` keeps the footer layered above the sidebars. */}
+          <div className="flex-shrink-0 w-full relative z-30">
             {footer}
           </div>
         </div>
