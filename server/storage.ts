@@ -189,13 +189,20 @@ async function safeRowsRetry<T>(
 /**
  * Like safeRowsRetry but for WRITE operations: throws if all retries are
  * exhausted, instead of silently swallowing the failure. Use for INSERT/UPDATE/DELETE
- * .returning() calls where a missing row indicates real corruption.
+ * .returning() calls (or whole transactions) where a missing result indicates
+ * real corruption.
+ *
+ * Generic over the return type so it can wrap either array-returning queries
+ * (e.g. `.returning()`) or transactions that resolve to a single object.
+ * When wrapping a transaction, retrying on a null-body error is safe because
+ * the transaction is rolled back on the underlying connection failure before
+ * the next attempt runs.
  */
 async function writeRetry<T>(
-  build: () => Promise<T[]>,
+  build: () => Promise<T>,
   label: string,
   attempts = 3
-): Promise<T[]> {
+): Promise<T> {
   let lastErr: unknown;
   for (let i = 0; i < attempts; i++) {
     try {
@@ -797,7 +804,12 @@ export class DbStorage implements IStorage {
     marketId: string,
     bet: Omit<InsertMarketBet, 'marketId' | 'oddsAtBet'>
   ): Promise<{ bet: MarketBet; market: Market }> {
-    return await db.transaction(async (tx) => {
+    // The Neon serverless WebSocket driver supports real transactions, so the
+    // SELECT ... FOR UPDATE + INSERT + UPDATE block stays atomic. We still wrap
+    // the whole transaction in writeRetry so that an intermittent null-body
+    // response from the driver causes the rolled-back transaction to be
+    // retried, instead of returning a 500 to the user and corrupting pools.
+    return await writeRetry(() => db.transaction(async (tx) => {
       // SELECT ... FOR UPDATE so concurrent lock/settle/place-bet can't slip in
       // between our read and our write of poolATotal/poolBTotal.
       const lockedRows = await tx.execute<{
@@ -845,7 +857,7 @@ export class DbStorage implements IStorage {
         .returning();
 
       return { bet: insertedBet, market: updatedMarket };
-    });
+    }), 'placeMarketBetTransaction');
   }
 
   async getMarketBetsByUserAddress(userAddress: string, limit: number = 100, offset: number = 0): Promise<Array<MarketBet & { market: Market }>> {
