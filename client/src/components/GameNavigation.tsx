@@ -90,8 +90,8 @@ export default function GameNavigation({
   return (
     <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
       {/* Left - Logo section (345px on desktop, smaller on mobile).
-          Uses the same dark glass styling as the bottom navigation strip so the
-          logo block visually merges with the rest of the header. */}
+          Uses the same dark glass styling as the bottom navigation strip and
+          fully contains the logo with no overflow or rounded corners. */}
       <div
         className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px]"
         style={{
@@ -100,14 +100,16 @@ export default function GameNavigation({
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
           boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
+          borderRadius: 0,
+          overflow: 'hidden',
         }}
       >
-        <div className="flex items-center justify-center" style={{height: '100px'}}>
-          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
-            <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
+        <div className="flex items-center justify-center" style={{height: '100%'}}>
+          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`} as React.CSSProperties}>
+            <img src={crownLogo} alt="Crown" style={{height: '90px', width: 'auto', display: 'block'}} />
           </div>
-          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
-            <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
+          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-6px'} as React.CSSProperties}>
+            <img src={textLogo} alt="BNBPOT" style={{width: '170px', height: 'auto', display: 'block'}} />
           </div>
         </div>
       </div>
