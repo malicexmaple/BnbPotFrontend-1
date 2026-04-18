@@ -92,14 +92,10 @@ export default function GameNavigation({
       {/* Left - Logo section (345px on desktop, smaller on mobile) */}
       <div className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px] px-3" style={{ height: '100px' }}>
         <div
-          className="flex items-center justify-center w-full"
+          className="glass-panel flex items-center justify-center w-full"
           style={{
             height: '76px',
-            borderRadius: '12px',
-            background: 'rgba(20, 20, 20, 0.85)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(60, 60, 60, 0.5)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 10px rgba(0, 0, 0, 0.6)',
+            borderRadius: '8px',
             paddingLeft: '8px',
             paddingRight: '12px',
             overflow: 'hidden',
