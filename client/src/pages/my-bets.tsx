@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,26 +17,48 @@ const PAGE_SIZE = 20;
 export default function MyBets() {
   const [, setLocation] = useLocation();
   const { address } = useGameState();
-  const [visible, setVisible] = useState(PAGE_SIZE);
 
-  const { data: bets, isLoading, isError } = useQuery<BetWithMarket[]>({
-    queryKey: ["/api/market-bets/my-bets?limit=100"],
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery<BetWithMarket[]>({
+    queryKey: ["/api/market-bets/my-bets", address],
     enabled: !!address,
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
+      const offset = pageParam as number;
+      const res = await fetch(
+        `/api/market-bets/my-bets?limit=${PAGE_SIZE}&offset=${offset}`,
+        { credentials: "include" }
+      );
+      if (!res.ok) throw new Error("Failed to fetch bets");
+      return res.json();
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage || lastPage.length < PAGE_SIZE) return undefined;
+      return allPages.reduce((sum, p) => sum + p.length, 0);
+    },
   });
 
+  // Reset pagination when wallet changes
   useEffect(() => {
-    setVisible(PAGE_SIZE);
+    if (address) refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
-  const grouped = {
-    active: (bets || []).filter((b) => b.status === "active"),
-    won: (bets || []).filter((b) => b.status === "won"),
-    lost: (bets || []).filter((b) => b.status === "lost"),
-    refunded: (bets || []).filter((b) => b.status === "refunded"),
-  };
+  const bets = useMemo(() => (data?.pages ?? []).flat(), [data]);
 
-  const visibleBets = (bets || []).slice(0, visible);
-  const hasMore = (bets?.length ?? 0) > visible;
+  const grouped = {
+    active: bets.filter((b) => b.status === "active").length,
+    won: bets.filter((b) => b.status === "won").length,
+    lost: bets.filter((b) => b.status === "lost").length,
+    refunded: bets.filter((b) => b.status === "refunded").length,
+  };
 
   return (
     <div className="bg-background pt-24 px-4 pb-12" style={{ minHeight: 'calc(100vh / var(--app-zoom, 1))' }}>
@@ -67,10 +89,10 @@ export default function MyBets() {
         )}
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label="Active" value={grouped.active.length} icon={<Clock className="h-5 w-5" />} testId="stat-active" />
-          <StatCard label="Won" value={grouped.won.length} icon={<Trophy className="h-5 w-5" />} testId="stat-won" />
-          <StatCard label="Lost" value={grouped.lost.length} icon={<X className="h-5 w-5" />} testId="stat-lost" />
-          <StatCard label="Refunded" value={grouped.refunded.length} icon={<RotateCcw className="h-5 w-5" />} testId="stat-refunded" />
+          <StatCard label="Active" value={grouped.active} icon={<Clock className="h-5 w-5" />} testId="stat-active" />
+          <StatCard label="Won" value={grouped.won} icon={<Trophy className="h-5 w-5" />} testId="stat-won" />
+          <StatCard label="Lost" value={grouped.lost} icon={<X className="h-5 w-5" />} testId="stat-lost" />
+          <StatCard label="Refunded" value={grouped.refunded} icon={<RotateCcw className="h-5 w-5" />} testId="stat-refunded" />
         </div>
 
         {address && isLoading && (
@@ -79,7 +101,7 @@ export default function MyBets() {
           </div>
         )}
 
-        {address && !isLoading && (bets?.length ?? 0) === 0 && (
+        {address && !isLoading && bets.length === 0 && (
           <Card>
             <CardContent className="py-10 text-center">
               <p className="text-muted-foreground" data-testid="text-no-bets">You haven't placed any prediction-market bets yet.</p>
@@ -91,19 +113,20 @@ export default function MyBets() {
         )}
 
         <div className="space-y-3">
-          {visibleBets.map((bet) => (
+          {bets.map((bet) => (
             <BetRow key={bet.id} bet={bet} />
           ))}
         </div>
 
-        {hasMore && (
+        {hasNextPage && (
           <div className="flex justify-center pt-2">
             <Button
               variant="outline"
-              onClick={() => setVisible((v) => v + PAGE_SIZE)}
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
               data-testid="button-load-more-bets"
             >
-              Load more ({(bets?.length ?? 0) - visible} remaining)
+              {isFetchingNextPage ? "Loading..." : "Load more"}
             </Button>
           </div>
         )}
@@ -157,6 +180,9 @@ function BetRow({ bet }: { bet: BetWithMarket }) {
           <Badge variant={statusVariant} className="mt-1 capitalize">{bet.status}</Badge>
           {bet.status === "won" && bet.actualPayout && (
             <div className="text-xs text-success mt-1 font-mono">+{parseFloat(bet.actualPayout).toFixed(4)} BNB</div>
+          )}
+          {bet.status === "refunded" && (
+            <div className="text-xs text-muted-foreground mt-1 font-mono">Refunded {parseFloat(bet.amount).toFixed(4)} BNB</div>
           )}
         </div>
       </CardContent>

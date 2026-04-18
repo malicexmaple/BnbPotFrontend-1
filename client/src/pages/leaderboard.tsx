@@ -1,16 +1,36 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Trophy, ArrowLeft, Medal } from "lucide-react";
 import { useLocation } from "wouter";
 import type { MarketLeaderboardEntry } from "@shared/schema";
 
+const SPORT_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "all", label: "All Sports" },
+  { value: "Soccer", label: "Soccer" },
+  { value: "Basketball", label: "Basketball" },
+  { value: "American Football", label: "American Football" },
+  { value: "Baseball", label: "Baseball" },
+  { value: "Ice Hockey", label: "Ice Hockey" },
+  { value: "MMA", label: "MMA" },
+  { value: "Tennis", label: "Tennis" },
+  { value: "Esports", label: "Esports" },
+];
+
 export default function Leaderboard() {
   const [, setLocation] = useLocation();
+  const [sport, setSport] = useState<string>("all");
+
+  const queryKey = sport === "all"
+    ? ["/api/markets/leaderboard"]
+    : [`/api/markets/leaderboard?sport=${encodeURIComponent(sport)}`];
+
   const { data, isLoading } = useQuery<MarketLeaderboardEntry[]>({
-    queryKey: ["/api/markets/leaderboard"],
+    queryKey,
   });
 
   return (
@@ -21,10 +41,24 @@ export default function Leaderboard() {
             <h1 className="text-3xl font-bold text-foreground" data-testid="text-leaderboard-title">Leaderboard</h1>
             <p className="text-muted-foreground text-sm">Top prediction-market bettors by total winnings.</p>
           </div>
-          <Button variant="outline" onClick={() => setLocation("/prediction-markets")} data-testid="button-back-to-markets">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Markets
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Select value={sport} onValueChange={setSport}>
+              <SelectTrigger className="w-[180px]" data-testid="select-sport-filter">
+                <SelectValue placeholder="Filter by sport" />
+              </SelectTrigger>
+              <SelectContent>
+                {SPORT_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value} data-testid={`option-sport-${opt.value}`}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={() => setLocation("/prediction-markets")} data-testid="button-back-to-markets">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Markets
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -34,7 +68,9 @@ export default function Leaderboard() {
         ) : (data?.length ?? 0) === 0 ? (
           <Card>
             <CardContent className="py-10 text-center text-muted-foreground" data-testid="text-no-leaderboard">
-              No bets yet. Be the first to make the leaderboard.
+              {sport === "all"
+                ? "No bets yet. Be the first to make the leaderboard."
+                : `No ${sport} bets yet. Be the first to make the leaderboard.`}
             </CardContent>
           </Card>
         ) : (

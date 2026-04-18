@@ -203,6 +203,7 @@ export default function PredictionMarkets() {
       description: m.description,
       gameTime: new Date(m.gameTime),
       status: m.status as PredictionMarket['status'],
+      winningOutcome: m.winningOutcome ?? null,
       poolATotal: m.poolATotal,
       poolBTotal: m.poolBTotal,
       bonusPool: m.bonusPool,

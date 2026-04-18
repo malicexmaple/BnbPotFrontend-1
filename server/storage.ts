@@ -94,9 +94,9 @@ export interface IStorage {
   
   // Market bet methods
   getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]>;
-  getMarketBetsByUserAddress(userAddress: string, limit?: number): Promise<Array<MarketBet & { market: Market }>>;
+  getMarketBetsByUserAddress(userAddress: string, limit?: number, offset?: number): Promise<Array<MarketBet & { market: Market }>>;
   getRecentMarketBets(limit: number): Promise<Array<MarketBet & { market: Market; username: string | null }>>;
-  getMarketLeaderboard(limit: number): Promise<Array<{ userAddress: string; username: string | null; totalBets: number; wins: number; totalWagered: string; totalWon: string; netProfit: string }>>;
+  getMarketLeaderboard(limit: number, sport?: string): Promise<Array<{ userAddress: string; username: string | null; totalBets: number; wins: number; totalWagered: string; totalWon: string; netProfit: string }>>;
   createMarketBet(bet: InsertMarketBet): Promise<MarketBet>;
   placeMarketBetTransaction(
     marketId: string,
@@ -699,7 +699,7 @@ export class DbStorage implements IStorage {
     });
   }
 
-  async getMarketBetsByUserAddress(userAddress: string, limit: number = 100): Promise<Array<MarketBet & { market: Market }>> {
+  async getMarketBetsByUserAddress(userAddress: string, limit: number = 100, offset: number = 0): Promise<Array<MarketBet & { market: Market }>> {
     try {
       const rows = await db
         .select()
@@ -707,7 +707,8 @@ export class DbStorage implements IStorage {
         .innerJoin(markets, eq(marketBets.marketId, markets.id))
         .where(eq(marketBets.userAddress, userAddress))
         .orderBy(desc(marketBets.createdAt))
-        .limit(limit);
+        .limit(limit)
+        .offset(offset);
       return rows.map((r: any) => ({ ...r.market_bets, market: r.markets }));
     } catch (e) {
       console.error('getMarketBetsByUserAddress failed', e);
@@ -735,8 +736,9 @@ export class DbStorage implements IStorage {
     }
   }
 
-  async getMarketLeaderboard(limit: number): Promise<Array<{ userAddress: string; username: string | null; totalBets: number; wins: number; totalWagered: string; totalWon: string; netProfit: string }>> {
+  async getMarketLeaderboard(limit: number, sport?: string): Promise<Array<{ userAddress: string; username: string | null; totalBets: number; wins: number; totalWagered: string; totalWon: string; netProfit: string }>> {
     try {
+      const sportFilter = sport && sport !== 'all' ? sql`WHERE m.sport = ${sport}` : sql``;
       const rows: any = await db.execute(sql`
         SELECT
           mb.user_address AS user_address,
@@ -746,7 +748,9 @@ export class DbStorage implements IStorage {
           COALESCE(SUM(mb.amount::numeric), 0)::text AS total_wagered,
           COALESCE(SUM(CASE WHEN mb.status = 'won' THEN mb.actual_payout::numeric ELSE 0 END), 0)::text AS total_won
         FROM market_bets mb
+        INNER JOIN markets m ON m.id = mb.market_id
         LEFT JOIN users u ON u.id = mb.user_id
+        ${sportFilter}
         GROUP BY mb.user_address
         ORDER BY total_won::numeric DESC, total_wagered::numeric DESC
         LIMIT ${limit}

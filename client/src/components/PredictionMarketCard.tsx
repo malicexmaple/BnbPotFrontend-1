@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, TrendingUp } from "lucide-react";
+import { Clock, TrendingUp, Trophy, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getLeagueBadge } from "@/lib/leagueUtils";
 
@@ -16,6 +16,7 @@ export interface PredictionMarket {
   description: string;
   gameTime: Date;
   status: 'active' | 'locked' | 'settled' | 'voided';
+  winningOutcome?: string | null;
   poolATotal: string;
   poolBTotal: string;
   bonusPool: string;
@@ -71,9 +72,18 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
   const now = new Date();
   const isUpcoming = gameTime > now;
   
-  const isEnded = market.status === 'settled' || market.status === 'voided';
+  const isSettled = market.status === 'settled';
+  const isVoided = market.status === 'voided';
+  const isEnded = isSettled || isVoided;
   const isLive = !isUpcoming && !isEnded;
   const isLocked = market.status === 'locked';
+  const winningTeam = isSettled
+    ? market.winningOutcome === 'A'
+      ? market.teamA
+      : market.winningOutcome === 'B'
+      ? market.teamB
+      : null
+    : null;
   
   const isDisabled = disabled || market.status !== 'active';
 
@@ -118,9 +128,14 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
         </div>
         
         <div className="flex flex-col items-end gap-1">
-          {isEnded && (
-            <Badge variant="secondary" className="text-xs font-bold" data-testid={`badge-ended-${market.id}`}>
-              ENDED
+          {isSettled && (
+            <Badge variant="default" className="text-xs font-bold" data-testid={`badge-settled-${market.id}`}>
+              SETTLED
+            </Badge>
+          )}
+          {isVoided && (
+            <Badge variant="outline" className="text-xs font-bold" data-testid={`badge-refunded-${market.id}`}>
+              REFUNDED
             </Badge>
           )}
           {isLive && (
@@ -205,10 +220,23 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
           </div>
         )}
 
-        {market.status !== 'active' && (
-          <Badge variant="outline" className="w-full justify-center">
-            {market.status.toUpperCase()}
+        {isSettled && winningTeam && (
+          <Badge variant="default" className="w-full justify-center" data-testid={`badge-winner-${market.id}`}>
+            <Trophy className="h-3 w-3 mr-1" />
+            Winner: {winningTeam}
           </Badge>
+        )}
+        {isSettled && !winningTeam && (
+          <Badge variant="outline" className="w-full justify-center">SETTLED</Badge>
+        )}
+        {isVoided && (
+          <Badge variant="outline" className="w-full justify-center" data-testid={`badge-voided-${market.id}`}>
+            <RotateCcw className="h-3 w-3 mr-1" />
+            All bets refunded
+          </Badge>
+        )}
+        {isLocked && (
+          <Badge variant="secondary" className="w-full justify-center">LOCKED — Awaiting result</Badge>
         )}
       </CardContent>
     </Card>
