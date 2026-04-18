@@ -9,7 +9,7 @@ interface SessionData {
   isAdmin?: boolean;
 }
 
-type EnrichedUser = (Partial<User> & {
+type EnrichedUser = (Omit<Partial<User>, "walletAddress" | "username"> & {
   walletAddress?: string;
   username?: string;
   role?: string;
@@ -42,8 +42,8 @@ export function useAuth(): AuthState {
   const user: EnrichedUser = isAuthenticated
     ? {
         ...(fullUser ?? {}),
-        walletAddress: session?.walletAddress ?? fullUser?.walletAddress,
-        username: session?.username ?? fullUser?.username,
+        walletAddress: session?.walletAddress ?? fullUser?.walletAddress ?? undefined,
+        username: session?.username ?? fullUser?.username ?? undefined,
         role: isAdmin ? "admin" : (fullUser as any)?.role ?? "user",
       }
     : null;

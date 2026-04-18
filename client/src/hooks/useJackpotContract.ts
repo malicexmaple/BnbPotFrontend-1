@@ -254,7 +254,7 @@ export function useJackpotContract(walletAddress?: string, contractAddress?: str
   const estimateGas = useCallback(async (amount: string): Promise<{ gasLimit: bigint; gasCost: string; total: string; error?: string }> => {
     if (!contract || !window.ethereum) {
       return { 
-        gasLimit: 0n, 
+        gasLimit: BigInt(0), 
         gasCost: "0", 
         total: amount,
         error: "Contract not available" 

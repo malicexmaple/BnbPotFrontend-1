@@ -70,7 +70,7 @@ export default function Profile() {
   const { theme } = useTheme();
   
   // Display name and profile image state
-  const [usernameValue, setDisplayName] = useState(user?.username || "");
+  const [usernameValue, setUsernameValue] = useState(user?.username || "");
   const [avatarUrlValue, setAvatarUrlValue] = useState(user?.avatarUrl || "");
 
   // Update local state when user data loads
@@ -227,7 +227,7 @@ export default function Profile() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h2 className="text-2xl font-bold" style={{ color: getRankColor(user?.rank || "Bronze") }}>
+              <h2 className="text-2xl font-bold" style={{ color: getRankColor((user as any)?.rank || "Bronze") }}>
                 {user?.username || user?.email?.split('@')[0] || "User"}
               </h2>
               <div className="flex gap-2 mt-3 flex-wrap">

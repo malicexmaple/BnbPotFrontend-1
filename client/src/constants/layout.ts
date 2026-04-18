@@ -41,6 +41,7 @@ export const BORDER_RADIUS = {
   CHAT_HEADER_TOP: '18px 18px 0 0',
   CHAT_BOTTOM: '0 0 18px 18px',
   STANDARD: '18px',
+  MD: '12px',
   SMALL: '12px',
   TINY: '4px',
 } as const;

@@ -55,7 +55,9 @@ function aggSet(key: string, payload: unknown) {
   }
 }
 export function invalidateMarketAggCache(marketId: string) {
-  for (const k of aggCache.keys()) if (k.startsWith(`${marketId}:`)) aggCache.delete(k);
+  const toDelete: string[] = [];
+  aggCache.forEach((_v, k) => { if (k.startsWith(`${marketId}:`)) toDelete.push(k); });
+  toDelete.forEach((k) => aggCache.delete(k));
 }
 
 export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
@@ -462,6 +464,9 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Cannot settle market";
         return res.status(400).json({ message: msg });
+      }
+      if (!settledMarket) {
+        return res.status(500).json({ message: "Failed to settle market" });
       }
 
       const betsOnMarket = await storage.getMarketBetsByMarketId(paramResult.data.id);

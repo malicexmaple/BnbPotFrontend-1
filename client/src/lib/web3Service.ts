@@ -27,14 +27,40 @@ export class Web3Service {
   private provider: ethers.BrowserProvider | null = null;
   private contract: ethers.Contract | null = null;
   private signer: ethers.Signer | null = null;
+  private rpcProvider: ethers.JsonRpcProvider | null = null;
   
   private contractAddress: string;
   private rpcUrl: string;
+  private chainId: number;
   private hasWarnedMissingRpc: boolean = false;
   
   constructor() {
     this.contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || "";
     this.rpcUrl = import.meta.env.VITE_BSC_RPC_URL || "";
+    const parsedChain = Number(import.meta.env.VITE_CHAIN_ID);
+    this.chainId = Number.isFinite(parsedChain) && parsedChain > 0 ? parsedChain : 56;
+  }
+
+  /**
+   * Lazily build (and cache) a static-network JsonRpcProvider so ethers does
+   * not enter the "failed to detect network, retry in 1s" loop when the RPC
+   * is unreachable from the current environment.
+   */
+  private getRpcProvider(): ethers.JsonRpcProvider | null {
+    if (!this.rpcUrl) return null;
+    if (!this.rpcProvider) {
+      this.rpcProvider = new ethers.JsonRpcProvider(
+        this.rpcUrl,
+        this.chainId,
+        { staticNetwork: ethers.Network.from(this.chainId) }
+      );
+    }
+    return this.rpcProvider;
+  }
+
+  /** True when no smart-contract address is configured (demo / DB-only mode). */
+  isDemoMode(): boolean {
+    return !this.contractAddress;
   }
   
   /**
@@ -69,15 +95,9 @@ export class Web3Service {
    * Returns null in demo mode when no RPC URL is configured
    */
   getReadOnlyContract(): ethers.Contract | null {
-    if (!this.contractAddress) {
-      return null;
-    }
-    
-    if (!this.rpcUrl) {
-      return null;
-    }
-    
-    const provider = new ethers.JsonRpcProvider(this.rpcUrl);
+    if (!this.contractAddress) return null;
+    const provider = this.getRpcProvider();
+    if (!provider) return null;
     return new ethers.Contract(this.contractAddress, CONTRACT_ABI, provider);
   }
   
@@ -255,16 +275,21 @@ export class Web3Service {
         const balance = await this.provider.getBalance(address);
         return ethers.formatEther(balance);
       }
-      
-      if (!this.rpcUrl) {
-        if (this.contractAddress && !this.hasWarnedMissingRpc) {
+
+      // Demo / DB-only mode: don't call out to BSC at all to avoid noisy
+      // JsonRpcProvider retry loops in environments without network egress.
+      if (!this.contractAddress) {
+        return "0";
+      }
+
+      const provider = this.getRpcProvider();
+      if (!provider) {
+        if (!this.hasWarnedMissingRpc) {
           console.warn("⚠️ VITE_BSC_RPC_URL is not configured but VITE_CONTRACT_ADDRESS is set. Balance will show as 0 until wallet is connected or RPC URL is configured.");
           this.hasWarnedMissingRpc = true;
         }
         return "0";
       }
-      
-      const provider = new ethers.JsonRpcProvider(this.rpcUrl);
       const balance = await provider.getBalance(address);
       return ethers.formatEther(balance);
     } catch {

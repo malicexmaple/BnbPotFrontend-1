@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Flame } from "lucide-react";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import type { Market } from "@shared/schema";
 import { NetworkBackground } from "@/components/NetworkBackground";

@@ -578,11 +578,11 @@ export default function Home() {
                                   {/* Real Player Card */}
                                   <Avatar className="w-28 h-28">
                                     <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/20 to-primary/5">
-                                      {bet.username ? bet.username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
+                                      {(bet as any).username ? (bet as any).username.slice(0, 2).toUpperCase() : bet.userAddress.slice(2, 4).toUpperCase()}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="font-medium text-foreground" style={{fontSize: '17px', marginTop: '18px', textAlign: 'center'}}>
-                                    {bet.username || `${bet.userAddress.slice(0, 6)}...`}
+                                    {(bet as any).username || `${bet.userAddress.slice(0, 6)}...`}
                                   </div>
                                   <div className="flex items-center gap-1.5 font-mono" style={{fontSize: '17px', marginTop: '10px'}}>
                                     <span className="text-muted-foreground/60">=</span>

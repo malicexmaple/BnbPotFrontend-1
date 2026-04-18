@@ -115,12 +115,12 @@ export function createRateLimiter(config: RateLimitConfig) {
     const now = Date.now();
     let cleaned = 0;
     
-    for (const [key, record] of requestStore.entries()) {
+    requestStore.forEach((record, key) => {
       if (now > record.resetTime) {
         requestStore.delete(key);
         cleaned++;
       }
-    }
+    });
     
     if (cleaned > 0) {
       console.log(`🧹 Rate limiter ${config.keyPrefix}: cleaned ${cleaned} expired entries`);
