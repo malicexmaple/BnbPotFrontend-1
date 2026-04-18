@@ -56,6 +56,14 @@ export function setupWebSocket(
     });
   };
 
+  const broadcastMarketsUpdated = (data: any = {}) => {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ type: "markets_updated", data }));
+      }
+    });
+  };
+
   wss.on("connection", (ws: AuthenticatedWebSocket, request: IncomingMessage) => {
     console.log("Client connected");
     
@@ -184,6 +192,7 @@ export function setupWebSocket(
 
   return {
     broadcastRoundUpdate,
-    broadcastChat
+    broadcastChat,
+    broadcastMarketsUpdated
   };
 }

@@ -6,13 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Lock, CheckCircle, Trophy, AlertCircle, ArrowLeft, Search, Grid3x3, Gamepad2, Plus } from "lucide-react";
+import { Lock, CheckCircle, Trophy, AlertCircle, ArrowLeft, Search, Grid3x3, Gamepad2, Plus, Pencil, Trash2, RotateCcw, ListChecks } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { Market } from "@shared/schema";
+import type { Market, MarketBet } from "@shared/schema";
 import { useLocation } from "wouter";
 import { sportsData } from "@shared/sports-leagues";
 import {
@@ -49,6 +49,14 @@ export default function AdminMarkets() {
     isLive: false,
   };
   const [createForm, setCreateForm] = useState(emptyForm);
+
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editMarket, setEditMarket] = useState<Market | null>(null);
+  const [editForm, setEditForm] = useState(emptyForm);
+  const [refundDialogOpen, setRefundDialogOpen] = useState(false);
+  const [refundMarket, setRefundMarket] = useState<Market | null>(null);
+  const [betsDialogOpen, setBetsDialogOpen] = useState(false);
+  const [betsMarket, setBetsMarket] = useState<Market | null>(null);
 
   const getSportIcon = (sport: string) => {
     if (sport === 'all') {
@@ -270,6 +278,140 @@ export default function AdminMarkets() {
     },
   });
 
+  const updateMarketMutation = useMutation({
+    mutationFn: async ({ id, payload }: { id: string; payload: typeof emptyForm }) => {
+      const body: Record<string, unknown> = {
+        sport: payload.sport,
+        league: payload.league,
+        teamA: payload.teamA,
+        teamB: payload.teamB,
+        description: payload.description,
+        gameTime: new Date(payload.gameTime).toISOString(),
+        bonusPool: payload.bonusPool || "0",
+        isLive: payload.isLive,
+      };
+      if (payload.teamALogo) body.teamALogo = payload.teamALogo;
+      if (payload.teamBLogo) body.teamBLogo = payload.teamBLogo;
+      if (payload.leagueId) body.leagueId = payload.leagueId;
+      const res = await apiRequest("PATCH", `/api/admin/markets/${id}`, body);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Market updated" });
+      setEditDialogOpen(false);
+      setEditMarket(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update failed",
+        description: error?.message || "Could not update market",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMarketMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiRequest("DELETE", `/api/admin/markets/${id}`);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Market deleted" });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Delete failed",
+        description: error?.message || "Could not delete market",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const refundMarketMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiRequest("POST", `/api/admin/markets/${id}/refund`, {});
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Market refunded",
+        description: `Refunded ${data.refundedBets} bets`,
+      });
+      setRefundDialogOpen(false);
+      setRefundMarket(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Refund failed",
+        description: error?.message || "Could not refund market",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const { data: betsData, isLoading: betsLoading } = useQuery<{ market: Market; bets: MarketBet[] }>({
+    queryKey: ["/api/admin/markets", betsMarket?.id, "bets"],
+    enabled: !!betsMarket?.id && betsDialogOpen,
+  });
+
+  const openEditDialog = (market: Market) => {
+    setEditMarket(market);
+    const dt = new Date(market.gameTime);
+    const tzAdjusted = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+    setEditForm({
+      sport: market.sport,
+      league: market.league,
+      leagueId: market.leagueId || "",
+      teamA: market.teamA,
+      teamB: market.teamB,
+      description: market.description,
+      gameTime: tzAdjusted,
+      teamALogo: market.teamALogo || "",
+      teamBLogo: market.teamBLogo || "",
+      bonusPool: market.bonusPool || "0",
+      isLive: market.isLive,
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleUpdateMarket = () => {
+    if (!editMarket) return;
+    const f = editForm;
+    if (!f.league || !f.teamA || !f.teamB || !f.description || !f.gameTime) {
+      toast({
+        title: "Missing fields",
+        description: "Sport, league, both teams, description and game time are required.",
+        variant: "destructive",
+      });
+      return;
+    }
+    updateMarketMutation.mutate({ id: editMarket.id, payload: f });
+  };
+
+  const handleDeleteMarket = (market: Market) => {
+    if (confirm(`Delete market "${market.description}"? This only works if no bets have been placed.`)) {
+      deleteMarketMutation.mutate(market.id);
+    }
+  };
+
+  const openRefundDialog = (market: Market) => {
+    setRefundMarket(market);
+    setRefundDialogOpen(true);
+  };
+
+  const openBetsDialog = (market: Market) => {
+    setBetsMarket(market);
+    setBetsDialogOpen(true);
+  };
+
   const handleLockMarket = (market: Market) => {
     if (confirm(`Lock betting for "${market.description}"?`)) {
       lockMarketMutation.mutate(market.id);
@@ -478,7 +620,29 @@ export default function AdminMarkets() {
                       </div>
                     </div>
 
-                    <div className="flex gap-2 shrink-0 ml-auto">
+                    <div className="flex gap-2 shrink-0 ml-auto flex-wrap">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openBetsDialog(market)}
+                        data-testid={`button-view-bets-${market.id}`}
+                        title="View bets"
+                      >
+                        <ListChecks className="h-4 w-4 mr-1.5" />
+                        Bets
+                      </Button>
+                      {(market.status === 'active' || market.status === 'locked') && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditDialog(market)}
+                          data-testid={`button-edit-${market.id}`}
+                          title="Edit market"
+                        >
+                          <Pencil className="h-4 w-4 mr-1.5" />
+                          Edit
+                        </Button>
+                      )}
                       {market.status === 'active' && (
                         <Button
                           variant="outline"
@@ -503,12 +667,44 @@ export default function AdminMarkets() {
                           Settle
                         </Button>
                       )}
+                      {(market.status === 'active' || market.status === 'locked') && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openRefundDialog(market)}
+                          disabled={refundMarketMutation.isPending}
+                          data-testid={`button-refund-${market.id}`}
+                          title="Refund all bets and void this market"
+                        >
+                          <RotateCcw className="h-4 w-4 mr-1.5" />
+                          Refund
+                        </Button>
+                      )}
+                      {market.status === 'active' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteMarket(market)}
+                          disabled={deleteMarketMutation.isPending}
+                          data-testid={`button-delete-${market.id}`}
+                          title="Delete market (only allowed when no bets exist)"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1.5" />
+                          Delete
+                        </Button>
+                      )}
                       {market.status === 'settled' && (
                         <div className="flex items-center gap-1.5 text-sm text-muted-foreground px-2">
                           <Trophy className="h-4 w-4 text-primary" />
                           <span className="truncate max-w-[120px]">
                             {market.winningOutcome === 'A' ? market.teamA : market.teamB}
                           </span>
+                        </div>
+                      )}
+                      {market.status === 'refunded' && (
+                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground px-2">
+                          <RotateCcw className="h-4 w-4 text-accent" />
+                          <span>Refunded</span>
                         </div>
                       )}
                     </div>
@@ -713,6 +909,250 @@ export default function AdminMarkets() {
                 data-testid="button-cancel-settle"
               >
                 Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="bg-background border-accent max-w-xl">
+            <DialogHeader>
+              <DialogTitle className="text-foreground">Edit Market</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Update market details. Pools and bets are not affected.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-2 gap-3 py-2">
+              <div className="space-y-1">
+                <Label htmlFor="em-sport">Sport</Label>
+                <select
+                  id="em-sport"
+                  value={editForm.sport}
+                  onChange={(e) => setEditForm({ ...editForm, sport: e.target.value })}
+                  className="w-full h-9 rounded-md bg-background border border-input px-2 text-sm"
+                  data-testid="select-edit-sport"
+                >
+                  {availableSports.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-league">League</Label>
+                <Input
+                  id="em-league"
+                  value={editForm.league}
+                  onChange={(e) => setEditForm({ ...editForm, league: e.target.value })}
+                  data-testid="input-edit-league"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-leagueId">League ID</Label>
+                <Input
+                  id="em-leagueId"
+                  value={editForm.leagueId}
+                  onChange={(e) => setEditForm({ ...editForm, leagueId: e.target.value })}
+                  data-testid="input-edit-leagueId"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-teamA">Team A</Label>
+                <Input
+                  id="em-teamA"
+                  value={editForm.teamA}
+                  onChange={(e) => setEditForm({ ...editForm, teamA: e.target.value })}
+                  data-testid="input-edit-teamA"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-teamB">Team B</Label>
+                <Input
+                  id="em-teamB"
+                  value={editForm.teamB}
+                  onChange={(e) => setEditForm({ ...editForm, teamB: e.target.value })}
+                  data-testid="input-edit-teamB"
+                />
+              </div>
+              <div className="col-span-2 space-y-1">
+                <Label htmlFor="em-desc">Description</Label>
+                <Input
+                  id="em-desc"
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  data-testid="input-edit-description"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-time">Game Time</Label>
+                <Input
+                  id="em-time"
+                  type="datetime-local"
+                  value={editForm.gameTime}
+                  onChange={(e) => setEditForm({ ...editForm, gameTime: e.target.value })}
+                  data-testid="input-edit-gametime"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-bonus">Bonus Pool (BNB)</Label>
+                <Input
+                  id="em-bonus"
+                  type="text"
+                  value={editForm.bonusPool}
+                  onChange={(e) => setEditForm({ ...editForm, bonusPool: e.target.value })}
+                  data-testid="input-edit-bonus"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-logoA">Team A Logo URL</Label>
+                <Input
+                  id="em-logoA"
+                  value={editForm.teamALogo}
+                  onChange={(e) => setEditForm({ ...editForm, teamALogo: e.target.value })}
+                  data-testid="input-edit-logoA"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="em-logoB">Team B Logo URL</Label>
+                <Input
+                  id="em-logoB"
+                  value={editForm.teamBLogo}
+                  onChange={(e) => setEditForm({ ...editForm, teamBLogo: e.target.value })}
+                  data-testid="input-edit-logoB"
+                />
+              </div>
+              <div className="col-span-2 flex items-center gap-3 pt-1">
+                <Switch
+                  id="em-live"
+                  checked={editForm.isLive}
+                  onCheckedChange={(c) => setEditForm({ ...editForm, isLive: c })}
+                  data-testid="switch-edit-live"
+                />
+                <Label htmlFor="em-live">Mark as live (in-progress)</Label>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="ghost"
+                onClick={() => setEditDialogOpen(false)}
+                data-testid="button-cancel-edit"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleUpdateMarket}
+                disabled={updateMarketMutation.isPending}
+                data-testid="button-confirm-edit"
+              >
+                {updateMarketMutation.isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+          <DialogContent className="bg-background border-accent">
+            <DialogHeader>
+              <DialogTitle className="text-foreground">Refund Market</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Refund all open bets on: {refundMarket?.description}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-2 space-y-3">
+              <Alert className="border-accent/20">
+                <AlertCircle className="h-4 w-4 text-accent" />
+                <AlertDescription className="text-sm text-muted-foreground">
+                  All open bets on this market will be marked as refunded with their full
+                  stake credited back as the payout. The market status becomes
+                  <span className="font-semibold text-foreground"> refunded</span> and
+                  cannot be settled afterwards.
+                </AlertDescription>
+              </Alert>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="ghost"
+                onClick={() => setRefundDialogOpen(false)}
+                data-testid="button-cancel-refund"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => refundMarket && refundMarketMutation.mutate(refundMarket.id)}
+                disabled={refundMarketMutation.isPending}
+                data-testid="button-confirm-refund"
+              >
+                {refundMarketMutation.isPending ? "Refunding..." : "Refund All Bets"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={betsDialogOpen} onOpenChange={setBetsDialogOpen}>
+          <DialogContent className="bg-background border-accent max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-foreground">Bets on Market</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                {betsMarket?.description}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-2">
+              {betsLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-12 bg-card" />
+                  <Skeleton className="h-12 bg-card" />
+                </div>
+              ) : !betsData || betsData.bets.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-6" data-testid="text-no-bets">
+                  No bets have been placed on this market yet.
+                </p>
+              ) : (
+                <div className="space-y-1.5" data-testid="list-market-bets">
+                  <div className="grid grid-cols-12 gap-2 text-xs text-muted-foreground px-2 pb-1 border-b border-accent/20">
+                    <div className="col-span-5">Wallet</div>
+                    <div className="col-span-2">Outcome</div>
+                    <div className="col-span-2 text-right">Amount</div>
+                    <div className="col-span-1 text-right">Odds</div>
+                    <div className="col-span-2 text-right">Status</div>
+                  </div>
+                  {betsData.bets.map((bet) => (
+                    <div
+                      key={bet.id}
+                      className="grid grid-cols-12 gap-2 text-xs items-center px-2 py-1.5 rounded bg-card/50"
+                      data-testid={`row-bet-${bet.id}`}
+                    >
+                      <div className="col-span-5 font-mono truncate">{bet.userAddress}</div>
+                      <div className="col-span-2">
+                        <Badge variant="outline" className="text-xs">
+                          {bet.outcome === 'A' ? betsData.market.teamA : betsData.market.teamB}
+                        </Badge>
+                      </div>
+                      <div className="col-span-2 text-right font-mono">
+                        {parseFloat(bet.amount).toFixed(4)} BNB
+                      </div>
+                      <div className="col-span-1 text-right font-mono">{bet.oddsAtBet}x</div>
+                      <div className="col-span-2 text-right">
+                        <Badge variant={bet.status === 'won' ? 'default' : 'outline'} className="text-xs">
+                          {bet.status}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="ghost"
+                onClick={() => setBetsDialogOpen(false)}
+                data-testid="button-close-bets"
+              >
+                Close
               </Button>
             </DialogFooter>
           </DialogContent>

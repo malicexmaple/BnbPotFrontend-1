@@ -19,8 +19,23 @@ const placeMarketBetSchema = z.object({
   amount: z.string().regex(/^\d+(\.\d{1,8})?$/, "Amount must be a positive number with up to 8 decimals"),
 });
 
+const updateMarketSchema = z.object({
+  sport: z.string().min(1).max(64).optional(),
+  league: z.string().min(1).max(128).optional(),
+  leagueId: z.string().max(128).nullable().optional(),
+  marketType: z.string().min(1).max(64).optional(),
+  teamA: z.string().min(1).max(128).optional(),
+  teamB: z.string().min(1).max(128).optional(),
+  teamALogo: z.string().url().max(2048).nullable().optional(),
+  teamBLogo: z.string().url().max(2048).nullable().optional(),
+  description: z.string().min(1).max(500).optional(),
+  isLive: z.boolean().optional(),
+  gameTime: z.string().datetime().optional(),
+  bonusPool: z.string().regex(/^\d+(\.\d{1,8})?$/).optional(),
+}).strict();
+
 export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
-  const { storage, requireAuth, requireTermsAgreement, requireAdminRole } = deps;
+  const { storage, requireAuth, requireTermsAgreement, requireAdminRole, realtime } = deps;
 
   app.get("/api/markets", async (_req, res) => {
     try {
@@ -123,10 +138,127 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
+      realtime.broadcastMarketsUpdated({ id: market.id, action: 'locked' });
       res.json({ message: "Market locked successfully", market });
     } catch (error) {
       console.error("Error locking market:", error);
       res.status(500).json({ message: "Failed to lock market" });
+    }
+  });
+
+  app.patch("/api/admin/markets/:id", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({
+          message: "Invalid market ID",
+          errors: paramResult.error.flatten().fieldErrors,
+        });
+      }
+
+      const bodyResult = updateMarketSchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({
+          message: "Invalid update payload",
+          errors: bodyResult.error.flatten().fieldErrors,
+        });
+      }
+
+      const existing = await storage.getMarketById(paramResult.data.id);
+      if (!existing) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      if (existing.status === 'settled' || existing.status === 'refunded') {
+        return res.status(400).json({
+          message: `Cannot edit a market that has been ${existing.status}`,
+        });
+      }
+
+      const data: any = { ...bodyResult.data };
+      if (data.gameTime) data.gameTime = new Date(data.gameTime);
+
+      const market = await storage.updateMarket(paramResult.data.id, data);
+      if (!market) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      realtime.broadcastMarketsUpdated({ id: market.id, action: 'updated' });
+      res.json({ message: "Market updated", market });
+    } catch (error) {
+      console.error("Error updating market:", error);
+      res.status(500).json({ message: "Failed to update market" });
+    }
+  });
+
+  app.delete("/api/admin/markets/:id", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({
+          message: "Invalid market ID",
+          errors: paramResult.error.flatten().fieldErrors,
+        });
+      }
+
+      const result = await storage.deleteMarket(paramResult.data.id);
+      if (!result.deleted) {
+        const status = result.reason === 'Market not found' ? 404 : 400;
+        return res.status(status).json({ message: result.reason || "Failed to delete market" });
+      }
+      realtime.broadcastMarketsUpdated({ id: paramResult.data.id, action: 'deleted' });
+      res.json({ message: "Market deleted" });
+    } catch (error) {
+      console.error("Error deleting market:", error);
+      res.status(500).json({ message: "Failed to delete market" });
+    }
+  });
+
+  app.post("/api/admin/markets/:id/refund", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({
+          message: "Invalid market ID",
+          errors: paramResult.error.flatten().fieldErrors,
+        });
+      }
+
+      const result = await storage.refundMarket(paramResult.data.id);
+      if (!result) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      realtime.broadcastMarketsUpdated({ id: result.market.id, action: 'refunded' });
+      res.json({
+        message: "Market refunded",
+        market: result.market,
+        refundedBets: result.refundedBets,
+      });
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Failed to refund market";
+      const status = /already|cannot/i.test(msg) ? 400 : 500;
+      console.error("Error refunding market:", error);
+      res.status(status).json({ message: msg });
+    }
+  });
+
+  app.get("/api/admin/markets/:id/bets", requireAuth, requireAdminRole, async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({
+          message: "Invalid market ID",
+          errors: paramResult.error.flatten().fieldErrors,
+        });
+      }
+
+      const market = await storage.getMarketById(paramResult.data.id);
+      if (!market) {
+        return res.status(404).json({ message: "Market not found" });
+      }
+      const bets = await storage.getMarketBetsByMarketId(paramResult.data.id);
+      res.json({ market, bets });
+    } catch (error) {
+      console.error("Error fetching market bets:", error);
+      res.status(500).json({ message: "Failed to fetch market bets" });
     }
   });
 
@@ -155,11 +287,18 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         return res.status(404).json({ message: "Market not found" });
       }
 
-      if (market.status === 'settled') {
-        return res.status(400).json({ message: "Market already settled" });
+      if (market.status === 'settled' || market.status === 'refunded') {
+        return res.status(400).json({
+          message: `Cannot settle a market that has been ${market.status}`,
+        });
       }
 
-      const settledMarket = await storage.settleMarket(paramResult.data.id, winningOutcome);
+      let settledMarket;
+      try {
+        settledMarket = await storage.settleMarket(paramResult.data.id, winningOutcome);
+      } catch (e: any) {
+        return res.status(400).json({ message: e?.message || "Cannot settle market" });
+      }
 
       const betsOnMarket = await storage.getMarketBetsByMarketId(paramResult.data.id);
 

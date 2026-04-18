@@ -15,7 +15,7 @@ export interface PredictionMarket {
   teamB: string;
   description: string;
   gameTime: Date;
-  status: 'active' | 'locked' | 'settled' | 'voided';
+  status: 'active' | 'locked' | 'settled' | 'voided' | 'refunded';
   winningOutcome?: string | null;
   poolATotal: string;
   poolBTotal: string;
@@ -73,7 +73,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
   const isUpcoming = gameTime > now;
   
   const isSettled = market.status === 'settled';
-  const isVoided = market.status === 'voided';
+  const isVoided = market.status === 'voided' || market.status === 'refunded';
   const isEnded = isSettled || isVoided;
   const isLive = !isUpcoming && !isEnded;
   const isLocked = market.status === 'locked';

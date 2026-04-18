@@ -5,6 +5,7 @@ import type { RateLimitMiddleware } from "../rateLimit";
 export interface Realtime {
   broadcastRoundUpdate: (data: any) => void;
   broadcastChat: (data: any) => void;
+  broadcastMarketsUpdated: (data?: any) => void;
 }
 
 export interface RateLimiters {

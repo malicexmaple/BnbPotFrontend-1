@@ -89,8 +89,11 @@ export interface IStorage {
   getAllActiveMarkets(): Promise<Market[]>;
   getMarketById(id: string): Promise<Market | undefined>;
   createMarket(market: InsertMarket): Promise<Market>;
+  updateMarket(id: string, data: Partial<InsertMarket>): Promise<Market | undefined>;
+  deleteMarket(id: string): Promise<{ deleted: boolean; reason?: string }>;
   updateMarketStatus(id: string, status: string): Promise<Market | undefined>;
   settleMarket(id: string, winningOutcome: string): Promise<Market | undefined>;
+  refundMarket(id: string): Promise<{ market: Market; refundedBets: number } | undefined>;
   
   // Market bet methods
   getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]>;
@@ -161,8 +164,68 @@ async function safeRows<T>(q: Promise<T[]>, label: string): Promise<T[]> {
   }
 }
 
+async function safeRowsRetry<T>(
+  build: () => Promise<T[]>,
+  label: string,
+  attempts = 3
+): Promise<T[]> {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const r = await build();
+      return Array.isArray(r) ? r : [];
+    } catch (err) {
+      if (!isNeonNullBodyError(err)) {
+        console.error(`[storage] ${label} failed:`, err);
+        throw err;
+      }
+      console.warn(`[storage] ${label}: Neon null-body (attempt ${i + 1}/${attempts})`);
+      await new Promise((r) => setTimeout(r, 25 * (i + 1)));
+    }
+  }
+  console.warn(`[storage] ${label}: Neon null-body exhausted, returning []`);
+  return [];
+}
+
+/**
+ * Like safeRowsRetry but for WRITE operations: throws if all retries are
+ * exhausted, instead of silently swallowing the failure. Use for INSERT/UPDATE/DELETE
+ * .returning() calls where a missing row indicates real corruption.
+ */
+async function writeRetry<T>(
+  build: () => Promise<T[]>,
+  label: string,
+  attempts = 3
+): Promise<T[]> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await build();
+    } catch (err) {
+      lastErr = err;
+      if (!isNeonNullBodyError(err)) {
+        console.error(`[storage] ${label} failed:`, err);
+        throw err;
+      }
+      console.warn(`[storage] ${label}: Neon null-body on write (attempt ${i + 1}/${attempts})`);
+      await new Promise((r) => setTimeout(r, 25 * (i + 1)));
+    }
+  }
+  throw new Error(
+    `[storage] ${label}: write failed after ${attempts} attempts (Neon null-body)` +
+    (lastErr instanceof Error ? `: ${lastErr.message}` : '')
+  );
+}
+
 async function safeFirst<T>(q: Promise<T[]>, label: string): Promise<T | undefined> {
   const rows = await safeRows(q, label);
+  return rows[0];
+}
+
+async function safeFirstRetry<T>(
+  build: () => Promise<T[]>,
+  label: string
+): Promise<T | undefined> {
+  const rows = await safeRowsRetry(build, label);
   return rows[0];
 }
 
@@ -600,8 +663,8 @@ export class DbStorage implements IStorage {
   }
 
   async getMarketById(id: string): Promise<Market | undefined> {
-    return safeFirst(
-      db.select().from(markets).where(eq(markets.id, id)).limit(1),
+    return safeFirstRetry(
+      () => db.select().from(markets).where(eq(markets.id, id)).limit(1),
       'getMarketById'
     );
   }
@@ -619,16 +682,84 @@ export class DbStorage implements IStorage {
     return result[0];
   }
 
+  async updateMarket(id: string, data: Partial<InsertMarket>): Promise<Market | undefined> {
+    await writeRetry(
+      () => db.update(markets).set(data).where(eq(markets.id, id)).returning(),
+      'updateMarket'
+    );
+    return this.getMarketById(id);
+  }
+
+  async deleteMarket(id: string): Promise<{ deleted: boolean; reason?: string }> {
+    const existing = await this.getMarketById(id);
+    if (!existing) return { deleted: false, reason: 'Market not found' };
+
+    const existingBets = await safeRows(
+      db.select().from(marketBets).where(eq(marketBets.marketId, id)).limit(1),
+      'deleteMarket.checkBets'
+    );
+    if (existingBets.length > 0) {
+      return { deleted: false, reason: 'Cannot delete a market that has bets. Refund it instead.' };
+    }
+
+    await db.delete(markets).where(eq(markets.id, id));
+    return { deleted: true };
+  }
+
   async settleMarket(id: string, winningOutcome: string): Promise<Market | undefined> {
-    const result = await db.update(markets)
-      .set({ 
-        status: 'settled',
-        winningOutcome,
-        settledAt: new Date()
-      })
-      .where(eq(markets.id, id))
-      .returning();
-    return result[0];
+    const existing = await this.getMarketById(id);
+    if (!existing) return undefined;
+    if (existing.status === 'settled' || existing.status === 'refunded') {
+      throw new Error(`Market is already ${existing.status} and cannot be settled`);
+    }
+    await writeRetry(
+      () => db.update(markets)
+        .set({ status: 'settled', winningOutcome, settledAt: new Date() })
+        .where(eq(markets.id, id))
+        .returning(),
+      'settleMarket.update'
+    );
+    return this.getMarketById(id);
+  }
+
+  async refundMarket(id: string): Promise<{ market: Market; refundedBets: number } | undefined> {
+    const existing = await this.getMarketById(id);
+    if (!existing) return undefined;
+    if (existing.status === 'settled') {
+      throw new Error('Cannot refund a market that has already been settled');
+    }
+    if (existing.status === 'refunded') {
+      throw new Error('Market has already been refunded');
+    }
+
+    const bets = await safeRowsRetry(
+      () => db.select().from(marketBets).where(eq(marketBets.marketId, id)),
+      'refundMarket.bets'
+    );
+    let refundedBets = 0;
+    for (const bet of bets) {
+      if (bet.status === 'won' || bet.status === 'lost' || bet.status === 'refunded') continue;
+      await writeRetry(
+        () => db.update(marketBets)
+          .set({ status: 'refunded', actualPayout: bet.amount, settledAt: new Date() })
+          .where(eq(marketBets.id, bet.id))
+          .returning(),
+        'refundMarket.updateBet'
+      );
+      refundedBets++;
+    }
+
+    await writeRetry(
+      () => db.update(markets)
+        .set({ status: 'refunded', settledAt: new Date() })
+        .where(eq(markets.id, id))
+        .returning(),
+      'refundMarket.updateMarket'
+    );
+
+    const market = await this.getMarketById(id);
+    if (!market) return undefined;
+    return { market, refundedBets };
   }
 
   // Market bet methods
