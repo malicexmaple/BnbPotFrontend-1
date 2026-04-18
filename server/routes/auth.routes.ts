@@ -123,7 +123,10 @@ export function registerAuthRoutes(app: Express, deps: RouteDeps): void {
     const user = await storage.getUserByWalletAddress(req.session.walletAddress);
 
     const adminWallets = (process.env.ADMIN_WALLETS || '').toLowerCase().split(',').map(w => w.trim());
-    const isAdmin = adminWallets.includes(req.session.walletAddress.toLowerCase());
+    const isEnvAdmin = adminWallets.includes(req.session.walletAddress.toLowerCase());
+    const isDevEnv = process.env.NODE_ENV !== 'production';
+    const hasDevAdminSession = isDevEnv && req.session.isAdmin === true;
+    const isAdmin = isEnvAdmin || hasDevAdminSession;
 
     if (req.session) {
       req.session.isAdmin = isAdmin;
