@@ -4,3 +4,7 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+# Large tarball uploads should never be committed
+attached_assets/*.gz
+attached_assets/*.tar
+attached_assets/*.zip
