@@ -355,10 +355,38 @@ export default function AdminMarkets() {
     },
   });
 
-  const { data: betsData, isLoading: betsLoading } = useQuery<{ market: Market; bets: MarketBet[] }>({
+  const { data: betsData, isLoading: betsLoading } = useQuery<{
+    market: Market;
+    bets: MarketBet[];
+    summary: { totalBets: number; totalA: string; totalB: string; totalPool: string };
+  }>({
     queryKey: ["/api/admin/markets", betsMarket?.id, "bets"],
     enabled: !!betsMarket?.id && betsDialogOpen,
   });
+
+  // Listen to markets_updated WS broadcast for cross-tab refresh.
+  useEffect(() => {
+    if (!isAdmin) return;
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${proto}//${window.location.host}/ws`);
+    ws.addEventListener('message', (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg?.type === 'markets_updated') {
+          queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
+          if (betsMarket?.id) {
+            queryClient.invalidateQueries({ queryKey: ["/api/admin/markets", betsMarket.id, "bets"] });
+          }
+        }
+      } catch {
+        // ignore non-JSON frames
+      }
+    });
+    return () => {
+      try { ws.close(); } catch { /* noop */ }
+    };
+  }, [isAdmin, betsMarket?.id]);
 
   const openEditDialog = (market: Market) => {
     setEditMarket(market);
@@ -631,13 +659,16 @@ export default function AdminMarkets() {
                         <ListChecks className="h-4 w-4 mr-1.5" />
                         Bets
                       </Button>
-                      {(market.status === 'active' || market.status === 'locked') && (
+                      {(() => {
+                        const noBets = parseFloat(market.poolATotal || '0') + parseFloat(market.poolBTotal || '0') === 0;
+                        return market.status === 'active' && noBets;
+                      })() && (
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => openEditDialog(market)}
                           data-testid={`button-edit-${market.id}`}
-                          title="Edit market"
+                          title="Edit market (active markets with no bets only)"
                         >
                           <Pencil className="h-4 w-4 mr-1.5" />
                           Edit
@@ -680,7 +711,10 @@ export default function AdminMarkets() {
                           Refund
                         </Button>
                       )}
-                      {market.status === 'active' && (
+                      {(() => {
+                        const noBets = parseFloat(market.poolATotal || '0') + parseFloat(market.poolBTotal || '0') === 0;
+                        return noBets;
+                      })() && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -1111,34 +1145,59 @@ export default function AdminMarkets() {
                   No bets have been placed on this market yet.
                 </p>
               ) : (
-                <div className="space-y-1.5" data-testid="list-market-bets">
-                  <div className="grid grid-cols-12 gap-2 text-xs text-muted-foreground px-2 pb-1 border-b border-accent/20">
-                    <div className="col-span-5">Wallet</div>
+                <div className="space-y-2" data-testid="list-market-bets">
+                  <div className="grid grid-cols-4 gap-2 text-xs px-2 pb-2 border-b border-accent/20" data-testid="bets-summary">
+                    <div>
+                      <div className="text-muted-foreground">Total Bets</div>
+                      <div className="font-mono font-bold" data-testid="text-summary-total-bets">{betsData.summary.totalBets}</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">{betsData.market.teamA}</div>
+                      <div className="font-mono font-bold" data-testid="text-summary-total-a">{parseFloat(betsData.summary.totalA).toFixed(4)} BNB</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">{betsData.market.teamB}</div>
+                      <div className="font-mono font-bold" data-testid="text-summary-total-b">{parseFloat(betsData.summary.totalB).toFixed(4)} BNB</div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Total Pool</div>
+                      <div className="font-mono font-bold" data-testid="text-summary-total-pool">{parseFloat(betsData.summary.totalPool).toFixed(4)} BNB</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-14 gap-2 text-xs text-muted-foreground px-2 pb-1 border-b border-accent/20" style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}>
+                    <div className="col-span-4">Wallet</div>
                     <div className="col-span-2">Outcome</div>
                     <div className="col-span-2 text-right">Amount</div>
-                    <div className="col-span-1 text-right">Odds</div>
+                    <div className="col-span-2 text-right">Payout</div>
                     <div className="col-span-2 text-right">Status</div>
+                    <div className="col-span-2 text-right">Placed</div>
                   </div>
                   {betsData.bets.map((bet) => (
                     <div
                       key={bet.id}
-                      className="grid grid-cols-12 gap-2 text-xs items-center px-2 py-1.5 rounded bg-card/50"
+                      className="grid gap-2 text-xs items-center px-2 py-1.5 rounded bg-card/50"
+                      style={{ gridTemplateColumns: 'repeat(14, minmax(0, 1fr))' }}
                       data-testid={`row-bet-${bet.id}`}
                     >
-                      <div className="col-span-5 font-mono truncate">{bet.userAddress}</div>
+                      <div className="col-span-4 font-mono truncate" data-testid={`text-bet-wallet-${bet.id}`}>{bet.userAddress}</div>
                       <div className="col-span-2">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs" data-testid={`badge-bet-outcome-${bet.id}`}>
                           {bet.outcome === 'A' ? betsData.market.teamA : betsData.market.teamB}
                         </Badge>
                       </div>
-                      <div className="col-span-2 text-right font-mono">
-                        {parseFloat(bet.amount).toFixed(4)} BNB
+                      <div className="col-span-2 text-right font-mono" data-testid={`text-bet-amount-${bet.id}`}>
+                        {parseFloat(bet.amount).toFixed(4)}
                       </div>
-                      <div className="col-span-1 text-right font-mono">{bet.oddsAtBet}x</div>
+                      <div className="col-span-2 text-right font-mono" data-testid={`text-bet-payout-${bet.id}`}>
+                        {bet.actualPayout ? parseFloat(bet.actualPayout).toFixed(4) : '—'}
+                      </div>
                       <div className="col-span-2 text-right">
-                        <Badge variant={bet.status === 'won' ? 'default' : 'outline'} className="text-xs">
+                        <Badge variant={bet.status === 'won' ? 'default' : 'outline'} className="text-xs" data-testid={`badge-bet-status-${bet.id}`}>
                           {bet.status}
                         </Badge>
+                      </div>
+                      <div className="col-span-2 text-right font-mono text-muted-foreground" data-testid={`text-bet-placed-${bet.id}`}>
+                        {bet.createdAt ? new Date(bet.createdAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
                       </div>
                     </div>
                   ))}

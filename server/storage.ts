@@ -683,83 +683,100 @@ export class DbStorage implements IStorage {
   }
 
   async updateMarket(id: string, data: Partial<InsertMarket>): Promise<Market | undefined> {
-    await writeRetry(
-      () => db.update(markets).set(data).where(eq(markets.id, id)).returning(),
-      'updateMarket'
-    );
-    return this.getMarketById(id);
+    return await db.transaction(async (tx) => {
+      const locked = await tx.execute(
+        sql`SELECT id, status FROM markets WHERE id = ${id} FOR UPDATE`
+      );
+      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as
+        | { id: string; status: string }
+        | undefined;
+      if (!row) return undefined;
+      if (row.status !== 'active') {
+        throw new Error(`Cannot edit a market with status '${row.status}'. Only active markets can be edited.`);
+      }
+      const betCount = await tx.execute(
+        sql`SELECT COUNT(*)::int AS c FROM market_bets WHERE market_id = ${id}`
+      );
+      const cRow = (betCount.rows?.[0] ?? (betCount as unknown as any[])[0]) as { c: number } | undefined;
+      if ((cRow?.c ?? 0) > 0) {
+        throw new Error('Cannot edit a market that already has bets');
+      }
+      const [updated] = await tx.update(markets).set(data).where(eq(markets.id, id)).returning();
+      return updated;
+    });
   }
 
   async deleteMarket(id: string): Promise<{ deleted: boolean; reason?: string }> {
-    const existing = await this.getMarketById(id);
-    if (!existing) return { deleted: false, reason: 'Market not found' };
+    return await db.transaction(async (tx) => {
+      const locked = await tx.execute(
+        sql`SELECT id FROM markets WHERE id = ${id} FOR UPDATE`
+      );
+      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as { id: string } | undefined;
+      if (!row) return { deleted: false, reason: 'Market not found' };
 
-    const existingBets = await safeRows(
-      db.select().from(marketBets).where(eq(marketBets.marketId, id)).limit(1),
-      'deleteMarket.checkBets'
-    );
-    if (existingBets.length > 0) {
-      return { deleted: false, reason: 'Cannot delete a market that has bets. Refund it instead.' };
-    }
-
-    await db.delete(markets).where(eq(markets.id, id));
-    return { deleted: true };
+      const betCount = await tx.execute(
+        sql`SELECT COUNT(*)::int AS c FROM market_bets WHERE market_id = ${id}`
+      );
+      const cRow = (betCount.rows?.[0] ?? (betCount as unknown as any[])[0]) as { c: number } | undefined;
+      if ((cRow?.c ?? 0) > 0) {
+        return { deleted: false, reason: 'Cannot delete a market that has bets. Refund it instead.' };
+      }
+      await tx.delete(markets).where(eq(markets.id, id));
+      return { deleted: true };
+    });
   }
 
   async settleMarket(id: string, winningOutcome: string): Promise<Market | undefined> {
-    const existing = await this.getMarketById(id);
-    if (!existing) return undefined;
-    if (existing.status === 'settled' || existing.status === 'refunded') {
-      throw new Error(`Market is already ${existing.status} and cannot be settled`);
-    }
-    await writeRetry(
-      () => db.update(markets)
+    return await db.transaction(async (tx) => {
+      const locked = await tx.execute(
+        sql`SELECT id, status FROM markets WHERE id = ${id} FOR UPDATE`
+      );
+      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as
+        | { id: string; status: string }
+        | undefined;
+      if (!row) return undefined;
+      if (row.status === 'settled' || row.status === 'refunded') {
+        throw new Error(`Market is already ${row.status} and cannot be settled`);
+      }
+      const [updated] = await tx.update(markets)
         .set({ status: 'settled', winningOutcome, settledAt: new Date() })
         .where(eq(markets.id, id))
-        .returning(),
-      'settleMarket.update'
-    );
-    return this.getMarketById(id);
+        .returning();
+      return updated;
+    });
   }
 
   async refundMarket(id: string): Promise<{ market: Market; refundedBets: number } | undefined> {
-    const existing = await this.getMarketById(id);
-    if (!existing) return undefined;
-    if (existing.status === 'settled') {
-      throw new Error('Cannot refund a market that has already been settled');
-    }
-    if (existing.status === 'refunded') {
-      throw new Error('Market has already been refunded');
-    }
-
-    const bets = await safeRowsRetry(
-      () => db.select().from(marketBets).where(eq(marketBets.marketId, id)),
-      'refundMarket.bets'
-    );
-    let refundedBets = 0;
-    for (const bet of bets) {
-      if (bet.status === 'won' || bet.status === 'lost' || bet.status === 'refunded') continue;
-      await writeRetry(
-        () => db.update(marketBets)
-          .set({ status: 'refunded', actualPayout: bet.amount, settledAt: new Date() })
-          .where(eq(marketBets.id, bet.id))
-          .returning(),
-        'refundMarket.updateBet'
+    return await db.transaction(async (tx) => {
+      const locked = await tx.execute(
+        sql`SELECT id, status FROM markets WHERE id = ${id} FOR UPDATE`
       );
-      refundedBets++;
-    }
+      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as
+        | { id: string; status: string }
+        | undefined;
+      if (!row) return undefined;
+      if (row.status === 'settled') {
+        throw new Error('Cannot refund a market that has already been settled');
+      }
+      if (row.status === 'refunded') {
+        throw new Error('Market has already been refunded');
+      }
 
-    await writeRetry(
-      () => db.update(markets)
+      const updateBetsRes = await tx.execute(
+        sql`UPDATE market_bets
+            SET status = 'refunded', actual_payout = amount, settled_at = NOW()
+            WHERE market_id = ${id}
+              AND status NOT IN ('won', 'lost', 'refunded')`
+      );
+      const refundedBets = (updateBetsRes as any).rowCount ?? (updateBetsRes as any).rows?.length ?? 0;
+
+      const [updated] = await tx.update(markets)
         .set({ status: 'refunded', settledAt: new Date() })
         .where(eq(markets.id, id))
-        .returning(),
-      'refundMarket.updateMarket'
-    );
-
-    const market = await this.getMarketById(id);
-    if (!market) return undefined;
-    return { market, refundedBets };
+        .returning();
+      if (!updated) return undefined;
+      return { market: updated, refundedBets };
+    });
   }
 
   // Market bet methods

@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import type { RouteDeps } from "./types";
+import type { InsertMarket } from "@shared/schema";
 import { z } from "zod";
 
 const uuidParamSchema = z.object({
@@ -164,20 +165,19 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         });
       }
 
-      const existing = await storage.getMarketById(paramResult.data.id);
-      if (!existing) {
-        return res.status(404).json({ message: "Market not found" });
-      }
-      if (existing.status === 'settled' || existing.status === 'refunded') {
-        return res.status(400).json({
-          message: `Cannot edit a market that has been ${existing.status}`,
-        });
-      }
+      const { gameTime, ...rest } = bodyResult.data;
+      const data: Partial<InsertMarket> = {
+        ...rest,
+        ...(gameTime ? { gameTime: new Date(gameTime) } : {}),
+      };
 
-      const data: any = { ...bodyResult.data };
-      if (data.gameTime) data.gameTime = new Date(data.gameTime);
-
-      const market = await storage.updateMarket(paramResult.data.id, data);
+      let market;
+      try {
+        market = await storage.updateMarket(paramResult.data.id, data);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Cannot edit market";
+        return res.status(400).json({ message: msg });
+      }
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
@@ -255,7 +255,21 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         return res.status(404).json({ message: "Market not found" });
       }
       const bets = await storage.getMarketBetsByMarketId(paramResult.data.id);
-      res.json({ market, bets });
+      let totalA = 0;
+      let totalB = 0;
+      for (const b of bets) {
+        const amt = parseFloat(b.amount);
+        if (!isFinite(amt)) continue;
+        if (b.outcome === 'A') totalA += amt;
+        else if (b.outcome === 'B') totalB += amt;
+      }
+      const summary = {
+        totalBets: bets.length,
+        totalA: totalA.toFixed(8),
+        totalB: totalB.toFixed(8),
+        totalPool: (totalA + totalB).toFixed(8),
+      };
+      res.json({ market, bets, summary });
     } catch (error) {
       console.error("Error fetching market bets:", error);
       res.status(500).json({ message: "Failed to fetch market bets" });
@@ -296,8 +310,9 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       let settledMarket;
       try {
         settledMarket = await storage.settleMarket(paramResult.data.id, winningOutcome);
-      } catch (e: any) {
-        return res.status(400).json({ message: e?.message || "Cannot settle market" });
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Cannot settle market";
+        return res.status(400).json({ message: msg });
       }
 
       const betsOnMarket = await storage.getMarketBetsByMarketId(paramResult.data.id);
