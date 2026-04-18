@@ -23,6 +23,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { NetworkBackground } from "@/components/NetworkBackground";
 import { LiveBettingFeed } from "@/components/LiveBettingFeed";
 
@@ -57,6 +67,7 @@ export default function AdminMarkets() {
   const [refundMarket, setRefundMarket] = useState<Market | null>(null);
   const [betsDialogOpen, setBetsDialogOpen] = useState(false);
   const [betsMarket, setBetsMarket] = useState<Market | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Market | null>(null);
 
   const getSportIcon = (sport: string) => {
     if (sport === 'all') {
@@ -424,10 +435,14 @@ export default function AdminMarkets() {
     updateMarketMutation.mutate({ id: editMarket.id, payload: f });
   };
 
-  const handleDeleteMarket = (market: Market) => {
-    if (confirm(`Delete market "${market.description}"? This only works if no bets have been placed.`)) {
-      deleteMarketMutation.mutate(market.id);
-    }
+  const openDeleteDialog = (market: Market) => {
+    setDeleteTarget(market);
+  };
+  const handleDeleteConfirmed = () => {
+    if (!deleteTarget) return;
+    deleteMarketMutation.mutate(deleteTarget.id, {
+      onSettled: () => setDeleteTarget(null),
+    });
   };
 
   const openRefundDialog = (market: Market) => {
@@ -718,7 +733,7 @@ export default function AdminMarkets() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDeleteMarket(market)}
+                          onClick={() => openDeleteDialog(market)}
                           disabled={deleteMarketMutation.isPending}
                           data-testid={`button-delete-${market.id}`}
                           title="Delete market (only allowed when no bets exist)"
@@ -1085,45 +1100,54 @@ export default function AdminMarkets() {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
-          <DialogContent className="bg-background border-accent">
-            <DialogHeader>
-              <DialogTitle className="text-foreground">Refund Market</DialogTitle>
-              <DialogDescription className="text-muted-foreground">
-                Refund all open bets on: {refundMarket?.description}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="py-2 space-y-3">
-              <Alert className="border-accent/20">
-                <AlertCircle className="h-4 w-4 text-accent" />
-                <AlertDescription className="text-sm text-muted-foreground">
-                  All open bets on this market will be marked as refunded with their full
-                  stake credited back as the payout. The market status becomes
-                  <span className="font-semibold text-foreground"> refunded</span> and
-                  cannot be settled afterwards.
-                </AlertDescription>
-              </Alert>
-            </div>
-
-            <DialogFooter>
-              <Button
-                variant="ghost"
-                onClick={() => setRefundDialogOpen(false)}
-                data-testid="button-cancel-refund"
-              >
-                Cancel
-              </Button>
-              <Button
+        <AlertDialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Refund market?</AlertDialogTitle>
+              <AlertDialogDescription>
+                All open bets on{" "}
+                <span className="font-semibold text-foreground">{refundMarket?.description}</span>{" "}
+                will be marked as refunded with their full stake credited back as the
+                payout. The market status becomes{" "}
+                <span className="font-semibold text-foreground">refunded</span> and
+                cannot be settled afterwards. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel data-testid="button-cancel-refund">Cancel</AlertDialogCancel>
+              <AlertDialogAction
                 onClick={() => refundMarket && refundMarketMutation.mutate(refundMarket.id)}
                 disabled={refundMarketMutation.isPending}
                 data-testid="button-confirm-refund"
               >
                 {refundMarketMutation.isPending ? "Refunding..." : "Refund All Bets"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete market?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Permanently delete{" "}
+                <span className="font-semibold text-foreground">{deleteTarget?.description}</span>?
+                This only works when no bets have been placed. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteConfirmed}
+                disabled={deleteMarketMutation.isPending}
+                data-testid="button-confirm-delete"
+              >
+                {deleteMarketMutation.isPending ? "Deleting..." : "Delete Market"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <Dialog open={betsDialogOpen} onOpenChange={setBetsDialogOpen}>
           <DialogContent className="bg-background border-accent max-w-2xl max-h-[80vh] overflow-y-auto">

@@ -755,11 +755,14 @@ export class DbStorage implements IStorage {
         | { id: string; status: string }
         | undefined;
       if (!row) return undefined;
-      if (row.status === 'settled') {
-        throw new Error('Cannot refund a market that has already been settled');
-      }
-      if (row.status === 'refunded') {
-        throw new Error('Market has already been refunded');
+      if (row.status !== 'active' && row.status !== 'locked') {
+        throw new Error(
+          row.status === 'refunded'
+            ? 'Market has already been refunded'
+            : row.status === 'settled'
+              ? 'Cannot refund a market that has already been settled'
+              : `Cannot refund a market with status '${row.status}'. Only active or locked markets can be refunded.`
+        );
       }
 
       const updateBetsRes = await tx.execute(
