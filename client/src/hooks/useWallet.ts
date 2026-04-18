@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { BrowserProvider } from 'ethers';
+import { getMetaMaskProvider } from '@/lib/getMetaMask';
 
 const BSC_TESTNET = {
   chainId: '0x61', // 97 in hex
@@ -44,17 +45,18 @@ export function useWallet() {
   const [hasManuallyConnected, setHasManuallyConnected] = useState(false);
 
   const switchToBSC = useCallback(async () => {
-    if (!window.ethereum) return;
+    const provider = getMetaMaskProvider();
+    if (!provider) return;
 
     try {
-      await window.ethereum.request({
+      await provider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: ACTIVE_NETWORK.chainId }],
       });
     } catch (switchError: any) {
       if (switchError.code === 4902) {
         try {
-          await window.ethereum.request({
+          await provider.request({
             method: 'wallet_addEthereumChain',
             params: [ACTIVE_NETWORK],
           });
@@ -68,10 +70,11 @@ export function useWallet() {
   }, []);
 
   const connect = useCallback(async () => {
-    if (!window.ethereum) {
+    const provider = getMetaMaskProvider();
+    if (!provider) {
       setState(prev => ({
         ...prev,
-        error: 'No crypto wallet found. Please install MetaMask or Trust Wallet.',
+        error: 'MetaMask not detected. Please install the MetaMask extension to connect.',
       }));
       return;
     }
@@ -81,16 +84,7 @@ export function useWallet() {
     try {
       await switchToBSC();
 
-      if (!window.ethereum) {
-        setState({
-          address: null,
-          isConnecting: false,
-          error: 'Wallet provider unavailable. Please refresh and try again.',
-        });
-        return;
-      }
-
-      const accounts = await window.ethereum.request({
+      const accounts = await provider.request({
         method: 'eth_requestAccounts',
       });
 
@@ -112,7 +106,7 @@ export function useWallet() {
           const { message, nonce } = await nonceResponse.json();
           
           // Step 2: Sign the challenge message
-          const signature = await window.ethereum.request({
+          const signature = await provider.request({
             method: 'personal_sign',
             params: [message, address],
           });
