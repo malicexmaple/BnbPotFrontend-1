@@ -188,6 +188,40 @@ export default function PredictionMarkets() {
     queryKey: ['/api/markets'],
   });
 
+  // Visibility settings (admin can hide sports/leagues from the public site)
+  type VisibilitySetting = {
+    type: 'sport' | 'league';
+    sportId: string;
+    leagueId: string | null;
+    isVisible: boolean;
+  };
+  const { data: visibilitySettings = [] } = useQuery<VisibilitySetting[]>({
+    queryKey: ['/api/visibility-settings'],
+  });
+  const hiddenSportIds = useMemo(() => {
+    const s = new Set<string>();
+    for (const v of visibilitySettings) {
+      if (v.type === 'sport' && !v.isVisible) s.add(v.sportId);
+    }
+    return s;
+  }, [visibilitySettings]);
+  const hiddenLeagueIds = useMemo(() => {
+    const s = new Set<string>();
+    for (const v of visibilitySettings) {
+      if (v.type === 'league' && !v.isVisible && v.leagueId) s.add(v.leagueId);
+    }
+    return s;
+  }, [visibilitySettings]);
+  // Sports list with hidden sports removed and hidden leagues stripped from each
+  const visibleSportsData = useMemo(() => {
+    return sportsData
+      .filter(sp => !hiddenSportIds.has(sp.id))
+      .map(sp => ({
+        ...sp,
+        leagues: sp.leagues.filter(l => !hiddenLeagueIds.has(l.id)),
+      }));
+  }, [hiddenSportIds, hiddenLeagueIds]);
+
   const liveMarkets: PredictionMarket[] = useMemo(() => {
     // Only fall back to demo markets when the query succeeded but returned
     // an empty list. On error, show no markets so outages aren't masked.
@@ -360,6 +394,11 @@ export default function PredictionMarkets() {
   };
 
   const filteredMarkets = liveMarkets.filter(market => {
+    // Hide markets whose sport or league has been hidden by an admin
+    const sportRecord = sportsData.find(s => s.name.toLowerCase() === market.sport.toLowerCase());
+    if (sportRecord && hiddenSportIds.has(sportRecord.id)) return false;
+    if (market.leagueId && hiddenLeagueIds.has(market.leagueId)) return false;
+
     if (selectedSport && market.sport.toLowerCase() !== sportsData.find(s => s.id === selectedSport)?.name.toLowerCase()) {
       return false;
     }
@@ -570,7 +609,7 @@ export default function PredictionMarkets() {
                       <span className="text-foreground">SPORTS</span> <span className="text-primary">MARKETS</span>
                     </div>
                     
-                    {sportsData.slice(0, 12).map((sport) => (
+                    {visibleSportsData.slice(0, 12).map((sport) => (
                       <div key={sport.id}>
                         <button
                           onClick={() => {
