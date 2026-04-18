@@ -90,23 +90,25 @@ export default function GameNavigation({
   return (
     <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
       {/* Left - Logo section (345px on desktop, smaller on mobile).
-          Uses the same `neon-border` golden-glow theme as the AIRDROP card
-          and other featured boxes below the header, but kept square and flush
-          with the edges so it lives inside the header strip. */}
-      <div
-        className="neon-border hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px]"
-        style={{
-          height: '100px',
-          borderRadius: 0,
-          overflow: 'hidden',
-        }}
-      >
-        <div className="flex items-center justify-center" style={{height: '100%'}}>
-          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`} as React.CSSProperties}>
-            <img src={crownLogo} alt="Crown" style={{height: '90px', width: 'auto', display: 'block'}} />
-          </div>
-          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-6px'} as React.CSSProperties}>
-            <img src={textLogo} alt="BNBPOT" style={{width: '170px', height: 'auto', display: 'block'}} />
+          Wrapped in the same `neon-border` (golden gradient + glow + dark glass)
+          theme as the AIRDROP card below it. The outer wrapper carries the
+          flush positioning so the box itself can keep its full theme. */}
+      <div className="hidden lg:flex items-center flex-shrink-0 w-full max-w-[345px] p-2" style={{ height: '100px' }}>
+        <div
+          className="neon-border p-1 flex items-center justify-center w-full"
+          style={{
+            height: '100%',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <img
+            src={crownLogo}
+            alt="Crown"
+            style={{ height: '78px', width: 'auto', display: 'block' }}
+          />
+          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-4px'} as React.CSSProperties}>
+            <img src={textLogo} alt="BNBPOT" style={{width: '160px', height: 'auto', display: 'block'}} />
           </div>
         </div>
       </div>
