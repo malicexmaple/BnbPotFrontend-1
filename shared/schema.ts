@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, numeric, boolean } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { pgTable, text, varchar, timestamp, integer, numeric, boolean, jsonb, json, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -477,3 +478,86 @@ export const insertCustomLeagueSchema = createInsertSchema(customLeagues).omit({
 
 export type InsertCustomLeague = z.infer<typeof insertCustomLeagueSchema>;
 export type CustomLeague = typeof customLeagues.$inferSelect;
+
+// ============================================================================
+// WALLETS — Managed BNB wallets per user
+// ============================================================================
+export const wallets = pgTable("wallets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  bnbAddress: text("bnb_address").notNull().unique(),
+  balance: numeric("balance", { precision: 20, scale: 8 }).notNull().default('0'),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const insertWalletSchema = createInsertSchema(wallets).omit({
+  id: true, createdAt: true, updatedAt: true,
+});
+export type InsertWallet = z.infer<typeof insertWalletSchema>;
+export type Wallet = typeof wallets.$inferSelect;
+
+// Generic transactions (deposits/withdrawals/bet_placed/bet_settled)
+export const transactions = pgTable("transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  walletId: varchar("wallet_id").notNull().references(() => wallets.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  type: text("type").notNull(),
+  amount: numeric("amount", { precision: 20, scale: 8 }).notNull(),
+  status: text("status").notNull().default('pending'),
+  txHash: text("tx_hash"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const insertTransactionSchema = createInsertSchema(transactions).omit({
+  id: true, createdAt: true,
+});
+export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
+export type Transaction = typeof transactions.$inferSelect;
+
+// Custom Teams (admin-uploaded teams)
+export const customTeams = pgTable("custom_teams", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  sport: text("sport").notNull(),
+  league: text("league").notNull(),
+  logoFilename: text("logo_filename").notNull(),
+  uploadedBy: varchar("uploaded_by").references(() => users.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const insertCustomTeamSchema = createInsertSchema(customTeams).omit({
+  id: true, createdAt: true,
+});
+export type InsertCustomTeam = z.infer<typeof insertCustomTeamSchema>;
+export type CustomTeam = typeof customTeams.$inferSelect;
+
+// Custom Players (admin-uploaded players for individual sports)
+export const customPlayers = pgTable("custom_players", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  sport: text("sport").notNull(),
+  country: text("country"),
+  photoFilename: text("photo_filename").notNull(),
+  uploadedBy: varchar("uploaded_by").references(() => users.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const insertCustomPlayerSchema = createInsertSchema(customPlayers).omit({
+  id: true, createdAt: true,
+});
+export type InsertCustomPlayer = z.infer<typeof insertCustomPlayerSchema>;
+export type CustomPlayer = typeof customPlayers.$inferSelect;
+
+export const walletsRelations = relations(wallets, ({ one, many }) => ({
+  user: one(users, { fields: [wallets.userId], references: [users.id] }),
+  transactions: many(transactions),
+}));
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  wallet: one(wallets, { fields: [transactions.walletId], references: [wallets.id] }),
+  user: one(users, { fields: [transactions.userId], references: [users.id] }),
+}));
+
+// Express session store table (managed externally; declared so drizzle doesn't drop it)
+export const userSessions = pgTable("user_sessions", {
+  sid: varchar("sid").primaryKey(),
+  sess: json("sess").notNull(),
+  expire: timestamp("expire").notNull(),
+}, (t) => [index("IDX_user_sessions_expire").on(t.expire)]);

@@ -55,7 +55,8 @@ const eventsByDateQuerySchema = z.object({
   league: z.string().max(100).optional(),
 });
 
-export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Promise<void> {
+export async function registerSportsRoutes(app: Express, deps: RouteDeps): Promise<void> {
+  const { storage, requireAuth, requireAdminRole } = deps;
   const { theSportsDB } = await import('../thesportsdb');
 
   app.get("/api/sports", async (_req, res) => {
@@ -284,6 +285,78 @@ export async function registerSportsRoutes(app: Express, _deps: RouteDeps): Prom
     } catch (error) {
       console.error("Error fetching league details:", error);
       res.status(500).json({ message: "Failed to fetch league details" });
+    }
+  });
+
+  // ============= Custom Teams =============
+  const customTeamSchema = z.object({
+    name: z.string().min(1).max(120).trim(),
+    sport: z.string().min(1).max(60).trim(),
+    league: z.string().min(1).max(120).trim(),
+    logoFilename: z.string().min(1).max(500),
+  });
+  app.get("/api/sports/custom/teams", async (req, res) => {
+    try {
+      const { sport, league } = req.query;
+      const teams = await storage.getCustomTeams(
+        typeof sport === "string" ? sport : undefined,
+        typeof league === "string" ? league : undefined
+      );
+      res.json(teams);
+    } catch (e) {
+      console.error("getCustomTeams error", e);
+      res.status(500).json({ message: "Failed to fetch custom teams" });
+    }
+  });
+  app.post("/api/sports/custom/teams", requireAuth, requireAdminRole, async (req: any, res) => {
+    try {
+      const parsed = customTeamSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid team data", errors: parsed.error.flatten().fieldErrors });
+      }
+      const team = await storage.createCustomTeam({
+        ...parsed.data,
+        uploadedBy: req.session?.user?.id ?? null,
+      });
+      res.status(201).json(team);
+    } catch (e) {
+      console.error("createCustomTeam error", e);
+      res.status(500).json({ message: "Failed to create custom team" });
+    }
+  });
+
+  // ============= Custom Players =============
+  const customPlayerSchema = z.object({
+    name: z.string().min(1).max(120).trim(),
+    sport: z.string().min(1).max(60).trim(),
+    country: z.string().max(100).optional().nullable(),
+    photoFilename: z.string().min(1).max(500),
+  });
+  app.get("/api/sports/custom/players", async (req, res) => {
+    try {
+      const { sport } = req.query;
+      const players = await storage.getCustomPlayers(typeof sport === "string" ? sport : undefined);
+      res.json(players);
+    } catch (e) {
+      console.error("getCustomPlayers error", e);
+      res.status(500).json({ message: "Failed to fetch custom players" });
+    }
+  });
+  app.post("/api/sports/custom/players", requireAuth, requireAdminRole, async (req: any, res) => {
+    try {
+      const parsed = customPlayerSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid player data", errors: parsed.error.flatten().fieldErrors });
+      }
+      const player = await storage.createCustomPlayer({
+        ...parsed.data,
+        country: parsed.data.country ?? null,
+        uploadedBy: req.session?.user?.id ?? null,
+      });
+      res.status(201).json(player);
+    } catch (e) {
+      console.error("createCustomPlayer error", e);
+      res.status(500).json({ message: "Failed to create custom player" });
     }
   });
 }

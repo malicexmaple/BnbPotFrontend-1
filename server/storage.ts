@@ -16,10 +16,15 @@ import {
   type CustomMedia, type InsertCustomMedia,
   type VisibilitySetting, type InsertVisibilitySetting,
   type CustomLeague, type InsertCustomLeague,
+  type Wallet, type InsertWallet,
+  type Transaction, type InsertTransaction,
+  type CustomTeam, type InsertCustomTeam,
+  type CustomPlayer, type InsertCustomPlayer,
   users, chatMessages, rounds, bets, userStats, dailyStats,
   airdropPool, airdropDistributions, airdropRecipients, airdropTips,
   markets, marketBets, sportsVisibility, leaguesVisibility, customMedia,
-  visibilitySettings, customLeagues
+  visibilitySettings, customLeagues,
+  wallets, transactions, customTeams, customPlayers
 } from "@shared/schema";
 import { randomUUID, randomBytes } from "crypto";
 import { db } from "./db";
@@ -133,6 +138,21 @@ export interface IStorage {
   createCustomLeague(league: InsertCustomLeague): Promise<CustomLeague>;
   updateCustomLeague(id: string, data: Partial<InsertCustomLeague>): Promise<CustomLeague | undefined>;
   deleteCustomLeague(id: string): Promise<void>;
+
+  // Wallets
+  getWalletByUserId(userId: string): Promise<Wallet | undefined>;
+  createWallet(wallet: InsertWallet): Promise<Wallet>;
+  updateWalletBalance(walletId: string, newBalance: string): Promise<Wallet | undefined>;
+
+  // Transactions
+  createTransaction(tx: InsertTransaction): Promise<Transaction>;
+  getUserTransactions(userId: string, limit?: number): Promise<Transaction[]>;
+
+  // Custom teams / players
+  getCustomTeams(sport?: string, league?: string): Promise<CustomTeam[]>;
+  createCustomTeam(team: InsertCustomTeam): Promise<CustomTeam>;
+  getCustomPlayers(sport?: string): Promise<CustomPlayer[]>;
+  createCustomPlayer(player: InsertCustomPlayer): Promise<CustomPlayer>;
 }
 
 /**
@@ -1167,6 +1187,61 @@ export class DbStorage implements IStorage {
 
   async deleteCustomLeague(id: string): Promise<void> {
     await db.delete(customLeagues).where(eq(customLeagues.id, id));
+  }
+
+  // ============= Wallets =============
+  async getWalletByUserId(userId: string): Promise<Wallet | undefined> {
+    return safeFirst(db.select().from(wallets).where(eq(wallets.userId, userId)).limit(1), 'getWalletByUserId');
+  }
+  async createWallet(walletData: InsertWallet): Promise<Wallet> {
+    const rows = await safeRows(db.insert(wallets).values(walletData).returning(), 'createWallet');
+    return rows[0];
+  }
+  async updateWalletBalance(walletId: string, newBalance: string): Promise<Wallet | undefined> {
+    const rows = await safeRows(
+      db.update(wallets).set({ balance: newBalance, updatedAt: new Date() }).where(eq(wallets.id, walletId)).returning(),
+      'updateWalletBalance'
+    );
+    return rows[0];
+  }
+
+  // ============= Transactions =============
+  async createTransaction(txData: InsertTransaction): Promise<Transaction> {
+    const rows = await safeRows(db.insert(transactions).values(txData).returning(), 'createTransaction');
+    return rows[0];
+  }
+  async getUserTransactions(userId: string, limit: number = 50): Promise<Transaction[]> {
+    return safeRows(
+      db.select().from(transactions).where(eq(transactions.userId, userId)).orderBy(desc(transactions.createdAt)).limit(limit),
+      'getUserTransactions'
+    );
+  }
+
+  // ============= Custom Teams =============
+  async getCustomTeams(sport?: string, league?: string): Promise<CustomTeam[]> {
+    const conds = [];
+    if (sport) conds.push(eq(customTeams.sport, sport));
+    if (league) conds.push(eq(customTeams.league, league));
+    const q = conds.length
+      ? db.select().from(customTeams).where(and(...conds)).orderBy(desc(customTeams.createdAt))
+      : db.select().from(customTeams).orderBy(desc(customTeams.createdAt));
+    return safeRows(q, 'getCustomTeams');
+  }
+  async createCustomTeam(team: InsertCustomTeam): Promise<CustomTeam> {
+    const rows = await safeRows(db.insert(customTeams).values(team).returning(), 'createCustomTeam');
+    return rows[0];
+  }
+
+  // ============= Custom Players =============
+  async getCustomPlayers(sport?: string): Promise<CustomPlayer[]> {
+    const q = sport
+      ? db.select().from(customPlayers).where(eq(customPlayers.sport, sport)).orderBy(desc(customPlayers.createdAt))
+      : db.select().from(customPlayers).orderBy(desc(customPlayers.createdAt));
+    return safeRows(q, 'getCustomPlayers');
+  }
+  async createCustomPlayer(player: InsertCustomPlayer): Promise<CustomPlayer> {
+    const rows = await safeRows(db.insert(customPlayers).values(player).returning(), 'createCustomPlayer');
+    return rows[0];
   }
 }
 
