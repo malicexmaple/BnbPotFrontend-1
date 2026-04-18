@@ -188,7 +188,7 @@ The API is organized into 14 modular route files in `server/routes/`:
 
 **Airdrop & Markets:**
 - `airdrop.routes.ts` - Airdrop pool, distributions, tips
-- `markets.routes.ts` - Sports betting market CRUD
+- `markets.routes.ts` - Prediction market CRUD + bet placement (`POST /api/markets/:id/bets`) with row-locked atomic pool update
 - `sports.routes.ts` - TheSportsDB integration
 - `visibility.routes.ts` - Sports/leagues visibility control
 

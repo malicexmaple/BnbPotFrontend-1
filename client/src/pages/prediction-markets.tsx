@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import type { Market } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import GameFooter from "@/components/GameFooter";
 import ChatSidebar from "@/components/ChatSidebar";
@@ -169,7 +171,6 @@ export default function PredictionMarkets() {
   const [showChatRules, setShowChatRules] = useState(false);
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
   const [isLeaderboardCollapsed, setIsLeaderboardCollapsed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   
   const [betSlipOpen, setBetSlipOpen] = useState(false);
   const [selectedBet, setSelectedBet] = useState<{
@@ -178,6 +179,45 @@ export default function PredictionMarkets() {
     teamName: string;
     odds: number;
   } | null>(null);
+
+  // Fetch real markets from the backend. Falls back to demo data only when
+  // the API returns nothing so the page is never blank during seeding.
+  const { data: serverMarkets, isLoading: marketsLoading, isError: marketsError } = useQuery<Market[]>({
+    queryKey: ['/api/markets'],
+  });
+
+  const liveMarkets: PredictionMarket[] = useMemo(() => {
+    // Only fall back to demo markets when the query succeeded but returned
+    // an empty list. On error, show no markets so outages aren't masked.
+    if (marketsError) return [];
+    if (!serverMarkets) return demoMarkets;
+    if (serverMarkets.length === 0) return demoMarkets;
+    return serverMarkets.map((m) => ({
+      id: m.id,
+      sport: m.sport,
+      league: m.league,
+      teamA: m.teamA,
+      teamB: m.teamB,
+      description: m.description,
+      gameTime: new Date(m.gameTime),
+      status: m.status as PredictionMarket['status'],
+      poolATotal: m.poolATotal,
+      poolBTotal: m.poolBTotal,
+      bonusPool: m.bonusPool,
+      teamALogo: m.teamALogo ?? undefined,
+      teamBLogo: m.teamBLogo ?? undefined,
+    }));
+  }, [serverMarkets]);
+
+  const placeBetMutation = useMutation({
+    mutationFn: async ({ marketId, outcome, amount }: { marketId: string; outcome: 'A' | 'B'; amount: string }) => {
+      const res = await apiRequest('POST', `/api/markets/${marketId}/bets`, { outcome, amount });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/markets'] });
+    },
+  });
   
   const [signupData, setSignupData] = useState({
     name: "",
@@ -241,7 +281,7 @@ export default function PredictionMarkets() {
       return;
     }
 
-    const market = demoMarkets.find(m => m.id === marketId);
+    const market = liveMarkets.find(m => m.id === marketId);
     if (!market) return;
 
     const teamName = outcome === 'A' ? market.teamA : market.teamB;
@@ -252,10 +292,34 @@ export default function PredictionMarkets() {
   const handleConfirmBet = async (amount: string) => {
     if (!selectedBet) return;
 
-    toast({
-      title: "Bet Placed!",
-      description: `Successfully bet ${amount} BNB on ${selectedBet.teamName} at ${selectedBet.odds.toFixed(2)}x odds`,
-    });
+    const isDemoMarket = !(serverMarkets ?? []).some(m => m.id === selectedBet.id);
+    if (isDemoMarket) {
+      toast({
+        title: "Demo market",
+        description: "This is a placeholder match. An admin must publish real markets first.",
+      });
+      setBetSlipOpen(false);
+      return;
+    }
+
+    try {
+      await placeBetMutation.mutateAsync({
+        marketId: selectedBet.id,
+        outcome: selectedBet.outcome,
+        amount,
+      });
+      toast({
+        title: "Bet placed",
+        description: `${amount} BNB on ${selectedBet.teamName} at ${selectedBet.odds.toFixed(2)}x`,
+      });
+      setBetSlipOpen(false);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Bet failed",
+        description: error instanceof Error ? error.message : "Could not place bet. Please try again.",
+      });
+    }
   };
 
   const handleSignupSubmit = async () => {
@@ -291,7 +355,7 @@ export default function PredictionMarkets() {
     }
   };
 
-  const filteredMarkets = demoMarkets.filter(market => {
+  const filteredMarkets = liveMarkets.filter(market => {
     if (selectedSport && market.sport.toLowerCase() !== sportsData.find(s => s.id === selectedSport)?.name.toLowerCase()) {
       return false;
     }
@@ -462,7 +526,7 @@ export default function PredictionMarkets() {
                   >
                     <SportIcon sport="Featured" />
                     <span className="flex-1 text-left">Featured</span>
-                    <span className="font-mono text-xs text-primary">{demoMarkets.length}</span>
+                    <span className="font-mono text-xs text-primary">{liveMarkets.length}</span>
                   </button>
                   
                   <button
@@ -476,7 +540,7 @@ export default function PredictionMarkets() {
                   >
                     <Tv className="w-5 h-5" />
                     <span className="flex-1 text-left">Live</span>
-                    <span className="font-mono text-xs">{demoMarkets.filter(m => new Date(m.gameTime) <= new Date()).length}</span>
+                    <span className="font-mono text-xs">{liveMarkets.filter(m => new Date(m.gameTime) <= new Date()).length}</span>
                   </button>
                   
                   <button
@@ -490,7 +554,7 @@ export default function PredictionMarkets() {
                   >
                     <Calendar className="w-5 h-5" />
                     <span className="flex-1 text-left">Upcoming</span>
-                    <span className="font-mono text-xs">{demoMarkets.filter(m => new Date(m.gameTime) > new Date()).length}</span>
+                    <span className="font-mono text-xs">{liveMarkets.filter(m => new Date(m.gameTime) > new Date()).length}</span>
                   </button>
 
                   <div className="pt-4 mt-4 border-t border-border/30">
@@ -592,7 +656,7 @@ export default function PredictionMarkets() {
                   )}
                 </div>
 
-                {isLoading ? (
+                {marketsLoading ? (
                   <div className={viewMode === 'grid' ? "grid md:grid-cols-2 xl:grid-cols-3 gap-4" : "space-y-3"}>
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                       <Skeleton key={i} className={viewMode === 'grid' ? "h-64 bg-card" : "h-24 bg-card"} />

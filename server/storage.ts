@@ -95,6 +95,10 @@ export interface IStorage {
   // Market bet methods
   getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]>;
   createMarketBet(bet: InsertMarketBet): Promise<MarketBet>;
+  placeMarketBetTransaction(
+    marketId: string,
+    bet: Omit<InsertMarketBet, 'marketId' | 'oddsAtBet'>
+  ): Promise<{ bet: MarketBet; market: Market }>;
   updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined>;
   
   // Sports/Leagues visibility methods (legacy)
@@ -635,6 +639,61 @@ export class DbStorage implements IStorage {
   async createMarketBet(bet: InsertMarketBet): Promise<MarketBet> {
     const result = await db.insert(marketBets).values(bet).returning();
     return result[0];
+  }
+
+  /**
+   * Atomically: insert a market bet and bump the chosen outcome's pool.
+   * Re-validates that the market is still 'active' inside the transaction
+   * so a market locked between the route check and the write is rejected.
+   */
+  async placeMarketBetTransaction(
+    marketId: string,
+    bet: Omit<InsertMarketBet, 'marketId' | 'oddsAtBet'>
+  ): Promise<{ bet: MarketBet; market: Market }> {
+    return await db.transaction(async (tx) => {
+      // SELECT ... FOR UPDATE so concurrent lock/settle/place-bet can't slip in
+      // between our read and our write of poolATotal/poolBTotal.
+      const lockedRows = await tx.execute(
+        sql`SELECT id, status, game_time, pool_a_total, pool_b_total, bonus_pool
+            FROM markets WHERE id = ${marketId} FOR UPDATE`
+      );
+      const market = (lockedRows.rows?.[0] ?? (lockedRows as any)[0]) as
+        | { id: string; status: string; game_time: Date; pool_a_total: string; pool_b_total: string; bonus_pool: string }
+        | undefined;
+      if (!market) throw new Error('Market not found');
+      if (market.status !== 'active') throw new Error('Market is no longer accepting bets');
+      if (new Date(market.game_time).getTime() <= Date.now()) {
+        throw new Error('Market is closed (game has started)');
+      }
+
+      const poolA = parseFloat(market.pool_a_total);
+      const poolB = parseFloat(market.pool_b_total);
+      const bonus = parseFloat(market.bonus_pool || '0');
+      const pool = bet.outcome === 'A' ? poolA : poolB;
+      // Include bonus pool to match frontend odds display.
+      const total = poolA + poolB + bonus;
+      const oddsAtBet = pool > 0 ? (total / pool).toFixed(2) : '2.00';
+
+      const [insertedBet] = await tx.insert(marketBets).values({
+        ...bet,
+        marketId,
+        oddsAtBet,
+      }).returning();
+
+      const [updatedMarket] = await tx.update(markets)
+        .set({
+          poolATotal: bet.outcome === 'A'
+            ? sql`CAST(${markets.poolATotal} AS NUMERIC) + ${bet.amount}::numeric`
+            : markets.poolATotal,
+          poolBTotal: bet.outcome === 'B'
+            ? sql`CAST(${markets.poolBTotal} AS NUMERIC) + ${bet.amount}::numeric`
+            : markets.poolBTotal,
+        })
+        .where(eq(markets.id, marketId))
+        .returning();
+
+      return { bet: insertedBet, market: updatedMarket };
+    });
   }
 
   async updateMarketBetStatus(id: string, status: string, actualPayout?: string): Promise<MarketBet | undefined> {
