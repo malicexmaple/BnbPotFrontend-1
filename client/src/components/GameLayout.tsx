@@ -39,29 +39,32 @@ export default function GameLayout({
           </div>
         )}
 
-        {/* Content - with top padding to account for fixed header */}
-        <div className="flex flex-col min-h-screen w-full" style={{paddingTop: 'clamp(70px, 100px, 100px)'}}>
-          {/* Wrapper for content + footer */}
-          <div className="flex-1 flex flex-col w-full">
-            {/* Content wrapper */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex-1 flex">
-                {/* Left sidebar */}
-                {leftSidebar}
+        {/* Full-viewport flex column: header padding + sidebars row that grows + footer at the bottom */}
+        <div
+          className="flex flex-col w-full"
+          style={{
+            paddingTop: 'clamp(70px, 100px, 100px)',
+            minHeight: '100vh',
+          }}
+        >
+          {/* Sidebars + main row — grows to fill all remaining vertical space so panels reach the footer */}
+          <div className="flex-1 flex w-full items-stretch min-h-0">
+            {/* Left sidebar */}
+            {leftSidebar}
 
-                {/* Main game area */}
-                <div className="flex-1 flex flex-col relative">
-                  {children}
-                </div>
-
-                {/* Right sidebar */}
-                {rightSidebar}
-              </div>
+            {/* Main game area */}
+            <div className="flex-1 flex flex-col relative min-w-0">
+              {children}
             </div>
+
+            {/* Right sidebar */}
+            {rightSidebar}
           </div>
 
-          {/* Footer */}
-          {footer}
+          {/* Footer pinned to the bottom of the viewport-tall column */}
+          <div className="flex-shrink-0 w-full">
+            {footer}
+          </div>
         </div>
       </div>
     </>
