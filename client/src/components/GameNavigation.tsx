@@ -90,23 +90,26 @@ export default function GameNavigation({
   return (
     <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
       {/* Left - Logo section (345px on desktop, smaller on mobile) */}
-      <div
-        className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px]"
-        style={{
-          height: '100px',
-          background: 'rgba(20, 20, 20, 0.8)',
-          backdropFilter: 'blur(8px)',
-          borderRight: '1px solid rgba(60, 60, 60, 0.3)',
-          borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
-          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
-        }}
-      >
-        <div className="flex items-center justify-center" style={{height: '100px'}}>
-          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`, marginLeft: '-30px'} as React.CSSProperties}>
-            <img src={crownLogo} alt="Crown" style={{height: '115px', width: 'auto', display: 'block'}} />
+      <div className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px] px-3" style={{ height: '100px' }}>
+        <div
+          className="flex items-center justify-center w-full"
+          style={{
+            height: '76px',
+            borderRadius: '12px',
+            background: 'rgba(20, 20, 20, 0.85)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(60, 60, 60, 0.5)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 10px rgba(0, 0, 0, 0.6)',
+            paddingLeft: '8px',
+            paddingRight: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <div className="shine-image" style={{'--shine-mask': `url(${crownLogo})`} as React.CSSProperties}>
+            <img src={crownLogo} alt="Crown" style={{height: '90px', width: 'auto', display: 'block'}} />
           </div>
-          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-10px'} as React.CSSProperties}>
-            <img src={textLogo} alt="BNBPOT" style={{width: '198px', height: 'auto', display: 'block'}} />
+          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-6px'} as React.CSSProperties}>
+            <img src={textLogo} alt="BNBPOT" style={{width: '170px', height: 'auto', display: 'block'}} />
           </div>
         </div>
       </div>
