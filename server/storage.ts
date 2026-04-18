@@ -125,22 +125,56 @@ export interface IStorage {
   deleteCustomLeague(id: string): Promise<void>;
 }
 
+/**
+ * Safely await a Drizzle query that returns an array. Neon's HTTP serverless
+ * driver intermittently returns a null body, which causes Drizzle's internal
+ * `.map()` to throw "Cannot read properties of null (reading 'map')".
+ *
+ * We absorb ONLY that specific transient signature and return []. Any other
+ * error (real DB outage, syntax error, constraint violation) is rethrown so
+ * monitoring/alerts still fire and we don't silently mask outages.
+ */
+function isNeonNullBodyError(err: unknown): boolean {
+  if (!(err instanceof TypeError)) return false;
+  const msg = err.message || '';
+  return msg.includes("reading 'map'") || msg.includes('reading "map"');
+}
+
+async function safeRows<T>(q: Promise<T[]>, label: string): Promise<T[]> {
+  try {
+    const r = await q;
+    return Array.isArray(r) ? r : [];
+  } catch (err) {
+    if (isNeonNullBodyError(err)) {
+      console.warn(`[storage] ${label}: Neon null-body, returning []`);
+      return [];
+    }
+    console.error(`[storage] ${label} failed:`, err);
+    throw err;
+  }
+}
+
+async function safeFirst<T>(q: Promise<T[]>, label: string): Promise<T | undefined> {
+  const rows = await safeRows(q, label);
+  return rows[0];
+}
+
 export class DbStorage implements IStorage {
   // User methods
   async getUser(id: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
-    return result[0];
+    return safeFirst(db.select().from(users).where(eq(users.id, id)).limit(1), 'getUser');
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
-    return result[0];
+    return safeFirst(db.select().from(users).where(eq(users.username, username)).limit(1), 'getUserByUsername');
   }
 
   async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
     const normalizedAddress = walletAddress.toLowerCase();
-    const result = await db.select().from(users).where(eq(users.walletAddress, normalizedAddress)).limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(users).where(eq(users.walletAddress, normalizedAddress)).limit(1),
+      'getUserByWalletAddress'
+    );
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -190,7 +224,10 @@ export class DbStorage implements IStorage {
 
   // Chat methods
   async getChatMessages(limit: number = 50): Promise<ChatMessage[]> {
-    return await db.select().from(chatMessages).orderBy(desc(chatMessages.timestamp)).limit(limit);
+    return safeRows(
+      db.select().from(chatMessages).orderBy(desc(chatMessages.timestamp)).limit(limit),
+      'getChatMessages'
+    );
   }
 
   async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
@@ -200,26 +237,32 @@ export class DbStorage implements IStorage {
 
   // Round methods
   async getCurrentRound(): Promise<Round | undefined> {
-    const result = await db.select().from(rounds)
-      .where(or(eq(rounds.status, 'active'), eq(rounds.status, 'waiting')))
-      .orderBy(desc(rounds.roundNumber))
-      .limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(rounds)
+        .where(or(eq(rounds.status, 'active'), eq(rounds.status, 'waiting')))
+        .orderBy(desc(rounds.roundNumber))
+        .limit(1),
+      'getCurrentRound'
+    );
   }
 
   async getRound(id: string): Promise<Round | undefined> {
-    const result = await db.select().from(rounds).where(eq(rounds.id, id)).limit(1);
-    return result[0];
+    return safeFirst(db.select().from(rounds).where(eq(rounds.id, id)).limit(1), 'getRound');
   }
 
   async getRoundByNumber(roundNumber: number): Promise<Round | undefined> {
-    const result = await db.select().from(rounds).where(eq(rounds.roundNumber, roundNumber)).limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(rounds).where(eq(rounds.roundNumber, roundNumber)).limit(1),
+      'getRoundByNumber'
+    );
   }
 
   async getLatestRoundNumber(): Promise<number> {
-    const result = await db.select().from(rounds).orderBy(desc(rounds.roundNumber)).limit(1);
-    return result[0]?.roundNumber || 0;
+    const row = await safeFirst(
+      db.select().from(rounds).orderBy(desc(rounds.roundNumber)).limit(1),
+      'getLatestRoundNumber'
+    );
+    return row?.roundNumber || 0;
   }
 
   async createRound(insertRound: InsertRound): Promise<Round> {
@@ -256,13 +299,10 @@ export class DbStorage implements IStorage {
 
   // Bet methods
   async getBetsByRound(roundId: string): Promise<Bet[]> {
-    try {
-      const result = await db.select().from(bets).where(eq(bets.roundId, roundId));
-      return result || [];
-    } catch (error) {
-      console.error(`Error fetching bets for round ${roundId}:`, error);
-      return [];
-    }
+    return safeRows(
+      db.select().from(bets).where(eq(bets.roundId, roundId)),
+      `getBetsByRound(${roundId})`
+    );
   }
 
   async createBet(insertBet: InsertBet): Promise<Bet> {
@@ -320,8 +360,10 @@ export class DbStorage implements IStorage {
 
   // User stats methods
   async getUserStats(userAddress: string): Promise<UserStats | undefined> {
-    const result = await db.select().from(userStats).where(eq(userStats.userAddress, userAddress)).limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(userStats).where(eq(userStats.userAddress, userAddress)).limit(1),
+      'getUserStats'
+    );
   }
 
   async updateUserStats(userAddress: string, data: Partial<UserStats>): Promise<UserStats | undefined> {
@@ -335,13 +377,18 @@ export class DbStorage implements IStorage {
   }
 
   async getTopWinners(limit: number): Promise<UserStats[]> {
-    return await db.select().from(userStats).orderBy(desc(userStats.totalWon)).limit(limit);
+    return safeRows(
+      db.select().from(userStats).orderBy(desc(userStats.totalWon)).limit(limit),
+      'getTopWinners'
+    );
   }
 
   // Daily stats methods
   async getDailyStats(date: string): Promise<DailyStats | undefined> {
-    const result = await db.select().from(dailyStats).where(eq(dailyStats.date, date)).limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(dailyStats).where(eq(dailyStats.date, date)).limit(1),
+      'getDailyStats'
+    );
   }
 
   async updateDailyStats(date: string, data: Partial<DailyStats>): Promise<DailyStats | undefined> {
@@ -356,8 +403,7 @@ export class DbStorage implements IStorage {
 
   // Airdrop methods
   async getAirdropPool(): Promise<AirdropPool | undefined> {
-    const result = await db.select().from(airdropPool).limit(1);
-    return result[0];
+    return safeFirst(db.select().from(airdropPool).limit(1), 'getAirdropPool');
   }
 
   async updateAirdropPool(data: Partial<AirdropPool>): Promise<AirdropPool | undefined> {
@@ -462,21 +508,30 @@ export class DbStorage implements IStorage {
   }
 
   async getAirdropDistributions(limit: number = 10): Promise<AirdropDistribution[]> {
-    return await db.select().from(airdropDistributions)
-      .orderBy(desc(airdropDistributions.timestamp))
-      .limit(limit);
+    return safeRows(
+      db.select().from(airdropDistributions)
+        .orderBy(desc(airdropDistributions.timestamp))
+        .limit(limit),
+      'getAirdropDistributions'
+    );
   }
 
   async getAirdropRecipientsByDistribution(distributionId: string): Promise<AirdropRecipient[]> {
-    return await db.select().from(airdropRecipients)
-      .where(eq(airdropRecipients.distributionId, distributionId))
-      .orderBy(desc(airdropRecipients.amount));
+    return safeRows(
+      db.select().from(airdropRecipients)
+        .where(eq(airdropRecipients.distributionId, distributionId))
+        .orderBy(desc(airdropRecipients.amount)),
+      'getAirdropRecipientsByDistribution'
+    );
   }
 
   async getUserAirdropEarnings(userAddress: string): Promise<AirdropRecipient[]> {
-    return await db.select().from(airdropRecipients)
-      .where(eq(airdropRecipients.userAddress, userAddress))
-      .orderBy(desc(airdropRecipients.timestamp));
+    return safeRows(
+      db.select().from(airdropRecipients)
+        .where(eq(airdropRecipients.userAddress, userAddress))
+        .orderBy(desc(airdropRecipients.timestamp)),
+      'getUserAirdropEarnings'
+    );
   }
 
   async get24hBetVolume(userAddress: string, cutoffTime: Date): Promise<string> {
@@ -513,24 +568,35 @@ export class DbStorage implements IStorage {
   }
 
   async hasAnyAdmin(): Promise<boolean> {
-    const result = await db.select().from(users).where(eq(users.role, 'admin')).limit(1);
-    return result.length > 0;
+    const rows = await safeRows(
+      db.select().from(users).where(eq(users.role, 'admin')).limit(1),
+      'hasAnyAdmin'
+    );
+    return rows.length > 0;
   }
 
   // Market methods
   async getAllMarkets(): Promise<Market[]> {
-    return await db.select().from(markets).orderBy(desc(markets.createdAt));
+    return safeRows(
+      db.select().from(markets).orderBy(desc(markets.createdAt)),
+      'getAllMarkets'
+    );
   }
 
   async getAllActiveMarkets(): Promise<Market[]> {
-    return await db.select().from(markets)
-      .where(eq(markets.status, 'active'))
-      .orderBy(desc(markets.gameTime));
+    return safeRows(
+      db.select().from(markets)
+        .where(eq(markets.status, 'active'))
+        .orderBy(desc(markets.gameTime)),
+      'getAllActiveMarkets'
+    );
   }
 
   async getMarketById(id: string): Promise<Market | undefined> {
-    const result = await db.select().from(markets).where(eq(markets.id, id)).limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(markets).where(eq(markets.id, id)).limit(1),
+      'getMarketById'
+    );
   }
 
   async createMarket(market: InsertMarket): Promise<Market> {
@@ -560,7 +626,10 @@ export class DbStorage implements IStorage {
 
   // Market bet methods
   async getMarketBetsByMarketId(marketId: string): Promise<MarketBet[]> {
-    return await db.select().from(marketBets).where(eq(marketBets.marketId, marketId));
+    return safeRows(
+      db.select().from(marketBets).where(eq(marketBets.marketId, marketId)),
+      'getMarketBetsByMarketId'
+    );
   }
 
   async createMarketBet(bet: InsertMarketBet): Promise<MarketBet> {
@@ -582,11 +651,11 @@ export class DbStorage implements IStorage {
 
   // Sports/Leagues visibility methods
   async getSportsVisibility(): Promise<SportsVisibility[]> {
-    return await db.select().from(sportsVisibility);
+    return safeRows(db.select().from(sportsVisibility), 'getSportsVisibility');
   }
 
   async getLeaguesVisibility(): Promise<LeaguesVisibility[]> {
-    return await db.select().from(leaguesVisibility);
+    return safeRows(db.select().from(leaguesVisibility), 'getLeaguesVisibility');
   }
 
   async setSportVisibility(sportId: string, isHidden: boolean): Promise<SportsVisibility> {
@@ -613,7 +682,7 @@ export class DbStorage implements IStorage {
 
   // Unified visibility settings methods (new)
   async getVisibilitySettings(): Promise<VisibilitySetting[]> {
-    return await db.select().from(visibilitySettings);
+    return safeRows(db.select().from(visibilitySettings), 'getVisibilitySettings');
   }
 
   async toggleSportVisibility(sportId: string, isVisible: boolean, userId?: string, manualOverride: boolean = true): Promise<VisibilitySetting> {
@@ -709,30 +778,34 @@ export class DbStorage implements IStorage {
 
   // Custom media methods
   async getCustomMedia(entityType?: string): Promise<CustomMedia[]> {
-    if (entityType) {
-      return await db.select().from(customMedia).where(eq(customMedia.entityType, entityType));
-    }
-    return await db.select().from(customMedia);
+    const q = entityType
+      ? db.select().from(customMedia).where(eq(customMedia.entityType, entityType))
+      : db.select().from(customMedia);
+    return safeRows(q, 'getCustomMedia');
   }
 
   async getCustomMediaByEntity(entityType: string, entityId: string): Promise<CustomMedia | undefined> {
-    const result = await db.select().from(customMedia)
-      .where(and(
-        eq(customMedia.entityType, entityType),
-        eq(customMedia.entityId, entityId)
-      ))
-      .limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(customMedia)
+        .where(and(
+          eq(customMedia.entityType, entityType),
+          eq(customMedia.entityId, entityId)
+        ))
+        .limit(1),
+      'getCustomMediaByEntity'
+    );
   }
 
   async getCustomMediaByName(entityType: string, entityName: string): Promise<CustomMedia | undefined> {
-    const result = await db.select().from(customMedia)
-      .where(and(
-        eq(customMedia.entityType, entityType),
-        sql`LOWER(${customMedia.entityName}) = LOWER(${entityName})`
-      ))
-      .limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(customMedia)
+        .where(and(
+          eq(customMedia.entityType, entityType),
+          sql`LOWER(${customMedia.entityName}) = LOWER(${entityName})`
+        ))
+        .limit(1),
+      'getCustomMediaByName'
+    );
   }
 
   async upsertCustomMedia(media: InsertCustomMedia): Promise<CustomMedia> {
@@ -761,19 +834,21 @@ export class DbStorage implements IStorage {
 
   // Custom leagues methods
   async getCustomLeagues(sportId?: string): Promise<CustomLeague[]> {
-    if (sportId) {
-      return await db.select().from(customLeagues)
-        .where(eq(customLeagues.sportId, sportId))
-        .orderBy(customLeagues.displayName);
-    }
-    return await db.select().from(customLeagues).orderBy(customLeagues.displayName);
+    const q = sportId
+      ? db.select().from(customLeagues)
+          .where(eq(customLeagues.sportId, sportId))
+          .orderBy(customLeagues.displayName)
+      : db.select().from(customLeagues).orderBy(customLeagues.displayName);
+    return safeRows(q, 'getCustomLeagues');
   }
 
   async getCustomLeagueById(id: string): Promise<CustomLeague | undefined> {
-    const result = await db.select().from(customLeagues)
-      .where(eq(customLeagues.id, id))
-      .limit(1);
-    return result[0];
+    return safeFirst(
+      db.select().from(customLeagues)
+        .where(eq(customLeagues.id, id))
+        .limit(1),
+      'getCustomLeagueById'
+    );
   }
 
   async createCustomLeague(league: InsertCustomLeague): Promise<CustomLeague> {

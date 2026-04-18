@@ -2,14 +2,21 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1200" id="viewport-meta" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
+      // Unified scaling: shrink the full desktop design to fit any screen.
+      // Driven from JS so it works identically on mobile, tablet, and desktop.
       (function() {
-        var designWidth = 1200;
-        var screenWidth = window.screen.width;
-        var scale = screenWidth / designWidth;
-        var viewport = document.getElementById('viewport-meta');
-        viewport.setAttribute('content', 'width=' + designWidth + ', initial-scale=' + scale + ', minimum-scale=' + scale + ', maximum-scale=' + scale);
+        var DESIGN_WIDTH = 2400;
+        function apply() {
+          var w = window.innerWidth;
+          var zoom = w >= DESIGN_WIDTH ? 1 : (w / DESIGN_WIDTH);
+          document.documentElement.style.zoom = zoom === 1 ? '' : String(zoom);
+          document.documentElement.style.setProperty('--app-zoom', String(zoom));
+        }
+        apply();
+        window.addEventListener('resize', apply);
+        window.addEventListener('orientationchange', apply);
       })();
     </script>
     <title>BNBPOT.COM - Crypto Jackpot Gaming</title>

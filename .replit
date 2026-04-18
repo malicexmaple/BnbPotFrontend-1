@@ -48,39 +48,3 @@ ADMIN_WALLETS = "0x0a7eaa7c8000b4ce9395409b5da615dfeb9a8802"
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 37531
-externalPort = 4200
-
-[[ports]]
-localPort = 37915
-externalPort = 3001
-
-[[ports]]
-localPort = 38709
-externalPort = 6800
-
-[[ports]]
-localPort = 39115
-externalPort = 5173
-
-[[ports]]
-localPort = 41325
-externalPort = 5000
-
-[[ports]]
-localPort = 42919
-externalPort = 3000
-
-[[ports]]
-localPort = 43507
-externalPort = 3003
-
-[[ports]]
-localPort = 43835
-externalPort = 3002
-
-[[ports]]
-localPort = 44099
-externalPort = 8000

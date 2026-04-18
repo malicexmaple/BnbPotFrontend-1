@@ -715,51 +715,23 @@
   animation-play-state: paused;
 }
 
-/* ===== FIXED 1200PX LAYOUT: Forces desktop layout on all devices ===== */
-/* Viewport meta tag set to width=1200 handles all scaling automatically */
-/* Browser zooms to fit 1200px on mobile, PC always shows 1200px minimum */
-
-/* ===== DESKTOP AUTO-SCALING ===== */
-/* Only applies to desktop with mouse (not touch devices) */
-/* Site designed at 2560px, scales down for smaller desktop screens */
-@media (hover: hover) and (pointer: fine) {
-  /* 1920px screens: scale to 80% */
-  @media (min-width: 1800px) and (max-width: 2399px) {
-    html {
-      zoom: 0.80;
-    }
-    body, #root {
-      min-height: calc(100vh / 0.80);
-    }
-  }
-  
-  /* 1600-1799px screens: scale to ~70% */
-  @media (min-width: 1500px) and (max-width: 1799px) {
-    html {
-      zoom: 0.70;
-    }
-    body, #root {
-      min-height: calc(100vh / 0.70);
-    }
-  }
-  
-  /* 1366-1499px screens: scale to ~60% */
-  @media (min-width: 1300px) and (max-width: 1499px) {
-    html {
-      zoom: 0.60;
-    }
-    body, #root {
-      min-height: calc(100vh / 0.60);
-    }
-  }
-  
-  /* Smaller desktop screens: scale to ~55% */
-  @media (min-width: 1000px) and (max-width: 1299px) {
-    html {
-      zoom: 0.55;
-    }
-    body, #root {
-      min-height: calc(100vh / 0.55);
-    }
-  }
+/* ===== UNIFIED RESPONSIVE SCALING =====
+ * The site is designed at a fixed 2400px width. A small script in
+ * client/index.html applies `zoom: window.innerWidth / 2400` to <html>,
+ * so every device — mobile, tablet, desktop — sees the exact desktop
+ * layout, just shrunk to fit. No separate mobile layout.
+ *
+ * The footer is anchored using min-height that accounts for the zoom
+ * factor via a CSS custom property so the page always fills the viewport.
+ */
+html {
+  /* Re-derive a "true viewport height" inside the zoomed coordinate space.
+     The JS sets --app-zoom on resize; defaults to 1 when not zoomed. */
+  --app-zoom: 1;
+}
+body, #root {
+  /* Fallback for browsers without dvh support */
+  min-height: calc(100vh / var(--app-zoom, 1));
+  /* Use dynamic viewport height where supported (avoids mobile chrome jumps) */
+  min-height: calc(100dvh / var(--app-zoom, 1));
 }
