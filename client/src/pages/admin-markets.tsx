@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Lock, CheckCircle, Trophy, AlertCircle, ArrowLeft, Search, Grid3x3, Gamepad2 } from "lucide-react";
+import { Lock, CheckCircle, Trophy, AlertCircle, ArrowLeft, Search, Grid3x3, Gamepad2, Plus } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -32,6 +34,20 @@ export default function AdminMarkets() {
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSport, setSelectedSport] = useState<string>("all");
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const emptyForm = {
+    sport: "Football",
+    league: "",
+    teamA: "",
+    teamB: "",
+    description: "",
+    gameTime: "",
+    teamALogo: "",
+    teamBLogo: "",
+    bonusPool: "0",
+    isLive: false,
+  };
+  const [createForm, setCreateForm] = useState(emptyForm);
 
   const getSportIcon = (sport: string) => {
     if (sport === 'all') {
@@ -156,6 +172,60 @@ export default function AdminMarkets() {
     });
   }, [markets, selectedSport, searchQuery]);
 
+  const createMarketMutation = useMutation({
+    mutationFn: async (payload: typeof emptyForm) => {
+      const body: Record<string, unknown> = {
+        sport: payload.sport,
+        league: payload.league,
+        teamA: payload.teamA,
+        teamB: payload.teamB,
+        description: payload.description,
+        gameTime: new Date(payload.gameTime).toISOString(),
+        bonusPool: payload.bonusPool || "0",
+        isLive: payload.isLive,
+      };
+      if (payload.teamALogo) body.teamALogo = payload.teamALogo;
+      if (payload.teamBLogo) body.teamBLogo = payload.teamBLogo;
+      const res = await apiRequest("POST", "/api/admin/markets", body);
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Market created", description: "It's now live for betting." });
+      setCreateDialogOpen(false);
+      setCreateForm(emptyForm);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Create failed",
+        description: error?.message || "Could not create market",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCreateMarket = () => {
+    const f = createForm;
+    if (!f.league || !f.teamA || !f.teamB || !f.description || !f.gameTime) {
+      toast({
+        title: "Missing fields",
+        description: "Sport, league, both teams, description and game time are required.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (new Date(f.gameTime).getTime() <= Date.now()) {
+      toast({
+        title: "Invalid game time",
+        description: "Game time must be in the future.",
+        variant: "destructive",
+      });
+      return;
+    }
+    createMarketMutation.mutate(f);
+  };
+
   const lockMarketMutation = useMutation({
     mutationFn: async (marketId: string) => {
       return await apiRequest("POST", `/api/markets/${marketId}/lock`, {});
@@ -267,6 +337,13 @@ export default function AdminMarkets() {
                   data-testid="input-search-markets"
                 />
               </div>
+              <Button
+                onClick={() => setCreateDialogOpen(true)}
+                data-testid="button-open-create-market"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Market
+              </Button>
               <Button
                 variant="outline"
                 onClick={() => setLocation('/admin')}
@@ -439,6 +516,141 @@ export default function AdminMarkets() {
             ))}
           </div>
         )}
+
+        <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+          <DialogContent className="bg-background border-accent max-w-xl">
+            <DialogHeader>
+              <DialogTitle className="text-foreground">Create New Market</DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                Set up a head-to-head prediction market. Bets open immediately.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-2 gap-3 py-2">
+              <div className="space-y-1">
+                <Label htmlFor="cm-sport">Sport</Label>
+                <select
+                  id="cm-sport"
+                  value={createForm.sport}
+                  onChange={(e) => setCreateForm({ ...createForm, sport: e.target.value })}
+                  className="w-full h-9 rounded-md bg-background border border-input px-2 text-sm"
+                  data-testid="select-create-sport"
+                >
+                  {availableSports.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-league">League</Label>
+                <Input
+                  id="cm-league"
+                  value={createForm.league}
+                  onChange={(e) => setCreateForm({ ...createForm, league: e.target.value })}
+                  placeholder="e.g. NBA, Premier League"
+                  data-testid="input-create-league"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-teamA">Team / Outcome A</Label>
+                <Input
+                  id="cm-teamA"
+                  value={createForm.teamA}
+                  onChange={(e) => setCreateForm({ ...createForm, teamA: e.target.value })}
+                  placeholder="e.g. Lakers"
+                  data-testid="input-create-teamA"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-teamB">Team / Outcome B</Label>
+                <Input
+                  id="cm-teamB"
+                  value={createForm.teamB}
+                  onChange={(e) => setCreateForm({ ...createForm, teamB: e.target.value })}
+                  placeholder="e.g. Celtics"
+                  data-testid="input-create-teamB"
+                />
+              </div>
+              <div className="col-span-2 space-y-1">
+                <Label htmlFor="cm-desc">Description</Label>
+                <Input
+                  id="cm-desc"
+                  value={createForm.description}
+                  onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
+                  placeholder="e.g. Regular Season - Who will win?"
+                  data-testid="input-create-description"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-time">Game Time</Label>
+                <Input
+                  id="cm-time"
+                  type="datetime-local"
+                  value={createForm.gameTime}
+                  onChange={(e) => setCreateForm({ ...createForm, gameTime: e.target.value })}
+                  data-testid="input-create-gametime"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-bonus">Bonus Pool (BNB)</Label>
+                <Input
+                  id="cm-bonus"
+                  type="text"
+                  value={createForm.bonusPool}
+                  onChange={(e) => setCreateForm({ ...createForm, bonusPool: e.target.value })}
+                  placeholder="0"
+                  data-testid="input-create-bonus"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-logoA">Team A Logo URL (optional)</Label>
+                <Input
+                  id="cm-logoA"
+                  value={createForm.teamALogo}
+                  onChange={(e) => setCreateForm({ ...createForm, teamALogo: e.target.value })}
+                  placeholder="https://..."
+                  data-testid="input-create-logoA"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cm-logoB">Team B Logo URL (optional)</Label>
+                <Input
+                  id="cm-logoB"
+                  value={createForm.teamBLogo}
+                  onChange={(e) => setCreateForm({ ...createForm, teamBLogo: e.target.value })}
+                  placeholder="https://..."
+                  data-testid="input-create-logoB"
+                />
+              </div>
+              <div className="col-span-2 flex items-center gap-3 pt-1">
+                <Switch
+                  id="cm-live"
+                  checked={createForm.isLive}
+                  onCheckedChange={(c) => setCreateForm({ ...createForm, isLive: c })}
+                  data-testid="switch-create-live"
+                />
+                <Label htmlFor="cm-live">Mark as live (in-progress)</Label>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="ghost"
+                onClick={() => setCreateDialogOpen(false)}
+                data-testid="button-cancel-create"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleCreateMarket}
+                disabled={createMarketMutation.isPending}
+                data-testid="button-confirm-create"
+              >
+                {createMarketMutation.isPending ? "Creating..." : "Create Market"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={settleDialogOpen} onOpenChange={setSettleDialogOpen}>
           <DialogContent className="bg-background border-accent">
