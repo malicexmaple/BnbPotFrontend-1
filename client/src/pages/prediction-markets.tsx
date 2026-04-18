@@ -164,6 +164,7 @@ export default function PredictionMarkets() {
   const [activeTab, setActiveTab] = useState<'featured' | 'live' | 'upcoming'>('featured');
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [expandedSport, setExpandedSport] = useState<string | null>(null);
+  const [showAllLeaguesFor, setShowAllLeaguesFor] = useState<string | null>(null);
   const [selectedLeague, setSelectedLeague] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'pane'>(() => {
     const saved = localStorage.getItem('pm-view-mode');
@@ -600,7 +601,7 @@ export default function PredictionMarkets() {
                         
                         {expandedSport === sport.id && (
                           <div className="ml-6 mt-1 mb-2 space-y-0.5 max-h-64 overflow-y-auto">
-                            {sport.leagues.slice(0, 15).map((league) => (
+                            {(showAllLeaguesFor === sport.id ? sport.leagues : sport.leagues.slice(0, 15)).map((league) => (
                               <button
                                 key={league.id}
                                 onClick={() => {
@@ -630,9 +631,19 @@ export default function PredictionMarkets() {
                               </button>
                             ))}
                             {sport.leagues.length > 15 && (
-                              <div className="text-xs text-muted-foreground px-3 py-1">
-                                +{sport.leagues.length - 15} more
-                              </div>
+                              <button
+                                onClick={() =>
+                                  setShowAllLeaguesFor(
+                                    showAllLeaguesFor === sport.id ? null : sport.id
+                                  )
+                                }
+                                className="w-full text-left text-xs text-primary hover:text-primary/80 px-3 py-1"
+                                data-testid={`button-toggle-all-leagues-${sport.id}`}
+                              >
+                                {showAllLeaguesFor === sport.id
+                                  ? 'Show less'
+                                  : `+${sport.leagues.length - 15} more`}
+                              </button>
                             )}
                           </div>
                         )}
