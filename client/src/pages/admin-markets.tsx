@@ -217,7 +217,7 @@ export default function AdminMarkets() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
       queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Create failed",
         description: error?.message || "Could not create market",
@@ -258,7 +258,7 @@ export default function AdminMarkets() {
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Lock Failed",
         description: error.message || "Failed to lock market",
@@ -269,18 +269,19 @@ export default function AdminMarkets() {
 
   const settleMarketMutation = useMutation({
     mutationFn: async ({ marketId, winningOutcome }: { marketId: string; winningOutcome: 'A' | 'B' }) => {
-      return await apiRequest("POST", `/api/markets/${marketId}/settle`, { winningOutcome });
+      const res = await apiRequest("POST", `/api/markets/${marketId}/settle`, { winningOutcome });
+      return (await res.json()) as { payoutsProcessed?: number };
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       toast({
         title: "Market Settled",
-        description: `Processed ${data.payoutsProcessed} winning bets`,
+        description: `Processed ${data.payoutsProcessed ?? 0} winning bets`,
       });
       setSettleDialogOpen(false);
       setSelectedMarket(null);
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Settlement Failed",
         description: error.message || "Failed to settle market",
@@ -314,7 +315,7 @@ export default function AdminMarkets() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
       queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Update failed",
         description: error?.message || "Could not update market",
@@ -333,7 +334,7 @@ export default function AdminMarkets() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
       queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Delete failed",
         description: error?.message || "Could not delete market",
@@ -345,19 +346,19 @@ export default function AdminMarkets() {
   const refundMarketMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await apiRequest("POST", `/api/admin/markets/${id}/refund`, {});
-      return res.json();
+      return (await res.json()) as { refundedBets?: number };
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       toast({
         title: "Market refunded",
-        description: `Refunded ${data.refundedBets} bets`,
+        description: `Refunded ${data.refundedBets ?? 0} bets`,
       });
       setRefundDialogOpen(false);
       setRefundMarket(null);
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
       queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Refund failed",
         description: error?.message || "Could not refund market",

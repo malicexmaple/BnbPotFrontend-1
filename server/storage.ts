@@ -9,7 +9,7 @@ import {
   type AirdropDistribution, type InsertAirdropDistribution,
   type AirdropRecipient, type InsertAirdropRecipient,
   type AirdropTip, type InsertAirdropTip,
-  type Market, type InsertMarket,
+  type Market, type InsertMarket, type MarketStatus,
   type MarketBet, type InsertMarketBet,
   type SportsVisibility, type InsertSportsVisibility,
   type LeaguesVisibility, type InsertLeaguesVisibility,
@@ -684,41 +684,38 @@ export class DbStorage implements IStorage {
 
   async updateMarket(id: string, data: Partial<InsertMarket>): Promise<Market | undefined> {
     return await db.transaction(async (tx) => {
-      const locked = await tx.execute(
+      const lockedRes = await tx.execute<{ id: string; status: MarketStatus }>(
         sql`SELECT id, status FROM markets WHERE id = ${id} FOR UPDATE`
       );
-      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as
-        | { id: string; status: string }
-        | undefined;
+      const row = lockedRes.rows[0];
       if (!row) return undefined;
       if (row.status !== 'active') {
         throw new Error(`Cannot edit a market with status '${row.status}'. Only active markets can be edited.`);
       }
-      const betCount = await tx.execute(
+      const betCountRes = await tx.execute<{ c: number }>(
         sql`SELECT COUNT(*)::int AS c FROM market_bets WHERE market_id = ${id}`
       );
-      const cRow = (betCount.rows?.[0] ?? (betCount as unknown as any[])[0]) as { c: number } | undefined;
-      if ((cRow?.c ?? 0) > 0) {
+      const c = betCountRes.rows[0]?.c ?? 0;
+      if (c > 0) {
         throw new Error('Cannot edit a market that already has bets');
       }
       const [updated] = await tx.update(markets).set(data).where(eq(markets.id, id)).returning();
-      return updated;
+      return updated as Market | undefined;
     });
   }
 
   async deleteMarket(id: string): Promise<{ deleted: boolean; reason?: string }> {
     return await db.transaction(async (tx) => {
-      const locked = await tx.execute(
+      const lockedRes = await tx.execute<{ id: string }>(
         sql`SELECT id FROM markets WHERE id = ${id} FOR UPDATE`
       );
-      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as { id: string } | undefined;
-      if (!row) return { deleted: false, reason: 'Market not found' };
+      if (!lockedRes.rows[0]) return { deleted: false, reason: 'Market not found' };
 
-      const betCount = await tx.execute(
+      const betCountRes = await tx.execute<{ c: number }>(
         sql`SELECT COUNT(*)::int AS c FROM market_bets WHERE market_id = ${id}`
       );
-      const cRow = (betCount.rows?.[0] ?? (betCount as unknown as any[])[0]) as { c: number } | undefined;
-      if ((cRow?.c ?? 0) > 0) {
+      const c = betCountRes.rows[0]?.c ?? 0;
+      if (c > 0) {
         return { deleted: false, reason: 'Cannot delete a market that has bets. Refund it instead.' };
       }
       await tx.delete(markets).where(eq(markets.id, id));
@@ -728,12 +725,10 @@ export class DbStorage implements IStorage {
 
   async settleMarket(id: string, winningOutcome: string): Promise<Market | undefined> {
     return await db.transaction(async (tx) => {
-      const locked = await tx.execute(
+      const lockedRes = await tx.execute<{ id: string; status: MarketStatus }>(
         sql`SELECT id, status FROM markets WHERE id = ${id} FOR UPDATE`
       );
-      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as
-        | { id: string; status: string }
-        | undefined;
+      const row = lockedRes.rows[0];
       if (!row) return undefined;
       if (row.status === 'settled' || row.status === 'refunded') {
         throw new Error(`Market is already ${row.status} and cannot be settled`);
@@ -742,18 +737,16 @@ export class DbStorage implements IStorage {
         .set({ status: 'settled', winningOutcome, settledAt: new Date() })
         .where(eq(markets.id, id))
         .returning();
-      return updated;
+      return updated as Market | undefined;
     });
   }
 
   async refundMarket(id: string): Promise<{ market: Market; refundedBets: number } | undefined> {
     return await db.transaction(async (tx) => {
-      const locked = await tx.execute(
+      const lockedRes = await tx.execute<{ id: string; status: MarketStatus }>(
         sql`SELECT id, status FROM markets WHERE id = ${id} FOR UPDATE`
       );
-      const row = (locked.rows?.[0] ?? (locked as unknown as any[])[0]) as
-        | { id: string; status: string }
-        | undefined;
+      const row = lockedRes.rows[0];
       if (!row) return undefined;
       if (row.status !== 'active' && row.status !== 'locked') {
         throw new Error(
@@ -771,14 +764,14 @@ export class DbStorage implements IStorage {
             WHERE market_id = ${id}
               AND status NOT IN ('won', 'lost', 'refunded')`
       );
-      const refundedBets = (updateBetsRes as any).rowCount ?? (updateBetsRes as any).rows?.length ?? 0;
+      const refundedBets = updateBetsRes.rowCount ?? 0;
 
       const [updated] = await tx.update(markets)
         .set({ status: 'refunded', settledAt: new Date() })
         .where(eq(markets.id, id))
         .returning();
       if (!updated) return undefined;
-      return { market: updated, refundedBets };
+      return { market: updated as Market, refundedBets };
     });
   }
 
@@ -807,13 +800,18 @@ export class DbStorage implements IStorage {
     return await db.transaction(async (tx) => {
       // SELECT ... FOR UPDATE so concurrent lock/settle/place-bet can't slip in
       // between our read and our write of poolATotal/poolBTotal.
-      const lockedRows = await tx.execute(
+      const lockedRows = await tx.execute<{
+        id: string;
+        status: MarketStatus;
+        game_time: Date;
+        pool_a_total: string;
+        pool_b_total: string;
+        bonus_pool: string;
+      }>(
         sql`SELECT id, status, game_time, pool_a_total, pool_b_total, bonus_pool
             FROM markets WHERE id = ${marketId} FOR UPDATE`
       );
-      const market = (lockedRows.rows?.[0] ?? (lockedRows as any)[0]) as
-        | { id: string; status: string; game_time: Date; pool_a_total: string; pool_b_total: string; bonus_pool: string }
-        | undefined;
+      const market = lockedRows.rows[0];
       if (!market) throw new Error('Market not found');
       if (market.status !== 'active') throw new Error('Market is no longer accepting bets');
       if (new Date(market.game_time).getTime() <= Date.now()) {

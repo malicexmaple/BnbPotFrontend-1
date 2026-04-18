@@ -298,10 +298,16 @@ export const markets = pgTable("markets", {
   settledAt: timestamp("settled_at"),
 });
 
+export const marketStatusValues = ['active', 'locked', 'settled', 'refunded'] as const;
+export const marketStatusSchema = z.enum(marketStatusValues);
+export type MarketStatus = z.infer<typeof marketStatusSchema>;
+
 export const insertMarketSchema = createInsertSchema(markets).omit({
   id: true,
   createdAt: true,
   settledAt: true,
+}).extend({
+  status: marketStatusSchema.optional(),
 });
 
 export type InsertMarket = z.infer<typeof insertMarketSchema>;
@@ -321,11 +327,17 @@ export const marketBets = pgTable("market_bets", {
   settledAt: timestamp("settled_at"),
 });
 
+export const marketBetStatusValues = ['active', 'won', 'lost', 'refunded'] as const;
+export const marketBetStatusSchema = z.enum(marketBetStatusValues);
+export type MarketBetStatus = z.infer<typeof marketBetStatusSchema>;
+
 export const insertMarketBetSchema = createInsertSchema(marketBets).omit({
   id: true,
   createdAt: true,
   settledAt: true,
   actualPayout: true,
+}).extend({
+  status: marketBetStatusSchema.optional(),
 });
 
 export type InsertMarketBet = z.infer<typeof insertMarketBetSchema>;
