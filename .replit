@@ -48,3 +48,7 @@ ADMIN_WALLETS = "0x0a7eaa7c8000b4ce9395409b5da615dfeb9a8802"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
