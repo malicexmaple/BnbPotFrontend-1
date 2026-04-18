@@ -90,16 +90,13 @@ export default function GameNavigation({
   return (
     <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
       {/* Left - Logo section (345px on desktop, smaller on mobile).
-          Uses the same dark glass styling as the bottom navigation strip and
-          fully contains the logo with no overflow or rounded corners. */}
+          Uses the same `neon-border` golden-glow theme as the AIRDROP card
+          and other featured boxes below the header, but kept square and flush
+          with the edges so it lives inside the header strip. */}
       <div
-        className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px]"
+        className="neon-border hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px]"
         style={{
           height: '100px',
-          background: 'rgba(20, 20, 20, 0.8)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
-          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
           borderRadius: 0,
           overflow: 'hidden',
         }}
