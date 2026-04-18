@@ -13,6 +13,7 @@ The application is built as a full-stack TypeScript monorepo with a React fronte
 - ✅ **NEW**: Profile + Feed + 50+ sport/league pages ported (registered in `client/src/App.tsx`)
 - ✅ **NEW**: `useAuth` hook enriched with full User record via `/api/auth/user` alias
 - ✅ **NEW**: Schema additions — `wallets`, `transactions`, `customTeams`, `customPlayers`
+- ✅ **NEW**: Polymarket polish — implied probability bars on market cards, header dropdown links to Wallet/Profile/Activity Feed, admin panel cards for Custom Media Library + Activity Feed
 
 **Earlier Status** (December 1, 2025):
 - ✅ Production-grade smart contract deployed with Chainlink VRF

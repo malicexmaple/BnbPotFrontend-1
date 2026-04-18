@@ -79,6 +79,11 @@ export function MarketCard({ market, onPlaceBet }: MarketCardProps) {
   const oddsA = poolATotal > 0 ? (totalPool / poolATotal) : 2.00;
   const oddsB = poolBTotal > 0 ? (totalPool / poolBTotal) : 2.00;
 
+  // Polymarket-style implied probability from pool weights
+  const sidedTotal = poolATotal + poolBTotal;
+  const probA = sidedTotal > 0 ? Math.round((poolATotal / sidedTotal) * 100) : 50;
+  const probB = 100 - probA;
+
   const formatOdds = (odds: number) => odds.toFixed(2);
   const formatPool = (amount: number) => amount.toFixed(4);
 
@@ -253,6 +258,24 @@ export function MarketCard({ market, onPlaceBet }: MarketCardProps) {
               </span>
             </div>
           </Button>
+        </div>
+
+        {/* Implied Probability Bar (Polymarket-style) */}
+        <div className="space-y-1.5" data-testid={`probability-bar-${market.id}`}>
+          <div className="flex justify-between text-[11px] font-mono text-white/90">
+            <span data-testid={`text-prob-a-${market.id}`}>{market.teamA} {probA}%</span>
+            <span data-testid={`text-prob-b-${market.id}`}>{probB}% {market.teamB}</span>
+          </div>
+          <div className="flex h-2 w-full overflow-hidden rounded-full bg-black/40 border border-white/10">
+            <div
+              className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 transition-all"
+              style={{ width: `${probA}%` }}
+            />
+            <div
+              className="h-full bg-gradient-to-r from-zinc-500 to-zinc-700 transition-all"
+              style={{ width: `${probB}%` }}
+            />
+          </div>
         </div>
 
         {/* Bonus Pool Info */}

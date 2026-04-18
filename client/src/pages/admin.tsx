@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, ArrowLeft, Database, Activity, Shield, Loader2 } from "lucide-react";
+import { TrendingUp, ArrowLeft, Database, Activity, Shield, Loader2, Upload, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
@@ -217,6 +217,58 @@ export default function AdminPanel() {
                 >
                   <Database className="h-4 w-4 mr-2" />
                   Open Sports Database
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-accent/20 hover-elevate cursor-pointer" onClick={() => setLocation('/sports')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Upload className="h-5 w-5 text-primary" />
+                  Custom Media Library
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Upload custom team logos and player photos. Open any sport page to use the upload dialogs.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/sports');
+                  }}
+                  data-testid="button-custom-media"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Browse Sports
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-accent/20 hover-elevate cursor-pointer" onClick={() => setLocation('/feed')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Eye className="h-5 w-5 text-primary" />
+                  Activity Feed
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Monitor live betting activity, recent wins, and platform events in real time.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/feed');
+                  }}
+                  data-testid="button-activity-feed"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Open Activity Feed
                 </Button>
               </CardContent>
             </Card>

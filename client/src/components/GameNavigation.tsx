@@ -319,10 +319,31 @@ export default function GameNavigation({
                     <span>Muted Users</span>
                   </DropdownMenuItem>
                   
+                  <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-wallet">
+                    <Link href="/wallet">
+                      <Wallet className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                      <span>Wallet</span>
+                    </Link>
+                  </DropdownMenuItem>
+
                   <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-my-bets">
                     <Link href="/my-bets">
                       <Ticket className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
                       <span>My Bets</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-profile">
+                    <Link href="/profile">
+                      <Settings className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild className="px-3 py-2.5 cursor-pointer" data-testid="menu-feed">
+                    <Link href="/feed">
+                      <BarChart3 className="mr-3 text-muted-foreground" style={{width: '18px', height: '18px'}} />
+                      <span>Activity Feed</span>
                     </Link>
                   </DropdownMenuItem>
 
