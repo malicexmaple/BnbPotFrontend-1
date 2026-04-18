@@ -90,10 +90,11 @@ export default function GameNavigation({
   return (
     <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
       {/* Left - Logo section (345px on desktop, smaller on mobile).
-          Mirrors the second-row navigation strip styling: dark glass background
-          with the same inset highlights/shadow that give it the inner outline. */}
+          Outer wrapper carries the dark glass header strip; inner element is a
+          rounded button-style box that matches the JACKPOT/COINFLIP/PREDICTION
+          MARKETS tab buttons next to it. */}
       <div
-        className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px]"
+        className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px] px-3"
         style={{
           height: '100px',
           background: 'rgba(20, 20, 20, 0.8)',
@@ -101,18 +102,28 @@ export default function GameNavigation({
           borderRight: '1px solid rgba(60, 60, 60, 0.3)',
           borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
           boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
-          borderRadius: 0,
-          overflow: 'hidden',
         }}
       >
-        <div className="flex items-center justify-center" style={{ height: '100%' }}>
+        <div
+          className="flex items-center justify-center w-full"
+          style={{
+            height: '76px',
+            borderRadius: '10px',
+            background: 'rgba(20, 20, 20, 0.7)',
+            border: '1px solid rgba(60, 60, 60, 0.4)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)',
+            overflow: 'hidden',
+            paddingLeft: '4px',
+            paddingRight: '8px',
+          }}
+        >
           <img
             src={crownLogo}
             alt="Crown"
-            style={{ height: '90px', width: 'auto', display: 'block' }}
+            style={{ height: '70px', width: 'auto', display: 'block' }}
           />
-          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-6px'} as React.CSSProperties}>
-            <img src={textLogo} alt="BNBPOT" style={{width: '170px', height: 'auto', display: 'block'}} />
+          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-4px'} as React.CSSProperties}>
+            <img src={textLogo} alt="BNBPOT" style={{width: '150px', height: 'auto', display: 'block'}} />
           </div>
         </div>
       </div>
