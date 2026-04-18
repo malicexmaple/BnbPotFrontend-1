@@ -236,3 +236,14 @@ All endpoints use Zod schemas for comprehensive input validation including:
 **Audit Reports** (`.local/state/audit/`):
 - `comprehensive-audit-report.md` - Security and performance audit
 - `unused-code-report.md` - Unused code analysis
+## Tests
+
+API/route tests live in `test/` and run via Mocha + tsx. To run them:
+
+```bash
+npx mocha
+```
+
+The Mocha config (`.mocharc.cjs`) currently includes the admin market action tests
+(`test/MarketAdmin.test.ts`). Hardhat smart-contract tests (e.g. `JackpotGame.test.ts`)
+remain runnable separately via `npx hardhat test` on a supported Node version.
