@@ -35,6 +35,29 @@ const updateMarketSchema = z.object({
   bonusPool: z.string().regex(/^\d+(\.\d{1,8})?$/).optional(),
 }).strict();
 
+// Tiny in-memory cache for derived/aggregated market data. Keyed by `${marketId}:${kind}`.
+// Avoids replaying every bet on hot polling routes (/history, /holders).
+const aggCache = new Map<string, { at: number; payload: unknown }>();
+const AGG_TTL_MS = 5_000;
+function aggGet(key: string) {
+  const hit = aggCache.get(key);
+  if (hit && Date.now() - hit.at < AGG_TTL_MS) return hit.payload;
+  return null;
+}
+function aggSet(key: string, payload: unknown) {
+  // Re-insert to refresh insertion order (Map preserves insertion order in JS)
+  aggCache.delete(key);
+  aggCache.set(key, { at: Date.now(), payload });
+  while (aggCache.size > 500) {
+    const oldest = aggCache.keys().next().value;
+    if (oldest === undefined) break;
+    aggCache.delete(oldest);
+  }
+}
+export function invalidateMarketAggCache(marketId: string) {
+  for (const k of aggCache.keys()) if (k.startsWith(`${marketId}:`)) aggCache.delete(k);
+}
+
 export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
   const { storage, requireAuth, requireTermsAgreement, requireAdminRole, realtime } = deps;
 
@@ -112,6 +135,9 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         status: 'active',
       });
 
+      // Bust derived caches so the new bet is reflected immediately
+      invalidateMarketAggCache(paramResult.data.id);
+
       res.status(201).json({
         message: "Bet placed",
         bet: result.bet,
@@ -122,6 +148,125 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       const status = /not found|no longer|closed/i.test(msg) ? 400 : 500;
       console.error("Error placing market bet:", error);
       res.status(status).json({ message: msg });
+    }
+  });
+
+  // Recent activity (trades) for a market — capped at 100 most recent
+  app.get("/api/markets/:id/bets", async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ message: "Invalid market ID" });
+      }
+      const id = paramResult.data.id;
+      const limit = Math.min(parseInt(String(req.query.limit ?? '50'), 10) || 50, 100);
+      const cacheKey = `${id}:bets:${limit}`;
+      const cached = aggGet(cacheKey);
+      if (cached) return res.json(cached);
+
+      const bets = await storage.getMarketBetsByMarketId(id);
+      const sorted = bets
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, limit)
+        .map(b => ({
+          id: b.id,
+          userAddress: b.userAddress,
+          outcome: b.outcome,
+          amount: b.amount,
+          oddsAtBet: b.oddsAtBet,
+          createdAt: b.createdAt,
+        }));
+      aggSet(cacheKey, sorted);
+      res.json(sorted);
+    } catch (error) {
+      console.error("Error fetching market bets:", error);
+      res.status(500).json({ message: "Failed to fetch market bets" });
+    }
+  });
+
+  // Top holders by stake on each outcome
+  app.get("/api/markets/:id/holders", async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ message: "Invalid market ID" });
+      }
+      const id = paramResult.data.id;
+      const cacheKey = `${id}:holders`;
+      const cached = aggGet(cacheKey);
+      if (cached) return res.json(cached);
+      const bets = await storage.getMarketBetsByMarketId(id);
+      const totals = new Map<string, { userAddress: string; outcome: string; amount: number }>();
+      for (const b of bets) {
+        const key = `${b.userAddress}:${b.outcome}`;
+        const cur = totals.get(key);
+        const amt = parseFloat(b.amount);
+        if (cur) cur.amount += amt;
+        else totals.set(key, { userAddress: b.userAddress, outcome: b.outcome, amount: amt });
+      }
+      const all = Array.from(totals.values()).sort((a, b) => b.amount - a.amount);
+      const payload = {
+        A: all.filter(h => h.outcome === 'A').slice(0, 10).map(h => ({ ...h, amount: h.amount.toFixed(8) })),
+        B: all.filter(h => h.outcome === 'B').slice(0, 10).map(h => ({ ...h, amount: h.amount.toFixed(8) })),
+      };
+      aggSet(cacheKey, payload);
+      res.json(payload);
+    } catch (error) {
+      console.error("Error fetching market holders:", error);
+      res.status(500).json({ message: "Failed to fetch holders" });
+    }
+  });
+
+  // Implied-probability history for a market — derived by replaying bets.
+  // Cached for AGG_TTL_MS to protect against polling flood; downsampled to <=200 points.
+  app.get("/api/markets/:id/history", async (req, res) => {
+    try {
+      const paramResult = uuidParamSchema.safeParse(req.params);
+      if (!paramResult.success) {
+        return res.status(400).json({ message: "Invalid market ID" });
+      }
+      const id = paramResult.data.id;
+      const cacheKey = `${id}:history`;
+      const cached = aggGet(cacheKey);
+      if (cached) return res.json(cached);
+
+      const bets = await storage.getMarketBetsByMarketId(id);
+      const ordered = bets
+        .slice()
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+      let poolA = 0;
+      let poolB = 0;
+      const points: Array<{ t: number; priceA: number; priceB: number; volume: number }> = [];
+      // Seed point at 50/50 using first-bet timestamp (or now) so the chart starts mid
+      const seedTime = ordered.length > 0 ? new Date(ordered[0].createdAt).getTime() - 1 : Date.now();
+      points.push({ t: seedTime, priceA: 50, priceB: 50, volume: 0 });
+
+      for (const b of ordered) {
+        const amt = parseFloat(b.amount);
+        if (b.outcome === 'A') poolA += amt;
+        else if (b.outcome === 'B') poolB += amt;
+        const total = poolA + poolB;
+        const priceA = total > 0 ? (poolA / total) * 100 : 50;
+        points.push({
+          t: new Date(b.createdAt).getTime(),
+          priceA: Math.round(priceA * 10) / 10,
+          priceB: Math.round((100 - priceA) * 10) / 10,
+          volume: total,
+        });
+      }
+      // Downsample to <=200 points for chart performance / payload size
+      const MAX = 200;
+      let downsampled = points;
+      if (points.length > MAX) {
+        const step = Math.ceil(points.length / MAX);
+        downsampled = points.filter((_, i) => i % step === 0 || i === points.length - 1);
+      }
+      aggSet(cacheKey, downsampled);
+      res.json(downsampled);
+    } catch (error) {
+      console.error("Error fetching market history:", error);
+      res.status(500).json({ message: "Failed to fetch history" });
     }
   });
 
@@ -139,6 +284,7 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
+      invalidateMarketAggCache(market.id);
       realtime.broadcastMarketsUpdated({ id: market.id, action: 'locked' });
       res.json({ message: "Market locked successfully", market });
     } catch (error) {
@@ -181,6 +327,7 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       if (!market) {
         return res.status(404).json({ message: "Market not found" });
       }
+      invalidateMarketAggCache(market.id);
       realtime.broadcastMarketsUpdated({ id: market.id, action: 'updated' });
       res.json({ message: "Market updated", market });
     } catch (error) {
@@ -204,6 +351,7 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         const status = result.reason === 'Market not found' ? 404 : 400;
         return res.status(status).json({ message: result.reason || "Failed to delete market" });
       }
+      invalidateMarketAggCache(paramResult.data.id);
       realtime.broadcastMarketsUpdated({ id: paramResult.data.id, action: 'deleted' });
       res.json({ message: "Market deleted" });
     } catch (error) {
@@ -226,6 +374,7 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
       if (!result) {
         return res.status(404).json({ message: "Market not found" });
       }
+      invalidateMarketAggCache(result.market.id);
       realtime.broadcastMarketsUpdated({ id: result.market.id, action: 'refunded' });
       res.json({
         message: "Market refunded",
@@ -332,6 +481,7 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         }
       }
 
+      invalidateMarketAggCache(settledMarket.id);
       realtime.broadcastMarketsUpdated({ id: settledMarket.id, action: 'settled' });
 
       res.json({

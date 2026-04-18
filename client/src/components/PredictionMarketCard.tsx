@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, TrendingUp, Trophy, RotateCcw, BarChart3 } from "lucide-react";
@@ -33,6 +34,7 @@ interface PredictionMarketCardProps {
 
 export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: PredictionMarketCardProps) {
   const [timeRemaining, setTimeRemaining] = useState({ hours: 0, minutes: 0, seconds: 0 });
+  const [, navigate] = useLocation();
   const leagueBadge = getLeagueBadge(market.league);
 
   useEffect(() => {
@@ -91,7 +93,16 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
 
   return (
     <div
-      className="glass-panel rounded-md p-4 hover-elevate transition-all duration-200"
+      role="link"
+      tabIndex={0}
+      onClick={() => navigate(`/market/${market.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          navigate(`/market/${market.id}`);
+        }
+      }}
+      className="block glass-panel rounded-md p-4 hover-elevate transition-all duration-200 cursor-pointer no-underline text-current"
       data-testid={`card-market-${market.id}`}
     >
       {/* Header: league + status */}
@@ -193,7 +204,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
       {/* Buy buttons: price in cents = market's implied probability */}
       <div className="grid grid-cols-2 gap-2 mb-3">
         <Button
-          onClick={() => onPlaceBet(market.id, 'A', oddsA)}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onPlaceBet(market.id, 'A', oddsA); }}
           disabled={isDisabled}
           variant="outline"
           className={cn(
@@ -208,7 +219,7 @@ export function PredictionMarketCard({ market, onPlaceBet, disabled = false }: P
         </Button>
 
         <Button
-          onClick={() => onPlaceBet(market.id, 'B', oddsB)}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onPlaceBet(market.id, 'B', oddsB); }}
           disabled={isDisabled}
           variant="outline"
           className={cn(

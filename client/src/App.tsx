@@ -30,6 +30,8 @@ const CRITICAL_ASSETS = [
 const Home = lazy(() => import("@/pages/home"));
 const Coinflip = lazy(() => import("@/pages/coinflip"));
 const PredictionMarkets = lazy(() => import("@/pages/prediction-markets"));
+const MarketDetail = lazy(() => import("@/pages/market-detail"));
+const Positions = lazy(() => import("@/pages/positions"));
 const Admin = lazy(() => import("@/pages/admin"));
 const AdminMarkets = lazy(() => import("@/pages/admin-markets"));
 const SportsDataDemo = lazy(() => import("@/pages/sports-data-demo"));
@@ -153,6 +155,8 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/coinflip" component={Coinflip} />
           <Route path="/prediction-markets" component={PredictionMarkets} />
+          <Route path="/market/:id" component={MarketDetail} />
+          <Route path="/positions" component={Positions} />
           <Route path="/admin" component={Admin} />
           <Route path="/admin/markets" component={AdminMarkets} />
           <Route path="/admin/sports-data" component={SportsDataDemo} />
