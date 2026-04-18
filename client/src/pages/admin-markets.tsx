@@ -257,6 +257,7 @@ export default function AdminMarkets() {
         description: "Betting has been closed for this market",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
     },
     onError: (error: Error) => {
       toast({
@@ -280,6 +281,7 @@ export default function AdminMarkets() {
       setSettleDialogOpen(false);
       setSelectedMarket(null);
       queryClient.invalidateQueries({ queryKey: ["/api/admin/markets"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/markets"] });
     },
     onError: (error: Error) => {
       toast({

@@ -332,6 +332,8 @@ export function registerMarketsRoutes(app: Express, deps: RouteDeps): void {
         }
       }
 
+      realtime.broadcastMarketsUpdated({ id: settledMarket.id, action: 'settled' });
+
       res.json({
         message: "Market settled successfully",
         market: settledMarket,
