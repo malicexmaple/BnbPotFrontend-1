@@ -89,41 +89,55 @@ export default function GameNavigation({
 
   return (
     <div className="flex w-full" style={{height: '100px', display: 'flex'}}>
-      {/* Left - Logo section (345px on desktop, smaller on mobile).
-          Outer wrapper carries the dark glass header strip; inner element is a
-          rounded button-style box that matches the JACKPOT/COINFLIP/PREDICTION
-          MARKETS tab buttons next to it. */}
-      <div
-        className="hidden lg:flex items-center justify-center flex-shrink-0 w-full max-w-[345px] px-3"
-        style={{
-          height: '100px',
-          background: 'rgba(20, 20, 20, 0.8)',
-          backdropFilter: 'blur(8px)',
-          borderRight: '1px solid rgba(60, 60, 60, 0.3)',
-          borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
-          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
-        }}
-      >
+      {/* Left - Logo column. Mirrors the right column's two-strip layout:
+          a thin 30px top strip (matching the social/links bar) and a 70px
+          bottom strip (matching the JACKPOT/COINFLIP nav) so the inner
+          button-style logo box sits at the exact same vertical position as
+          the tab buttons next to it. */}
+      <div className="hidden lg:flex flex-col flex-shrink-0 w-full max-w-[345px]" style={{ height: '100px' }}>
+        {/* Top 30px strip — matches the social/links bar height & style */}
         <div
-          className="flex items-center justify-center w-full"
           style={{
-            height: '76px',
-            borderRadius: '10px',
-            background: 'rgba(20, 20, 20, 0.7)',
-            border: '1px solid rgba(60, 60, 60, 0.4)',
-            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)',
-            overflow: 'hidden',
-            paddingLeft: '4px',
-            paddingRight: '8px',
+            height: '30px',
+            background: 'rgba(10, 10, 10, 0.9)',
+            backdropFilter: 'blur(8px)',
+            borderBottom: '1px solid rgba(60, 60, 60, 0.2)',
+            boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.02), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
+          }}
+        />
+        {/* Bottom 70px strip — matches the JACKPOT/COINFLIP nav strip */}
+        <div
+          className="flex items-center justify-center px-3"
+          style={{
+            height: '70px',
+            flex: 1,
+            background: 'rgba(20, 20, 20, 0.8)',
+            backdropFilter: 'blur(8px)',
+            borderBottom: '1px solid rgba(60, 60, 60, 0.3)',
+            boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.03), inset 0 -1px 2px rgba(0, 0, 0, 0.5)',
           }}
         >
-          <img
-            src={crownLogo}
-            alt="Crown"
-            style={{ height: '70px', width: 'auto', display: 'block' }}
-          />
-          <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-4px'} as React.CSSProperties}>
-            <img src={textLogo} alt="BNBPOT" style={{width: '150px', height: 'auto', display: 'block'}} />
+          <div
+            className="flex items-center justify-center w-full"
+            style={{
+              height: '48px',
+              borderRadius: '10px',
+              background: 'rgba(20, 20, 20, 0.7)',
+              border: '1px solid rgba(60, 60, 60, 0.4)',
+              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.5)',
+              overflow: 'hidden',
+              paddingLeft: '4px',
+              paddingRight: '10px',
+            }}
+          >
+            <img
+              src={crownLogo}
+              alt="Crown"
+              style={{ height: '44px', width: 'auto', display: 'block' }}
+            />
+            <div className="shine-image" style={{'--shine-mask': `url(${textLogo})`, marginLeft: '-2px'} as React.CSSProperties}>
+              <img src={textLogo} alt="BNBPOT" style={{height: '24px', width: 'auto', display: 'block'}} />
+            </div>
           </div>
         </div>
       </div>
