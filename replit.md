@@ -6,7 +6,15 @@ BNBPOT.COM is a crypto gambling platform focused on jackpot-style gaming where t
 
 The application is built as a full-stack TypeScript monorepo with a React frontend, Express backend, and PostgreSQL database. It follows a modern web architecture with real-time capabilities for live game state updates and player interactions.
 
-**Current Status** (December 1, 2025):
+**Current Status** (April 2026):
+- ✅ **NEW**: Wallet system — `/api/wallet` (get/deposit/withdraw/quick-deposit/transactions) + `/wallet` page
+- ✅ **NEW**: Crypto prices proxy — `/api/crypto/prices` (Coingecko, 60s cache, fallback)
+- ✅ **NEW**: Custom teams/players upload endpoints — `/api/sports/custom/teams|players`
+- ✅ **NEW**: Profile + Feed + 50+ sport/league pages ported (registered in `client/src/App.tsx`)
+- ✅ **NEW**: `useAuth` hook enriched with full User record via `/api/auth/user` alias
+- ✅ **NEW**: Schema additions — `wallets`, `transactions`, `customTeams`, `customPlayers`
+
+**Earlier Status** (December 1, 2025):
 - ✅ Production-grade smart contract deployed with Chainlink VRF
 - ✅ Complete blockchain event indexer with database syncing
 - ✅ Dual-mode operation: blockchain mode + database-only fallback

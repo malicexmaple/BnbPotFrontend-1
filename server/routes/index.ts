@@ -21,6 +21,8 @@ import { registerVisibilityRoutes } from "./visibility.routes";
 import { registerMediaRoutes } from "./media.routes";
 import { registerCustomLeaguesRoutes } from "./custom-leagues.routes";
 import { registerObjectStorageRoutes } from "./objectStorage.routes";
+import { registerWalletRoutes } from "./wallet.routes";
+import { registerCryptoRoutes } from "./crypto.routes";
 
 export async function registerRoutes(app: Express, sessionParser: any): Promise<Server> {
   const httpServer = createServer(app);
@@ -51,6 +53,8 @@ export async function registerRoutes(app: Express, sessionParser: any): Promise<
   registerMediaRoutes(app, deps);
   registerCustomLeaguesRoutes(app, deps);
   registerObjectStorageRoutes(app, deps);
+  registerWalletRoutes(app, deps);
+  registerCryptoRoutes(app, deps);
 
   return httpServer;
 }

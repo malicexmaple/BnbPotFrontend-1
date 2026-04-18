@@ -47,6 +47,21 @@ const updateProfileSchema = z.object({
 export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
   const { storage, requireAuth } = deps;
 
+  // Returns current authenticated user (used by ported pages)
+  app.get("/api/auth/user", async (req, res) => {
+    try {
+      const walletAddress = req.session?.walletAddress;
+      if (!walletAddress) return res.status(401).json({ message: "Unauthorized" });
+      const user = await storage.getUserByWalletAddress(walletAddress);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const { password, ...userData } = user;
+      res.json(userData);
+    } catch (err) {
+      console.error("GET /api/auth/user error", err);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   app.get("/api/users/me", async (req, res) => {
     try {
       const queryResult = walletAddressQuerySchema.safeParse(req.query);
@@ -161,6 +176,57 @@ export function registerUsersRoutes(app: Express, deps: RouteDeps): void {
     } catch (error) {
       console.error("Error updating profile:", error);
       res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Alias for ported pages - same handler as /api/users/profile
+  app.patch("/api/profile", requireAuth, async (req, res) => {
+    try {
+      const bodyResult = updateProfileSchema.safeParse(req.body);
+      if (!bodyResult.success) {
+        return res.status(400).json({
+          message: "Invalid profile data",
+          errors: bodyResult.error.flatten().fieldErrors,
+        });
+      }
+      const walletAddress = req.session!.walletAddress!;
+      const existingUser = await storage.getUserByWalletAddress(walletAddress);
+      if (!existingUser) return res.status(404).json({ message: "User not found" });
+      const { username, email, avatarUrl, clientSeed } = bodyResult.data;
+      const updateData: { username?: string; email?: string; avatarUrl?: string; clientSeed?: string } = {};
+      if (username !== undefined) updateData.username = username;
+      if (email !== undefined) updateData.email = email || undefined;
+      if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl || undefined;
+      if (clientSeed !== undefined) updateData.clientSeed = clientSeed;
+      const updated = await storage.updateUserProfile(walletAddress, updateData);
+      if (!updated) return res.status(404).json({ message: "User not found" });
+      if (req.session && username) req.session.username = updated.username;
+      const { password, ...userData } = updated;
+      res.json(userData);
+    } catch (err) {
+      console.error("PATCH /api/profile error", err);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Stats for current user
+  app.get("/api/user/stats", requireAuth, async (req, res) => {
+    try {
+      const walletAddress = req.session!.walletAddress!;
+      const stats = await storage.getUserStats(walletAddress);
+      if (!stats) {
+        return res.json({
+          userAddress: walletAddress,
+          totalWins: 0,
+          totalWagered: "0",
+          totalWon: "0",
+          level: 1,
+        });
+      }
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
     }
   });
 }

@@ -314,9 +314,11 @@ export async function registerSportsRoutes(app: Express, deps: RouteDeps): Promi
       if (!parsed.success) {
         return res.status(400).json({ message: "Invalid team data", errors: parsed.error.flatten().fieldErrors });
       }
+      const wallet = req.session?.walletAddress;
+      const user = wallet ? await storage.getUserByWalletAddress(wallet) : null;
       const team = await storage.createCustomTeam({
         ...parsed.data,
-        uploadedBy: req.session?.user?.id ?? null,
+        uploadedBy: user?.id ?? null,
       });
       res.status(201).json(team);
     } catch (e) {
@@ -348,10 +350,12 @@ export async function registerSportsRoutes(app: Express, deps: RouteDeps): Promi
       if (!parsed.success) {
         return res.status(400).json({ message: "Invalid player data", errors: parsed.error.flatten().fieldErrors });
       }
+      const wallet = req.session?.walletAddress;
+      const user = wallet ? await storage.getUserByWalletAddress(wallet) : null;
       const player = await storage.createCustomPlayer({
         ...parsed.data,
         country: parsed.data.country ?? null,
-        uploadedBy: req.session?.user?.id ?? null,
+        uploadedBy: user?.id ?? null,
       });
       res.status(201).json(player);
     } catch (e) {
