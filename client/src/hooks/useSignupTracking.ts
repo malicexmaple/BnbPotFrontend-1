@@ -23,44 +23,70 @@ export function useSignupTracking(walletAddress: string | null) {
     if (!walletAddress) {
       setHasCompletedSignup(false);
       setUsername(null);
+      setAgreedToTerms(false);
       return;
     }
 
-    try {
-      // Get user data from localStorage
-      const userData = JSON.parse(
-        localStorage.getItem('userData') || '[]'
-      ) as UserData[];
-      
-      if (Array.isArray(userData)) {
-        const user = userData.find(u => u.wallet === walletAddress);
-        const hasCompleted = !!user;
-        
-        console.log('🔍 Wallet Signup Check:', {
-          wallet: walletAddress,
-          hasCompletedSignup: hasCompleted,
-          username: user?.username,
-          agreedToTerms: user?.agreedToTerms || false,
-          totalRegisteredWallets: userData.length
-        });
-        
-        setHasCompletedSignup(hasCompleted);
-        setUsername(user?.username || null);
-        setAgreedToTerms(user?.agreedToTerms || false);
-      } else {
-        // Reset if data is malformed
+    let cancelled = false;
+
+    const readLocal = (): UserData | null => {
+      try {
+        const userData = JSON.parse(
+          localStorage.getItem('userData') || '[]'
+        ) as UserData[];
+        if (Array.isArray(userData)) {
+          return userData.find(u => u.wallet === walletAddress) || null;
+        }
         localStorage.setItem('userData', '[]');
-        setHasCompletedSignup(false);
-        setUsername(null);
-        setAgreedToTerms(false);
+      } catch {
+        localStorage.setItem('userData', '[]');
       }
-    } catch (error) {
-      console.error('Error reading signup data:', error);
-      localStorage.setItem('userData', '[]');
-      setHasCompletedSignup(false);
-      setUsername(null);
-      setAgreedToTerms(false);
-    }
+      return null;
+    };
+
+    const apply = (user: UserData | null) => {
+      if (cancelled) return;
+      setHasCompletedSignup(!!user);
+      setUsername(user?.username || null);
+      setAgreedToTerms(user?.agreedToTerms || false);
+    };
+
+    // Optimistic local read first
+    apply(readLocal());
+
+    // Authoritative server check — auto-completes signup for known wallets
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/users/me?walletAddress=${encodeURIComponent(walletAddress)}`,
+          { credentials: 'include' }
+        );
+        if (!res.ok) return;
+        const serverUser = await res.json();
+        if (!serverUser?.username) return;
+
+        const newUser: UserData = {
+          wallet: walletAddress,
+          username: serverUser.username,
+          agreedToTerms: !!serverUser.agreedToTerms,
+          agreedAt: serverUser.agreedAt || new Date().toISOString(),
+        };
+
+        try {
+          const all = JSON.parse(localStorage.getItem('userData') || '[]') as UserData[];
+          const arr = Array.isArray(all) ? all : [];
+          const i = arr.findIndex(u => u.wallet === walletAddress);
+          if (i >= 0) arr[i] = newUser; else arr.push(newUser);
+          localStorage.setItem('userData', JSON.stringify(arr));
+        } catch {}
+
+        apply(newUser);
+      } catch {
+        // network errors: keep local state
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [walletAddress]);
 
   // Listen for username updates from profile modal
