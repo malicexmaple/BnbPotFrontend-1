@@ -57,7 +57,7 @@ export default function AdminPanel() {
 
   if (!isAdmin && devEnabled?.enabled) {
     return (
-      <div className="flex flex-col h-full pt-[100px]">
+      <div className="flex-1 overflow-auto relative pt-[100px] min-h-screen">
         <LiveBettingFeed />
         <div className="flex-1 overflow-auto relative">
           <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -107,7 +107,7 @@ export default function AdminPanel() {
 
   if (!isAdmin) {
     return (
-      <div className="flex flex-col h-full pt-[100px]">
+      <div className="flex-1 overflow-auto relative pt-[100px] min-h-screen">
         <LiveBettingFeed />
         <div className="flex-1 overflow-auto relative">
           <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -138,7 +138,7 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="flex flex-col h-full pt-[100px]">
+    <div className="flex-1 overflow-auto relative pt-[100px] min-h-screen">
       <LiveBettingFeed />
       
       <div className="flex-1 overflow-auto relative">
